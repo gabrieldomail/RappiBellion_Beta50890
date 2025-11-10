@@ -2057,6 +2057,43 @@ footer a {
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
 }
 
+/* COPIAR EFECTOS VISUALES DE FREE PLAY A T2E - MISMO ESTILO CYBERPUNK */
+.game-placeholder button[id^="make-bet-"] {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+    border-radius: 3px;
+    font-family: var(--fuente-titulos);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.game-placeholder button[id^="make-bet-"]:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    border-color: var(--color-azul-glitch);
+}
+
+/* Efecto de brillo cyberpunk en hover */
+.game-placeholder button[id^="make-bet-"]::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.game-placeholder button[id^="make-bet-"]:hover::before {
+    opacity: 1;
+}
+
 .feedback-section {
     text-align: center;
 }
