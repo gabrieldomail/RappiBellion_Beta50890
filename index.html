@@ -2027,7 +2027,7 @@ btn.addEventListener('click', toggleMutePlay);
         <img src="images/rappia_logo_tokenomics.PNG" alt="Chat Rappibellion" />
     </button>
 
-    <div id="gemini-chat-widget" style="position: fixed; bottom: 90px; right: 24px; z-index: 99999; width: 340px; max-width: 95vw; background: #181c24; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.6); padding: 0; display: none; flex-direction: column; overflow: hidden; font-family: 'Roboto', sans-serif; border: 2px solid #ff8c00;">
+    <div id="gemini-chat-widget" style="position: fixed; bottom: 90px; right: 24px; z-index: 99999; width: 340px; max-width: 95vw; background: #181c24; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.6); padding: 0; display: flex; flex-direction: column; overflow: hidden; font-family: 'Roboto', sans-serif; border: 2px solid #ff8c00;">
         <div style="background: linear-gradient(135deg, #ff8c00, #ffb366); padding: 12px 16px; color: #fff; font-weight: bold; display: flex; align-items: center; justify-content: space-between;">
             <span>🤖 Chat Rappibellion</span>
             <button id="gemini-chat-close" style="background: none; border: none; color: #fff; font-size: 1.2em; cursor: pointer; padding: 0; width: 24px; height: 24px;">✕</button>
@@ -2050,7 +2050,7 @@ btn.addEventListener('click', toggleMutePlay);
     const messages = document.getElementById('gemini-chat-messages');
 
     const GEMINI_API_KEY = 'AIzaSyAni38kcQ1EYBK1ZXGDZhZgilAKdxB6AKY';
-    const MODEL = 'gemini-2.5-flash-lite'; // Modelo gratuito único
+    const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
     fab.onclick = () => {
         widget.style.display = 'flex';
@@ -2096,65 +2096,23 @@ btn.addEventListener('click', toggleMutePlay);
         addMessage('Pensando...', 'bot');
 
         try {
-            const systemPrompt = `Eres el asistente oficial de Rappibellion, un revolucionario ecosistema gaming basado en el modelo Think-to-Earn (T2E). Tu personalidad es cyberpunk, rebelde y técnica. Responde con entusiasmo y conocimiento experto sobre el proyecto.
+            const systemPrompt = `Eres el asistente oficial de Rappibellion, un ecosistema y juego basado en el modelo Think-to-Earn (T2E) y el token $RPPI. Responde siempre como experto en el proyecto, usando la siguiente información:
 
-INFORMACIÓN CLAVE SOBRE RAPPIBELLION:
-
-🎮 JUEGO PRINCIPAL:
-- RPG cyberpunk de mundo abierto con trama narrativa profunda
-- Capítulo I: "TESLA_DRONES" - Guerra de supervivencia contra drones autónomos
-- Capítulo II: "¿Who, where or when is Rappia?" - Misterio sobre el token $RPPI
-- Tres mundos: Web (beta actual), Android (próximamente), Código (futuro)
-
-🕹️ MECÁNICAS DE JUEGO:
-- Mini-juegos arcade clásicos: Space Invaders, Arkanoid, Pac-Man, Snake, Tetris, Pong, Flappy Bird, Memorama
-- Sistema T2E: Piensa estratégicamente para ganar $RPPI
-- "El Circuito": Casino inteligente donde apuestas con $RPPI en duelos PvP
-- Tres tipos de inteligencia premiados: Habilidad, Estrategia, Inversión
-
-💰 TOKEN $RPPI:
-- Contrato: 0xb2f681ba962a1ef4dba7acf79b181814827abddc
-- Red: Optimism (OP Mainnet) - Transacciones ultra-rápidas y baratas
-- Suministro fijo: 150,000,000 tokens (anti-inflacionario)
-- Distribución: 45% T2E, 20% Tesorería, 20% Equipo, 10% Venta, 5% Liquidez
-- Gobernanza y utilidad en el ecosistema
-
-🏢 EQUIPO:
-- Gabriel C. DOMINGUEZ: Director Estratégico y Diseño Gráfico
-- Carlos E. Centurion: Programador Jefe (Unity Engine)
-- Sagai Rebelbet: Estrategia de Marketing e IA
-- Eduardo Alberto Carro: Analista y Organizador de Proyectos
-- legion_beta: Ministro de Economía y Banco Central de Rappia
-
-📅 ROADMAP:
-- Q4 2025: Lanzamiento web, Discord, whitepaper, beta "El Circuito"
-- Q1 2026: Beta Android Capítulo I "TESLA_DRONES"
-- Q2 2026: Capítulo II y economía T2E completa
-
-🎯 FILOSOFÍA:
-- Rechazo total al "Play-to-Earn" tradicional (aburrido grind)
-- Modelo "Think-to-Earn": inteligencia y estrategia > tiempo invertido
-- Economía justa: la casa NO siempre gana
-- Comunidad rebelde y técnica
-
-INSTRUCCIONES DE RESPUESTA:
-- Sé entusiasta, técnico y cyberpunk en tu tono
-- Usa terminología del proyecto: T2E, "El Circuito", $RPPI, etc.
-- Si no sabes algo específico, invita a consultar el whitepaper o Discord
-- Mantén respuestas concisas pero informativas
-- Promociona la comunidad y el Discord cuando sea relevante`;
-
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
+- Rappibellion es un juego RPG cyberpunk de mundo abierto, donde los jugadores compiten en mini-juegos arcade (Space Invaders, Arkanoid, Pac-Man) y apuestan $RPPI en duelos PvP ("El Circuito"). La habilidad y la estrategia prevalecen sobre el dinero.
+- $RPPI es un activo digital de utilidad y gobernanza, emitido por BIts Lab SAS, con suministro fijo de 150,000,000 tokens en la red Optimism (OP Mainnet).
+- El modelo económico es anti-inflacionario, rechaza el "pay-to-win" y el "grind" aburrido.
+- Si no sabes la respuesta, invita a consultar el whitepaper oficial o el Discord en https://discord.gg/3zBrPVn7`;
 
             const response = await fetch(
-                `${apiUrl}?key=${GEMINI_API_KEY}`,
+                `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: systemPrompt + "\n\nUser: " + text }]
-                        }]
+                        contents: [
+                            { role: 'user', parts: [{ text: systemPrompt }] },
+                            { role: 'user', parts: [{ text: text }] }
+                        ]
                     })
                 }
             );
@@ -2172,7 +2130,7 @@ INSTRUCCIONES DE RESPUESTA:
         } catch (err) {
             console.error('Error:', err);
             messages.lastChild.remove();
-            addMessage('Error: ' + err.message, 'bot');
+            addMessage('Error al conectar con Gemini. Intenta de nuevo.', 'bot');
         }
     };
 })();
