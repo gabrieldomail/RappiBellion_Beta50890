@@ -234,13 +234,12 @@
     </div>
 
 
-    <!-- Botón flotante Mute/Play Gardel (único botón de audio, SIEMPRE al frente, pero solo visible tras comenzar beta) -->
-    <button id="mute-play-btn" title="Mute/Play Gardel" class="mute-play-floating" style="display:none;">
-        <img id="bird-icon" src="images/zorzal.PNG" alt="Zorzal" width="48" height="48" style="display:block;" />
-        <span id="mute-play-label" style="display:block; color:#FFD700; font-size:0.9em;">Mute/Play</span>
-    </button>
-
 </section>
+
+    <!-- Botón flotante Mute/Play Gardel (único botón de audio, SIEMPRE al frente, pero solo visible tras comenzar beta) -->
+    <button id="mute-play-btn" title="Mute/Play Gardel" class="mute-play-floating" style="display:none; position: fixed; top: 32px; right: 32px; z-index: 2147483647; background: transparent; border: none; box-shadow: none; border-radius: 0; padding: 0; transition: all 0.3s ease; cursor: pointer; pointer-events: auto;">
+        <img id="bird-icon" src="images/zorzal.PNG" alt="Zorzal" width="48" height="48" style="display:block;" />
+    </button>
 
 <!-- Botón flotante Mute/Play Zorzal Gardel (solo visible tras comenzar beta, ahora dentro de la sección beta) -->
 
@@ -409,20 +408,26 @@
 // Estilos flotantes para el botón mute/play
 const style = document.createElement('style');
 style.textContent = `
-        .mute-play-floating {
-            position: fixed;
-            right: 32px;
-            bottom: 32px;
-            z-index: 2147483647; /* Al frente de absolutamente todo */
-            background: none;
-            border: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-            border-radius: 50%;
-            padding: 0;
-            transition: box-shadow 0.2s;
-        }
+    .mute-play-floating {
+        position: fixed;
+        top: 32px;
+        right: 32px;
+        z-index: 2147483647; /* Al frente de absolutamente todo */
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid #FFD700;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        border-radius: 50%;
+        padding: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
     .mute-play-floating:hover {
-        box-shadow: 0 4px 16px #FFD70099;
+        background: rgba(255, 215, 0, 0.2);
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        transform: scale(1.1);
+    }
+    .mute-play-floating img {
+        filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
     }
 `;
 document.head.appendChild(style);
@@ -432,18 +437,39 @@ const muteBtn = document.getElementById('mute-play-btn');
 const startBetaBtn = document.getElementById('start-beta-button');
 const betaStartScreen = document.getElementById('beta-start-screen');
 let betaActive = false;
-if (startBetaBtn) {
-    startBetaBtn.addEventListener('click', () => {
-        betaActive = true;
-        setTimeout(updateMuteBtnVisibility, 300);
-    });
+
+// Función corregida para verificar visibilidad
+function isStartScreenHidden() {
+    return betaStartScreen && (betaStartScreen.style.display === 'none' || getComputedStyle(betaStartScreen).display === 'none');
 }
 
 function updateMuteBtnVisibility() {
     // Solo mostrar si la pantalla de inicio beta está oculta y la beta está activa
-    const startScreenVisible = betaStartScreen && betaStartScreen.offsetParent !== null;
-    muteBtn.style.display = (betaActive && !startScreenVisible) ? 'block' : 'none';
+    const startScreenHidden = isStartScreenHidden();
+    const shouldShow = (betaActive && startScreenHidden);
+    muteBtn.style.display = shouldShow ? 'block' : 'none';
+
+    // Debug: mostrar estado en consola
+    console.log('🔊 MUTE BUTTON DEBUG - Beta active:', betaActive, 'Start screen hidden:', startScreenHidden, 'Should show mute button:', shouldShow);
+
+    // Forzar visibilidad temporal para debug (quitar después)
+    if (shouldShow) {
+        console.log('✅ Botón mute/play debería estar VISIBLE ahora');
+        muteBtn.style.backgroundColor = 'red'; // Debug visual
+        setTimeout(() => { muteBtn.style.backgroundColor = ''; }, 2000);
+    }
 }
+
+if (startBetaBtn) {
+    startBetaBtn.addEventListener('click', () => {
+        betaActive = true;
+        // Forzar actualización inmediata y después de un pequeño delay
+        updateMuteBtnVisibility();
+        setTimeout(updateMuteBtnVisibility, 100);
+        setTimeout(updateMuteBtnVisibility, 500);
+    });
+}
+
 window.addEventListener('scroll', updateMuteBtnVisibility);
 window.addEventListener('resize', updateMuteBtnVisibility);
 // Inicialmente oculto
@@ -732,18 +758,15 @@ function toggleMutePlay() {
         audio.play();
         isPlaying = true;
         isMuted = false;
-        label.textContent = 'Mute';
-        birdIcon.style.opacity = '1';
+        birdIcon.style.filter = 'none'; // Color normal cuando está reproduciendo
     } else if (!isMuted) {
         audio.muted = true;
         isMuted = true;
-        label.textContent = 'Play';
-        birdIcon.style.opacity = '0.5';
+        birdIcon.style.filter = 'grayscale(100%)'; // Blanco y negro cuando está muted
     } else {
         audio.muted = false;
         isMuted = false;
-        label.textContent = 'Mute';
-        birdIcon.style.opacity = '1';
+        birdIcon.style.filter = 'none'; // Color normal cuando vuelve a reproducir
     }
 }
 
@@ -787,6 +810,8 @@ btn.addEventListener('click', toggleMutePlay);
                     <span>[INCOMING_REBELBET_MESSAGE]</span>
                 </div>
                 <div class="terminal-body-caos">
+                    <!-- Confetti canvas for rebelbet modal -->
+                    <canvas id="confetti-rebelbet-canvas" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:10;"></canvas>
                     <p id="joke-text-line1" style="color: var(--color-caos-verde); font-weight: bold; margin-bottom: 15px;">
                         <span id="typewriter-line1"></span><span class="typing-cursor" style="opacity: 0;">_</span>
                     </p>
@@ -1163,6 +1188,13 @@ btn.addEventListener('click', toggleMutePlay);
                 try {
                     if (tangoAudio) { tangoAudio.volume = 0.5; tangoAudio.currentTime = 0; tangoAudio.play(); }
                 } catch(e) {}
+
+                // 5. MOSTRAR EL BOTÓN MUTE/PLAY INMEDIATAMENTE
+                console.log('🎵 INICIANDO BETA - Mostrando botón mute/play');
+                betaActive = true;
+                muteBtn.style.display = 'block';
+                muteBtn.style.backgroundColor = 'red'; // Debug visual
+                setTimeout(() => { muteBtn.style.backgroundColor = ''; }, 2000);
             });
         }
         
@@ -1357,8 +1389,8 @@ btn.addEventListener('click', toggleMutePlay);
                         // Línea 1: "TRANSACTION SUCCESS CONFIRMED..." (MÁS LENTO: 70ms por letra)
                         setTimeout(() => {
                             typeWriter(typewriterLine1, '> TRANSACTION SUCCESS CONFIRMED purchance id: 21389 -"ASALTO" Civil War vs Tesla_Drones USDT 649,99 aproved', 70, jokeCursor1, function() {
-                                // CONFETTI EFFECT: disparar confeti justo después del mensaje de éxito, usando el canvas dentro del overlay
-                                var confettiCanvas = document.getElementById('confetti-terminal-canvas');
+                                // CONFETTI EFFECT: disparar confeti justo después del mensaje de éxito, usando el canvas dentro del modal rebelbet
+                                var confettiCanvas = document.getElementById('confetti-rebelbet-canvas');
                                 if (window.confetti && confettiCanvas) {
                                     window.confetti.create(confettiCanvas, { resize: true, useWorker: true })({
                                         particleCount: 120,
@@ -1369,7 +1401,7 @@ btn.addEventListener('click', toggleMutePlay);
                                 // Línea 2 empieza después de que termine línea 1 (MÁS LENTO: 80ms por letra)
                                 setTimeout(() => {
                                     typeWriter(typewriterLine2, '-thanks for playing beta ver-', 80, jokeCursor2, function() {
-                                        // Esperar 9 segundos más después de terminar línea 2 (TOTAL ~18 segundos antes de catch you)
+                                        // Esperar 10 segundos más después de terminar línea 2 (TOTAL ~19 segundos antes de catch you) - RETRASO PARA TENSION
                                         setTimeout(() => {
                                             // Línea 3: "catch you..." (SÚPER LENTO: 100ms por letra)
                                             typeWriter(typewriterLine3, 'catch you... -the joke-', 100, jokeCursor3, function() {
@@ -1380,7 +1412,7 @@ btn.addEventListener('click', toggleMutePlay);
                                                     }, true);
                                                 }, 800);
                                             });
-                                        }, 4000);
+                                        }, 10000); // CAMBIADO: 10 segundos para incrementar la tensión del chiste
                                     });
                                 }, 1000);
                             });
@@ -1996,46 +2028,196 @@ btn.addEventListener('click', toggleMutePlay);
             position: fixed;
             bottom: 24px;
             right: 24px;
-            z-index: 99999;
-            width: 56px;
-            height: 56px;
-            background: #ff8c00;
-            border-radius: 50%;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+            z-index: 99998; /* Un poco menos que el botón del pájaro */
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            border-radius: 50%; /* Forma circular perfecta */
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+            font-size: 0; /* Sin tamaño de fuente para el botón principal */
+            line-height: 1;
+            width: 88px;
+            height: 88px;
+        }
+
+        #gemini-chat-fab:hover {
+            transform: scale(1.1);
+        }
+
+        /* Emoji detrás sin efecto */
+        #gemini-chat-fab::before {
+            content: '🤖';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 58px;
+            height: 58px;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            border: none;
-            outline: none;
-            transition: all 0.3s ease;
+            font-size: 58px;
+            line-height: 1;
+            border-radius: 50%; /* Forma circular */
+            z-index: -1; /* Detrás del botón */
+        }
+
+        /* Efecto scanline encima del emoji */
+        #gemini-chat-fab::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 58px;
+            height: 58px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+            background-size: 200% 100%;
+            animation: strong-scanline 3.375s linear infinite;
+            border-radius: 50%; /* Forma circular para el scanline */
+            z-index: 1; /* Encima del emoji */
+        }
+
+        /* Efecto fuerte scanline */
+        @keyframes strong-scanline {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Estilos CAOS para el widget del chat - copiados de la terminal del hackeo */
+        #gemini-chat-widget {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            z-index: 99999;
+            width: 340px;
+            max-width: 95vw;
+            background: #050a0f; /* Fondo de terminal oscuro */
+            border: 2px solid var(--color-caos-verde); /* Borde Verde Flúor */
+            box-shadow: 0 0 15px var(--color-caos-verde);
+            border-radius: 5px;
             padding: 0;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace; /* Fuente de programador */
         }
-        #gemini-chat-fab:hover {
-            background: #ffb366;
-            box-shadow: 0 6px 32px rgba(255, 140, 0, 0.5);
-            transform: scale(1.1);
+
+        #gemini-chat-widget .terminal-header-caos {
+            background-color: var(--color-caos-amarillo); /* Header Amarillo Lima */
+            color: #071018; /* Color oscuro para contraste sobre amarillo */
+            padding: 3px 8px;
+            font-size: 0.8em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        #gemini-chat-fab img {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+
+        #gemini-chat-widget .terminal-body-caos {
+            padding: 20px;
+            font-size: 1.1em;
+            color: var(--color-caos-verde); /* Texto Verde Flúor */
+            line-height: 1.6;
+            flex: 1;
+            min-height: 200px;
+            max-height: 350px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        #gemini-chat-widget .gemini-chat-form {
+            display: flex;
+            border-top: 1px solid var(--color-caos-verde);
+            background: #23283a;
+        }
+
+        #gemini-chat-widget .gemini-chat-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            background: #23283a;
+            color: var(--color-caos-verde);
+            font-size: 0.95em;
+            outline: none;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #gemini-chat-widget .gemini-chat-submit {
+            background: var(--color-caos-amarillo);
+            color: #071018;
+            border: none;
+            padding: 0 18px;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #gemini-chat-widget .gemini-chat-submit:hover {
+            background: var(--color-caos-verde);
+            color: #071018;
+        }
+
+        #gemini-chat-widget .gemini-chat-close {
+            background: none;
+            border: none;
+            color: #071018;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        #gemini-chat-widget .gemini-message {
+            display: flex;
+            margin-bottom: 8px;
+        }
+
+        #gemini-chat-widget .gemini-message.user {
+            justify-content: flex-end;
+        }
+
+        #gemini-chat-widget .gemini-message.bot {
+            justify-content: flex-start;
+        }
+
+        #gemini-chat-widget .gemini-bubble {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 0; /* Sin bordes redondeados - estilo punk */
+            max-width: 85%;
+            word-wrap: break-word;
+            background: transparent;
+            color: var(--color-caos-verde);
+            border: 1px solid var(--color-caos-verde);
+        }
+
+        #gemini-chat-widget .gemini-message.user .gemini-bubble {
+            background: var(--color-caos-amarillo);
+            color: #071018;
+            border-color: var(--color-caos-amarillo);
         }
     </style>
 
     <button id="gemini-chat-fab" title="Abrir chat Rappibellion">
-        <img src="images/rappia_logo_tokenomics.PNG" alt="Chat Rappibellion" />
+        🤖
     </button>
 
-    <div id="gemini-chat-widget" style="position: fixed; bottom: 90px; right: 24px; z-index: 99999; width: 340px; max-width: 95vw; background: #181c24; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.6); padding: 0; display: none; flex-direction: column; overflow: hidden; font-family: 'Roboto', sans-serif; border: 2px solid #ff8c00;">
-        <div style="background: linear-gradient(135deg, #ff8c00, #ffb366); padding: 12px 16px; color: #fff; font-weight: bold; display: flex; align-items: center; justify-content: space-between;">
-            <span>🤖 Chat Rappibellion</span>
-            <button id="gemini-chat-close" style="background: none; border: none; color: #fff; font-size: 1.2em; cursor: pointer; padding: 0; width: 24px; height: 24px;">✕</button>
+    <div id="gemini-chat-widget">
+        <div class="terminal-header-caos">
+            <span>[🤖_CHAT_RAPPIBELLION]</span>
+            <button class="gemini-chat-close">✕</button>
         </div>
-        <div id="gemini-chat-messages" style="flex: 1; min-height: 200px; max-height: 350px; overflow-y: auto; padding: 12px; background: #181c24; color: #fff; font-size: 0.95em; display: flex; flex-direction: column; gap: 8px;"></div>
-        <form id="gemini-chat-form" style="display: flex; border-top: 1px solid #ff8c00; background: #23283a;">
-            <input id="gemini-chat-input" type="text" placeholder="Escribe tu pregunta..." autocomplete="off" style="flex: 1; padding: 10px 12px; border: none; background: #23283a; color: #fff; font-size: 0.95em; outline: none;">
-            <button type="submit" style="background: #ff8c00; color: #fff; border: none; padding: 0 18px; font-size: 0.95em; cursor: pointer; transition: background 0.2s;">Enviar</button>
+        <div class="terminal-body-caos" id="gemini-chat-messages"></div>
+        <form class="gemini-chat-form">
+            <input class="gemini-chat-input" type="text" placeholder="Escribe tu pregunta..." autocomplete="off">
+            <button class="gemini-chat-submit" type="submit">Enviar</button>
         </form>
     </div>
 </body>
@@ -2044,9 +2226,9 @@ btn.addEventListener('click', toggleMutePlay);
 (function() {
     const widget = document.getElementById('gemini-chat-widget');
     const fab = document.getElementById('gemini-chat-fab');
-    const closeBtn = document.getElementById('gemini-chat-close');
-    const form = document.getElementById('gemini-chat-form');
-    const input = document.getElementById('gemini-chat-input');
+    const closeBtn = document.querySelector('.gemini-chat-close');
+    const form = document.querySelector('.gemini-chat-form');
+    const input = document.querySelector('.gemini-chat-input');
     const messages = document.getElementById('gemini-chat-messages');
 
     const GEMINI_API_KEY = 'AIzaSyAni38kcQ1EYBK1ZXGDZhZgilAKdxB6AKY';
@@ -2065,21 +2247,10 @@ btn.addEventListener('click', toggleMutePlay);
 
     function addMessage(text, from) {
         const msg = document.createElement('div');
-        msg.style.display = 'flex';
-        msg.style.justifyContent = from === 'user' ? 'flex-end' : 'flex-start';
-        msg.style.marginBottom = '8px';
+        msg.className = 'gemini-message ' + (from === 'user' ? 'user' : 'bot');
 
         const bubble = document.createElement('span');
-        bubble.style.cssText = `
-            display: inline-block;
-            padding: 8px 12px;
-            border-radius: 12px;
-            max-width: 85%;
-            word-wrap: break-word;
-            background: ${from === 'user' ? '#ff8c00' : '#23283a'};
-            color: #fff;
-            border: ${from === 'user' ? '1px solid #ffb366' : '1px solid #ff8c00'};
-        `;
+        bubble.className = 'gemini-bubble';
         bubble.textContent = text;
         msg.appendChild(bubble);
         messages.appendChild(msg);

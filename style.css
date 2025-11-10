@@ -2169,10 +2169,16 @@ footer a {
     aspect-ratio: 16/9; /* Todas las imágenes tendrán la misma proporción */
 }
 
-/* Mantener RAPPIA-2.png con su tamaño natural más grande */
+/* RAPPIA-2.png COMPLETA - OCUPA 2 COLUMNAS DEL GRID PARA MOSTRARSE ENTERA */
 .world-gallery img[src="RAPPIA-2.png"] {
-    aspect-ratio: auto; /* Mantiene su proporción original */
-    height: auto;
+    grid-column: span 2 !important; /* OCUPA 2 COLUMNAS DEL GRID */
+    aspect-ratio: auto !important; /* Fuerza su proporción original */
+    height: auto !important; /* Altura automática para mostrar completa */
+    object-fit: contain !important; /* Muestra la imagen completa sin cortar */
+    width: 100% !important; /* Ocupa todo el ancho de las 2 columnas */
+    max-width: none !important; /* Sin límite de ancho máximo */
+    max-height: none !important; /* Sin límite de altura máxima */
+    justify-self: center !important; /* Centra la imagen en las 2 columnas */
 }
 
 /* --- ESTILOS "CAOS" PARA MENSAJE "SANTO GRIAL" --- */
