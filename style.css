@@ -2865,3 +2865,96 @@ footer a {
     max-width: fit-content;
     display: inline-block;
 }
+
+/* --- ESTILOS PARA EL MODAL \"MAKE YOUR BET\" --- */
+
+#make-bet-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* ¡Fondo de \"BIts Lab\"! */
+    background-color: rgba(11, 12, 16, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 2000; /* ¡Por encima del overlay del juego! */
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.bet-modal-content {
+    max-width: 500px;
+    width: 100%;
+    /* ¡Reutilizamos el estilo \"caos-terminal\"! */
+    border-color: var(--color-primario);
+    box-shadow: 0 0 25px var(--color-primario);
+}
+
+.bet-modal-content .terminal-body-caos {
+    color: var(--color-texto); /* Texto blanco */
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    font-family: var(--fuente-titulos);
+    font-size: 1em;
+    color: var(--color-azul-glitch);
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.bet-input {
+    width: 70%;
+    padding: 10px;
+    background: #0B0C10;
+    border: 1px solid var(--color-primario);
+    color: var(--color-texto);
+    font-family: 'Courier New', monospace;
+    font-size: 1.2em;
+}
+
+.bet-suffix {
+    font-family: var(--fuente-titulos);
+    color: var(--color-primario);
+    font-size: 1.2em;
+    margin-left: 10px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.bet-option-button {
+    flex-grow: 1;
+    padding: 10px 5px;
+    font-family: var(--fuente-titulos);
+    font-size: 0.9em;
+    background: #111;
+    border: 1px solid #555;
+    color: var(--color-texto);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.bet-option-button:hover {
+    background-color: var(--color-caos-amarillo);
+    border-color: var(--color-caos-amarillo);
+    color: var(--color-fondo);
+}
+
+.bet-option-button.active { /* (Para el JS) */
+    background-color: var(--color-caos-verde);
+    border-color: var(--color-caos-verde);
+    color: var(--color-fondo);
+}

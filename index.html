@@ -956,8 +956,21 @@ btn.addEventListener('click', toggleMutePlay);
 
                 <div class="beta-column" id="t2e-column">
                     <h3 style="color: var(--color-primario); text-shadow: 0 0 10px var(--color-primario);">MODO THINK-TO-EARN (T2E)</h3>
-                    <p>¿Listo para la rebelión? Conecta tu billetera, entra a "El Circuito" y reta a otros jugadores. Apuesta $RPPI.</p>
-                    
+                    <p>¿Listo para la rebelión? Elige tu arena, conecta tu billetera y \"hackea\" a la competencia.</p>
+
+                    <div class="game-placeholder">
+                        <p><strong>[ARKA-HACK]</strong> (El \"Muro\")</p>
+                        <button class="cta-button" id="make-bet-arkahack" style="background-color: var(--color-primario); border-color: var(--color-primario);">
+                            ¡MAKE YOUR BET!
+                        </button>
+                    </div>
+                    <div class="game-placeholder">
+                        <p><strong>[SPACE-BREAKER]</strong> (La \"Flota\")</p>
+                        <button class="cta-button" id="make-bet-spacebreaker" style="background-color: var(--color-primario); border-color: var(--color-primario);">
+                            ¡MAKE YOUR BET!
+                        </button>
+                    </div>
+
                     <button id="connect-wallet-button" class="cta-button whitepaper">
                         CONECTA TU BILLETERA PARA ENTRAR AL CIRCUITO
                     </button>
@@ -965,25 +978,25 @@ btn.addEventListener('click', toggleMutePlay);
                     <p id="wallet-address" style="margin-top: 5px; font-size: 0.85em; color: var(--color-azul-glitch); font-family: var(--fuente-titulos);"></p>
 
 
-                    
+
                     <!-- Sistema de Opiniones T2E -->
                     <div class="t2e-opinions-container" style="margin-top: 30px;">
                         <h4 style="color: var(--color-caos-verde);">¡Deja tu feedback!</h4>
                         <div class="rebellion-comment-form" style="background: rgba(5, 10, 15, 0.8); border: 2px solid var(--color-primario); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-                            <input 
-                                type="text" 
-                                id="t2e-username" 
-                                placeholder="Tu nombre o alias..." 
+                            <input
+                                type="text"
+                                id="t2e-username"
+                                placeholder="Tu nombre o alias..."
                                 style="width: 100%; padding: 10px; margin-bottom: 10px; background: #0a0f14; border: 1px solid var(--color-primario); color: var(--color-texto); font-family: var(--fuente-titulos); border-radius: 4px;"
                             />
-                            <textarea 
-                                id="t2e-opinion" 
-                                placeholder="¿Qué te pareció el sistema Think-to-Earn? ¿Qué mejorarías?" 
+                            <textarea
+                                id="t2e-opinion"
+                                placeholder="¿Qué te pareció el sistema Think-to-Earn? ¿Qué mejorarías?"
                                 rows="4"
                                 style="width: 100%; padding: 10px; margin-bottom: 10px; background: #0a0f14; border: 1px solid var(--color-primario); color: var(--color-texto); font-family: var(--fuente-parrafos); border-radius: 4px; resize: vertical;"
                             ></textarea>
-                            <button 
-                                id="submit-t2e-opinion" 
+                            <button
+                                id="submit-t2e-opinion"
                                 class="cta-button amarillo"
                             >
                                 DEJAR MI OPINIÓN T2E
@@ -1006,6 +1019,49 @@ btn.addEventListener('click', toggleMutePlay);
             
         </div>
         
+    </div>
+
+    <!-- MODAL DE APUESTAS T2E - SISTEMA MAKE YOUR BET -->
+    <div id="make-bet-modal" class="game-menu-hidden">
+        <div class="bet-modal-content caos-terminal">
+
+            <div class="terminal-header-caos" style="background-color: var(--color-primario); display: flex; justify-content: space-between; align-items: center;">
+                <span>[MAKE_YOUR_BET_TERMINAL]</span>
+                <button id="close-bet-modal" class="terminal-close-btn">✕</button>
+            </div>
+
+            <div class="terminal-body-caos" style="color: var(--color-texto);">
+                <h3 id="bet-modal-title" style="color: var(--color-primario); text-align: center;">CREAR APUESTA T2E: ARKA-HACK</h3>
+
+                <div class="form-group">
+                    <label for="bet-amount">1. DEFINE TU APUESTA (EL BOTE):</label>
+                    <input type="number" id="bet-amount" placeholder="Ej: 100" class="bet-input">
+                    <span class="bet-suffix">$RPPI</span>
+                </div>
+
+                <div class="form-group">
+                    <label>2. DEFINE EL LÍMITE DE TIEMPO:</label>
+                    <div class="button-group">
+                        <button class="bet-option-button" data-value="5">5 Min</button>
+                        <button class="bet-option-button" data-value="10">10 Min</button>
+                        <button class="bet-option-button" data-value="15">15 Min</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>3. DEFINE LÍMITE DE BOOSTS (INMUNIDAD):</label>
+                    <div class="button-group">
+                        <button class="bet-option-button" data-value="1">1 Boost</button>
+                        <button class="bet-option-button" data-value="3">3 Boosts</button>
+                        <button class="bet-option-button" data-value="5">5 Boosts (Límite Máx)</button>
+                    </div>
+                </div>
+
+                <button id="launch-bet-button" class="cta-button" style="width: 100%; background-color: var(--color-caos-verde); border-color: var(--color-caos-verde);">
+                    [ LANZAR DESAFÍO Y ESPERAR OPONENTE ]
+                </button>
+            </div>
+        </div>
     </div>
 
 <script>
@@ -2017,6 +2073,50 @@ btn.addEventListener('click', toggleMutePlay);
         }
         
     }); // <-- FIN DEL 'DOMContentLoaded'
+
+    // === SCRIPT 5: CONTROLADOR DEL MODAL "MAKE YOUR BET" ===
+    const betModal = document.getElementById('make-bet-modal');
+    const closeBetModalBtn = document.getElementById('close-bet-modal');
+    const betModalTitle = document.getElementById('bet-modal-title');
+
+    // Botones que abren el modal
+    const betArkaButton = document.getElementById('make-bet-arkahack');
+    const betSpaceButton = document.getElementById('make-bet-spacebreaker');
+
+    // Función para ABRIR el modal
+    function openBetModal(gameTitle) {
+        // 1. Conectar Billetera (¡El "hack"!)
+        // (¡Aquí Charly conectaría el script de MetaMask!)
+        // if (!wallet.isConnected()) { wallet.connect(); return; }
+
+        // 2. Personalizar y Mostrar
+        betModalTitle.textContent = "CREAR APUESTA T2E: " + gameTitle;
+        betModal.classList.remove('game-menu-hidden');
+        void betModal.offsetWidth;
+        betModal.style.opacity = '1';
+    }
+
+    // Función para CERRAR el modal
+    function closeBetModal() {
+        betModal.style.opacity = '0';
+        setTimeout(() => {
+            betModal.classList.add('game-menu-hidden');
+        }, 300); // 0.3s (el tiempo del transition CSS)
+    }
+
+    // Asignar los eventos
+    if (betModal && closeBetModalBtn && betArkaButton && betSpaceButton) {
+        betArkaButton.addEventListener('click', () => openBetModal('ARKA-HACK'));
+        betSpaceButton.addEventListener('click', () => openBetModal('SPACE-BREAKER'));
+        closeBetModalBtn.addEventListener('click', closeBetModal);
+
+        // Cerrar si hace clic afuera
+        betModal.addEventListener('click', function(e) {
+            if (e.target === betModal) {
+                closeBetModal();
+            }
+        });
+    }
 </script>
     <!-- Canvas Confetti library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
