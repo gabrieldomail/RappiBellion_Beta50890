@@ -1806,17 +1806,13 @@ btn.addEventListener('click', toggleMutePlay);
 
 
         // ========================================
-        // METAMASK WALLET CONNECTION
+        // METAMASK WALLET CONNECTION - FIXED
         // ========================================
-        
-        const connectWalletButton = document.getElementById('connect-wallet-button');
-        const walletStatus = document.getElementById('wallet-status');
-        const walletAddress = document.getElementById('wallet-address');
-        
-        // State variable to track connection
+
+        // State variables
         let isConnected = false;
         let currentAccount = null;
-        
+
         // Optimism Network Configuration
         const OPTIMISM_CHAIN_ID = '0xa'; // 10 in hex
         const OPTIMISM_NETWORK = {
@@ -1830,162 +1826,258 @@ btn.addEventListener('click', toggleMutePlay);
             rpcUrls: ['https://mainnet.optimism.io'],
             blockExplorerUrls: ['https://optimistic.etherscan.io']
         };
-        
+
+        // Get DOM elements
+        const connectWalletButton = document.getElementById('connect-wallet-button');
+        const walletStatus = document.getElementById('wallet-status');
+        const walletAddress = document.getElementById('wallet-address');
+
         // Check if wallet is already connected
         async function checkConnection() {
             if (typeof window.ethereum !== 'undefined') {
                 try {
+                    console.log('🔗 Verificando conexión existente...');
                     const accounts = await window.ethereum.request({ method: 'eth_accounts' });
                     if (accounts.length > 0) {
+                        console.log('✅ Cuenta encontrada:', accounts[0]);
                         currentAccount = accounts[0];
                         isConnected = true;
                         updateWalletUI(accounts[0]);
                         await checkNetwork();
+                    } else {
+                        console.log('❌ No hay cuentas conectadas');
                     }
                 } catch (error) {
-                    console.error('Error checking connection:', error);
+                    console.error('❌ Error checking connection:', error);
+                    walletStatus.textContent = '❌ Error al verificar conexión';
+                    walletStatus.style.color = '#ff4444';
                 }
+            } else {
+                console.log('⚠️ MetaMask no detectado');
+                walletStatus.textContent = '⚠️ MetaMask no detectado';
+                walletStatus.style.color = '#ffaa00';
             }
         }
-        
+
         // Disconnect wallet function
         function disconnectWallet() {
+            console.log('🔌 Desconectando billetera...');
             isConnected = false;
             currentAccount = null;
-            connectWalletButton.textContent = 'CONECTA TU BILLETERA PARA ENTRAR AL CIRCUITO';
-            connectWalletButton.style.backgroundColor = '';
-            walletStatus.textContent = '🔌 Billetera desconectada';
-            walletStatus.style.color = '#888';
-            walletAddress.textContent = '';
-            walletAddress.style.display = 'none';
-            
+            if (connectWalletButton) {
+                connectWalletButton.textContent = 'CONECTA TU BILLETERA PARA ENTRAR AL CIRCUITO';
+                connectWalletButton.style.backgroundColor = '';
+            }
+            if (walletStatus) {
+                walletStatus.textContent = '🔌 Billetera desconectada';
+                walletStatus.style.color = '#888';
+            }
+            if (walletAddress) {
+                walletAddress.textContent = '';
+                walletAddress.style.display = 'none';
+            }
+
             // Clear status message after 3 seconds
             setTimeout(() => {
-                walletStatus.textContent = '';
+                if (walletStatus) walletStatus.textContent = '';
             }, 3000);
         }
-        
+
         // Connect wallet function
         async function connectWallet() {
+            console.log('🔄 Iniciando conexión con MetaMask...');
+
             // Check if MetaMask is installed
             if (typeof window.ethereum === 'undefined') {
-                walletStatus.textContent = '⚠️ MetaMask no está instalado. Por favor instálalo desde metamask.io';
-                walletStatus.style.color = '#ff4444';
+                console.log('⚠️ MetaMask no está instalado');
+                if (walletStatus) {
+                    walletStatus.textContent = '⚠️ MetaMask no está instalado. Por favor instálalo desde metamask.io';
+                    walletStatus.style.color = '#ff4444';
+                }
                 window.open('https://metamask.io/download/', '_blank');
                 return;
             }
-            
+
             try {
-                walletStatus.textContent = '🔄 Conectando...';
-                walletStatus.style.color = 'var(--color-caos-amarillo)';
-                
+                if (walletStatus) {
+                    walletStatus.textContent = '🔄 Conectando...';
+                    walletStatus.style.color = 'var(--color-caos-amarillo)';
+                }
+
+                console.log('📡 Solicitando acceso a cuentas...');
                 // Request account access
-                const accounts = await window.ethereum.request({ 
-                    method: 'eth_requestAccounts' 
+                const accounts = await window.ethereum.request({
+                    method: 'eth_requestAccounts'
                 });
-                
+
+                console.log('✅ Cuentas obtenidas:', accounts);
+
                 if (accounts.length > 0) {
                     currentAccount = accounts[0];
                     isConnected = true;
                     updateWalletUI(accounts[0]);
                     await checkNetwork();
-                }
-                
-            } catch (error) {
-                console.error('Error connecting wallet:', error);
-                
-                if (error.code === 4001) {
-                    walletStatus.textContent = '❌ Conexión rechazada por el usuario';
+                    console.log('🎉 Conexión exitosa!');
                 } else {
-                    walletStatus.textContent = '❌ Error al conectar: ' + error.message;
+                    throw new Error('No accounts returned');
                 }
-                walletStatus.style.color = '#ff4444';
+
+            } catch (error) {
+                console.error('❌ Error connecting wallet:', error);
+
+                if (walletStatus) {
+                    if (error.code === 4001) {
+                        walletStatus.textContent = '❌ Conexión rechazada por el usuario';
+                    } else if (error.code === -32002) {
+                        walletStatus.textContent = '⏳ Solicitud pendiente en MetaMask';
+                    } else {
+                        walletStatus.textContent = '❌ Error al conectar: ' + (error.message || 'Error desconocido');
+                    }
+                    walletStatus.style.color = '#ff4444';
+                }
             }
         }
-        
+
         // Check and switch to Optimism network
         async function checkNetwork() {
+            if (!window.ethereum) return;
+
             try {
+                console.log('🌐 Verificando red...');
                 const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-                
+                console.log('📊 Chain ID actual:', chainId);
+
                 if (chainId !== OPTIMISM_CHAIN_ID) {
-                    walletStatus.textContent = '⚠️ Cambiando a red Optimism...';
-                    walletStatus.style.color = 'var(--color-caos-amarillo)';
-                    
+                    console.log('🔄 Cambiando a red Optimism...');
+                    if (walletStatus) {
+                        walletStatus.textContent = '⚠️ Cambiando a red Optimism...';
+                        walletStatus.style.color = 'var(--color-caos-amarillo)';
+                    }
+
                     try {
                         await window.ethereum.request({
                             method: 'wallet_switchEthereumChain',
                             params: [{ chainId: OPTIMISM_CHAIN_ID }],
                         });
-                        walletStatus.textContent = '✅ Conectado a Optimism';
-                        walletStatus.style.color = 'var(--color-caos-verde)';
+                        console.log('✅ Red cambiada exitosamente');
+                        if (walletStatus) {
+                            walletStatus.textContent = '✅ Conectado a Optimism';
+                            walletStatus.style.color = 'var(--color-caos-verde)';
+                        }
                     } catch (switchError) {
+                        console.log('❌ Error cambiando red:', switchError);
                         // This error code indicates that the chain has not been added to MetaMask
                         if (switchError.code === 4902) {
+                            console.log('📝 Agregando red Optimism...');
                             try {
                                 await window.ethereum.request({
                                     method: 'wallet_addEthereumChain',
                                     params: [OPTIMISM_NETWORK],
                                 });
-                                walletStatus.textContent = '✅ Conectado a Optimism';
-                                walletStatus.style.color = 'var(--color-caos-verde)';
+                                console.log('✅ Red Optimism agregada');
+                                if (walletStatus) {
+                                    walletStatus.textContent = '✅ Conectado a Optimism';
+                                    walletStatus.style.color = 'var(--color-caos-verde)';
+                                }
                             } catch (addError) {
-                                walletStatus.textContent = '❌ Error al agregar red Optimism';
-                                walletStatus.style.color = '#ff4444';
+                                console.error('❌ Error agregando red:', addError);
+                                if (walletStatus) {
+                                    walletStatus.textContent = '❌ Error al agregar red Optimism';
+                                    walletStatus.style.color = '#ff4444';
+                                }
                             }
                         } else {
-                            walletStatus.textContent = '❌ Error al cambiar de red';
-                            walletStatus.style.color = '#ff4444';
+                            if (walletStatus) {
+                                walletStatus.textContent = '❌ Error al cambiar de red';
+                                walletStatus.style.color = '#ff4444';
+                            }
                         }
                     }
                 } else {
-                    walletStatus.textContent = '✅ Conectado a Optimism';
-                    walletStatus.style.color = 'var(--color-caos-verde)';
+                    console.log('✅ Ya en red Optimism');
+                    if (walletStatus) {
+                        walletStatus.textContent = '✅ Conectado a Optimism';
+                        walletStatus.style.color = 'var(--color-caos-verde)';
+                    }
                 }
             } catch (error) {
-                console.error('Error checking network:', error);
+                console.error('❌ Error checking network:', error);
+                if (walletStatus) {
+                    walletStatus.textContent = '❌ Error al verificar red';
+                    walletStatus.style.color = '#ff4444';
+                }
             }
         }
-        
+
         // Update UI with wallet info
         function updateWalletUI(address) {
+            console.log('🎨 Actualizando UI con dirección:', address);
             const shortAddress = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
-            connectWalletButton.textContent = '🔗 BILLETERA CONECTADA (Clic para desconectar)';
-            connectWalletButton.style.backgroundColor = 'var(--color-caos-verde)';
-            walletAddress.textContent = `Dirección: ${shortAddress}`;
-            walletAddress.style.display = 'block';
+
+            if (connectWalletButton) {
+                connectWalletButton.textContent = '🔗 BILLETERA CONECTADA (Clic para desconectar)';
+                connectWalletButton.style.backgroundColor = 'var(--color-caos-verde)';
+            }
+
+            if (walletAddress) {
+                walletAddress.textContent = `Dirección: ${shortAddress}`;
+                walletAddress.style.display = 'block';
+            }
         }
-        
-        // Listen for account changes
-        if (typeof window.ethereum !== 'undefined') {
-            window.ethereum.on('accountsChanged', function (accounts) {
-                if (accounts.length > 0) {
-                    currentAccount = accounts[0];
-                    isConnected = true;
-                    updateWalletUI(accounts[0]);
-                    walletStatus.textContent = '✅ Cuenta cambiada';
-                    walletStatus.style.color = 'var(--color-caos-verde)';
-                } else {
-                    // User disconnected from MetaMask
+
+        // Setup MetaMask event listeners
+        function setupMetaMaskListeners() {
+            if (typeof window.ethereum !== 'undefined') {
+                console.log('👂 Configurando listeners de MetaMask...');
+
+                // Listen for account changes
+                window.ethereum.on('accountsChanged', function (accounts) {
+                    console.log('🔄 Cuentas cambiadas:', accounts);
+                    if (accounts.length > 0) {
+                        currentAccount = accounts[0];
+                        isConnected = true;
+                        updateWalletUI(accounts[0]);
+                        if (walletStatus) {
+                            walletStatus.textContent = '✅ Cuenta cambiada';
+                            walletStatus.style.color = 'var(--color-caos-verde)';
+                        }
+                    } else {
+                        // User disconnected from MetaMask
+                        disconnectWallet();
+                    }
+                });
+
+                // Listen for chain changes
+                window.ethereum.on('chainChanged', function (chainId) {
+                    console.log('🔄 Red cambiada:', chainId);
+                    // Reload the page when chain changes
+                    window.location.reload();
+                });
+
+                console.log('✅ Listeners configurados');
+            } else {
+                console.log('⚠️ MetaMask no disponible para listeners');
+            }
+        }
+
+        // Add click event to button with toggle functionality
+        if (connectWalletButton) {
+            connectWalletButton.addEventListener('click', function() {
+                console.log('🖱️ Botón clickeado, estado actual:', isConnected);
+                if (isConnected) {
                     disconnectWallet();
+                } else {
+                    connectWallet();
                 }
             });
-            
-            window.ethereum.on('chainChanged', function (chainId) {
-                window.location.reload();
-            });
+            console.log('✅ Event listener del botón configurado');
+        } else {
+            console.error('❌ Botón connectWalletButton no encontrado');
         }
-        
-        // Add click event to button with toggle functionality
-        connectWalletButton.addEventListener('click', function() {
-            if (isConnected) {
-                disconnectWallet();
-            } else {
-                connectWallet();
-            }
-        });
-        
-        // Check connection on page load
+
+        // Initialize wallet connection
+        console.log('🚀 Inicializando conexión de billetera...');
+        setupMetaMaskListeners();
         checkConnection();
 
 
