@@ -1988,9 +1988,156 @@ btn.addEventListener('click', toggleMutePlay);
 </script>
     <!-- Canvas Confetti library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Gemini Chat Widget (icono flotante personalizado) -->
+    <style>
+        #gemini-chat-widget { display: none; }
+        #gemini-chat-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 99999;
+            width: 56px;
+            height: 56px;
+            background: #ff8c00;
+            border-radius: 50%;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+        #gemini-chat-fab:hover {
+            background: #ffb366;
+            box-shadow: 0 6px 32px rgba(255, 140, 0, 0.5);
+            transform: scale(1.1);
+        }
+        #gemini-chat-fab img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+        }
+    </style>
+
+    <button id="gemini-chat-fab" title="Abrir chat Rappibellion">
+        <img src="images/rappia_logo_tokenomics.PNG" alt="Chat Rappibellion" />
+    </button>
+
+    <div id="gemini-chat-widget" style="position: fixed; bottom: 90px; right: 24px; z-index: 99999; width: 340px; max-width: 95vw; background: #181c24; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.6); padding: 0; display: flex; flex-direction: column; overflow: hidden; font-family: 'Roboto', sans-serif; border: 2px solid #ff8c00;">
+        <div style="background: linear-gradient(135deg, #ff8c00, #ffb366); padding: 12px 16px; color: #fff; font-weight: bold; display: flex; align-items: center; justify-content: space-between;">
+            <span>🤖 Chat Rappibellion</span>
+            <button id="gemini-chat-close" style="background: none; border: none; color: #fff; font-size: 1.2em; cursor: pointer; padding: 0; width: 24px; height: 24px;">✕</button>
+        </div>
+        <div id="gemini-chat-messages" style="flex: 1; min-height: 200px; max-height: 350px; overflow-y: auto; padding: 12px; background: #181c24; color: #fff; font-size: 0.95em; display: flex; flex-direction: column; gap: 8px;"></div>
+        <form id="gemini-chat-form" style="display: flex; border-top: 1px solid #ff8c00; background: #23283a;">
+            <input id="gemini-chat-input" type="text" placeholder="Escribe tu pregunta..." autocomplete="off" style="flex: 1; padding: 10px 12px; border: none; background: #23283a; color: #fff; font-size: 0.95em; outline: none;">
+            <button type="submit" style="background: #ff8c00; color: #fff; border: none; padding: 0 18px; font-size: 0.95em; cursor: pointer; transition: background 0.2s;">Enviar</button>
+        </form>
+    </div>
 </body>
+
 <script>
-// Controlador del botón flotante de zorzal para música
+(function() {
+    const widget = document.getElementById('gemini-chat-widget');
+    const fab = document.getElementById('gemini-chat-fab');
+    const closeBtn = document.getElementById('gemini-chat-close');
+    const form = document.getElementById('gemini-chat-form');
+    const input = document.getElementById('gemini-chat-input');
+    const messages = document.getElementById('gemini-chat-messages');
+
+    const GEMINI_API_KEY = 'AIzaSyAni38kcQ1EYBK1ZXGDZhZgilAKdxB6AKY';
+    const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+
+    fab.onclick = () => {
+        widget.style.display = 'flex';
+        fab.style.display = 'none';
+        input.focus();
+    };
+
+    closeBtn.onclick = () => {
+        widget.style.display = 'none';
+        fab.style.display = 'flex';
+    };
+
+    function addMessage(text, from) {
+        const msg = document.createElement('div');
+        msg.style.display = 'flex';
+        msg.style.justifyContent = from === 'user' ? 'flex-end' : 'flex-start';
+        msg.style.marginBottom = '8px';
+
+        const bubble = document.createElement('span');
+        bubble.style.cssText = `
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 12px;
+            max-width: 85%;
+            word-wrap: break-word;
+            background: ${from === 'user' ? '#ff8c00' : '#23283a'};
+            color: #fff;
+            border: ${from === 'user' ? '1px solid #ffb366' : '1px solid #ff8c00'};
+        `;
+        bubble.textContent = text;
+        msg.appendChild(bubble);
+        messages.appendChild(msg);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const text = input.value.trim();
+        if (!text) return;
+
+        addMessage(text, 'user');
+        input.value = '';
+        addMessage('Pensando...', 'bot');
+
+        try {
+            const systemPrompt = `Eres el asistente oficial de Rappibellion, un ecosistema y juego basado en el modelo Think-to-Earn (T2E) y el token $RPPI. Responde siempre como experto en el proyecto, usando la siguiente información:
+
+- Rappibellion es un juego RPG cyberpunk de mundo abierto, donde los jugadores compiten en mini-juegos arcade (Space Invaders, Arkanoid, Pac-Man) y apuestan $RPPI en duelos PvP ("El Circuito"). La habilidad y la estrategia prevalecen sobre el dinero.
+- $RPPI es un activo digital de utilidad y gobernanza, emitido por BIts Lab SAS, con suministro fijo de 150,000,000 tokens en la red Optimism (OP Mainnet).
+- El modelo económico es anti-inflacionario, rechaza el "pay-to-win" y el "grind" aburrido.
+- Si no sabes la respuesta, invita a consultar el whitepaper oficial o el Discord en https://discord.gg/3zBrPVn7`;
+
+            const response = await fetch(
+                `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [
+                            { role: 'user', parts: [{ text: systemPrompt }] },
+                            { role: 'user', parts: [{ text: text }] }
+                        ]
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error?.message || 'Error en la API');
+            }
+
+            const geminiReply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sin respuesta de Gemini.';
+            messages.lastChild.remove();
+            addMessage(geminiReply, 'bot');
+
+        } catch (err) {
+            console.error('Error:', err);
+            messages.lastChild.remove();
+            addMessage('Error al conectar con Gemini. Intenta de nuevo.', 'bot');
+        }
+    };
+})();
+</script>
+
+<!-- Controlador del botón flotante de zorzal para música -->
+<script>
 document.addEventListener('DOMContentLoaded', function() {
     const musicFloatBtn = document.getElementById('music-float-btn');
     const tangoAudio = document.getElementById('tango-audio');
@@ -2019,7 +2166,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-</body>
 
+</body>
 
 </html>
