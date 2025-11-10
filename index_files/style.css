@@ -1,0 +1,2861 @@
+#mute-play-btn img,
+#mute-play-btn span {
+    pointer-events: none;
+    user-select: none;
+}
+/* Forzar el botón mute/play de Gardel al frente de todo, incluso sobre overlays y modales */
+#mute-play-btn {
+    z-index: 2147483647 !important;
+    position: fixed !important;
+    right: 24px;
+    bottom: 24px;
+    top: auto;
+    left: auto;
+    width: 56px;
+    height: 56px;
+    background: transparent !important;
+    border: none !important;
+    pointer-events: auto !important;
+}
+/* === Botón flotante de música: zorzal === */
+.music-float-btn {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 2147483647;
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 2.5rem;
+    transition: filter 0.2s;
+}
+.music-float-btn:focus { outline: none; }
+.music-float-btn #music-icon {
+    transition: filter 0.2s, color 0.2s;
+}
+.music-float-btn.paused #music-icon {
+    filter: grayscale(1) brightness(0.7);
+}
+.music-float-btn.playing #music-icon {
+    filter: none;
+}
+@media (max-width: 600px) {
+    .music-float-btn {
+        right: 12px;
+        bottom: 12px;
+        width: 44px;
+        height: 44px;
+        font-size: 2rem;
+    }
+}
+/* --- LOGO RESPONSIVE --- */
+.logo-mobile {
+    display: none !important;
+}
+.logo-desktop {
+    display: block !important;
+}
+@media (max-width: 600px) {
+    .logo-mobile {
+        display: block !important;
+    max-width: 134vw;
+        height: auto;
+        margin: 12px auto 12px auto; /* Espacio arriba y abajo reducido (antes 16px, ahora 12px, ajusta según lo que veas) */
+    }
+    .logo-desktop {
+        display: none !important;
+    }
+        /* Ajustar el espacio arriba del logo móvil */
+        .hero-v2-title {
+            margin-bottom: 18px !important; /* Reducido un 25% si antes era 24px */
+        }
+        /* Ajustar el espacio abajo del logo móvil y arriba del botón */
+        .logo-mobile + a.hero-button {
+            margin-top: 12px !important; /* Reducido un 25% si antes era 16px */
+        }
+}
+/* Mostrar solo el logo móvil en pantallas pequeñas */
+.logo-mobile {
+    display: none;
+}
+.logo-desktop {
+    display: block;
+}
+@media (max-width: 600px) {
+    .logo-mobile {
+        display: block;
+    max-width: 134vw;
+        height: auto;
+        margin: 0 auto;
+    }
+    .logo-desktop {
+        display: none;
+    }
+}
+/* --- Variables Globales de Marca --- */
+:root {
+    --color-primario: #FF3C5E; /* Bellion medio rojizo */
+    --color-fondo: #0B0C10;     
+    --color-texto: #f0f0f0;     
+    --color-azul-glitch: #00FFFF; /* Azul Glitch */
+    
+    /* === AÑADIR ESTA NUEVA PALETA === */
+    --color-caos-amarillo: #F8FF2B; /* Amarillo Lima (Edgerunners) */
+    --color-caos-rosa: #FF00FF;   /* Rosa Fucsia/Neón */
+    --color-caos-verde: #00FF00;   /* Verde Flúor (Ruido) */
+    --fuente-titulos: 'Orbitron', sans-serif;
+    --fuente-cuerpo: 'Roboto', sans-serif;
+}
+/* --- Reseteo Básico --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: var(--fuente-cuerpo);
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    scroll-behavior: auto; /* Cambiado de smooth a auto para evitar comportamiento extraño */
+    line-height: 1.6;
+    overflow-x: hidden; /* Evita scroll horizontal */
+
+    /* === CORRECCIÓN: Scanlines dentro de las llaves === */
+    background-image: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.03) 1px, /* La línea es blanca con solo 3% de opacidad */
+        transparent 8px /* Ajustado para el nuevo tamaño */
+    );
+    background-size: 100% 10px; /* Ajustado el patrón */
+    /* animation: scanline 3s linear infinite; */ /* DESACTIVADO - causaba problemas de scroll */
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto; /* Esto centra el contenido */
+    padding: 40px 20px;
+    text-align: center;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--fuente-titulos);
+    color: var(--color-primario);
+    text-transform: uppercase;
+}
+
+p {
+    font-size: 1.1em;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+a {
+    color: var(--color-primario);
+    text-decoration: none;
+}
+
+/* === SEPARADORES HORIZONTALES AGRESIVOS ENTRE SECCIONES === */
+.section-separator {
+    position: relative;
+    padding-bottom: 80px;
+}
+
+.section-separator::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(
+        to right,
+        var(--color-caos-rosa) 0%,
+        var(--color-azul-glitch) 25%,
+        var(--color-caos-verde) 50%,
+        var(--color-caos-amarillo) 75%,
+        var(--color-caos-rosa) 100%
+    );
+    box-shadow: 
+        0 0 15px currentColor,
+        0 0 30px currentColor,
+        0 0 45px currentColor;
+    animation: horizontalSeparatorPulse 2s ease-in-out infinite;
+    z-index: 99999; /* Al frente de absolutamente todo */
+    background: transparent;
+    pointer-events: none;
+}
+
+@keyframes horizontalSeparatorPulse {
+    0%, 100% {
+        opacity: 0.7;
+        transform: scaleX(1);
+        filter: blur(0px);
+    }
+    50% {
+        opacity: 1;
+        transform: scaleX(1.02);
+        filter: blur(1px);
+    }
+}
+
+/* --- 1. Sección HÉROE (VERSIÓN ANTIGUA - DESHABILITADA) --- */
+/* Estos estilos fueron reemplazados por hero-v2 */
+/*
+#hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    color: white;
+    background-size: cover;
+    background-position: center;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#hero .logo-principal {
+    max-width: 153%;
+    max-height: 43vh;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+#hero h1 {
+    font-size: 2.0em;
+    margin: 1.5em 0;
+    color: white;
+    max-width: 1200px;
+}
+
+#hero p {
+    font-size: 1.5em;
+    font-family: var(--fuente-titulos);
+    max-width: 900px;
+}
+*/
+
+.cta-button {
+    display: inline-block;
+    background-color: var(--color-primario);
+    color: var(--color-fondo);
+    padding: 15px 30px;
+    margin-top: 20px;
+    font-family: var(--fuente-titulos);
+    font-size: 1.2em;
+    font-weight: bold;
+    text-decoration: none;
+    border: 2px solid var(--color-primario);
+    transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: transparent;
+    color: var(--color-primario);
+}
+
+
+
+/* --- 4. Sección MUNDO --- */
+#world .cover-image {
+    width: 100%;
+    max-width: 960px;
+    margin-top: 36px;
+    border: 3px solid var(--color-primario);
+    display: block; /* Asegura que se centre con margin auto */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- 5. Sección CTA (Discord) --- */
+#cta {
+    background-color: #111;
+    border-top: 2px solid var(--color-primario);
+    border-bottom: 2px solid var(--color-primario);
+}
+
+.cta-button.discord {
+    background-color: var(--color-caos-verde);
+    border-color: var(--color-caos-verde);
+    color: var(--color-fondo); /* Texto negro cuando NO está hover */
+}
+
+.cta-button.discord:hover {
+    background-color: transparent;
+    color: var(--color-caos-verde);
+}
+
+.cta-button.amarillo {
+    background-color: var(--color-caos-amarillo);
+    border-color: var(--color-caos-amarillo);
+    color: var(--color-fondo); /* Texto negro cuando NO está hover */
+}
+
+.cta-button.amarillo:hover {
+    background-color: transparent;
+    color: var(--color-caos-amarillo);
+}
+
+.small-text {
+    font-size: 0.9em;
+    color: #aaa;
+    margin-top: 15px;
+}
+
+/* --- 6. Footer --- */
+footer {
+    text-align: center;
+    padding: 30px;
+    margin-top: 20px;
+    background-color: #050505;
+    font-size: 0.9em;
+    color: #777;
+}
+
+footer a {
+    color: #aaa;
+}
+/* --- Efecto Hover para Imágenes --- */
+.cover-image:hover {
+    transform: scale(1.03);
+    transition: transform 0.3s ease-in-out;
+}
+/* --- Efecto Glitch para Títulos --- */
+@keyframes glitch{
+  0% { text-shadow: .05em 0 0 rgba(255,0,0,.75), -.05em 0 0 rgba(0,255,0,.75), 0 0 .05em rgba(0,0,255,.75); }
+  14% { text-shadow: .05em 0 0 rgba(255,0,0,.75), -.05em 0 0 rgba(0,255,0,.75), 0 0 .05em rgba(0,0,255,.75); }
+  15% { text-shadow: -.05em 0 0 rgba(255,0,0,.75), .025em 0 0 rgba(0,255,0,.75), 0 0 .025em rgba(0,0,255,.75); }
+  16% { text-shadow: .025em 0 0 rgba(255,0,0,.75), .05em 0 0 rgba(0,255,0,.75), 0 0 .05em rgba(0,0,255,.75); }
+  17% { text-shadow: .05em 0 0 rgba(255,0,0,.75), -.05em 0 0 rgba(0,255,0,.75), 0 0 .05em rgba(0,0,255,.75); }
+  100% { text-shadow: .05em 0 0 rgba(255,0,0,.75), -.05em 0 0 rgba(0,255,0,.75), 0 0 .05em rgba(0,0,255,.75); }
+}
+
+
+/* --- NUEVA SECCIÓN: EQUIPO --- */
+.team-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+.team-member {
+    /* === CAMBIO: Sin fondo, con barras laterales === */
+    background-color: transparent;
+    padding: 20px;
+    width: 250px;
+    /* === CAMBIO: Texto Blanco === */
+    color: var(--color-texto);
+    text-align: center; /* Aseguramos centrado del texto */
+    
+    /* === LÍNEAS: Barras laterales === */
+    border-left: 5px solid var(--color-azul-glitch); /* Barra izquierda azul */
+    border-right: 5px solid var(--color-primario); /* Barra derecha del color primario */
+    
+    /* === Transición suave al hover === */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* === CAMBIO: Color específico para los títulos dentro === */
+.team-member h4 {
+    color: var(--color-texto); /* Título en blanco */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* Sutil brillo */
+    margin-bottom: 10px;
+}
+
+/* === CAMBIO: Color específico para los párrafos dentro === */
+.team-member p {
+    color: var(--color-texto); /* Párrafo en blanco */
+    font-size: 0.9em;
+    opacity: 0.9; /* Sutilmente más tenue que el título */
+}
+
+/* Animación para el texto "...SEARCHING..." */
+.searching-text {
+    display: inline-block;
+    color: var(--color-caos-amarillo);
+    animation: searchingGlitch 2s infinite;
+    text-shadow: 
+        0 0 5px var(--color-caos-amarillo),
+        0 0 10px var(--color-caos-amarillo),
+        0 0 20px var(--color-caos-amarillo);
+}
+
+@keyframes searchingGlitch {
+    0%, 100% {
+        opacity: 1;
+        transform: translateX(0);
+        filter: blur(0px);
+    }
+    10% {
+        opacity: 0.3;
+        transform: translateX(-2px);
+        filter: blur(1px);
+    }
+    20% {
+        opacity: 1;
+        transform: translateX(2px);
+        filter: blur(0px);
+    }
+    30% {
+        opacity: 0.7;
+        transform: translateX(-1px);
+    }
+    40%, 90% {
+        opacity: 1;
+        transform: translateX(0);
+        filter: blur(0px);
+    }
+    95% {
+        opacity: 0.5;
+        transform: translateX(1px);
+        filter: blur(0.5px);
+    }
+}
+
+/* Terminal "Searching" con efectos T2E (grid + scanlines) */
+.terminal-searching {
+    position: relative;
+    overflow: hidden;
+    background: #050a0f; /* Fondo oscuro base */
+}
+
+/* Grid cyberpunk cyan (intensidad media) */
+.terminal-searching::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.15) 1px, transparent 1px);
+    background-size: 20px 20px; /* Grid de tamaño medio */
+    animation: gridPulseAggressive 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Scanlines horizontales (MÁXIMA INTENSIDAD) */
+.terminal-searching::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.7), /* OPACIDAD MÁXIMA - 70% */
+        rgba(0, 0, 0, 0.7) 4px, /* Líneas MÁS GRUESAS */
+        transparent 4px,
+        transparent 5px /* Espaciado mínimo */
+    );
+    pointer-events: none;
+    animation: scanlineAggressive 3s linear infinite; /* MÁS RÁPIDO - 3s en vez de 6s */
+    z-index: 100; /* AL FRENTE DE TODO - por encima del contenido */
+}
+
+/* Asegurar que el contenido esté por encima de los efectos */
+.terminal-searching .terminal-header-mini,
+.terminal-searching .terminal-body-mini {
+    position: relative;
+    z-index: 5; /* Debajo del scanline ahora */
+}
+
+/* --- Estilos para el Botón Falso y Terminal --- */
+#fake-hack-button {
+    background-color: var(--color-azul-glitch);
+    color: var(--color-fondo);
+    border-color: var(--color-azul-glitch);
+    font-size: 1em; /* Un poco más pequeño que el botón principal */
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+#fake-hack-button:hover {
+    background-color: transparent;
+    color: var(--color-azul-glitch);
+}
+
+/* Hacer que el botón COMENZAR use el mismo estilo que INICIAR HACKEO */
+#start-beta-button {
+    background-color: var(--color-azul-glitch);
+    color: var(--color-fondo);
+    border-color: var(--color-azul-glitch);
+    font-size: 1em;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+#start-beta-button:hover {
+    background-color: transparent;
+    color: var(--color-azul-glitch);
+}
+
+/* === CORRECCIÓN: Clase para ocultar la terminal === */
+.terminal-hidden {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#hack-terminal {
+    width: 90%;
+    max-width: 600px;
+    margin: 30px auto 0 auto;
+    border: 2px solid var(--color-azul-glitch);
+    background-color: #050a0f; /* Un fondo de terminal oscuro */
+    border-radius: 5px;
+    box-shadow: 0 0 15px var(--color-azul-glitch); /* Efecto de glow más fuerte */
+    text-align: left;
+    font-family: 'Courier New', Courier, monospace; /* Fuente de programador */
+    transition: opacity 0.5s ease-in-out, box-shadow 0.3s ease; /* Transiciones suaves */
+}
+
+/* Efecto highlight cuando se muestra */
+#hack-terminal:not(.terminal-hidden) {
+    animation: terminalPulse 2s ease-in-out;
+}
+
+@keyframes terminalPulse {
+    0%, 100% { box-shadow: 0 0 15px var(--color-azul-glitch); }
+    50% { box-shadow: 0 0 25px var(--color-azul-glitch), 0 0 35px rgba(0,255,255,0.5); }
+}
+
+#terminal-header {
+    background-color: var(--color-azul-glitch);
+    color: var(--color-fondo);
+    padding: 5px 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85em; /* Tamaño consistente con caos-terminal */
+}
+
+#terminal-close {
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+}
+
+#terminal-close:hover {
+    transform: scale(1.2);
+    color: #ff0000;
+}
+
+#terminal-body {
+    padding: 20px; /* Padding aumentado para mejor legibilidad */
+    height: 200px;
+    overflow-y: auto;
+    line-height: 1.6; /* Mejora la legibilidad */
+}
+
+/* Efecto de cursor parpadeante para el typewriter del hack terminal */
+#hack-typewriter-text::after {
+    content: '█'; /* El caracter del cursor */
+    animation: hackBlink 1s step-end infinite;
+}
+
+@keyframes hackBlink {
+    from, to { color: transparent; }
+    50% { color: var(--color-azul-glitch); } /* Color del cursor en azul */
+}
+
+#terminal-body p {
+    margin: 0 0 5px 0;
+    font-size: 1em;
+    max-width: 100%;
+    animation: fadeIn 0.3s ease-in; /* Efecto de aparición suave */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#terminal-body .error {
+    color: var(--color-primario); /* Naranja/Rojo para el error */
+    font-weight: bold;
+}
+
+/* --- ESTILOS HOLOGRÁFICOS (NUEVO) --- */
+
+/* La animación scanline ya está en el body ahora */
+@keyframes scanline {
+    from { background-position-y: 0; }
+    to { background-position-y: 100px; }
+}
+
+
+/* 2. Títulos de Sección con Neon Azul (Holograma) */
+/* Reusable glitch title class */
+.glitch-title {
+    animation: glitch 1s linear infinite;
+    text-shadow: 0 0 4px #fff,
+                 0 0 8px #fff,
+                 0 0 12px var(--color-azul-glitch),
+                 0 0 16px var(--color-azul-glitch);
+}
+
+/* Efecto glitch cyan específico para "EL CIRCUITO" */
+.circuit-glitch {
+    color: var(--color-texto) !important; /* Blanco como base */
+    animation: glitchCyan 1s linear infinite !important; /* Mismo efecto que T2E */
+}
+
+/* 3. Mantenemos el Glitch para "T2E" */
+/* El #concept h2 animation: glitch ya está definido */
+
+
+/* ============================================
+   SECCIÓN T2E REDISEÑADA - ESPECTACULAR
+   ============================================ */
+
+.t2e-section {
+    position: relative;
+    min-height: 100vh;
+    padding: 100px 20px;
+    background: #000000; /* Fondo negro puro */
+    overflow: visible; /* Cambiado de hidden a visible para mostrar el separador */
+}
+
+/* Fondo con imagen difuminada (igual que hero) */
+.t2e-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('image (18).jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(5px); /* Más blur para más agresividad */
+    z-index: 1;
+}
+
+/* Grid cyberpunk SUPER agresivo y grande */
+.t2e-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.25) 2px, transparent 2px), /* Líneas más gruesas y visibles */
+        linear-gradient(90deg, rgba(0, 255, 255, 0.25) 2px, transparent 2px);
+    background-size: 12px 12px; /* Grid mucho más pequeño - 15% del tamaño anterior */
+    animation: gridPulseAggressive 2s ease-in-out infinite; /* Más rápido */
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Scanlines agresivas EN EL FRENTE - verdadero caos cyberpunk */
+.t2e-matrix-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.3), /* Más oscuras */
+        rgba(0, 0, 0, 0.3) 2px,
+        transparent 2px,
+        transparent 3px
+    );
+    pointer-events: none;
+    animation: scanlineAggressive 6s linear infinite; /* Más rápido */
+    z-index: 10; /* AL FRENTE - sobre todo el contenido */
+}
+
+/* Animación de grid agresiva */
+@keyframes gridPulseAggressive {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; } /* Mucho más visible */
+}
+
+/* Animación de scanlines agresiva */
+@keyframes scanlineAggressive {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(15px); } /* Más movimiento */
+}
+
+/* Contenedor principal */
+.t2e-container {
+    position: relative;
+    z-index: 4; /* Por encima de imagen y grid, pero DEBAJO de scanlines */
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header de la sección */
+.t2e-header {
+    text-align: center;
+    margin-bottom: 80px;
+    animation: fadeInDown 1s ease-out;
+}
+
+.t2e-subtitle {
+    display: block;
+    font-size: 0.9em;
+    color: var(--color-texto); /* Blanco/texto claro como base */
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+    /* Efectos glitch copiados */
+    animation: glitchCyan 1s linear infinite;
+}
+
+.t2e-main-title {
+    font-size: 3em;
+    color: var(--color-texto); /* Blanco/texto claro como base */
+    /* Efectos glitch copiados */
+    animation: glitchCyan 1s linear infinite;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+}
+
+/* Animación glitch personalizada con brillo cyan */
+@keyframes glitchCyan {
+  0% { 
+    text-shadow: 
+        .05em 0 0 rgba(255,0,0,.75), 
+        -.05em 0 0 rgba(0,255,0,.75), 
+        0 0 .05em rgba(0,0,255,.75),
+        0 0 4px #fff,
+        0 0 8px #fff,
+        0 0 12px var(--color-azul-glitch),
+        0 0 16px var(--color-azul-glitch);
+  }
+  14% { 
+    text-shadow: 
+        .05em 0 0 rgba(255,0,0,.75), 
+        -.05em 0 0 rgba(0,255,0,.75), 
+        0 0 .05em rgba(0,0,255,.75),
+        0 0 4px #fff,
+        0 0 8px #fff,
+        0 0 12px var(--color-azul-glitch),
+        0 0 16px var(--color-azul-glitch);
+  }
+  15% { 
+    text-shadow: 
+        -.05em 0 0 rgba(255,0,0,.75), 
+        .025em 0 0 rgba(0,255,0,.75), 
+        0 0 .025em rgba(0,0,255,.75),
+        0 0 4px #fff,
+        0 0 8px #fff,
+        0 0 12px var(--color-azul-glitch),
+        0 0 16px var(--color-azul-glitch);
+  }
+  16% { 
+    text-shadow: 
+        .025em 0 0 rgba(255,0,0,.75), 
+        .05em 0 0 rgba(0,255,0,.75), 
+        0 0 .05em rgba(0,0,255,.75),
+        0 0 4px #fff,
+        0 0 8px #fff,
+        0 0 12px var(--color-azul-glitch),
+        0 0 16px var(--color-azul-glitch);
+  }
+  17% { 
+    text-shadow: 
+        .05em 0 0 rgba(255,0,0,.75), 
+        -.05em 0 0 rgba(0,255,0,.75), 
+        0 0 .05em rgba(0,0,255,.75),
+        0 0 4px #fff,
+        0 0 8px #fff,
+        0 0 12px var(--color-azul-glitch),
+        0 0 16px var(--color-azul-glitch);
+  }
+  100% { 
+    text-shadow: 
+        .05em 0 0 rgba(255,0,0,.75), 
+        -.05em 0 0 rgba(0,255,0,.75), 
+        0 0 .05em rgba(0,0,255,.75),
+        0 0 4px #fff,
+        0 0 8px #fff,
+        0 0 12px var(--color-azul-glitch),
+        0 0 16px var(--color-azul-glitch);
+  }
+}
+
+.t2e-intro {
+    font-size: 1.3em;
+    color: var(--color-texto);
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-family: 'Courier New', Courier, monospace; /* Tipografía de terminal */
+}
+
+.highlight-token {
+    color: var(--color-caos-amarillo);
+    font-weight: bold;
+    text-shadow: 0 0 10px var(--color-caos-amarillo);
+    font-size: 1.2em;
+}
+
+/* Grid de tarjetas de inteligencia */
+.intelligence-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-bottom: 80px;
+    position: relative;
+}
+
+@media (min-width: 768px) {
+    .intelligence-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 50px;
+    }
+    
+    /* Línea separadora vertical AGRESIVA entre columnas */
+    .intelligence-grid::before {
+        content: '';
+        position: absolute;
+        left: 33.33%;
+        top: 0;
+        bottom: 0;
+        width: 3px; /* Más gruesa que hero */
+        background: linear-gradient(
+            to bottom,
+            transparent,
+            var(--color-caos-rosa) 20%,
+            var(--color-azul-glitch) 50%,
+            var(--color-caos-verde) 80%,
+            transparent
+        );
+        box-shadow: 
+            0 0 10px var(--color-azul-glitch),
+            0 0 20px var(--color-azul-glitch),
+            0 0 30px var(--color-azul-glitch);
+        animation: separatorPulseAggressive 2s ease-in-out infinite;
+        z-index: 1;
+    }
+    
+    /* Segunda línea separadora entre columnas 2 y 3 */
+    .intelligence-grid::after {
+        content: '';
+        position: absolute;
+        left: 66.66%;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: linear-gradient(
+            to bottom,
+            transparent,
+            var(--color-caos-verde) 20%,
+            var(--color-caos-amarillo) 50%,
+            var(--color-caos-rosa) 80%,
+            transparent
+        );
+        box-shadow: 
+            0 0 10px var(--color-caos-amarillo),
+            0 0 20px var(--color-caos-amarillo),
+            0 0 30px var(--color-caos-amarillo);
+        animation: separatorPulseAggressive 2s ease-in-out infinite 1s; /* Delay de 1s */
+        z-index: 1;
+    }
+}
+
+/* Animación de pulso AGRESIVO para separadores */
+@keyframes separatorPulseAggressive {
+    0%, 100% { 
+        opacity: 0.6;
+        transform: scaleY(1);
+    }
+    50% { 
+        opacity: 1;
+        transform: scaleY(1.05);
+    }
+}
+
+/* Tarjetas 3D interactivas */
+.intel-card {
+    position: relative;
+    background: transparent; /* Transparente total para lucir efectos de fondo */
+    border-radius: 0; /* Sin bordes redondeados - estilo cuadrado */
+    overflow: hidden;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    animation: fadeInUp 0.8s ease-out backwards;
+    backdrop-filter: none; /* Sin blur para máxima transparencia */
+    border: 2px solid transparent;
+}
+
+.intel-card:nth-child(1) { animation-delay: 0.2s; }
+.intel-card:nth-child(2) { animation-delay: 0.4s; }
+.intel-card:nth-child(3) { animation-delay: 0.6s; }
+
+.intel-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    background-color: rgba(0, 0, 0, 0.75); /* Fondo oscuro para mejor legibilidad */
+}
+
+/* Colores específicos para cada tarjeta */
+.card-skill {
+    border-color: var(--color-caos-verde);
+}
+
+.card-skill:hover {
+    background-color: rgba(0, 0, 0, 0.75); /* Fondo oscuro para mejor legibilidad */
+    box-shadow: 
+        0 0 30px rgba(0, 255, 0, 0.5),
+        0 0 60px rgba(0, 255, 0, 0.3),
+        inset 0 0 30px rgba(0, 255, 0, 0.1);
+}
+
+.card-strategy {
+    border-color: var(--color-caos-amarillo);
+}
+
+.card-strategy:hover {
+    background-color: rgba(0, 0, 0, 0.75); /* Fondo oscuro para mejor legibilidad */
+    box-shadow: 
+        0 0 30px rgba(248, 255, 43, 0.5),
+        0 0 60px rgba(248, 255, 43, 0.3),
+        inset 0 0 30px rgba(248, 255, 43, 0.1);
+}
+
+.card-investment {
+    border-color: var(--color-caos-rosa);
+}
+
+.card-investment:hover {
+    background-color: rgba(0, 0, 0, 0.75); /* Fondo oscuro para mejor legibilidad */
+    box-shadow: 
+        0 0 30px rgba(255, 0, 255, 0.5),
+        0 0 60px rgba(255, 0, 255, 0.3),
+        inset 0 0 30px rgba(255, 0, 255, 0.1);
+}
+
+/* Efecto de brillo en las tarjetas */
+.card-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+
+.intel-card:hover .card-glow {
+    opacity: 1;
+    animation: rotateGlow 3s linear infinite;
+}
+
+@keyframes rotateGlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Contenido de las tarjetas */
+.card-inner {
+    padding: 40px 30px;
+    position: relative;
+    z-index: 2;
+}
+
+.card-icon {
+    font-size: 2.5em; /* Reducido para símbolos ASCII */
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: 'Courier New', Courier, monospace; /* Fuente monoespaciada punk */
+    font-weight: bold;
+    letter-spacing: 2px;
+    animation: iconGlitchDistort 0.5s infinite; /* Glitch rápido y agresivo */
+    transform: rotate(-2deg); /* Ligeramente inclinado - "roto" */
+}
+
+.card-skill .card-icon { 
+    color: var(--color-caos-verde);
+    text-shadow: 
+        2px 2px 0px rgba(0, 0, 0, 0.8),
+        -1px -1px 0px var(--color-caos-verde),
+        0 0 10px var(--color-caos-verde),
+        0 0 20px var(--color-caos-verde);
+}
+
+.card-strategy .card-icon { 
+    color: var(--color-caos-amarillo);
+    text-shadow: 
+        2px 2px 0px rgba(0, 0, 0, 0.8),
+        -1px -1px 0px var(--color-caos-amarillo),
+        0 0 10px var(--color-caos-amarillo),
+        0 0 20px var(--color-caos-amarillo);
+}
+
+.card-investment .card-icon { 
+    color: var(--color-caos-rosa);
+    text-shadow: 
+        2px 2px 0px rgba(0, 0, 0, 0.8),
+        -1px -1px 0px var(--color-caos-rosa),
+        0 0 10px var(--color-caos-rosa),
+        0 0 20px var(--color-caos-rosa);
+}
+
+/* Animación glitch distorsionada para los iconos */
+@keyframes iconGlitchDistort {
+    0%, 100% { 
+        transform: rotate(-2deg) translate(0, 0);
+        filter: none;
+    }
+    10% { 
+        transform: rotate(-2deg) translate(-2px, 2px);
+        filter: hue-rotate(90deg);
+    }
+    20% { 
+        transform: rotate(-2deg) translate(2px, -2px);
+        filter: none;
+    }
+    30% { 
+        transform: rotate(-2deg) translate(-1px, -1px);
+        filter: contrast(150%);
+    }
+    40% { 
+        transform: rotate(-2deg) translate(1px, 1px);
+        filter: none;
+    }
+    50% { 
+        transform: rotate(-2deg) translate(0, 0) scaleX(-1); /* Flip horizontal */
+        filter: invert(0.1);
+    }
+    60% { 
+        transform: rotate(-2deg) translate(0, 0);
+        filter: none;
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(-2deg); }
+    50% { transform: translateY(-10px) rotate(-2deg); }
+}
+
+.card-title {
+    font-size: 2em;
+    text-align: center;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+    font-family: var(--fuente-titulos);
+    color: var(--color-texto) !important; /* Blanco como base */
+    animation: glitchCyan 1s linear infinite !important; /* Efecto glitch cyan */
+}
+
+.card-subtitle {
+    text-align: center;
+    font-size: 0.9em;
+    color: var(--color-azul-glitch);
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-content {
+    margin-bottom: 25px;
+    line-height: 1.8;
+    color: var(--color-texto);
+    font-size: 1.05em;
+    font-family: 'Courier New', Courier, monospace; /* Tipografía de terminal */
+}
+
+.card-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 0; /* Sin bordes redondeados */
+    border-left: 3px solid;
+}
+
+.card-skill .card-stat { border-left-color: var(--color-caos-verde); }
+.card-strategy .card-stat { border-left-color: var(--color-caos-amarillo); }
+.card-investment .card-stat { border-left-color: var(--color-caos-rosa); }
+
+.stat-label {
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 2px;
+}
+
+.stat-value {
+    font-size: 1.1em;
+    font-weight: bold;
+    font-family: var(--fuente-titulos);
+}
+
+.card-skill .stat-value { color: var(--color-caos-verde); }
+.card-strategy .stat-value { color: var(--color-caos-amarillo); }
+.card-investment .stat-value { color: var(--color-caos-rosa); }
+
+/* Grid inferior: Panel + Logo/Botón */
+.t2e-bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    animation: fadeIn 1s ease-out 0.8s backwards;
+}
+
+@media (min-width: 900px) {
+    .t2e-bottom-grid {
+        grid-template-columns: 2fr 1fr; /* Panel ocupa 2 columnas, logo/botón 1 columna */
+        position: relative;
+    }
+
+    /* Separador vertical entre casino y rappia */
+    .t2e-bottom-grid::before {
+        content: '';
+        position: absolute;
+        left: 66.66%; /* Posición aproximada entre 2fr y 1fr */
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: linear-gradient(
+            to bottom,
+            var(--color-caos-verde) 0%,
+            var(--color-caos-amarillo) 50%,
+            var(--color-caos-rosa) 100%
+        );
+        box-shadow: 
+            0 0 10px currentColor,
+            0 0 20px currentColor,
+            0 0 30px currentColor;
+        animation: separatorPulseAggressive 2s ease-in-out infinite;
+        z-index: 5;
+    }
+}
+
+/* Wrapper con barras laterales - Estilo team-member */
+.circuit-wrapper {
+    background-color: transparent;
+    padding: 20px;
+    border-left: 5px solid var(--color-caos-rosa); /* Barra izquierda fucsia */
+    border-right: 5px solid var(--color-caos-verde); /* Barra derecha verde */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.circuit-wrapper:hover {
+    background-color: rgba(0, 0, 0, 0.75); /* Fondo oscuro para mejor legibilidad */
+    transform: translateY(-5px);
+    box-shadow: 
+        -5px 0 15px rgba(255, 0, 255, 0.3), /* Sombra fucsia a la izquierda */
+        5px 0 15px rgba(0, 255, 0, 0.3); /* Sombra verde a la derecha */
+}
+
+/* Panel del circuito - Estilo terminal como member-post-terminal */
+.circuit-panel {
+    background-color: transparent; /* Transparente para lucir efectos de fondo */
+    border: 2px solid var(--color-caos-amarillo); /* Borde amarillo */
+    border-radius: 5px;
+    text-align: left;
+    font-family: 'Courier New', Courier, monospace; /* Fuente de terminal */
+    overflow: hidden;
+}
+
+.circuit-terminal-header {
+    background-color: var(--color-caos-amarillo); /* Header amarillo */
+    color: var(--color-fondo); /* Texto oscuro */
+    padding: 8px 12px;
+    font-size: 0.9em;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.circuit-terminal-body {
+    padding: 25px 30px;
+}
+
+.circuit-title {
+    font-size: 1.8em;
+    color: var(--color-texto) !important; /* Blanco como base */
+    animation: glitchCyan 1s linear infinite !important; /* Efecto glitch cyan */
+    margin-bottom: 15px;
+    font-family: var(--fuente-titulos);
+    letter-spacing: 2px;
+}
+
+.circuit-desc {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: var(--color-texto); /* Texto claro */
+    font-family: 'Courier New', Courier, monospace; /* Tipografía de terminal */
+}
+
+.circuit-highlight {
+    color: var(--color-primario);
+    font-weight: bold;
+    text-shadow: 0 0 10px var(--color-primario);
+}
+
+/* Columna derecha: Logo + Botón */
+.rappia-action-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 30px;
+    background: transparent; /* Sin fondo */
+    border: none; /* Sin borde */
+}
+
+.rappia-logo-simple {
+    max-width: 200px;
+    width: 100%;
+    height: auto;
+}
+
+/* Botón CTA - Igual que hero-button-buy */
+.t2e-cta-button {
+    display: inline-block;
+    background-color: var(--color-primario);
+    color: var(--color-fondo);
+    padding: 15px 30px;
+    font-family: var(--fuente-titulos);
+    font-size: 1.3em;
+    font-weight: bold;
+    text-decoration: none;
+    border: 2px solid var(--color-primario);
+    border-radius: 0; /* Sin bordes redondeados */
+    transition: all 0.3s ease;
+    cursor: pointer;
+    animation: pulse 2s infinite; /* Animación del botón */
+    text-align: center;
+}
+
+.t2e-cta-button:hover {
+    background-color: transparent;
+    color: var(--color-primario);
+}
+
+/* Los spans dentro del botón */
+.t2e-cta-button .button-text,
+.t2e-cta-button .button-subtext {
+    display: block;
+    color: inherit;
+    text-shadow: none;
+    font-size: 1em; /* Mismo tamaño de fuente para ambos */
+    letter-spacing: 2px;
+}
+
+/* Animaciones de entrada */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        text-shadow: 
+            0 0 10px var(--color-caos-rosa),
+            0 0 20px var(--color-caos-rosa),
+            0 0 30px var(--color-caos-rosa),
+            0 0 40px #FF00FF;
+    }
+    50% {
+        text-shadow: 
+            0 0 20px var(--color-caos-rosa),
+            0 0 30px var(--color-caos-rosa),
+            0 0 40px var(--color-caos-rosa),
+            0 0 50px #FF00FF,
+            0 0 60px #FF00FF;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .t2e-main-title {
+        font-size: 2em;
+    }
+    
+    .t2e-intro {
+        font-size: 1.1em;
+    }
+    
+    .card-inner {
+        padding: 30px 20px;
+    }
+    
+    .circuit-panel {
+        padding: 30px 20px;
+    }
+    
+    .circuit-title {
+        font-size: 1.5em;
+    }
+}
+
+/* ============================================
+   FIN SECCIÓN T2E REDISEÑADA
+   ============================================ */
+
+
+/* 4. Fallo Holográfico Naranja (para la economía) */
+#economy h3 {
+    color: var(--color-primario);
+    text-shadow: 0 0 4px #fff,
+                 0 0 8px #fff,
+                 0 0 12px var(--color-primario),
+                 0 0 16px var(--color-primario);
+    animation: flicker 3s infinite alternate;
+}
+
+/* 5. Definición de la animación "flicker" (parpadeo) */
+@keyframes flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 4px #fff,
+                 0 0 8px #fff,
+                 0 0 12px var(--color-primario),
+                 0 0 16px var(--color-primario);
+  }
+  20%, 24%, 55% {
+    opacity: 0.7;
+    text-shadow: none; /* Se apaga el brillo */
+  }
+}
+/* === CORRECCIÓN: Eliminar llave extra final (si la había) === */
+/* Asegúrate de que no haya ninguna '}' sola aquí al final */
+
+/* --- NUEVA SECCIÓN: TOKENOMICS --- */
+#tokenomics {
+    background-color: #050505; /* Un fondo ligeramente distinto */
+    border-top: 2px solid var(--color-primario);
+    border-bottom: 2px solid var(--color-primario);
+}
+
+#tokenomics h2 {
+    /* Le damos el brillo de neón azul */
+    text-shadow: 0 0 4px #fff,
+                 0 0 8px #fff,
+                 0 0 12px var(--color-azul-glitch),
+                 0 0 16px var(--color-azul-glitch);
+}
+
+.tokenomics-container {
+    display: flex;
+    flex-direction: column; /* Apilado en móvil */
+    gap: 30px;
+    margin-top: 30px;
+}
+
+/* En pantallas grandes, lo ponemos en 2 columnas */
+@media (min-width: 900px) {
+    .tokenomics-container {
+        flex-direction: row;
+    }
+}
+
+.token-chart-side {
+    flex: 1; /* Ocupa 1 parte del espacio */
+}
+
+.token-legend-side {
+    flex: 1.5; /* Ocupa 1.5 partes (un poco más ancho) */
+    text-align: left;
+}
+
+/* === El Gráfico Circular (CSS Mágico) === */
+.pie-chart {
+    width: 250px;
+    height: 250px;
+    margin: 20px auto;
+    border-radius: 50%;
+    /* * 45% T2E (Naranja)
+     * 20% Tesorería (Azul)
+     * 20% Equipo (Gris)
+     * 10% Venta (Naranja Oscuro)
+     * 5% Liquidez (Blanco)
+    */
+    background: conic-gradient(
+        var(--color-primario) 0% 45%, /* 45% T2E */
+        var(--color-azul-glitch) 45% 65%, /* 20% Tesorería */
+        #888 65% 85%, /* 20% Equipo */
+        #FF8C00 85% 95%, /* 10% Venta */
+        #f0f0f0 95% 100% /* 5% Liquidez */
+    );
+    border: 4px solid #333;
+}
+
+/* === GRÁFICO INTERACTIVO DE TOKENOMICS === */
+.pie-chart-interactive {
+    width: 100%; /* Ocupa todo el ancho disponible, igual que .token-advantages */
+    max-width: none; /* Sin límite, ocupa todo el ancho de la columna */
+    height: auto; /* Altura automática para mantener proporción */
+    aspect-ratio: 1; /* Mantiene el SVG cuadrado */
+    margin: 20px auto;
+    position: relative;
+    padding: 0; /* SIN PADDING - evita que sobrepase el ancho */
+}
+
+.pie-svg {
+    width: 100%; /* AMPLIADO - Ocupa todo el contenedor */
+    height: 100%; /* AMPLIADO - Ocupa todo el contenedor */
+    margin: 0 auto; /* Centrar el SVG */
+    display: block;
+    filter: drop-shadow(0 0 20px rgba(255, 68, 0, 0.3));
+}
+
+.pie-slice {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: 110px 110px; /* Centro del SVG actualizado */
+}
+
+.pie-slice:hover {
+    filter: brightness(1.5) saturate(1.3) drop-shadow(0 0 20px currentColor);
+    transform: scale(1.15); /* Más agrandamiento para los triángulos */
+    stroke-width: 5;
+    stroke: var(--color-caos-amarillo);
+    opacity: 0.95;
+}
+
+/* Logo de Rappia en el centro - SIN efectos */
+.pie-chart-interactive image {
+    position: relative;
+    z-index: 200; /* Por encima de scanlines (z-100) */
+    pointer-events: none;
+}
+
+/* Logo de Rappia - Con efecto glitch BRUTALMENTE INTENSIFICADO 320% + VELOCIDAD 700% */
+.tokenomics-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 36%;
+    height: auto;
+    z-index: 300;
+    pointer-events: none;
+    animation: logoGlitch 0.05s linear infinite;
+    filter: 
+        drop-shadow(.16em 0 0 rgba(255,0,0,.75))  /* 0.05em * 3.2 = 0.16em */
+        drop-shadow(-.16em 0 0 rgba(0,255,0,.75))
+        drop-shadow(0 0 .16em rgba(0,0,255,.75));
+}
+
+/* Animación glitch para logo - BRUTALMENTE INTENSIFICADA 320% + MOVIMIENTO ERRÁTICO */
+@keyframes logoGlitch {
+    0% { 
+        filter: 
+            drop-shadow(.16em 0 0 rgba(255,0,0,.75))
+            drop-shadow(-.16em 0 0 rgba(0,255,0,.75))
+            drop-shadow(0 0 .16em rgba(0,0,255,.75));
+        transform: translate(-50%, -50%) translate(0, 0);
+    }
+    14% { 
+        filter: 
+            drop-shadow(.16em 0 0 rgba(255,0,0,.75))
+            drop-shadow(-.16em 0 0 rgba(0,255,0,.75))
+            drop-shadow(0 0 .16em rgba(0,0,255,.75));
+        transform: translate(-50%, -50%) translate(0, 0);
+    }
+    15% { 
+        filter: 
+            drop-shadow(-.16em 0 0 rgba(255,0,0,.75))
+            drop-shadow(.08em 0 0 rgba(0,255,0,.75))  /* 0.025em * 3.2 = 0.08em */
+            drop-shadow(0 0 .08em rgba(0,0,255,.75));
+        transform: translate(-50%, -50%) translate(-4px, 3px);
+    }
+    16% { 
+        filter: 
+            drop-shadow(.08em 0 0 rgba(255,0,0,.75))
+            drop-shadow(.16em 0 0 rgba(0,255,0,.75))
+            drop-shadow(0 0 .16em rgba(0,0,255,.75));
+        transform: translate(-50%, -50%) translate(3px, -4px);
+    }
+    17% { 
+        filter: 
+            drop-shadow(.16em 0 0 rgba(255,0,0,.75))
+            drop-shadow(-.16em 0 0 rgba(0,255,0,.75))
+            drop-shadow(0 0 .16em rgba(0,0,255,.75));
+        transform: translate(-50%, -50%) translate(-2px, 2px);
+    }
+    100% { 
+        filter: 
+            drop-shadow(.16em 0 0 rgba(255,0,0,.75))
+            drop-shadow(-.16em 0 0 rgba(0,255,0,.75))
+            drop-shadow(0 0 .16em rgba(0,0,255,.75));
+        transform: translate(-50%, -50%) translate(1px, -1px);
+    }
+}
+
+/* Estado de pausa del logo */
+.tokenomics-logo.paused {
+    animation: none !important;
+}
+
+/* Tooltip flotante */
+.pie-tooltip {
+    position: absolute;
+    background: rgba(10, 10, 10, 0.95);
+    border: none; /* Sin borde completo */
+    border-left: 3px solid var(--color-caos-rosa); /* Barra fucsia/rosa izquierda */
+    border-right: 3px solid var(--color-caos-amarillo); /* Barra amarilla derecha */
+    padding: 6px 9px; /* Reducido 50% (12->6, 18->9) */
+    border-radius: 0; /* SIN REDONDEO - Estilo punk angular */
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(calc(-50% - 140px), -120%); /* Desplazado 140px a la izquierda (70+70) */
+    transition: opacity 0.3s ease;
+    z-index: 250; /* Por encima de logo (200) y scanlines (100) */
+    box-shadow: 0 0 20px rgba(255, 68, 0, 0.5);
+    min-width: 90px; /* Reducido 50% (180->90) */
+    text-align: center;
+}
+
+.pie-tooltip.active {
+    opacity: 1;
+}
+
+.tooltip-name {
+    color: var(--color-azul-glitch); /* Cyan */
+    font-weight: bold;
+    font-size: 9.45px; /* Aumentado 35% (7 * 1.35 = 9.45) */
+    margin-bottom: 2.5px; /* Reducido 50% (5->2.5) */
+    text-transform: uppercase;
+}
+
+.tooltip-percent {
+    color: #ffffff; /* Blanco */
+    font-size: 16.2px; /* Aumentado 35% (12 * 1.35 = 16.2) */
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+}
+
+.token-advantages {
+    margin-top: 30px;
+    text-align: left;
+    background-color: #111;
+    padding: 15px;
+    border-left: 3px solid var(--color-azul-glitch);
+}
+
+/* --- OVERLAY DEL JUEGO: evitar que bloquee botones cuando está oculto --- */
+/* Clase que usa JS para ocultar/mostrar el overlay */
+.game-menu-hidden {
+    display: none !important;
+    pointer-events: none; /* No intercepta clicks */
+    opacity: 0;
+}
+
+#game-overlay {
+    position: fixed;
+    inset: 0; /* top:0; right:0; bottom:0; left:0; */
+    background: rgba(5,10,15,0.85);
+    z-index: 1000; /* Por encima de todo cuando está visible */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow: auto;
+    transition: opacity 0.25s ease-in-out;
+}
+
+/* Cuando está visible, permitir interacción */
+#game-overlay:not(.game-menu-hidden) {
+    pointer-events: auto;
+    opacity: 1;
+}
+
+/* Asegurar que botones principales estén por encima si es necesario */
+.cta-button, button.cta-button {
+    position: relative;
+    z-index: 10;
+}
+
+/* Footer del overlay del juego: centrar y estilo del copyright */
+.game-menu-footer p {
+    text-align: center;
+    width: 100%;
+    margin: 10px 0 0 0;
+    color: var(--color-texto);
+}
+
+/* === OVERLAY DE TERMINAL FLOTANTE PARA MUNDO 2: ANDROID === */
+.terminal-overlay-hidden {
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+}
+
+#android-blocked-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 10, 15, 0.95);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#android-blocked-overlay:not(.terminal-overlay-hidden) {
+    display: flex;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.terminal-modal {
+    position: relative;
+    animation: terminalSlideIn 0.4s ease-out;
+}
+
+@keyframes terminalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.terminal-close-btn {
+    background: none;
+    border: none;
+    color: var(--color-primario);
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
+    transition: color 0.2s;
+}
+
+.terminal-close-btn:hover {
+    color: #fff;
+}
+
+.terminal-header-caos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Cursor titilando para la broma */
+@keyframes blinkCursor {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+#blinking-cursor {
+    animation: blinkCursor 0.8s infinite;
+    font-family: 'Courier New', monospace;
+}
+
+/* Cursor que aparece mientras se escribe (más rápido) */
+.typing-cursor {
+    animation: blinkCursor 0.5s infinite;
+    font-family: 'Courier New', monospace;
+    display: inline-block;
+}
+
+
+/* === OVERLAY DE BROMA REBELBET (z-index mayor para estar adelante) === */
+#rebelbet-joke-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 10, 15, 0.95);
+    z-index: 2500; /* Por encima del modal de Android */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Confetti canvas inside terminal overlay: always on top */
+#confetti-terminal-canvas {
+    position: absolute !important;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    height: 100% !important;
+    pointer-events: none;
+    z-index: 9999 !important;
+    display: block;
+}
+
+#rebelbet-joke-overlay:not(.terminal-overlay-hidden) {
+    display: flex;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* === BUY RPPI MODAL === */
+#buy-rppi-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 10, 15, 0.95);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#buy-rppi-overlay.terminal-overlay-visible {
+    display: flex;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Payment Methods Container */
+#payment-methods-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Payment Method Option */
+.payment-method-option {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    background: #000;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-method-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.024), transparent); /* 20% más intensidad que antes */
+    transition: left 0.5s ease;
+}
+
+.payment-method-option:hover::before {
+    left: 100%;
+}
+
+.payment-method-option:hover {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: rgba(0, 255, 255, 0.6);
+    transform: translateX(5px);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+.payment-icon {
+    font-size: 2em;
+    min-width: 50px;
+    text-align: center;
+    filter: drop-shadow(0 0 8px currentColor);
+}
+
+.payment-info {
+    flex: 1;
+}
+
+.payment-info h4 {
+    font-family: var(--fuente-titulos);
+    text-shadow: 0 0 10px currentColor;
+    letter-spacing: 1px;
+}
+
+.payment-arrow {
+    font-size: 1.5em;
+    color: var(--color-primario);
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.payment-method-option:hover .payment-arrow {
+    opacity: 1;
+    transform: translateX(5px);
+    text-shadow: 0 0 10px var(--color-primario);
+}
+
+.token-advantages ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+.token-advantages li {
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+/* === La Leyenda (CORREGIDA) === */
+.legend-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+.legend-item {
+    display: flex; /* Mantiene la caja y el texto en línea */
+    align-items: flex-start; /* Alinea arriba */
+    margin-bottom: 20px;
+}
+
+.color-box {
+    /* Estos son los cuadraditos de color */
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-right: 15px;
+    margin-top: 5px;
+    border-radius: 3px;
+    background-color: var(--color); /* El color se define en el HTML */
+}
+
+/* === REGLA AÑADIDA PARA ORDENAR EL TEXTO === */
+.legend-text {
+    display: flex;
+    flex-direction: column; /* Apila el título y el párrafo */
+}
+
+.legend-text p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #ccc;
+    max-width: 100%;
+}
+.legend-text strong {
+    font-size: 1.1em;
+    line-height: 1.2; /* Ajuste para que no esté tan pegado */
+    margin-bottom: 5px; /* Espacio entre título y párrafo */
+}
+
+
+/* --- NUEVA SECCIÓN: FAQ --- */
+#faq {
+    background-color: var(--color-fondo); /* Mismo fondo que el body */
+    border-top: 1px solid #333; /* Una línea sutil de separación */
+}
+
+#faq h2 {
+    /* Mantenemos el neón azul */
+     text-shadow: 0 0 4px #fff,
+                 0 0 8px #fff,
+                 0 0 12px var(--color-azul-glitch),
+                 0 0 16px var(--color-azul-glitch);
+}
+
+.faq-grid {
+    display: grid;
+    /* 2 columnas en pantallas medianas y grandes */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+    text-align: left;
+}
+
+.faq-item {
+    background-color: #111;
+    padding: 20px;
+    border-left: 3px solid var(--color-primario);
+}
+
+.faq-item h4 {
+    margin-top: 0;
+    color: var(--color-texto); /* Título de pregunta en blanco */
+    text-shadow: none; /* Sin neón aquí */
+}
+
+.faq-item p {
+    font-size: 1em;
+    color: #ccc;
+    max-width: 100%;
+}
+
+/* --- ESTILOS PARA LA TERMINAL DE POSTEOS DEL EQUIPO --- */
+
+.member-post-terminal {
+    /* Estilo base de la terminal de hackeo */
+    background-color: #050a0f; 
+    border: 2px solid var(--color-azul-glitch);
+    border-radius: 5px;
+    margin-top: 20px;
+    text-align: left;
+    font-family: 'Courier New', Courier, monospace; /* Fuente de programador */
+}
+
+.terminal-header-mini {
+    /* El header cian */
+    background-color: var(--color-azul-glitch);
+    color: var(--color-fondo); /* Texto oscuro (contraste) */
+    padding: 3px 8px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.terminal-body-mini {
+    padding: 10px;
+    font-size: 0.9em;
+    color: var(--color-texto); /* Texto claro (blanco roto) */
+    max-height: 150px; /* Límite de altura */
+    overflow-y: auto; /* Scroll si hay muchos posteos */
+}
+
+/* El Comentario Fijado (Motivo)  */
+.terminal-body-mini .post-fijado {
+    color: #ccc; /* Un gris sutil para el texto fijo */
+    margin: 0;
+    padding-bottom: 10px;
+    font-size: 0.9em;
+    border-bottom: 1px dashed var(--color-azul-glitch); /* Separador "hackeado" */
+}
+
+/* El Posteo Dinámico (Discord)  */
+.terminal-body-mini .post-dinamico {
+    color: var(--color-texto); /* Blanco brillante para el posteo nuevo */
+    margin: 0;
+    padding-top: 10px;
+    font-size: 1em;
+}
+
+.terminal-body-mini .post-dinamico .post-date {
+    display: block; /* La fecha  arriba */
+    font-size: 0.9em;
+    font-weight: bold;
+    color: var(--color-primario); /* ¡La fecha en nuestro naranja rebelde! */
+    margin-bottom: 5px;
+}
+
+
+
+
+/* --- ESTILOS "CAOS" PARA EL BLOQUE "JOIN US" --- */
+
+.join-us-block {
+    /* De Naranja Primario a Amarillo Caos */
+    border-top: 2px solid var(--color-caos-amarillo) !important; 
+}
+
+.join-us-block h3 {
+    /* Título principal en Amarillo */
+    color: var(--color-caos-amarillo);
+    text-shadow: 0 0 8px var(--color-caos-amarillo);
+}
+
+.join-us-block h4 {
+    /* "Tablón de Honor" en Rosa Neón */
+    color: var(--color-caos-rosa) !important;
+    text-shadow: 0 0 10px var(--color-caos-rosa) !important;
+}
+
+.join-us-block iframe {
+    /* Borde del Iframe en Verde Flúor */
+    border: 1px solid var(--color-caos-verde) !important;
+    box-shadow: 0 0 10px var(--color-caos-verde); /* Efecto neón */
+}
+
+/* --- NUEVA SECCIÓN: BETA "EL CIRCUITO" --- */
+#circuit-beta {
+    position: relative; /* Para que el separador se posicione correctamente */
+    z-index: 1; /* Muy bajo, detrás del separador */
+    background-color: #050505;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+}
+
+.beta-container {
+    display: grid;
+    grid-template-columns: 1fr; /* Una columna en móvil */
+    gap: 40px;
+    margin-top: 30px;
+}
+
+/* En pantallas grandes, 2 columnas */
+@media (min-width: 768px) {
+    .beta-container {
+        grid-template-columns: 1fr 1fr; 
+    }
+}
+.beta-column {
+    background-color: #111;
+    padding: 25px;
+    border-radius: 5px;
+    border-bottom: 3px solid var(--color-primario); /* Borde naranja */
+    
+    /* === LÍNEA AÑADIDA: Para que la animación sea suave === */
+    transition: all 0.3s ease-in-out; 
+}
+
+
+/* Hacemos que la columna T2E tenga el borde azul */
+.beta-column:last-child {
+    border-bottom-color: var(--color-azul-glitch); /* Borde cian */
+}
+
+.game-placeholder {
+    background-color: var(--color-fondo);
+    border: 2px dashed #333;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    text-align: center;
+    font-family: var(--fuente-titulos);
+    color: #888;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+}
+
+.game-placeholder:hover {
+    border-color: var(--color-azul-glitch);
+}
+
+.game-placeholder img {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.game-placeholder img:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.feedback-section {
+    text-align: center;
+}
+
+.feedback-section h4 {
+    color: var(--color-texto); 
+    font-size: 1.5em;
+    text-shadow: none;
+}
+
+
+/* --- ESTILOS "CAOS" PARA EL BLOQUE "JOIN US" --- */
+
+.join-us-block {
+    /* De Naranja Primario a Amarillo Caos */
+    border-top: 2px solid var(--color-caos-amarillo) !important; 
+}
+
+.join-us-block h3 {
+    /* Título principal en Amarillo */
+    color: var(--color-caos-amarillo);
+    text-shadow: 0 0 8px var(--color-caos-amarillo);
+}
+
+.join-us-block h4 {
+    /* "Tablón de Honor" en Rosa Neón */
+    color: var(--color-caos-rosa) !important;
+    text-shadow: 0 0 10px var(--color-caos-rosa) !important;
+}
+
+.join-us-block iframe {
+    /* Borde del Iframe en Verde Flúor */
+    border: 1px solid var(--color-caos-verde) !important;
+    box-shadow: 0 0 10px var(--color-caos-verde); /* Efecto neón */
+}
+
+/* --- NUEVA SECCIÓN: ROADMAP (CON PALETA CAOS COMPLETA) --- */
+
+.roadmap-timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+#roadmap h2 {
+    /* Título en Rosa Neón */
+    color: var(--color-caos-rosa); 
+    text-shadow: 0 0 4px #fff,
+                 0 0 8px #fff,
+                 0 0 12px var(--color-caos-rosa),
+                 0 0 16px var(--color-caos-rosa);
+    position: relative;
+    z-index: 2; /* Asegurar que esté sobre el video */
+}
+
+.roadmap-item {
+    padding: 20px;
+    margin-bottom: 20px;
+    /* === CAMBIO: SIN FONDO === */
+    background-color: transparent;
+    /* === CAMBIO: Texto claro === */
+    color: var(--color-texto);
+    text-align: left; 
+    /* === CAMBIO: Línea Amarilla Añadida === */
+    border-left: 4px solid var(--color-caos-amarillo);
+}
+
+/* Hacemos que los títulos dentro del item sean amarillos */
+.roadmap-item h4 {
+    color: var(--color-caos-amarillo);
+    text-shadow: 0 0 8px var(--color-caos-amarillo); 
+}
+
+/* El futuro también mantiene el estilo (hereda el estilo de .roadmap-item) */
+.roadmap-item.future {
+    opacity: 0.9; 
+    /* Sin fondo, texto claro heredado */
+    /* Mantenemos el borde amarillo para consistencia */
+}
+
+.roadmap-item.future h4 {
+    color: var(--color-caos-amarillo); /* Amarillo igual que los demás */
+}
+
+/* --- ESTILOS PARA LA GALERÍA DE CONCEPT ART (SECCIÓN MUNDO) --- */
+
+.world-gallery {
+    display: grid;
+    grid-template-columns: 1fr; /* Una columna en móvil */
+    gap: 20px; /* Espacio entre imágenes */
+    margin-top: 30px;
+}
+
+/* En pantallas más grandes, 3 columnas */
+@media (min-width: 768px) {
+    .world-gallery {
+        /* 3 columnas de tamaño flexible */
+        grid-template-columns: repeat(3, 1fr); 
+    }
+}
+
+.world-gallery .cover-image {
+    width: 100%; /* La imagen ocupa todo el ancho de su columna */
+    max-width: 100%; /* Sobrescribe el max-width anterior */
+    height: auto; /* Mantiene la proporción */
+    border: 2px solid var(--color-caos-amarillo); /* Borde Naranja Rebelde */
+    border-radius: 5px;
+    margin-top: 0; /* Reseteamos el margen que tenía antes */
+    object-fit: cover; /* Asegura que todas las imágenes se ajusten uniformemente */
+    aspect-ratio: 16/9; /* Todas las imágenes tendrán la misma proporción */
+}
+
+/* Mantener RAPPIA-2.png con su tamaño natural más grande */
+.world-gallery img[src="RAPPIA-2.png"] {
+    aspect-ratio: auto; /* Mantiene su proporción original */
+    height: auto;
+}
+
+/* --- ESTILOS "CAOS" PARA MENSAJE "SANTO GRIAL" --- */
+
+.caos-terminal {
+    background-color: #050a0f; /* Fondo de terminal oscuro */
+    /* Borde Verde Flúor */
+    border: 2px solid var(--color-caos-verde); 
+    box-shadow: 0 0 15px var(--color-caos-verde);
+    border-radius: 5px;
+    margin: 40px auto; /* Centrado con espacio */
+    max-width: 800px; /* Ancho máximo */
+    text-align: left;
+    font-family: 'Courier New', Courier, monospace; /* Fuente de programador */
+    z-index: 1010;
+}
+
+/* Cuando la terminal está dentro del overlay, hacemos el fondo transparente
+   para que no tape el fondo del overlay; mantenemos el texto y añadimos
+   posibilidad de highlight temporal. */
+#game-overlay .caos-terminal {
+    background-color: rgba(5,10,15,0); /* transparente */
+    border: none;
+    box-shadow: none;
+}
+
+.caos-terminal.highlight-temp {
+    box-shadow: 0 0 24px rgba(0,255,128,0.15);
+    border: 2px solid rgba(0,255,128,0.12);
+}
+
+.terminal-header-caos {
+    /* Header Amarillo Lima */
+    background-color: var(--color-caos-amarillo); 
+    color: #071018; /* Color oscuro para contraste sobre amarillo */
+    padding: 3px 8px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.terminal-body-caos {
+    padding: 20px;
+    font-size: 1.1em;
+    /* Texto Verde Flúor */
+    color: var(--color-caos-verde); 
+    line-height: 1.6;
+}
+
+/* El cursor titilante */
+#typewriter-text::after {
+    content: '█'; /* El caracter del cursor */
+    /* Animación de parpadeo */
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    from, to { color: transparent; }
+    50% { color: var(--color-caos-verde); } /* Color del cursor */
+}
+
+/* --- ESTILO HOVER PARA EL ATAQUE PSICOLÓGICO T2E --- */
+
+#t2e-column:hover {
+    /* 1. El cuadro se agranda */
+    transform: scale(1.03); 
+    
+    /* 2. Se ilumina en Fucsia (Caos Rosa) */
+    border-color: var(--color-caos-rosa); 
+    box-shadow: 0 0 25px var(--color-caos-rosa);
+}
+
+/* --- ESTILO HOVER PARA FREE PLAY (igual que T2E pero con sombra amarilla) --- */
+#free-play-column:hover {
+    transform: scale(1.03);
+    border-color: var(--color-caos-amarillo);
+    box-shadow: 0 0 25px var(--color-caos-amarillo);
+}
+
+/* --- ESTILOS PARA LA NUEVA "START SCREEN" DE LA BETA --- */
+
+#beta-start-screen {
+    position: relative; /* Para controlar z-index */
+    z-index: 0; /* Neutral, hereda del padre */
+    /* Usamos la imagen RB1 (Space Invaders) como fondo */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)), url('RB1.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 100px 40px; /* Mucho padding para que se vea grande */
+    border: 2px solid var(--color-caos-amarillo); /* Borde Caos */
+    box-shadow: 0 0 20px var(--color-caos-amarillo);
+    border-radius: 5px;
+    text-align: center;
+    transition: transform 0.4s ease, box-shadow 0.4s ease; /* Transición suave */
+    overflow: hidden; /* Para contener el scanline */
+}
+
+/* Scanlines agresivas sobre la caja beta */
+#beta-start-screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.6), /* MUCHO más oscuras - 60% opacidad */
+        rgba(0, 0, 0, 0.6) 3px, /* Líneas más gruesas */
+        transparent 3px,
+        transparent 4px /* Espaciado más pequeño = más líneas */
+    );
+    pointer-events: none;
+    animation: scanlineAggressive 3s linear infinite; /* MUCHO más rápido - 3s en vez de 6s */
+    z-index: 10; /* Por encima del contenido de la caja */
+}
+
+/* Segundo layer de scanlines - diagonales para más caos */
+#beta-start-screen::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        45deg, /* Diagonal para más locura */
+        rgba(248, 255, 43, 0.1), /* Amarillo translúcido */
+        rgba(248, 255, 43, 0.1) 1px,
+        transparent 1px,
+        transparent 5px
+    );
+    pointer-events: none;
+    animation: scanlineAggressive 2s linear infinite reverse; /* Dirección opuesta */
+    z-index: 11; /* Encima del primer scanline */
+}
+
+#beta-start-screen:hover {
+    transform: scale(1.03); /* Agrandamiento del 3% */
+    box-shadow: 
+        0 0 30px var(--color-caos-amarillo),
+        0 0 50px var(--color-caos-amarillo),
+        0 10px 40px rgba(248, 255, 43, 0.3); /* Sombra más intensa */
+}
+
+#beta-start-screen h2 {
+    position: relative;
+    z-index: 20; /* Por encima del scanline */
+    /* Título en Rosa Neón */
+    color: var(--color-caos-rosa); 
+    text-shadow: 0 0 4px #fff,
+                 0 0 8px #fff,
+                 0 0 12px var(--color-caos-rosa),
+                 0 0 16px var(--color-caos-rosa);
+    font-size: 2.5em;
+}
+
+#beta-start-screen p {
+    position: relative;
+    z-index: 20; /* Por encima del scanline */
+    font-family: 'Courier New', Courier, monospace; /* Tipografía de terminal como T2E */
+}
+
+#beta-start-screen strong {
+    font-weight: bold; /* Negrita */
+    color: var(--color-caos-amarillo); /* Amarillo para destacar */
+    text-shadow: 0 0 10px var(--color-caos-amarillo); /* Glow amarillo */
+    font-family: 'Courier New', Courier, monospace; /* Misma tipografía */
+}
+
+#start-beta-button {
+    position: relative;
+    z-index: 20; /* Por encima del scanline */
+    /* Botón Naranja Rebelde, pero más grande */
+    padding: 20px 50px;
+    font-size: 2em;
+    margin-top: 20px;
+    /* Animación de "latido" para llamar la atención */
+    animation: pulse 2s infinite;
+}
+
+/* Animación de latido para el botón */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* --- ESTILOS PARA EL MENÚ DE JUEGO FULL-SCREEN --- */
+
+/* La clase .game-menu-hidden ya está definida en línea 1223 */
+
+/* El #game-overlay ya está definido en línea 1229 con propiedades más modernas */
+
+/* El contenido principal del juego (sin el footer) */
+.game-content {
+    width: 100%;
+    max-width: 1200px; /* Ancho máximo del contenido */
+    margin: auto; /* Centrado */
+}
+
+/* El footer del juego */
+.game-menu-footer {
+    width: 100%;
+    /* Usamos flex para asegurar centrado vertical/horizontal de su contenido */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    margin-top: auto; /* Empuja el footer hacia abajo */
+    padding-top: 20px;
+    border-top: 1px solid #333; /* Línea separadora */
+}
+
+.game-menu-footer p {
+    font-family: 'Courier New', monospace;
+    font-size: 0.8em;
+    color: #555; /* Color sutil */
+    margin: 0; /* We'll control spacing from the button */
+    line-height: 1.6;
+    /* preferencia general: centro */
+    text-align: center;
+}
+
+/* Regla muy específica para asegurar que dentro del overlay el texto quede centrado
+   y no sea sobrescrito por otras reglas con mayor especificidad */
+#game-overlay .game-menu-footer p {
+    text-align: center !important;
+    width: 100%;
+    display: block;
+}
+
+.exit-game-button {
+    /* Botón de Salir */
+    background-color: transparent;
+    color: #ccc;
+    border: 1px solid #555;
+    /* Aumentamos tamaño ~15% */
+    font-size: 1.04em !important; 
+    padding: 9px 17px !important;
+    margin: 0 auto 2.2em auto !important; /* centrado y espacio abajo (~2 líneas) */
+    display: inline-block; /* mantener comportamiento de botón */
+}
+.exit-game-button:hover {
+    background-color: var(--color-caos-verde); /* Verde solo en hover */
+    color: var(--color-fondo);
+    border-color: var(--color-caos-verde);
+}
+/* === Video de fondo para la sección roadmap === */
+#roadmap {
+    position: relative; /* para posicionar el video detrás */
+    overflow: hidden; /* evitar overflow del video */
+}
+
+.roadmap-video-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* detrás del contenido */
+    pointer-events: none; /* que el video no interfiera con clics */
+}
+
+#roadmap .roadmap-video-wrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* cubrir el área */
+    display: block;
+}
+
+.roadmap-timeline,
+.roadmap-timeline .roadmap-item {
+    position: relative;
+    z-index: 2; /* contenido encima del video */
+}
+
+/* En móviles, ocultamos el video por desempeño y datos móviles */
+@media (max-width: 600px) {
+    .roadmap-video-wrapper { display: none; }
+}
+
+/* === Sin fondo para los cuadros de roadmap === */
+#roadmap .roadmap-item {
+    background-color: transparent; /* Sin fondo para ver el video */
+    padding: 18px 20px;
+    margin: 12px 0;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--color-texto);
+    transition: background-color 0.25s ease, transform 0.18s ease;
+}
+
+#roadmap .roadmap-item:hover {
+    background-color: rgba(0,0,0,0.75); /* Fondo más oscuro para mejor legibilidad */
+    transform: translateY(-4px);
+    border-color: var(--color-caos-amarillo);
+}
+
+/* 1. Reemplazamos el viejo #hero */
+#hero.hero-v2 {
+    min-height: auto; /* Cambiado de 100vh a auto para mejor scroll */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Cambiado de center a flex-start */
+    padding: 40px 20px 40px 20px; /* Reducido el padding superior */
+    box-sizing: border-box;
+    position: relative;
+    overflow: visible; /* Cambiado para mejor compatibilidad de scroll */
+}
+
+/* 2. El Fondo (Conceptual del Cap 3) */
+.hero-v2-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Imagen de fondo con blur */
+.hero-v2-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('image (18).jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(3px); /* Blur solo en la imagen */
+    z-index: 1;
+}
+
+/* Grid cyberpunk pulsante */
+.hero-v2-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridPulse 3s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* Scanlines en el contenedor hero */
+#hero.hero-v2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    animation: scanline 8s linear infinite;
+    z-index: 10;
+}
+
+/* Animación de scanlines */
+@keyframes scanline {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(10px); }
+}
+
+/* Animación de pulso del grid */
+@keyframes gridPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+}
+
+/* 3. El Contenido (Por encima del fondo) */
+.hero-v2-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.hero-v2-title {
+    font-size: 1.5em;
+    color: var(--color-texto); /* Blanco roto */
+    text-shadow: 0 0 10px var(--color-caos-rosa); /* Brillo Caos */
+    letter-spacing: 2px;
+    margin-bottom: 60px; /* Aumentado de 30px a 60px para acercar más el título a los logos */
+    margin-top: 0; /* Eliminado margen superior excesivo */
+    padding-top: 0; /* Elimina padding superior */
+}
+
+/* 4. Las Dos Columnas */
+.hero-v2-columns {
+    display: grid;
+    grid-template-columns: 1fr; /* 1 columna en móvil */
+    gap: 40px;
+    margin-top: 60px; /* Reducido de 120px a 60px para acercar aún más los logos al título */
+    position: relative; /* Para el pseudo-elemento de la línea */
+}
+
+/* Línea vertical neón pulsante entre columnas */
+@media (min-width: 900px) {
+    .hero-v2-columns::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        height: 100%;
+        width: 1px;
+        background: var(--color-azul-glitch);
+        box-shadow: 0 0 10px var(--color-azul-glitch);
+        opacity: 0.5;
+        animation: pulse 2s infinite;
+    }
+}
+
+.hero-column-left,
+.hero-column-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra todo el contenido de las columnas */
+    width: 100%;
+    padding-top: 180px; /* Ajustado para lograr 1220px total */
+}
+
+/* Ajuste específico para la columna derecha */
+.hero-column-right {
+    padding-top: 2px; /* Reducido casi a 0 para alinear botones */
+}
+
+/* Añadir padding-top a los botones de la columna izquierda */
+.hero-column-left .hero-button,
+.hero-column-left .hero-button-disabled {
+    margin-top: 35px; /* Bajar botones 35px (15px + 20px adicionales) */
+}
+
+/* El primer botón de la columna izquierda mantiene el margen normal */
+.hero-column-left .hero-button:first-of-type {
+    margin-top: 157px; /* Ajustado a 157px */
+    animation: pulse 2s infinite; /* Animación de variación de tamaño */
+}
+
+@media (min-width: 900px) { /* 2 columnas en desktop */
+    .hero-v2-columns {
+        grid-template-columns: 1fr 1fr;
+        gap: 60px; /* Más espacio entre columnas en desktop */
+    }
+}
+
+/* 5. Los Logos */
+.hero-logo-rappibellion {
+    width: 100%;
+    max-width: 1500px; /* Aumentado 30%: 1154px * 1.3 = 1500px */
+    height: auto;
+    margin: -35px auto 20px auto; /* Margen negativo arriba para elevarlo 35px */
+    display: block; /* Asegura que se comporte como bloque */
+}
+.hero-logo-rappia {
+    width: 100%;
+    max-width: 250px; /* Aumentado 25%: 200px * 1.25 = 250px */
+    height: auto;
+    margin: 0 auto 20px auto; /* Centrado horizontal - mismo margen que rappibellion */
+    display: block; /* Asegura que se comporte como bloque */
+}
+
+/* Aumentar tamaño en pantallas más grandes */
+@media (min-width: 900px) {
+    .hero-logo-rappibellion {
+        max-width: 1928px; /* Aumentado 30%: 1483px * 1.3 = 1928px */
+    }
+    .hero-logo-rappia {
+        max-width: 313px; /* Aumentado 25%: 250px * 1.25 = 313px */
+        margin-bottom: 20px; /* Mismo margen en desktop */
+    }
+}
+
+/* 6. Los Botones (Columnas) */
+.hero-button, .hero-button-disabled {
+    display: block;
+    padding: 15px 20px;
+    margin: 10px auto;
+    width: 90%;
+    max-width: 400px;
+    text-align: left;
+    font-family: var(--fuente-titulos);
+    font-size: 1.1em;
+    font-weight: bold;
+    text-decoration: none;
+    border: 2px solid;
+    border-radius: 0; /* Sin bordes redondeados - formato cuadrado */
+    transition: all 0.3s ease;
+}
+/* Subtítulo del botón (MUNDO 1, MUNDO 2...) */
+.hero-button span {
+    display: block;
+    font-size: 0.8em;
+    font-weight: normal;
+    opacity: 0.8;
+}
+
+/* 7. Paleta "CAOS" para Botones */
+.hero-button.caos-rosa {
+    background-color: var(--color-caos-rosa);
+    border-color: var(--color-caos-rosa);
+    color: var(--color-fondo);
+}
+.hero-button.caos-verde {
+    background-color: var(--color-caos-verde);
+    border-color: var(--color-caos-verde);
+    color: var(--color-fondo);
+}
+.hero-button.caos-amarillo {
+    background-color: var(--color-caos-amarillo);
+    border-color: var(--color-caos-amarillo);
+    color: var(--color-fondo);
+}
+.hero-button:hover {
+    background-color: transparent;
+    color: var(--color-texto); /* Blanco al pasar el mouse */
+    transform: scale(1.03);
+}
+
+/* Botón de Parodia (Hackeo) */
+.hero-button-disabled {
+    background-color: #333;
+    border-color: #555;
+    color: #888;
+    cursor: not-allowed;
+    text-align: center;
+}
+
+/* 8. Estilos Columna Rappia */
+.hero-button.rappia-naranja {
+    background-color: var(--color-primario);
+    border-color: var(--color-primario);
+    color: var(--color-fondo);
+    text-align: center;
+}
+.hero-button.rappia-azul {
+    background-color: var(--color-azul-glitch);
+    border-color: var(--color-azul-glitch);
+    color: var(--color-fondo);
+    text-align: center;
+}
+.hero-t2e-pitch {
+    background-color: transparent; /* Sin fondo - solo contenido */
+    border: none; /* Sin borde */
+    box-shadow: none; /* Sin sombra */
+    border-radius: 0;
+    margin: 20px auto;
+    max-width: 400px;
+    text-align: left;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 0;
+}
+.hero-t2e-pitch .terminal-header-caos {
+    /* Header Amarillo Lima - igual que el original */
+    background-color: var(--color-caos-amarillo); 
+    color: #071018; /* Color oscuro para contraste sobre amarillo */
+    padding: 3px 8px;
+    font-size: 0.8em; /* Mismo tamaño que el original */
+    font-weight: bold;
+    border-bottom: none;
+}
+.hero-t2e-pitch .terminal-body-caos {
+    padding: 20px;
+    padding-left: 0; /* Sin padding izquierdo */
+    padding-right: 0; /* Sin padding derecho */
+    font-family: 'Courier New', Courier, monospace; /* Misma fuente que el header */
+    color: var(--color-caos-verde); /* Texto Verde Flúor */
+    font-size: 1.1em; /* Mismo tamaño que el original */
+    line-height: 1.6;
+}
+.hero-t2e-pitch .terminal-body-caos p {
+    margin: 0;
+}
+/* Cursor parpadeante para el typewriter del hero - igual que el original */
+.hero-t2e-pitch .terminal-body-caos p::after {
+    content: '█'; /* Cursor cuadrado igual que el original */
+    animation: blink 1s step-end infinite;
+}
+/* Eliminada la regla .hero-t2e-pitch p que sobrescribía el font-size */
+
+.hero-button-buy {
+    /* Hereda de .cta-button pero más grande */
+    display: inline-block;
+    background-color: var(--color-primario);
+    color: var(--color-fondo);
+    padding: 15px 30px;
+    margin-top: 10px;
+    font-family: var(--fuente-titulos);
+    font-size: 1.3em;
+    font-weight: bold;
+    text-decoration: none;
+    border: 2px solid var(--color-primario);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    animation: pulse 2s infinite; /* Animación del botón de compra */
+}
+.hero-button-buy:hover {
+    background-color: transparent;
+    color: var(--color-primario);
+}
+
+/* Estilos para el slogan-container */
+.slogan-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 30px auto;
+    padding: 20px;
+    max-width: 900px;
+    font-family: 'Courier New', Courier, monospace; /* Tipografía de terminal */
+    font-size: 1.1em;
+    color: var(--color-caos-amarillo); /* Amarillo lima */
+    text-shadow: 0 0 5px var(--color-caos-amarillo);
+}
+
+.slogan-container span {
+    white-space: nowrap;
+}
+
+/* Los separadores // en amarillo más tenue */
+.slogan-container span:nth-child(2),
+.slogan-container span:nth-child(4) {
+    opacity: 0.6;
+}
+
+/* Cursor parpadeante al final del slogan */
+.slogan-container::after {
+    content: '█';
+    margin-left: 5px;
+    animation: blinkYellow 1s step-end infinite;
+}
+
+/* Animación de parpadeo amarillo para el cursor del slogan */
+@keyframes blinkYellow {
+    from, to { color: transparent; }
+    50% { color: var(--color-caos-amarillo); }
+}
+
+/* Variante fucsia del slogan-container */
+.slogan-container.fucsia {
+    color: var(--color-caos-rosa);
+    text-shadow: 0 0 5px var(--color-caos-rosa);
+    font-weight: bold;
+}
+
+.slogan-container.fucsia::after {
+    animation: blinkFucsia 1s step-end infinite;
+}
+
+/* Animación de parpadeo fucsia para el cursor */
+@keyframes blinkFucsia {
+    from, to { color: transparent; }
+    50% { color: var(--color-caos-rosa); }
+}
+
+/* Cuadro caos con borde fucsia */
+.caos-box-fucsia {
+    background-color: rgba(5, 10, 15, 0.9);
+    border: 2px solid var(--color-caos-rosa);
+    box-shadow: 0 0 20px var(--color-caos-rosa);
+    border-radius: 0;
+    padding: 3px 20px;
+    margin: 20px auto;
+    max-width: fit-content;
+    display: inline-block;
+}
