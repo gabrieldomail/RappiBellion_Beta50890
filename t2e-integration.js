@@ -700,13 +700,8 @@ class T2EIntegration {
             });
         }
 
-        // Agregar listener para mostrar ventana cuando se conecte la wallet
-        if (this.web3Config) {
-            // Mostrar ventana cuando se conecte la wallet y tenga apuestas
-            this.web3Config.addEventListener('walletConnected', async () => {
-                await this.loadAndShowUserBets();
-            });
-        }
+        // Nota: La funcionalidad de mostrar apuestas al conectar wallet
+        // se maneja automáticamente en updateUI() después de la inicialización
 
         console.log('✅ Ventana flotante de apuestas configurada');
     }
