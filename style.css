@@ -2917,11 +2917,12 @@ footer a {
     z-index: 2000; /* ¡Por encima del overlay del juego! */
     padding: 20px;
     box-sizing: border-box;
-    overflow-y: auto;
+    overflow-y: auto; /* SCROLL HABILITADO */
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start; /* CAMBIADO: flex-start para mejor scroll */
     transition: opacity 0.3s ease-in-out;
+    padding-top: 20px; /* REDUCIDO para más espacio de contenido */
 }
 
 .bet-modal-content {
@@ -3000,14 +3001,14 @@ footer a {
 
 #bets-offers-lobby {
     border-bottom: 2px dashed var(--color-primario);
-    padding-bottom: 20px;
+    padding-bottom: 15px;
 }
 .bets-offers-list {
-    max-height: 180px; /* Altura máxima para la lista */
+    max-height: 280px; /* AUMENTADO: Altura máxima para la lista - más espacio */
     overflow-y: auto; /* Scroll si hay muchas apuestas */
     background: rgba(11, 12, 16, 0.5); /* Fondo oscuro translúcido */
     border: 1px solid #333;
-    padding: 10px;
+    padding: 8px; /* REDUCIDO: Padding optimizado */
 }
 .bet-offer-item {
     display: flex;
