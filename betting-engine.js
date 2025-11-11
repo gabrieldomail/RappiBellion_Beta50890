@@ -54,7 +54,11 @@ class BettingEngine {
 
             // Verificar que el contrato de apuestas esté disponible
             if (!this.web3Config.contracts.Betting) {
-                throw new Error('Contrato de apuestas no desplegado. El sistema requiere un contrato inteligente para funcionar.');
+                console.warn('⚠️ Contrato de apuestas no desplegado - Modo DEMO activado');
+                console.warn('⚠️ Funcionalidades limitadas: Solo apuestas simuladas disponibles');
+                this.isDemoMode = true;
+            } else {
+                this.isDemoMode = false;
             }
 
             // Configurar event listeners para actualizaciones en tiempo real
@@ -63,8 +67,17 @@ class BettingEngine {
             // Cargar apuestas activas iniciales
             await this.loadActiveBets();
 
+            // Si estamos en modo demo, generar apuestas simuladas
+            if (this.isDemoMode) {
+                await this.generateDemoBets();
+            }
+
             this.isInitialized = true;
             console.log('✅ Motor de apuestas T2E inicializado');
+
+            if (this.isDemoMode) {
+                console.log('🎭 MODO DEMO ACTIVADO - Funcionalidades simuladas disponibles');
+            }
 
         } catch (error) {
             console.error('❌ Error inicializando motor de apuestas:', error);
@@ -128,6 +141,11 @@ class BettingEngine {
      * Crea una nueva apuesta T2E
      */
     async createBet(betData) {
+        // Usar modo demo si no hay contrato desplegado
+        if (this.isDemoMode) {
+            return await this.createDemoBet(betData);
+        }
+
         try {
             console.log('🎯 Creando apuesta T2E:', betData);
 
@@ -139,8 +157,6 @@ class BettingEngine {
             if (!hasBalance) {
                 throw new Error(`Saldo insuficiente. Necesitas al menos ${betData.amount} $RPPI`);
             }
-
-
 
             // Preparar transacción real
             const amountWei = this.web3Config.parseRPPI(betData.amount);
@@ -193,6 +209,11 @@ class BettingEngine {
      * Acepta una apuesta existente
      */
     async acceptBet(betId) {
+        // Usar modo demo si no hay contrato desplegado
+        if (this.isDemoMode) {
+            return await this.acceptDemoBet(betId);
+        }
+
         try {
             console.log('🤝 Aceptando apuesta:', betId);
 
@@ -248,6 +269,11 @@ class BettingEngine {
      * Cancela una apuesta (solo el creador)
      */
     async cancelBet(betId) {
+        // Usar modo demo si no hay contrato desplegado
+        if (this.isDemoMode) {
+            return await this.cancelDemoBet(betId);
+        }
+
         try {
             console.log('❌ Cancelando apuesta:', betId);
 
@@ -602,6 +628,206 @@ class BettingEngine {
         const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
 
         return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    /**
+     * Genera apuestas simuladas para modo demo
+     */
+    async generateDemoBets() {
+        try {
+            console.log('🎭 Generando apuestas demo...');
+
+            // Direcciones de ejemplo para demo
+            const demoAddresses = [
+                '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+                '0x742d35Cc6634C0532925a3b844Bc454e4438f44f',
+                '0x742d35Cc6634C0532925a3b844Bc454e4438f44g',
+                '0x742d35Cc6634C0532925a3b844Bc454e4438f44h'
+            ];
+
+            // Apuestas demo
+            const demoBets = [
+                {
+                    id: 'demo-1',
+                    creator: demoAddresses[0],
+                    acceptor: null,
+                    amount: '50',
+                    timeLimit: '300', // 5 minutos
+                    boostLimit: '3',
+                    gameType: 'arka-hack',
+                    status: this.web3Config.BET_STATUS.PENDING,
+                    createdAt: new Date(Date.now() - 2 * 60 * 1000), // 2 minutos atrás
+                    acceptedAt: null
+                },
+                {
+                    id: 'demo-2',
+                    creator: demoAddresses[1],
+                    acceptor: null,
+                    amount: '100',
+                    timeLimit: '600', // 10 minutos
+                    boostLimit: '5',
+                    gameType: 'space-breaker',
+                    status: this.web3Config.BET_STATUS.PENDING,
+                    createdAt: new Date(Date.now() - 1 * 60 * 1000), // 1 minuto atrás
+                    acceptedAt: null
+                },
+                {
+                    id: 'demo-3',
+                    creator: demoAddresses[2],
+                    acceptor: null,
+                    amount: '25',
+                    timeLimit: '900', // 15 minutos
+                    boostLimit: '1',
+                    gameType: 'pac-hack',
+                    status: this.web3Config.BET_STATUS.PENDING,
+                    createdAt: new Date(Date.now() - 3 * 60 * 1000), // 3 minutos atrás
+                    acceptedAt: null
+                },
+                {
+                    id: 'demo-4',
+                    creator: demoAddresses[3],
+                    acceptor: null,
+                    amount: '75',
+                    timeLimit: '300', // 5 minutos
+                    boostLimit: '3',
+                    gameType: 'memory-breach',
+                    status: this.web3Config.BET_STATUS.PENDING,
+                    createdAt: new Date(Date.now() - 30 * 1000), // 30 segundos atrás
+                    acceptedAt: null
+                }
+            ];
+
+            // Agregar apuestas demo al sistema
+            demoBets.forEach(bet => {
+                this.activeBets.set(bet.id, bet);
+            });
+
+            console.log(`✅ ${demoBets.length} apuestas demo generadas`);
+            this.notifyBetUpdate('activeBetsLoaded', Array.from(this.activeBets.values()));
+
+        } catch (error) {
+            console.error('❌ Error generando apuestas demo:', error);
+        }
+    }
+
+    /**
+     * Crea una apuesta simulada en modo demo
+     */
+    async createDemoBet(betData) {
+        try {
+            console.log('🎭 Creando apuesta demo:', betData);
+
+            // Simular delay de transacción
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Generar ID único
+            const betId = `demo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+            // Obtener dirección del usuario
+            const userAddress = await this.web3Config.getUserAddress();
+
+            // Crear apuesta demo
+            const demoBet = {
+                id: betId,
+                creator: userAddress,
+                acceptor: null,
+                amount: betData.amount,
+                timeLimit: this.web3Config.BETTING_LIMITS.TIME_LIMITS[betData.timeLimit].toString(),
+                boostLimit: betData.boostLimit,
+                gameType: betData.gameType,
+                status: this.web3Config.BET_STATUS.PENDING,
+                createdAt: new Date(),
+                acceptedAt: null
+            };
+
+            // Agregar a apuestas activas
+            this.activeBets.set(betId, demoBet);
+
+            // Agregar a apuestas del usuario
+            this.userBets.set(betId, demoBet);
+
+            // Notificar actualización
+            this.notifyBetUpdate('betCreated', demoBet);
+
+            console.log('✅ Apuesta demo creada:', betId);
+            return betId;
+
+        } catch (error) {
+            console.error('❌ Error creando apuesta demo:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Acepta una apuesta simulada en modo demo
+     */
+    async acceptDemoBet(betId) {
+        try {
+            console.log('🎭 Aceptando apuesta demo:', betId);
+
+            const bet = this.activeBets.get(betId);
+            if (!bet) {
+                throw new Error('Apuesta demo no encontrada');
+            }
+
+            // Simular delay de transacción
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Obtener dirección del usuario
+            const userAddress = await this.web3Config.getUserAddress();
+
+            // Actualizar apuesta
+            bet.acceptor = userAddress;
+            bet.status = this.web3Config.BET_STATUS.ACTIVE;
+            bet.acceptedAt = new Date();
+
+            // Mover de activas a usuario
+            this.activeBets.delete(betId);
+            this.userBets.set(betId, bet);
+
+            // Notificar actualización
+            this.notifyBetUpdate('betAccepted', bet);
+
+            console.log('✅ Apuesta demo aceptada');
+            return { status: true };
+
+        } catch (error) {
+            console.error('❌ Error aceptando apuesta demo:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Cancela una apuesta simulada en modo demo
+     */
+    async cancelDemoBet(betId) {
+        try {
+            console.log('🎭 Cancelando apuesta demo:', betId);
+
+            const bet = this.userBets.get(betId);
+            if (!bet) {
+                throw new Error('Apuesta demo no encontrada');
+            }
+
+            // Simular delay de transacción
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Actualizar estado
+            bet.status = this.web3Config.BET_STATUS.CANCELLED;
+
+            // Remover de activas si estaba ahí
+            this.activeBets.delete(betId);
+
+            // Notificar actualización
+            this.notifyBetUpdate('betCancelled', { id: betId });
+
+            console.log('✅ Apuesta demo cancelada');
+            return { status: true };
+
+        } catch (error) {
+            console.error('❌ Error cancelando apuesta demo:', error);
+            throw error;
+        }
     }
 
 
