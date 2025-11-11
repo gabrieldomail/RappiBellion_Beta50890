@@ -101,8 +101,8 @@ class Web3Config {
             return this._bettingLimits;
         };
 
-        // Estados de apuestas
-        this.BET_STATUS = {
+        // Estados de apuestas (constante interna)
+        this._BET_STATUS = {
             PENDING: 0,
             ACTIVE: 1,
             COMPLETED: 2,
@@ -110,8 +110,8 @@ class Web3Config {
             EXPIRED: 4
         };
 
-        // Tipos de juegos disponibles
-        this.GAME_TYPES = {
+        // Tipos de juegos disponibles (constante interna)
+        this._GAME_TYPES = {
             ARKA_HACK: "arka-hack",
             SPACE_BREAKER: "space-breaker",
             PAC_HACK: "pac-hack",
@@ -307,12 +307,12 @@ class Web3Config {
 
     // Getter para BET_STATUS (para compatibilidad)
     get BET_STATUS() {
-        return this.BET_STATUS;
+        return this._BET_STATUS;
     }
 
     // Getter para GAME_TYPES (para compatibilidad)
     get GAME_TYPES() {
-        return this.GAME_TYPES;
+        return this._GAME_TYPES;
     }
 }
 
