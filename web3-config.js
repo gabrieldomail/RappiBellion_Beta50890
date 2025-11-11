@@ -210,11 +210,20 @@ class Web3Config {
 
             // Contrato de apuestas (si está desplegado)
             if (this.BETTING_CONTRACT_CONFIG.address) {
-                this.contracts.Betting = new ethers.Contract(
-                    this.BETTING_CONTRACT_CONFIG.address,
-                    this.BETTING_CONTRACT_CONFIG.abi,
-                    this.signer
-                );
+                try {
+                    this.contracts.Betting = new ethers.Contract(
+                        this.BETTING_CONTRACT_CONFIG.address,
+                        this.BETTING_CONTRACT_CONFIG.abi,
+                        this.signer
+                    );
+                    console.log('✅ Contrato de apuestas encontrado');
+                } catch (error) {
+                    console.warn('⚠️ Contrato de apuestas no disponible:', error.message);
+                    this.contracts.Betting = null;
+                }
+            } else {
+                console.log('ℹ️ Modo demo: Sin contrato de apuestas desplegado');
+                this.contracts.Betting = null;
             }
 
             console.log('✅ Contratos inicializados');
