@@ -28,8 +28,8 @@ class T2EIntegration {
             console.log('🔗 Inicializando integración T2E...');
 
             // Verificar que los scripts Web3 están cargados
-            if (typeof Web3Config === 'undefined' || typeof BettingEngine === 'undefined') {
-                throw new Error('Scripts Web3 no están cargados');
+            if (typeof window.Web3Config === 'undefined' || typeof window.BettingEngine === 'undefined') {
+                throw new Error('Scripts Web3 no están cargados. Web3Config: ' + typeof window.Web3Config + ', BettingEngine: ' + typeof window.BettingEngine);
             }
 
             this.web3Config = window.Web3Config;
