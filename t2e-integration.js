@@ -364,6 +364,11 @@ class T2EIntegration {
             // Recargar apuestas activas
             await this.bettingEngine.loadActiveBets();
 
+            // Mostrar automáticamente la ventana flotante con las apuestas del usuario
+            setTimeout(async () => {
+                await this.showUserBetsWindow();
+            }, 1000); // Pequeño delay para que se note la transición
+
         } catch (error) {
             this.hideLoading();
             this.showError('Error creando apuesta: ' + error.message);
