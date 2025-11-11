@@ -321,3 +321,8 @@ const web3Config = new Web3Config();
 
 // Exportar para uso en otros módulos
 window.Web3Config = web3Config;
+
+// Verificación de carga del script
+console.log('🔧 web3-config.js cargado correctamente');
+console.log('📦 Web3Config disponible:', typeof window.Web3Config);
+console.log('📦 ethers.js disponible:', typeof ethers);

@@ -702,5 +702,10 @@ class BettingEngine {
 // Instancia global del motor de apuestas
 const bettingEngine = new BettingEngine();
 
-// Exportar para uso global
+// Exportar para uso en otros módulos
 window.BettingEngine = bettingEngine;
+
+// Verificación de carga del script
+console.log('🎯 betting-engine.js cargado correctamente');
+console.log('📦 BettingEngine disponible:', typeof window.BettingEngine);
+console.log('📦 Web3Config disponible:', typeof window.Web3Config);
