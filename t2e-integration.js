@@ -106,26 +106,35 @@ class T2EIntegration {
             });
         }
 
-        // Botones de opciones
-        const optionButtons = document.querySelectorAll('.bet-option-button');
-        optionButtons.forEach(button => {
+        // Botones de opciones - tiempo
+        const timeButtons = document.querySelectorAll('.bet-option-button[data-type="time"]');
+        timeButtons.forEach(button => {
             button.addEventListener('click', () => {
-                // Remover selección previa del mismo grupo
-                const group = button.parentElement;
-                group.querySelectorAll('.bet-option-button').forEach(btn => {
-                    btn.classList.remove('active');
-                });
+                // Remover selección previa del grupo tiempo
+                timeButtons.forEach(btn => btn.classList.remove('active'));
 
                 // Seleccionar este botón
                 button.classList.add('active');
 
                 // Guardar selección
-                const value = button.getAttribute('data-value');
-                if (button.textContent.includes('Min')) {
-                    this.selectedBetOptions.timeLimit = value;
-                } else if (button.textContent.includes('Boost')) {
-                    this.selectedBetOptions.boostLimit = value;
-                }
+                this.selectedBetOptions.timeLimit = button.getAttribute('data-value');
+
+                this.updateBetPreview();
+            });
+        });
+
+        // Botones de opciones - boosts
+        const boostButtons = document.querySelectorAll('.bet-option-button[data-type="boost"]');
+        boostButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remover selección previa del grupo boosts
+                boostButtons.forEach(btn => btn.classList.remove('active'));
+
+                // Seleccionar este botón
+                button.classList.add('active');
+
+                // Guardar selección
+                this.selectedBetOptions.boostLimit = button.getAttribute('data-value');
 
                 this.updateBetPreview();
             });
