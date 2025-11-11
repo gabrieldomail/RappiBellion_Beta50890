@@ -74,22 +74,31 @@ class Web3Config {
             ]
         };
 
-        // Configuración de límites y costos
-        this.BETTING_LIMITS = {
-            MIN_BET_AMOUNT: ethers.utils.parseEther("1"), // 1 $RPPI mínimo
-            MAX_BET_AMOUNT: ethers.utils.parseEther("10000"), // 10,000 $RPPI máximo
-            TIME_LIMITS: {
-                "5": 5 * 60, // 5 minutos en segundos
-                "10": 10 * 60, // 10 minutos
-                "15": 15 * 60  // 15 minutos
-            },
-            BOOST_LIMITS: {
-                "1": 1,
-                "3": 3,
-                "5": 5
-            },
-            BOOST_COST_PERCENTAGE: 10, // 10% del monto de la apuesta por boost
-            GAS_LIMIT_MULTIPLIER: 1.2 // Multiplicador para gas limit
+        // Configuración de límites y costos (lazy initialization)
+        this._bettingLimits = null;
+        this.getBettingLimits = () => {
+            if (!this._bettingLimits) {
+                if (typeof ethers === 'undefined') {
+                    throw new Error('Ethers.js no está cargado');
+                }
+                this._bettingLimits = {
+                    MIN_BET_AMOUNT: ethers.utils.parseEther("1"), // 1 $RPPI mínimo
+                    MAX_BET_AMOUNT: ethers.utils.parseEther("10000"), // 10,000 $RPPI máximo
+                    TIME_LIMITS: {
+                        "5": 5 * 60, // 5 minutos en segundos
+                        "10": 10 * 60, // 10 minutos
+                        "15": 15 * 60  // 15 minutos
+                    },
+                    BOOST_LIMITS: {
+                        "1": 1,
+                        "3": 3,
+                        "5": 5
+                    },
+                    BOOST_COST_PERCENTAGE: 10, // 10% del monto de la apuesta por boost
+                    GAS_LIMIT_MULTIPLIER: 1.2 // Multiplicador para gas limit
+                };
+            }
+            return this._bettingLimits;
         };
 
         // Estados de apuestas
@@ -274,11 +283,27 @@ class Web3Config {
     async estimateGas(tx) {
         try {
             const gasEstimate = await this.provider.estimateGas(tx);
-            return gasEstimate.mul(this.BETTING_LIMITS.GAS_LIMIT_MULTIPLIER);
+            const limits = this.getBettingLimits();
+            return gasEstimate.mul(limits.GAS_LIMIT_MULTIPLIER);
         } catch (error) {
             console.error('❌ Error estimando gas:', error);
             throw error;
         }
+    }
+
+    // Getter para BETTING_LIMITS (para compatibilidad)
+    get BETTING_LIMITS() {
+        return this.getBettingLimits();
+    }
+
+    // Getter para BET_STATUS (para compatibilidad)
+    get BET_STATUS() {
+        return this.BET_STATUS;
+    }
+
+    // Getter para GAME_TYPES (para compatibilidad)
+    get GAME_TYPES() {
+        return this.GAME_TYPES;
     }
 }
 
