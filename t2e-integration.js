@@ -44,14 +44,17 @@ class T2EIntegration {
             // Configurar event listeners de UI
             this.setupUIEventListeners();
 
-            // Configurar listeners de blockchain
-            this.setupBlockchainListeners();
+        // Configurar listeners de blockchain
+        this.setupBlockchainListeners();
 
-            // Actualizar UI inicial
-            await this.updateUI();
+        // Configurar ventana flotante de apuestas del usuario
+        this.setupUserBetsWindow();
 
-            this.isInitialized = true;
-            console.log('✅ Integración T2E inicializada');
+        // Actualizar UI inicial
+        await this.updateUI();
+
+        this.isInitialized = true;
+        console.log('✅ Integración T2E inicializada');
 
         } catch (error) {
             console.error('❌ Error inicializando integración T2E:', error);
@@ -662,6 +665,226 @@ class T2EIntegration {
     }
 
     /**
+     * Configura la ventana flotante de apuestas del usuario
+     */
+    setupUserBetsWindow() {
+        console.log('🪟 Configurando ventana flotante de apuestas del usuario...');
+
+        // Botón para cerrar la ventana
+        const closeBtn = document.getElementById('close-user-bets-window');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.hideUserBetsWindow());
+        }
+
+        // Click fuera de la ventana para cerrar
+        const windowElement = document.getElementById('user-bets-floating-window');
+        if (windowElement) {
+            windowElement.addEventListener('click', (e) => {
+                if (e.target === windowElement) {
+                    this.hideUserBetsWindow();
+                }
+            });
+        }
+
+        // Event delegation para botones de cancelar apuestas
+        const betsList = document.getElementById('user-bets-list');
+        if (betsList) {
+            betsList.addEventListener('click', (e) => {
+                if (e.target.classList.contains('retire-hack-btn')) {
+                    e.preventDefault();
+                    const betId = e.target.getAttribute('data-bet-id');
+                    if (betId) {
+                        this.cancelUserBet(betId);
+                    }
+                }
+            });
+        }
+
+        // Agregar listener para mostrar ventana cuando se conecte la wallet
+        if (this.web3Config) {
+            // Mostrar ventana cuando se conecte la wallet y tenga apuestas
+            this.web3Config.addEventListener('walletConnected', async () => {
+                await this.loadAndShowUserBets();
+            });
+        }
+
+        console.log('✅ Ventana flotante de apuestas configurada');
+    }
+
+    /**
+     * Muestra la ventana flotante de apuestas del usuario
+     */
+    async showUserBetsWindow() {
+        const windowElement = document.getElementById('user-bets-floating-window');
+        if (!windowElement) return;
+
+        // Cargar apuestas del usuario
+        await this.loadUserBetsIntoWindow();
+
+        // Mostrar ventana
+        windowElement.classList.remove('user-bets-floating-hidden');
+        windowElement.style.opacity = '1';
+    }
+
+    /**
+     * Oculta la ventana flotante de apuestas del usuario
+     */
+    hideUserBetsWindow() {
+        const windowElement = document.getElementById('user-bets-floating-window');
+        if (!windowElement) return;
+
+        windowElement.style.opacity = '0';
+        setTimeout(() => {
+            windowElement.classList.add('user-bets-floating-hidden');
+        }, 300);
+    }
+
+    /**
+     * Carga las apuestas del usuario en la ventana flotante
+     */
+    async loadUserBetsIntoWindow() {
+        const betsList = document.getElementById('user-bets-list');
+        const emptyMessage = document.getElementById('user-bets-empty');
+
+        if (!betsList || !emptyMessage) return;
+
+        try {
+            // Cargar apuestas del usuario desde el engine
+            await this.bettingEngine.loadUserBets();
+            const userBets = Array.from(this.bettingEngine.userBets.values());
+
+            // Limpiar lista actual
+            betsList.innerHTML = '';
+
+            if (userBets.length === 0) {
+                betsList.style.display = 'none';
+                emptyMessage.style.display = 'block';
+                return;
+            }
+
+            // Mostrar lista de apuestas
+            betsList.style.display = 'block';
+            emptyMessage.style.display = 'none';
+
+            // Crear elementos para cada apuesta
+            userBets.forEach(bet => {
+                const betItem = this.createUserBetItem(bet);
+                betsList.appendChild(betItem);
+            });
+
+            console.log(`👤 ${userBets.length} apuestas de usuario cargadas en ventana flotante`);
+
+        } catch (error) {
+            console.error('❌ Error cargando apuestas del usuario:', error);
+            betsList.innerHTML = '<p style="text-align: center; color: #ff4444; padding: 20px;">Error cargando apuestas</p>';
+        }
+    }
+
+    /**
+     * Crea un elemento de apuesta para la ventana del usuario
+     */
+    createUserBetItem(bet) {
+        const betItem = document.createElement('div');
+        betItem.className = `user-bet-item ${this.getBetStatusClass(bet.status)}`;
+
+        const gameConfig = this.bettingEngine.getGameConfig(bet.gameType);
+        const gameName = gameConfig ? gameConfig.name : bet.gameType;
+        const timeRemaining = this.bettingEngine.formatTimeRemaining(bet.createdAt, bet.timeLimit);
+        const statusText = this.bettingEngine.formatBetStatus(bet.status);
+
+        // Solo mostrar botón de cancelar si la apuesta está pendiente
+        const cancelButton = bet.status === this.web3Config.BET_STATUS.PENDING ?
+            `<button class="retire-hack-btn" data-bet-id="${bet.id}" title="Cancelar apuesta">[RETIRE HACK]</button>` :
+            '';
+
+        betItem.innerHTML = `
+            <div class="user-bet-header">
+                <span class="user-bet-game">${gameName}</span>
+                <span class="user-bet-amount">${bet.amount} $RPPI</span>
+            </div>
+            <div class="user-bet-details">
+                <span><strong>ID:</strong> ${bet.id.substring(0, 8)}...</span>
+                <span><strong>Tiempo:</strong> ${timeRemaining}</span>
+                <span><strong>Boosts:</strong> ${bet.boostLimit}x</span>
+            </div>
+            <div class="user-bet-status ${this.getBetStatusClass(bet.status)}">
+                ${statusText}
+            </div>
+            ${cancelButton}
+        `;
+
+        return betItem;
+    }
+
+    /**
+     * Obtiene la clase CSS para el estado de la apuesta
+     */
+    getBetStatusClass(status) {
+        const statusClasses = {
+            [this.web3Config.BET_STATUS.PENDING]: 'pending',
+            [this.web3Config.BET_STATUS.ACTIVE]: 'active',
+            [this.web3Config.BET_STATUS.COMPLETED]: 'completed',
+            [this.web3Config.BET_STATUS.CANCELLED]: 'cancelled',
+            [this.web3Config.BET_STATUS.EXPIRED]: 'cancelled'
+        };
+        return statusClasses[status] || '';
+    }
+
+    /**
+     * Cancela una apuesta del usuario
+     */
+    async cancelUserBet(betId) {
+        try {
+            console.log('❌ Cancelando apuesta del usuario:', betId);
+
+            // Mostrar confirmación
+            if (!confirm('¿Estás seguro de que quieres cancelar esta apuesta? Perderás los tokens apostados.')) {
+                return;
+            }
+
+            // Mostrar loading
+            this.showLoading('Cancelando apuesta...');
+
+            // Cancelar apuesta
+            await this.bettingEngine.cancelBet(betId);
+
+            // Ocultar loading
+            this.hideLoading();
+
+            // Mostrar éxito
+            this.showNotification('Apuesta cancelada exitosamente', 'success');
+
+            // Recargar apuestas del usuario
+            await this.loadUserBetsIntoWindow();
+
+        } catch (error) {
+            this.hideLoading();
+            this.showError('Error cancelando apuesta: ' + error.message);
+            console.error('❌ Error cancelando apuesta del usuario:', error);
+        }
+    }
+
+    /**
+     * Carga y muestra las apuestas del usuario (llamado cuando se conecta wallet)
+     */
+    async loadAndShowUserBets() {
+        try {
+            await this.bettingEngine.loadUserBets();
+            const userBets = Array.from(this.bettingEngine.userBets.values());
+
+            // Solo mostrar ventana si hay apuestas activas
+            if (userBets.length > 0) {
+                // Pequeño delay para que se note la conexión
+                setTimeout(() => {
+                    this.showUserBetsWindow();
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('❌ Error cargando apuestas del usuario al conectar:', error);
+        }
+    }
+
+    /**
      * Utilidades para debugging
      */
     debugInfo() {
@@ -670,6 +893,7 @@ class T2EIntegration {
             web3Initialized: this.web3Config ? this.web3Config.isInitialized : false,
             bettingInitialized: this.bettingEngine ? this.bettingEngine.isInitialized : false,
             activeBets: this.bettingEngine ? this.bettingEngine.activeBets.size : 0,
+            userBets: this.bettingEngine ? this.bettingEngine.userBets.size : 0,
             currentGameType: this.currentGameType,
             selectedOptions: this.selectedBetOptions
         };

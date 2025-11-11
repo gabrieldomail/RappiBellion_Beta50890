@@ -52,17 +52,9 @@ class BettingEngine {
                 throw new Error('Web3Config no está inicializado');
             }
 
-            // Verificar si estamos en modo demo (sin contrato)
+            // Verificar que el contrato de apuestas esté disponible
             if (!this.web3Config.contracts.Betting) {
-                console.log('🎭 Modo demo activado: Sin contrato de apuestas desplegado');
-                console.log('💡 El sistema funcionará con datos simulados para demostración');
-
-                // Crear algunas apuestas demo para mostrar funcionalidad
-                this.createDemoBets();
-
-                this.isInitialized = true;
-                console.log('✅ Motor de apuestas T2E inicializado (modo demo)');
-                return;
+                throw new Error('Contrato de apuestas no desplegado. El sistema requiere un contrato inteligente para funcionar.');
             }
 
             // Configurar event listeners para actualizaciones en tiempo real
@@ -148,39 +140,7 @@ class BettingEngine {
                 throw new Error(`Saldo insuficiente. Necesitas al menos ${betData.amount} $RPPI`);
             }
 
-            // Modo demo: Simular creación de apuesta
-            if (!this.web3Config.contracts.Betting) {
-                console.log('🎭 Modo demo: Simulando creación de apuesta...');
 
-                // Simular delay de transacción
-                await new Promise(resolve => setTimeout(resolve, 2000));
-
-                // Crear apuesta demo
-                const userAddress = await this.web3Config.getUserAddress();
-                const betId = `user-${Date.now()}`;
-
-                const newBet = {
-                    id: betId,
-                    creator: userAddress.substring(0, 6) + '...' + userAddress.substring(userAddress.length - 4),
-                    acceptor: null,
-                    amount: betData.amount,
-                    timeLimit: this.web3Config.BETTING_LIMITS.TIME_LIMITS[betData.timeLimit].toString(),
-                    boostLimit: betData.boostLimit,
-                    gameType: betData.gameType,
-                    status: this.web3Config.BET_STATUS.PENDING,
-                    createdAt: new Date(),
-                    acceptedAt: null
-                };
-
-                // Agregar al cache
-                this.activeBets.set(betId, newBet);
-
-                // Notificar actualización
-                this.notifyBetUpdate('betCreated', newBet);
-
-                console.log('✅ Apuesta demo creada exitosamente:', betId);
-                return betId;
-            }
 
             // Preparar transacción real
             const amountWei = this.web3Config.parseRPPI(betData.amount);
@@ -644,59 +604,7 @@ class BettingEngine {
         return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
 
-    /**
-     * Crea apuestas de demostración para modo demo
-     */
-    createDemoBets() {
-        console.log('🎭 Creando apuestas de demostración...');
 
-        const demoBets = [
-            {
-                id: 'demo-1',
-                creator: '0x742d...f413',
-                acceptor: null,
-                amount: '25',
-                timeLimit: '600', // 10 minutos en segundos
-                boostLimit: '3',
-                gameType: 'arka-hack',
-                status: this.web3Config.BET_STATUS.PENDING,
-                createdAt: new Date(Date.now() - 2 * 60 * 1000), // 2 minutos atrás
-                acceptedAt: null
-            },
-            {
-                id: 'demo-2',
-                creator: '0xAb84...4dD1',
-                acceptor: null,
-                amount: '100',
-                timeLimit: '300', // 5 minutos en segundos
-                boostLimit: '1',
-                gameType: 'space-breaker',
-                status: this.web3Config.BET_STATUS.PENDING,
-                createdAt: new Date(Date.now() - 1 * 60 * 1000), // 1 minuto atrás
-                acceptedAt: null
-            },
-            {
-                id: 'demo-3',
-                creator: '0x2c3d...23d7e',
-                acceptor: null,
-                amount: '50',
-                timeLimit: '900', // 15 minutos en segundos
-                boostLimit: '5',
-                gameType: 'pac-hack',
-                status: this.web3Config.BET_STATUS.PENDING,
-                createdAt: new Date(Date.now() - 3 * 60 * 1000), // 3 minutos atrás
-                acceptedAt: null
-            }
-        ];
-
-        // Agregar apuestas demo al cache
-        demoBets.forEach(bet => {
-            this.activeBets.set(bet.id, bet);
-        });
-
-        console.log(`✅ ${demoBets.length} apuestas de demostración creadas`);
-        this.notifyBetUpdate('activeBetsLoaded', demoBets);
-    }
 }
 
 // Verificación inmediata de carga del script
@@ -705,7 +613,7 @@ console.log('🎯 betting-engine.js: Iniciando carga...');
 // Instancia global del motor de apuestas
 try {
     const bettingEngine = new BettingEngine();
-    console.log('🎯 betting-engine.js: Instancia BettingEngine creada');
+    console.log('� betting-engine.js: Instancia BettingEngine creada');
 
     // Exportar para uso en otros módulos
     window.BettingEngine = bettingEngine;

@@ -250,10 +250,31 @@
         <img id="bird-icon" src="images/zorzal.PNG" alt="Zorzal" width="48" height="48" style="display:block;" />
     </button>
 
-<!-- Botón flotante Mute/Play Zorzal Gardel (solo visible tras comenzar beta, ahora dentro de la sección beta) -->
+    <!-- Botón flotante Mute/Play Zorzal Gardel (solo visible tras comenzar beta, ahora dentro de la sección beta) -->
 
     </div>
 </section>
+
+<!-- === VENTANA FLOTANTE DE APUESTAS ACTIVAS DEL USUARIO === -->
+<div id="user-bets-floating-window" class="user-bets-floating-hidden">
+    <div class="user-bets-terminal">
+        <div class="user-bets-header">
+            <span>[MIS_APUESTAS_ACTIVAS]</span>
+            <button id="close-user-bets-window" class="user-bets-close-btn">✕</button>
+        </div>
+        <div class="user-bets-body">
+            <div id="user-bets-list">
+                <p style="text-align: center; color: #888; padding: 20px;">Cargando apuestas...</p>
+            </div>
+            <div id="user-bets-empty" style="display: none;">
+                <p style="text-align: center; color: var(--color-caos-verde); padding: 20px;">
+                    [NINGUNA_APUESTA_ACTIVA]<br>
+                    <span style="color: #888; font-size: 0.9em;">Crea tu primer desafío T2E</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 
 <section id="world" class="container section-separator"> 
     <h2 class="glitch-title">No es solo un juego. Es una historia.</h2> 
@@ -998,6 +1019,9 @@ btn.addEventListener('click', toggleMutePlay);
 
                     <button id="connect-wallet-button" class="cta-button whitepaper">
                         CONECTA TU BILLETERA PARA ENTRAR AL CIRCUITO
+                    </button>
+                    <button id="show-user-bets-button" class="cta-button" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa); display: none; margin-top: 10px;">
+                        [MIS APUESTAS ACTIVAS]
                     </button>
                     <p id="wallet-status" style="margin-top: 15px; font-size: 0.9em; color: var(--color-caos-verde);"></p>
                     <p id="wallet-address" style="margin-top: 5px; font-size: 0.85em; color: var(--color-azul-glitch); font-family: var(--fuente-titulos);"></p>
@@ -2098,6 +2122,37 @@ btn.addEventListener('click', toggleMutePlay);
         console.log('🚀 Inicializando conexión de billetera...');
         setupMetaMaskListeners();
         checkConnection();
+
+        // ========================================
+        // BOTÓN "MIS APUESTAS ACTIVAS"
+        // ========================================
+
+        const showUserBetsButton = document.getElementById('show-user-bets-button');
+        if (showUserBetsButton) {
+            showUserBetsButton.addEventListener('click', function() {
+                if (window.T2EIntegration && window.T2EIntegration.showUserBetsWindow) {
+                    window.T2EIntegration.showUserBetsWindow();
+                } else {
+                    console.error('❌ T2EIntegration no está disponible');
+                }
+            });
+        }
+
+        // Mostrar/ocultar botón según estado de conexión
+        function updateUserBetsButtonVisibility() {
+            if (showUserBetsButton) {
+                if (isConnected) {
+                    showUserBetsButton.style.display = 'inline-block';
+                } else {
+                    showUserBetsButton.style.display = 'none';
+                }
+            }
+        }
+
+        // Actualizar visibilidad del botón cuando cambie el estado de conexión
+        window.addEventListener('accountsChanged', updateUserBetsButtonVisibility);
+        window.addEventListener('chainChanged', updateUserBetsButtonVisibility);
+        updateUserBetsButtonVisibility(); // Inicial
 
 
         // ========================================

@@ -3048,3 +3048,214 @@ footer a {
 .bet-input {
     width: calc(100% - 80px); /* Ajusta el ancho para dar espacio al $RPPI */
 }
+
+/* === VENTANA FLOTANTE DE APUESTAS ACTIVAS DEL USUARIO === */
+
+.user-bets-floating-hidden {
+    display: none !important;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#user-bets-floating-window {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 350px;
+    max-width: 90vw;
+    max-height: 70vh;
+    z-index: 9999; /* Por encima de todo menos el botón mute */
+    background: rgba(5, 10, 15, 0.95);
+    border: 2px solid var(--color-caos-verde);
+    box-shadow: 0 0 25px var(--color-caos-verde);
+    border-radius: 5px;
+    overflow: hidden;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.user-bets-terminal {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    margin: 0;
+    max-width: none;
+    text-align: left;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.user-bets-header {
+    background-color: var(--color-caos-verde);
+    color: var(--color-fondo);
+    padding: 8px 12px;
+    font-size: 0.9em;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.user-bets-close-btn {
+    background: none;
+    border: none;
+    color: var(--color-fondo);
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.user-bets-close-btn:hover {
+    color: #ff4444;
+}
+
+.user-bets-body {
+    padding: 15px;
+    font-size: 0.9em;
+    color: var(--color-texto);
+    line-height: 1.4;
+    max-height: calc(70vh - 60px);
+    overflow-y: auto;
+}
+
+#user-bets-list {
+    margin-bottom: 15px;
+}
+
+.user-bet-item {
+    background: rgba(10, 15, 20, 0.8);
+    border-left: 3px solid var(--color-primario);
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+    position: relative;
+}
+
+.user-bet-item.pending {
+    border-left-color: var(--color-caos-amarillo);
+}
+
+.user-bet-item.active {
+    border-left-color: var(--color-caos-verde);
+}
+
+.user-bet-item.completed {
+    border-left-color: var(--color-azul-glitch);
+    opacity: 0.7;
+}
+
+.user-bet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.user-bet-game {
+    font-weight: bold;
+    color: var(--color-caos-verde);
+    font-size: 1em;
+}
+
+.user-bet-amount {
+    color: var(--color-primario);
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.user-bet-details {
+    font-size: 0.85em;
+    color: #ccc;
+    margin-bottom: 8px;
+}
+
+.user-bet-status {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-size: 0.75em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.user-bet-status.pending {
+    background: var(--color-caos-amarillo);
+    color: var(--color-fondo);
+}
+
+.user-bet-status.active {
+    background: var(--color-caos-verde);
+    color: var(--color-fondo);
+}
+
+.user-bet-status.completed {
+    background: var(--color-azul-glitch);
+    color: var(--color-fondo);
+}
+
+.user-bet-status.cancelled {
+    background: #666;
+    color: var(--color-texto);
+}
+
+.retire-hack-btn {
+    background: var(--color-primario);
+    color: var(--color-fondo);
+    border: 1px solid var(--color-primario);
+    padding: 4px 8px;
+    font-size: 0.8em;
+    font-family: var(--fuente-titulos);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.retire-hack-btn:hover {
+    background: transparent;
+    color: var(--color-primario);
+    box-shadow: 0 0 10px var(--color-primario);
+}
+
+.retire-hack-btn:disabled {
+    background: #666;
+    border-color: #666;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.retire-hack-btn:disabled:hover {
+    background: #666;
+    color: var(--color-texto);
+    box-shadow: none;
+}
+
+#user-bets-empty {
+    text-align: center;
+    padding: 30px 15px;
+    color: var(--color-caos-verde);
+    font-style: italic;
+}
+
+/* Responsive para móviles */
+@media (max-width: 600px) {
+    #user-bets-floating-window {
+        top: 10px;
+        right: 10px;
+        width: calc(100vw - 20px);
+        max-width: none;
+        max-height: 60vh;
+    }
+
+    .user-bets-body {
+        max-height: calc(60vh - 60px);
+    }
+}
