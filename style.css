@@ -2995,3 +2995,55 @@ footer a {
     border-color: var(--color-caos-verde);
     color: var(--color-fondo);
 }
+
+/* --- ESTILOS PARA "BETS OFFERS" (LOBBY) --- */
+
+#bets-offers-lobby {
+    border-bottom: 2px dashed var(--color-primario);
+    padding-bottom: 20px;
+}
+.bets-offers-list {
+    max-height: 180px; /* Altura máxima para la lista */
+    overflow-y: auto; /* Scroll si hay muchas apuestas */
+    background: rgba(11, 12, 16, 0.5); /* Fondo oscuro translúcido */
+    border: 1px solid #333;
+    padding: 10px;
+}
+.bet-offer-item {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #222;
+    gap: 10px;
+}
+.bet-offer-item:last-child {
+    border-bottom: none;
+}
+.bet-offer-item span {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    color: var(--color-texto);
+}
+.bet-offer-item span strong {
+    color: var(--color-azul-glitch); /* Nick en Azul */
+}
+.bet-accept-button {
+    padding: 5px 10px !important;
+    font-size: 0.8em !important;
+    margin-top: 0 !important;
+    background-color: var(--color-caos-verde); /* Verde Caos */
+    border-color: var(--color-caos-verde);
+    color: var(--color-fondo);
+    white-space: nowrap; /* Evita que el texto del botón se parta */
+}
+.bet-accept-button:hover {
+    background-color: transparent;
+    color: var(--color-caos-verde);
+}
+
+/* Ajuste de input */
+.bet-input {
+    width: calc(100% - 80px); /* Ajusta el ancho para dar espacio al $RPPI */
+}

@@ -1042,17 +1042,49 @@ btn.addEventListener('click', toggleMutePlay);
         <div class="bet-modal-content caos-terminal">
 
             <div class="terminal-header-caos" style="background-color: var(--color-primario); display: flex; justify-content: space-between; align-items: center;">
-                <span>[MAKE_YOUR_BET_TERMINAL]</span>
+                <span>[T2E_CASINO_LOBBY]</span>
                 <button id="close-bet-modal" class="terminal-close-btn">✕</button>
             </div>
 
             <div class="terminal-body-caos" style="color: var(--color-texto);">
-                <h3 id="bet-modal-title" style="color: var(--color-primario); text-align: center;">CREAR APUESTA T2E: ARKA-HACK</h3>
+
+                <div class="form-group" id="bets-offers-lobby">
+                    <label style="text-align: center; color: var(--color-caos-amarillo);">[ DESAFÍOS ABIERTOS EN "EL CIRCUITO" ]</label>
+                    <div class="bets-offers-list">
+
+                        <div class="bet-offer-item">
+                            <span><strong>Nick:</strong> 0x2c3d...23d7e</span>
+                            <span><strong>Monto:</strong> 25 $RPPI</span>
+                            <span><strong>Tiempo:</strong> 10 Min</span>
+                            <span><strong>Boosts:</strong> 3x</span>
+                            <button class="cta-button bet-accept-button">[ ACEPTAR HACK ]</button>
+                        </div>
+                        <div class="bet-offer-item">
+                            <span><strong>Nick:</strong> 0xAb84...4dD1</span>
+                            <span><strong>Monto:</strong> 100 $RPPI</span>
+                            <span><strong>Tiempo:</strong> 5 Min</span>
+                            <span><strong>Boosts:</strong> 1x</span>
+                            <button class="cta-button bet-accept-button">[ ACEPTAR HACK ]</button>
+                        </div>
+                        <div class="bet-offer-item">
+                            <span><strong>Nick:</strong> 0x742d...f413</span>
+                            <span><strong>Monto:</strong> 10 $RPPI</span>
+                            <span><strong>Tiempo:</strong> 15 Min</span>
+                            <span><strong>Boosts:</strong> 5x</span>
+                            <button class="cta-button bet-accept-button">[ ACEPTAR HACK ]</button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <h3 id="bet-modal-title" style="color: var(--color-primario); text-align: center; border-top: 1px dashed #555; padding-top: 20px; margin-bottom: 20px;">O CREA TU PROPIO DESAFÍO T2E</h3>
 
                 <div class="form-group">
                     <label for="bet-amount">1. DEFINE TU APUESTA (EL BOTE):</label>
-                    <input type="number" id="bet-amount" placeholder="Ej: 100" class="bet-input">
-                    <span class="bet-suffix">$RPPI</span>
+                    <div style="display: flex; align-items: center;">
+                        <input type="number" id="bet-amount" placeholder="Ej: 100" class="bet-input">
+                        <span class="bet-suffix">$RPPI</span>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -1073,7 +1105,7 @@ btn.addEventListener('click', toggleMutePlay);
                     </div>
                 </div>
 
-                <button id="launch-bet-button" class="cta-button" style="width: 100%; background-color: var(--color-caos-verde); border-color: var(--color-caos-verde);">
+                <button id="launch-bet-button" class="cta-button" style="width: 100%; background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); margin-top: 10px;">
                     [ LANZAR DESAFÍO Y ESPERAR OPONENTE ]
                 </button>
             </div>
