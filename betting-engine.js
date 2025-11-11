@@ -699,13 +699,23 @@ class BettingEngine {
     }
 }
 
+// Verificación inmediata de carga del script
+console.log('🎯 betting-engine.js: Iniciando carga...');
+
 // Instancia global del motor de apuestas
-const bettingEngine = new BettingEngine();
+try {
+    const bettingEngine = new BettingEngine();
+    console.log('🎯 betting-engine.js: Instancia BettingEngine creada');
 
-// Exportar para uso en otros módulos
-window.BettingEngine = bettingEngine;
+    // Exportar para uso en otros módulos
+    window.BettingEngine = bettingEngine;
+    console.log('🎯 betting-engine.js: BettingEngine asignado a window');
 
-// Verificación de carga del script
-console.log('🎯 betting-engine.js cargado correctamente');
-console.log('📦 BettingEngine disponible:', typeof window.BettingEngine);
-console.log('📦 Web3Config disponible:', typeof window.Web3Config);
+    // Verificación final de carga del script
+    console.log('✅ betting-engine.js cargado correctamente');
+    console.log('📦 BettingEngine disponible:', typeof window.BettingEngine);
+    console.log('📦 Web3Config disponible:', typeof window.Web3Config);
+} catch (error) {
+    console.error('❌ Error en betting-engine.js:', error);
+    console.error('❌ Error stack:', error.stack);
+}

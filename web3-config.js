@@ -316,13 +316,23 @@ class Web3Config {
     }
 }
 
+// Verificación inmediata de carga del script
+console.log('🔧 web3-config.js: Iniciando carga...');
+
 // Instancia global de configuración Web3
-const web3Config = new Web3Config();
+try {
+    const web3Config = new Web3Config();
+    console.log('🔧 web3-config.js: Instancia Web3Config creada');
 
-// Exportar para uso en otros módulos
-window.Web3Config = web3Config;
+    // Exportar para uso en otros módulos
+    window.Web3Config = web3Config;
+    console.log('🔧 web3-config.js: Web3Config asignado a window');
 
-// Verificación de carga del script
-console.log('🔧 web3-config.js cargado correctamente');
-console.log('📦 Web3Config disponible:', typeof window.Web3Config);
-console.log('📦 ethers.js disponible:', typeof ethers);
+    // Verificación final de carga del script
+    console.log('✅ web3-config.js cargado correctamente');
+    console.log('📦 Web3Config disponible:', typeof window.Web3Config);
+    console.log('📦 ethers.js disponible:', typeof ethers);
+} catch (error) {
+    console.error('❌ Error en web3-config.js:', error);
+    console.error('❌ Error stack:', error.stack);
+}
