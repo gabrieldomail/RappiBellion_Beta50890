@@ -364,6 +364,11 @@ class T2EIntegration {
             // Recargar apuestas activas
             await this.bettingEngine.loadActiveBets();
 
+            // Mostrar automáticamente la ventana flotante con las apuestas del usuario
+            setTimeout(async () => {
+                await this.showUserBetsWindow();
+            }, 1000); // Pequeño delay para que se note la transición
+
         } catch (error) {
             this.hideLoading();
             this.showError('Error creando apuesta: ' + error.message);
@@ -700,13 +705,8 @@ class T2EIntegration {
             });
         }
 
-        // Agregar listener para mostrar ventana cuando se conecte la wallet
-        if (this.web3Config) {
-            // Mostrar ventana cuando se conecte la wallet y tenga apuestas
-            this.web3Config.addEventListener('walletConnected', async () => {
-                await this.loadAndShowUserBets();
-            });
-        }
+        // Nota: La funcionalidad de mostrar apuestas al conectar wallet
+        // se maneja automáticamente en updateUI() después de la inicialización
 
         console.log('✅ Ventana flotante de apuestas configurada');
     }
