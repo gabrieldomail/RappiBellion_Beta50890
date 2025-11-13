@@ -2446,6 +2446,42 @@ btn.addEventListener('click', toggleMutePlay);
         
     }); // <-- FIN DEL 'DOMContentLoaded'
 
+    // === SCRIPT 6: CONTROLADOR DEL HUD DEL JUEGO ===
+
+    const gameHudOverlay = document.getElementById('game-hud-overlay');
+
+    if (launchBetButton && gameHudOverlay && betModal) {
+
+        // 1. Al hacer clic en "LANZAR DESAFÍO"
+        launchBetButton.addEventListener('click', function() {
+
+            // (Aquí Charly conectaría la lógica de Web3/Firebase para "crear" la apuesta)
+            // ...
+
+            // Simulación: Cerramos el modal de apuesta
+            betModal.style.opacity = '0';
+            setTimeout(() => {
+                betModal.classList.add('game-menu-hidden');
+            }, 300);
+
+            // ¡Y ABRIMOS EL JUEGO!
+            // (En un caso real, esto esperaría a que un rival acepte)
+
+            // Simulamos 2 segundos de espera "Buscando Rival..."
+            // (Aquí podrías mostrar un modal de "Buscando...")
+
+            setTimeout(() => {
+                // ¡"GALAXIAN EXPLOSION"! ¡ABRIR EL HUD!
+                gameHudOverlay.classList.remove('game-menu-hidden');
+                void gameHudOverlay.offsetWidth;
+                gameHudOverlay.style.opacity = '1';
+
+                // (¡Aquí Charly iniciaría el juego Pac-Man!)
+
+            }, 2000);
+        });
+    }
+
     // === SCRIPT 5: CONTROLADOR DEL MODAL "MAKE YOUR BET" ===
     const betModal = document.getElementById('make-bet-modal');
     const closeBetModalBtn = document.getElementById('close-bet-modal');
