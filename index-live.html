@@ -2815,7 +2815,7 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ========================================
-// CONTROLADOR DIRECTO DE APUESTAS - SOLO PAC-MAN DISPONIBLE
+// CONTROLADOR DIRECTO DE APUESTAS - PAC-MAN SE ABRE INMEDIATAMENTE
 // ========================================
 
 // Botones que abren directamente el juego Pac-Man (único disponible)
@@ -2825,29 +2825,29 @@ const betPacHackButton = document.getElementById('make-bet-pachack');
 const betTetrisButton = document.getElementById('make-bet-tetriscipher');
 const betMemoryButton = document.getElementById('make-bet-memorybreach');
 
-// Función para procesar apuesta y abrir Pac-Man
+// Función para procesar apuesta y abrir Pac-Man INMEDIATAMENTE
 function processBetAndOpenGame(gameTitle) {
-    console.log(`🎮 ¡APUESTA ${gameTitle} REALIZADA! Abriendo PAC-HACK (único juego disponible)...`);
+    console.log(`🎮 ¡APUESTA ${gameTitle} REALIZADA! Abriendo PAC-HACK inmediatamente...`);
 
-    // Simular que la apuesta se realizó exitosamente
+    // Notificación inmediata de que la apuesta se aceptó
     if (cyberpunkHUD && cyberpunkHUD.isActive) {
-        cyberpunkHUD.showNotification(`${gameTitle} BET ACCEPTED - LOADING PAC-HACK`);
+        cyberpunkHUD.showNotification(`${gameTitle} BET ACCEPTED - INITIALIZING PAC-HACK`);
     }
 
-    // Mostrar notificación de que solo Pac-Man está disponible
+    // Mostrar notificación de que Pac-Man está disponible
     setTimeout(() => {
         if (cyberpunkHUD && cyberpunkHUD.isActive) {
-            cyberpunkHUD.showNotification('ONLY PAC-HACK AVAILABLE - ENJOY THE GAME!');
+            cyberpunkHUD.showNotification('PAC-HACK LOADED - READY TO PLAY!');
         }
-    }, 1000);
+    }, 500);
 
-    // Abrir directamente la ventana del Pac-Man
+    // Abrir inmediatamente la ventana del Pac-Man (sin delay largo)
     setTimeout(() => {
         openPacmanWindow();
-    }, 1500); // Delay para mostrar las notificaciones
+    }, 800); // Delay corto para mostrar las notificaciones
 }
 
-// Asignar los eventos a TODOS los botones de apuesta
+// Asignar los eventos a TODOS los botones de apuesta - PAC-MAN SE ABRE INMEDIATAMENTE
 if (betArkaButton) {
     betArkaButton.addEventListener('click', () => processBetAndOpenGame('ARKA-HACK'));
 }
