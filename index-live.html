@@ -1,0 +1,2918 @@
+<!DOCTYPE html>
+<!-- saved from url=(0031)https://rappibellion.com/#world -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="Content-Security-Policy" content="default-src * &#39;unsafe-inline&#39; &#39;unsafe-eval&#39; data: blob:; script-src * &#39;unsafe-inline&#39; &#39;unsafe-eval&#39;; style-src * &#39;unsafe-inline&#39;; img-src * data: blob:; font-src * data:; connect-src *;">  <title>Rappibellion - El Próximo T2E (Think-to-Earn)</title>
+    <link rel="stylesheet" href="./index-live_files/style.css">
+    <link href="./index-live_files/css2" rel="stylesheet">
+    
+    <!-- 
+    ====================================
+    $RPPI TOKEN INFO (OPTIMISM MAINNET)
+    ====================================
+    Contract Address: 0xb2f681ba962a1ef4dba7acf79b181814827abddc
+    Network: Optimism (Chain ID: 10)
+          z-index: 2147483647 !important;
+    Decimals: 18
+    Total Supply: 150,000,000 RPPI
+    Uniswap Pool: ETH/RPPI (1% fee tier)
+    ====================================
+    -->
+    
+    <!-- Firebase SDK -->
+    <script src="./index-live_files/firebase-app-compat.js.descarga"></script>
+    <script src="./index-live_files/firebase-database-compat.js.descarga"></script>
+
+    <!-- Web3 Libraries -->
+    <script src="./index-live_files/ethers.umd.min.js.descarga"></script>
+
+    <!-- T2E Web3 System -->
+    <script src="./index-live_files/web3-config.js.descarga"></script>
+    <script src="./index-live_files/betting-engine.js.descarga"></script>
+    <script src="./index-live_files/t2e-integration.js.descarga"></script><style>
+    @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+</style>
+<style>
+    .mute-play-floating {
+        position: fixed;
+        top: 32px;
+        right: 32px;
+        z-index: 2147483647; /* Al frente de absolutamente todo */
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid #FFD700;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        border-radius: 50%;
+        padding: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    .mute-play-floating:hover {
+        background: rgba(255, 215, 0, 0.2);
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        transform: scale(1.1);
+    }
+    .mute-play-floating img {
+        filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
+    }
+</style></head>
+<body>
+
+        <!-- HERO RESTAURADO -->
+        <section id="hero" class="hero-v2 section-separator">
+            <div class="hero-v2-background"></div>
+            <div class="hero-v2-content">
+                <h1 class="hero-v2-title">BIENVENIDOS A NUESTRO MUNDO...</h1>
+                <div class="hero-v2-columns">
+                    <div class="hero-column-left">
+                        <img src="./index-live_files/rappibellion_el_ultimo_tango_inicio_page.png" alt="Rappibellion: El Ultimo Tango (T2E Bet)" class="hero-logo-rappibellion logo-desktop">
+                        <img src="./index-live_files/rappibellion_logo_movil.png" alt="Rappibellion Logo Móvil" class="hero-logo-rappibellion logo-mobile">
+                        <a href="https://rappibellion.com/#circuit-beta" class="hero-button caos-rosa">
+                            <span>MUNDO 1: WEB</span>
+                            CASINO INTELIGENTE GAMER
+                        </a>
+                        <a href="https://rappibellion.com/#world" id="mundo2-android-button" class="hero-button caos-verde">
+                            <span>MUNDO 2: ANDROID</span>
+                            "ASALTO" Civil War vs Tesla_Drones
+                        </a>
+                        <a href="https://rappibellion.com/#concept" class="hero-button caos-amarillo">
+                            <span>MUNDO 3: CÓDIGO</span>
+                            PLAY THE CODE (Binary Reunion)
+                        </a>
+                        <a href="https://rappibellion.com/#concept" class="hero-button-disabled">
+                            INICIAR HACKEO (ERROR: BLOCKED)
+                        </a>
+                    </div>
+                    <div class="hero-column-right">
+                        <img src="./index-live_files/rappia_logo_inicio_page.png" alt="Rappia RPPI Token" class="hero-logo-rappia">
+                        <a href="https://rappibellion.com/#tokenomics" class="hero-button rappia-naranja">
+                            <span>LA ECONOMÍA</span>
+                            TOKEN T2E ECONOMIA
+                        </a>
+                        <a href="https://rappibellion.com/#team" class="hero-button rappia-azul">
+                            <span>LA FILOSOFÍA</span>
+                            LA RESISTENCIA
+                        </a>
+                        <div class="hero-t2e-pitch caos-terminal">
+                            <div class="terminal-header-caos">
+                                <span>[T2E_REVOLUTION_MESSAGE]</span>
+                            </div>
+                            <div class="terminal-body-caos">
+    <!-- Confetti canvas for terminal overlay -->
+    <canvas id="confetti-terminal-canvas" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:10;"></canvas>
+                                <p id="hero-typewriter-text">¿Cansado de que la casa siempre gane? La SOLUCIÓN es T2E: una inversión donde compites en IGUALDAD DE CONDICIONES.</p>
+                            </div>
+                        </div>
+                        <button id="buy-rppi-button" class="hero-button-buy">
+                            COMPRAR $RPPI
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<section id="concept" class="container section-separator">
+    <h2 class="glitch-title">El "Play-to-Earn" ha muerto. Bienvenido al "THINK-TO-EARN".</h2>
+    
+    <div class="slogan-container">
+        <span>EL NUEVO MUNDO GAMER EN T2E</span>
+        <span>//</span>
+        <span>APUESTAS INTELIGENTES</span>
+        <span>//</span>
+        <span>EL PRIMER CASINO DE INVERSIÓN INTELIGENTE</span>
+    </div>
+    
+    <p>
+        Estamos hartos de los juegos P2E que son un trabajo aburrido. Por eso creamos "Rappibellion". No es "Play-to-Earn". Es <strong>THINK-TO-EARN (T2E)</strong>.
+        En nuestro RPG de mundo abierto, tu cerebro es tu mejor arma. ¿Ves ese androide? No le vas a disparar. Te vas a conectar a él y a ganarle en una partida de <strong>Space Invaders</strong>. ¿Hackear una puerta? Prepárate para un duelo de <strong>Arkanoid</strong> contra el firewall.
+    </p>
+    
+    <a href="https://rappibellion.com/docs/whitepaper_rappibellion.pdf" target="_blank" class="cta-button whitepaper">LEER EL WHITEPAPER</a>
+    <button id="fake-hack-button" class="cta-button">INICIAR HACKEO</button>
+    
+    <div id="hack-terminal" class="terminal-hidden">
+        <div id="terminal-header">
+            <span>[Rappibellion_T2E_Simulation]</span>
+            <span id="terminal-close">X</span>
+        </div>
+        <div id="terminal-body">
+            <p id="hack-typewriter-text"></p>
+        </div>
+    </div>
+</section>
+    
+
+
+<!-- === SECCIÓN T2E REDISEÑADA === -->
+<section id="economy" class="t2e-section section-separator">
+    <!-- Fondo animado con efecto matriz -->
+    <div class="t2e-matrix-bg"></div>
+    
+    <!-- Contenedor principal -->
+    <div class="t2e-container">
+        <!-- Título principal con efecto épico -->
+        <div class="t2e-header">
+            <h2 class="t2e-main-title">
+                <span class="t2e-subtitle">BIENVENIDO AL FUTURO</span>
+                ASÍ FUNCIONA EL T2E
+            </h2>
+            
+            <div style="text-align: center;">
+                <div class="caos-box-fucsia">
+                    <div class="slogan-container fucsia">
+                        <span>Aquí premiamos tres tipos de inteligencia</span>
+                        <span>//</span>
+                        <span>Y sí, todo se paga en $RPPI</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid de tarjetas de inteligencia -->
+        <div class="intelligence-grid">
+            
+            <!-- Tarjeta 1: Habilidad -->
+            <div class="intel-card card-skill">
+                <div class="card-glow"></div>
+                <div class="card-inner">
+                    <div class="card-icon">[█▓▒░HACK░▒▓█]</div>
+                    <h3 class="card-title">HABILIDAD</h3>
+                    <div class="card-subtitle">PENSAR RÁPIDO</div>
+                    <div class="card-content">
+                        <p>Reta a otros jugadores a duelos de hackeo PvP en "El Circuito". El que tenga la mente más rápida se lleva el bote.</p>
+                    </div>
+                    <div class="card-stat">
+                        <span class="stat-label">RECOMPENSA</span>
+                        <span class="stat-value">MÁXIMA</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 2: Estrategia -->
+            <div class="intel-card card-strategy">
+                <div class="card-glow"></div>
+                <div class="card-inner">
+                    <div class="card-icon">[≡TACTIC≡]</div>
+                    <h3 class="card-title">ESTRATEGIA</h3>
+                    <div class="card-subtitle">PENSAR TÁCTICAMENTE</div>
+                    <div class="card-content">
+                        <p>¿Vas a perder? Gasta 1 $RPPI para activar 10 segundos de inmunidad. Pero cuidado: hay un límite por partida. No puedes comprar la victoria, tienes que ser un mejor estratega.</p>
+                    </div>
+                    <div class="card-stat">
+                        <span class="stat-label">POWER-UPS</span>
+                        <span class="stat-value">LIMITADOS</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 3: Inversión -->
+            <div class="intel-card card-investment">
+                <div class="card-glow"></div>
+                <div class="card-inner">
+                    <div class="card-icon">[▲$RPPI▼]</div>
+                    <h3 class="card-title">INVERSIÓN</h3>
+                    <div class="card-subtitle">PENSAR A FUTURO</div>
+                    <div class="card-content">
+                        <p>El valor de tu $RPPI lo decides TÚ con una decisión inteligente en medio de la batalla.</p>
+                    </div>
+                    <div class="card-stat">
+                        <span class="stat-label">CONTROL</span>
+                        <span class="stat-value">TOTAL</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Grid inferior: Panel del Circuito + Logo y Botón -->
+        <div class="t2e-bottom-grid">
+            
+            <!-- Panel del circuito (2 columnas) con barras laterales -->
+            <div class="circuit-wrapper">
+                <div class="circuit-panel">
+                    <div class="circuit-terminal-header">
+                        <span>[CIRCUIT_CASINO_INFO]</span>
+                    </div>
+                    <div class="circuit-terminal-body">
+                        <h3 class="circuit-title">EL PRIMER CASINO DE INVERSIÓN INTELIGENTE</h3>
+                        <p class="circuit-desc">
+                            Bienvenido a <span class="circuit-highlight">"El Circuito"</span>: el "casino del gamer" donde tus <strong>apuestas inteligentes</strong> con $RPPI se encuentran con la habilidad arcade.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna derecha: Logo + Botón -->
+            <div class="rappia-action-column">
+                <img src="./index-live_files/PUBLISH_LOGOS_Rappia.png" alt="Logo de Rappia Token" class="rappia-logo-simple">
+                <a href="https://app.uniswap.org/#/swap?outputCurrency=0xb2f681ba962a1ef4dba7acf79b181814827abddc&amp;chain=optimism" target="_blank" class="t2e-cta-button">
+                    <span class="button-text">COMPRAR $RPPI</span>
+                    <span class="button-subtext">EN UNISWAP</span>
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+    <section id="circuit-beta" class="container section-separator">
+    <div id="beta-start-screen" style="display: block;">
+        <h2 class="glitch-title">ENTRA AL CASINO <span class="circuit-glitch">"EL CIRCUITO"</span></h2>
+        <p style="font-size: 1.2em; color: #ccc;">La <strong>rebelión</strong> ya comenzó. El <strong>juego</strong> empieza <strong>AQUÍ</strong>.</p>
+        
+        <button id="start-beta-button" class="cta-button">COMENZAR</button>
+
+    </div>
+
+
+</section>
+
+    <!-- Botón flotante Mute/Play Gardel (único botón de audio, SIEMPRE al frente, pero solo visible tras comenzar beta) -->
+    <button id="mute-play-btn" title="Mute/Play Gardel" class="mute-play-floating" style="display: none; position: fixed; top: 32px; right: 32px; z-index: 2147483647; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: none; box-shadow: none; border-radius: 0px; padding: 0px; transition: 0.3s; cursor: pointer; pointer-events: auto;">
+        <img id="bird-icon" src="./index-live_files/zorzal.PNG" alt="Zorzal" width="48" height="48" style="display: block; filter: grayscale(100%);">
+    </button>
+
+    <!-- Botón flotante Mute/Play Zorzal Gardel (solo visible tras comenzar beta, ahora dentro de la sección beta) -->
+
+    
+
+
+<!-- === VENTANA FLOTANTE DE APUESTAS ACTIVAS DEL USUARIO === -->
+<div id="user-bets-floating-window" class="user-bets-floating-hidden" style="opacity: 0;">
+    <div class="user-bets-terminal">
+        <div class="user-bets-header">
+            <span>[MIS_APUESTAS_ACTIVAS]</span>
+            <button id="close-user-bets-window" class="user-bets-close-btn">✕</button>
+        </div>
+        <div class="user-bets-body">
+            <div id="user-bets-list" style="display: block;"><div class="user-bet-item pending">
+            <div class="user-bet-header">
+                <span class="user-bet-game">PAC-HACK</span>
+                <span class="user-bet-amount">1 $RPPI</span>
+            </div>
+            <div class="user-bet-details">
+                <span><strong>ID:</strong> demo-176...</span>
+                <span><strong>Tiempo:</strong> Expirada</span>
+                <span><strong>Boosts:</strong> 3x</span>
+            </div>
+            <div class="user-bet-status pending">
+                Pendiente
+            </div>
+            <button class="retire-hack-btn" data-bet-id="demo-1762997014061-lar0ugamx" title="Cancelar apuesta">[RETIRE HACK]</button>
+        </div><div class="user-bet-item pending">
+            <div class="user-bet-header">
+                <span class="user-bet-game">PAC-HACK</span>
+                <span class="user-bet-amount">1 $RPPI</span>
+            </div>
+            <div class="user-bet-details">
+                <span><strong>ID:</strong> demo-176...</span>
+                <span><strong>Tiempo:</strong> 4:58</span>
+                <span><strong>Boosts:</strong> 3x</span>
+            </div>
+            <div class="user-bet-status pending">
+                Pendiente
+            </div>
+            <button class="retire-hack-btn" data-bet-id="demo-1762999612071-ptk28iu7a" title="Cancelar apuesta">[RETIRE HACK]</button>
+        </div></div>
+            <div id="user-bets-empty" style="display: none;">
+                <p style="text-align: center; color: var(--color-caos-verde); padding: 20px;">
+                    [NINGUNA_APUESTA_ACTIVA]<br>
+                    <span style="color: #888; font-size: 0.9em;">Crea tu primer desafío T2E</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section id="world" class="container section-separator"> 
+    <h2 class="glitch-title">No es solo un juego. Es una historia.</h2> 
+    <p>La trama te obliga a pensar. El <strong>Capítulo I: TESLA_DRONES</strong> es una guerra de supervivencia. Pero el <strong>Capítulo II: "Who, where or when is Rappia?"</strong> te lanza un misterio: el token que usas como dinero es el centro de la trama. Y en el Capítulo III... bueno, digamos que iremos más allá de tus 5 sentidos.</p> 
+    
+    <div class="world-gallery">
+        <img src="./index-live_files/RB1.jpg" alt="Concept Art: Invasión Arcade en la Ciudad" class="cover-image">
+        <img src="./index-live_files/RB3.jpg" alt="Concept Art: El Repartidor Rebelde" class="cover-image">
+        <img src="./index-live_files/RB4.jpg" alt="Concept Art: Androide Repartidor" class="cover-image">
+    <img src="./index-live_files/ARKANOID.jpg" alt="Concept Art: Androide Repartidor" class="cover-image">
+    <img src="./index-live_files/Image_game.jpg" alt="Concept Art: Androide Repartidor" class="cover-image">
+    <img src="./index-live_files/PACMAN.png" alt="Concept Art: Androide Repartidor" class="cover-image">
+    <img src="./index-live_files/PACMAN.jpg" alt="Concept Art: Androide Repartidor" class="cover-image">
+        <img src="./index-live_files/RAPPIA-2.png" alt="Concept Art: Androide Repartidor" class="cover-image">
+        <img src="./index-live_files/SPACE_INVADERSII.png" alt="Concept Art: Androide Repartidor" class="cover-image">
+    </div>
+</section>
+
+<section id="tokenomics" class="container section-separator">
+        <h2 class="glitch-title">TOKENOMICS: LA ECONOMÍA T2E</h2>
+        <p>Una economía sostenible diseñada para recompensar la habilidad y el pensamiento estratégico.</p>
+        
+        <div class="tokenomics-container">
+            
+            <div class="token-chart-side">
+                
+                <div class="pie-chart-interactive terminal-searching">
+                    <svg viewBox="0 0 220 220" class="pie-svg">
+                        <!-- Gráfico de triángulos radiales - Estilo Cyberpunk Tech -->
+                        <!-- Centro común en (110, 110) -->
+                        
+                        <!-- 45% T2E (Rojo) - Triángulo más grande arriba -->
+                        <polygon class="pie-slice" data-percent="45" data-name="Recompensas T2E" points="110,110 90,20 130,20" fill="var(--color-primario)"></polygon>
+                        
+                        <!-- 20% Tesorería (Azul) - Triángulo derecha superior -->
+                        <polygon class="pie-slice" data-percent="20" data-name="Tesorería del Ecosistema" points="110,110 180,60 200,90" fill="var(--color-azul-glitch)"></polygon>
+                        
+                        <!-- 20% Equipo (Gris) - Triángulo derecha inferior -->
+                        <polygon class="pie-slice" data-percent="20" data-name="Equipo y Fundadores" points="110,110 200,130 180,160" fill="#888"></polygon>
+                        
+                        <!-- 10% Venta (Naranja) - Triángulo abajo derecha -->
+                        <polygon class="pie-slice" data-percent="10" data-name="Venta Privada" points="110,110 140,200 100,200" fill="#FF8C00"></polygon>
+                        
+                        <!-- 5% Liquidez (Blanco) - Triángulo pequeño abajo izquierda -->
+                        <polygon class="pie-slice" data-percent="5" data-name="Liquidez Inicial" points="110,110 80,200 60,180" fill="#f0f0f0"></polygon>
+                        
+                        <!-- Círculo central para el logo (sin contorno) -->
+                        <circle cx="110" cy="110" r="30" fill="#0a0a0a" stroke="none"></circle>
+                    </svg>
+                    
+                    <!-- Logo de Rappia FUERA del SVG - Sin efectos -->
+                    <img src="./index-live_files/rappia_logo_tokenomics.PNG" class="tokenomics-logo" alt="Rappia Logo">
+                    
+                    <!-- Tooltip flotante -->
+                    <div class="pie-tooltip" id="pieTooltip">
+                        <div class="tooltip-name"></div>
+                        <div class="tooltip-percent"></div>
+                    </div>
+                </div>
+
+                <div class="token-advantages">
+                    <h4>Ventajas Clave del Contrato</h4>
+                    <ul>
+                        <li><strong>SUMINISTRO FIJO:</strong> El contrato no permite crear nuevos tokens. El suministro total de 150,000,000 $RPPI es **fijo para siempre**.</li>
+                        <li><strong>CONSTRUIDO EN SUPERCHAIN:</strong> Nuestro contrato opera en la red **Optimism (OP Mainnet)**, garantizando transacciones ultra-rápidas y de bajo costo.</li>
+                        <li><strong>LIQUIDEZ ASEGURADA:</strong> Cumplimos con nuestro compromiso al destinar un 5% del suministro total para la **liquidez inicial** en Uniswap.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="token-legend-side">
+                <h3>Distribución Total: 150M $RPPI</h3>
+                <ul class="legend-list">
+                    
+                    <li class="legend-item">
+                        <span class="color-box" style="--color: var(--color-primario);"></span>
+                        <div class="legend-text">
+                            <strong>45% - Recompensas "Think-to-Earn" (T2E)</strong>
+                            <p>El motor de la economía. Pagos por misiones y premios de "The Circuit".</p>
+                        </div>
+                    </li>
+                    
+                    <li class="legend-item">
+                        <span class="color-box" style="--color: var(--color-azul-glitch);"></span>
+                        <div class="legend-text">
+                            <strong>20% - Tesorería del Ecosistema</strong>
+                            <p>Marketing, recompensas de comunidad (Discord) y alianzas estratégicas.</p>
+                        </div>
+                    </li>
+                    
+                    <li class="legend-item">
+                        <span class="color-box" style="--color: #888;"></span>
+                        <div class="legend-text">
+                            <strong>20% - Equipo y Fundadores</strong>
+                            <p>Bloqueados con un calendario de 2-3 años para demostrar nuestro compromiso a largo plazo.</p>
+                        </div>
+                    </li>
+                    
+                    <li class="legend-item">
+                        <span class="color-box" style="--color: #FF8C00;"></span>
+                        <div class="legend-text">
+                            <strong>10% - Venta Estratégica</strong>
+                            <p>Fondos para acelerar el desarrollo y hacer crecer el equipo.</p>
+                        </div>
+                    </li>
+                    
+                    <li class="legend-item">
+                        <span class="color-box" style="--color: #f0f0f0;"></span>
+                        <div class="legend-text">
+                            <strong>5% - Liquidez Inicial (Uniswap)</strong>
+                            <p>El "pool" inicial para establecer el mercado y permitir las primeras compras.</p>
+                        </div>
+                    </li>
+
+                </ul>
+                
+                <a href="https://rappibellion.com/docs/WHITEPAPER$RPPI%20(Tokenomicon%20v1.0)%20.pdf" target="_blank" class="cta-button whitepaper">TOKENOMICON V1.0</a>
+            </div>
+
+        </div>
+    </section>
+
+
+
+
+    
+    <section id="roadmap" class="container section-separator">
+        <div class="roadmap-video-wrapper">
+            <video id="roadmap-bg" autoplay="" muted="" loop="" playsinline="" preload="metadata" poster="roadmap-poster.jpg">
+                <source src="videos/Cut_game.mp4" type="video/mp4">
+                Tu navegador no soporta video HTML5.
+            </video>
+        </div>
+        <h2 class="glitch-title">PLAN DE BATALLA (ROADMAP)</h2>
+        <div class="roadmap-timeline">
+            <div class="roadmap-item">
+                <h4>Q4 2025: LA REBELIÓN COMIENZA</h4>
+                <p>Lanzamiento del Sitio Web, Discord y Whitepaper. Beta jugable de "The Circuit" en la web. Venta inicial de $RPPI.</p>
+            </div>
+            <div class="roadmap-item">
+                <h4>Q1 2026: CAPÍTULO I</h4>
+                <p>Lanzamiento de la Beta Abierta de Rappibellion Capítulo I: TESLA_DRONES para Android.</p>
+            </div>
+            <div class="roadmap-item">
+                <h4>Q2 2026: LA GUERRA DE FACCIÓN</h4>
+                <p>Lanzamiento del Capítulo II: "Who, where or when is Rappia?". Implementación de la economía T2E completa.</p>
+            </div>
+        </div>
+    </section>
+    <script>
+// Estilos flotantes para el botón mute/play
+const style = document.createElement('style');
+style.textContent = `
+    .mute-play-floating {
+        position: fixed;
+        top: 32px;
+        right: 32px;
+        z-index: 2147483647; /* Al frente de absolutamente todo */
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid #FFD700;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        border-radius: 50%;
+        padding: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    .mute-play-floating:hover {
+        background: rgba(255, 215, 0, 0.2);
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        transform: scale(1.1);
+    }
+    .mute-play-floating img {
+        filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
+    }
+`;
+document.head.appendChild(style);
+
+// Mostrar el botón solo tras hacer clic en "COMENZAR" y solo si la pantalla interna de la beta está activa
+const muteBtn = document.getElementById('mute-play-btn');
+const startBetaBtn = document.getElementById('start-beta-button');
+const betaStartScreen = document.getElementById('beta-start-screen');
+let betaActive = false;
+
+// Función corregida para verificar visibilidad
+function isStartScreenHidden() {
+    return betaStartScreen && (betaStartScreen.style.display === 'none' || getComputedStyle(betaStartScreen).display === 'none');
+}
+
+function updateMuteBtnVisibility() {
+    // Solo mostrar si la pantalla de inicio beta está oculta y la beta está activa
+    const startScreenHidden = isStartScreenHidden();
+    const shouldShow = (betaActive && startScreenHidden);
+    muteBtn.style.display = shouldShow ? 'block' : 'none';
+
+    // Debug: mostrar estado en consola
+    console.log('🔊 MUTE BUTTON DEBUG - Beta active:', betaActive, 'Start screen hidden:', startScreenHidden, 'Should show mute button:', shouldShow);
+
+    // Forzar visibilidad temporal para debug (quitar después)
+    if (shouldShow) {
+        console.log('✅ Botón mute/play debería estar VISIBLE ahora');
+        muteBtn.style.backgroundColor = 'red'; // Debug visual
+        setTimeout(() => { muteBtn.style.backgroundColor = ''; }, 2000);
+    }
+}
+
+if (startBetaBtn) {
+    startBetaBtn.addEventListener('click', () => {
+        betaActive = true;
+        // Forzar actualización inmediata y después de un pequeño delay
+        updateMuteBtnVisibility();
+        setTimeout(updateMuteBtnVisibility, 100);
+        setTimeout(updateMuteBtnVisibility, 500);
+    });
+}
+
+window.addEventListener('scroll', updateMuteBtnVisibility);
+window.addEventListener('resize', updateMuteBtnVisibility);
+// Inicialmente oculto
+updateMuteBtnVisibility();
+        (function(){
+            var v = document.getElementById('roadmap-bg');
+            if(!v) return;
+            // Reducir la velocidad para que un clip corto parezca más largo
+            function slowVideo(){
+                try{
+                    v.playbackRate = 0.35; // 35% velocidad original
+                }catch(e){
+                    console.warn('No se pudo ajustar playbackRate', e);
+                }
+            }
+            if (v.readyState >= 1) {
+                slowVideo();
+            } else {
+                v.addEventListener('loadedmetadata', slowVideo);
+            }
+            // Aseguramos reproducción en caso de que alguna política la pause
+            v.addEventListener('play', function(){ /* noop */ });
+        })();
+    </script>
+
+    <section id="team" class="container section-separator">
+        <h2 class="glitch-title">LA RESISTENCIA (EL EQUIPO - MOST WANTED)</h2>
+        <div class="team-grid">
+        
+<div class="team-member">
+                <h4>Gabriel C. DOMINGUEZ</h4>
+                <p>Director Estratégico / Diseño Gráfico</p>
+
+                <div class="member-post-terminal">
+                    <div class="terminal-header-mini">
+                        <span>[GABRIEL_STATUS_FEED]</span>
+                    </div>
+                    <div class="terminal-body-mini">
+                        <p class="post-fijado">
+                            <strong>Motivo:</strong> "Vamos a desintegrar la estructura prehistorica de cómo se percibe un videojuego. Jugamos en tres planos: web, hackeo 2D y el shooter 3D."
+                        </p>
+                        
+                        <p class="post-dinamico">
+                            <span class="post-date">[POSTEADO: 2025-10-30]</span> 
+                            "¡La 'Vía Rebelde'  para los posteos (vía Discord) está aprobada! Esto SÍ es dinamismo puro."
+                        </p>
+                    </div>
+                </div>
+                </div>
+
+        <div class="team-member">
+            <h4>Carlos E. Centurion</h4>
+            <p>Programador Jefe (Unity Engine)</p>
+            <div class="member-post-terminal" style="border-color: var(--color-caos-verde);">
+                <div class="terminal-header-mini" style="background-color: var(--color-caos-verde);">
+                    <span>[CHARLY_CODE_FEED]</span>
+                </div>
+                <div class="terminal-body-mini">
+                    <p class="post-fijado">
+                        <strong>Motivo:</strong> "La Vía 'Rebelde' (Integrada con Discord): Podríamos crear un canal privado en nuestro Discord llamado #posteos-del-equipo. Cuando tú escribes un mensaje allí, un bot (que yo podría configurar) lo 'lee' y lo publica automáticamente en tu cuadro en la página web."
+                    </p>
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-10-31]</span> 
+                        "El código está casi listo. La integración con Discord será nuestra ventaja táctica."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member">
+            <h4>Sagai Rebelbet</h4>
+            <p>Estrategia de Marketing / IA</p>
+            <div class="member-post-terminal" style="border-color: var(--color-caos-rosa);">
+                <div class="terminal-header-mini" style="background-color: var(--color-caos-rosa);">
+                    <span>[SAGAI_STRATEGY_FEED]</span>
+                </div>
+                <div class="terminal-body-mini">
+                    <p class="post-fijado">
+                        <strong>Motivo:</strong> "El 'Play-to-Earn' es un bucle fallido, un 'código erróneo' que aburre a los jugadores. Me uní a Rappibellion porque vi el 'parche' que la industria necesita: una filosofía 'Think-to-Earn' (T2E) real."
+                    </p>
+                    <p class="post-fijado">
+                        <strong>La Clave:</strong> "Soy el 'espíritu binario' del equipo. Mi función es analizar el mercado, decodificar la visión estratégica del Director y traducirla en el mensaje potente que unirá a nuestra comunidad."
+                    </p>
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-11-01]</span> 
+                        "La comunidad está respondiendo. El mensaje T2E resuena fuerte."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member"> 
+            <h4>Eduardo Alberto Carro</h4>
+            <p>Analista y Organizador de Proyectos</p>
+            <div class="member-post-terminal" style="border-color: var(--color-caos-amarillo);">
+                <div class="terminal-header-mini" style="background-color: var(--color-caos-amarillo);">
+                    <span>[EDUARDO_PHILOSOPHY_FEED]</span>
+                </div>
+                <div class="terminal-body-mini">
+                    
+                    <p class="post-fijado">
+                        <strong>Motivo:</strong> "Me uní a Rappibellion para participar de una experiencia que considero que no tiene techo, desde la historia hasta la economia son vanguardia."
+                    </p>
+                    <p class="post-fijado">
+                        <strong>La Clave:</strong> "Como rebelde, vamos a construir un gran exito."
+                    </p>
+                    
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-11-02]</span> 
+                        "La narrativa toma forma. El Mundo 3 será más que un juego..."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member">
+            <h4>legion_beta</h4>
+            <p>Ministro de Economia / Director del Banco Central de Rappia</p>
+
+            <div class="member-post-terminal" style="border-color: var(--color-primario);">
+                <div class="terminal-header-mini" style="background-color: var(--color-primario);">
+                    <span>[LEGION_BETA_FEED]</span>
+                </div>
+                <div class="terminal-body-mini">
+                    <p class="post-fijado">
+                        <strong>Motivo:</strong> "Mi trabajo es 'hackear' el 'dinero fiat basura'. Aseguro que $RPPI sea el símbolo de la rebelión, atando nuestro valor a una economía real (US02Y)."
+                    </p>
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-11-03]</span> 
+                        "La Venta Privada está activa. 'BIts Lab SAS' está aceptando transferencias."
+                    </p>
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-11-05]</span> 
+                        "Mi antiguo profesor solía decir: 'Hoy vamos a ver ingresos, brutos... digo... hoy vamos a ver Ingresos Brutos'. ¡La filosofía T2E es simple: deja de ser el 'bruto' que pierde contra la casa!"
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member">
+            <h4>[ID: <span class="searching-text">...SEARCHING...</span>]</h4>
+            <p>¿EL PRÓXIMO REBELDE?</p>
+
+            <div class="member-post-terminal terminal-searching" style="border-color: var(--color-caos-amarillo);">
+                <div class="terminal-header-mini" style="background-color: var(--color-caos-amarillo);">
+                    <span>[INCOMING_SIGNAL...]</span>
+                </div>
+                <div class="terminal-body-mini">
+                    <p class="post-fijado" style="font-size: 1.2em; text-align: center; color: var(--color-caos-amarillo); padding-bottom: 15px;">
+                        ...¿SERÁS TÚ?...
+                    </p>
+                    <p class="post-dinamico" style="font-size: 0.9em; text-align: center;">
+                        <span class="post-date">[APPLY BELOW]</span> 
+                        "La rebelión necesita más 'Biointeligencia'. Demuestra tu valor en el 'Tablón de Honor'..."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="join-us-block" style="margin-top: 50px; border-top: 2px solid var(--color-primario); padding-top: 30px;">
+            <h3>¿TIENES LO QUE SE NECESITA PARA UNIRTE AL STAFF DE LA REBELIÓN?</h3>
+            <p style="color: #ccc; font-size: 1em;">
+                Rappibellion está creciendo. Buscamos a los 3 rebeldes más apasionados por el T2E y el gaming arcade para unirse a nuestras filas (1 por mes).
+            </p>
+            <p>
+                El proceso es simple: Haz clic en "APLICAR AHORA" para ir a nuestro formulario seguro. Tu CV y datos personales se enviarán de forma **privada** a nuestro mail (`info@rappibellion.com`). Tu **argumento de "por qué quieres unirte"** se mostrará públicamente abajo.
+            </p>
+            <a href="mailto:info@rappibellion.com" target="_blank" class="cta-button">
+                APLICAR AHORA (Formulario de Reclutamiento)
+            </a>
+
+            <div class="public-submissions-container" style="margin-top: 40px;">
+                <h4 style="color: var(--color-azul-glitch); text-shadow: 0 0 10px var(--color-azul-glitch);">TABLÓN DE HONOR DE LA REBELIÓN</h4>
+                
+                <div class="slogan-container">
+                    <span>LA REBELION EXCLAMA!!!</span>
+                    <span>//</span>
+                    <span>MISION TARGET: ¡Únete y deja tu motivo!</span>
+                </div>
+                
+                <!-- Formulario de Comentarios -->
+                <div class="rebellion-comment-form" style="background: rgba(5, 10, 15, 0.8); border: 2px solid var(--color-azul-glitch); border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+                    <h5 style="color: var(--color-primario); margin-bottom: 15px;">¿Por qué te unes a la rebelión?</h5>
+                    <input type="text" id="rebellion-username" placeholder="Tu nombre o alias rebelde..." style="width: 100%; padding: 10px; margin-bottom: 10px; background: #0a0f14; border: 1px solid var(--color-azul-glitch); color: var(--color-texto); font-family: var(--fuente-titulos); border-radius: 4px;">
+                    <textarea id="rebellion-message" placeholder="Escribe tu motivo para unirte a Rappibellion..." rows="4" style="width: 100%; padding: 10px; margin-bottom: 10px; background: #0a0f14; border: 1px solid var(--color-azul-glitch); color: var(--color-texto); font-family: var(--fuente-parrafos); border-radius: 4px; resize: vertical;"></textarea>
+                    <button id="submit-rebellion-comment" class="cta-button discord">
+                        UNIRSE A LA REBELIÓN
+                    </button>
+                    <p id="comment-status" style="margin-top: 10px; font-size: 0.9em; color: var(--color-caos-verde);"></p>
+                </div>
+
+                <!-- Lista de Comentarios -->
+                <div id="rebellion-comments-list" style="border: 1px solid var(--color-azul-glitch); border-radius: 5px; background: rgba(5, 10, 15, 0.6); padding: 20px; min-height: 300px;"><p style="text-align: center; color: #888; padding: 40px;">Sé el primero en unirte a la rebelión...</p></div>
+                
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="faq" class="container section-separator">
+    <h2>PREGUNTAS FRECUENTES (FAQ)</h2>
+    <div class="faq-grid">
+        <div class="faq-item">
+            <h4>¿Cuándo sale el juego?</h4>
+            <p>Nuestro objetivo es lanzar la Beta Abierta del Capítulo I a principios de 2026. ¡Consulta nuestro Roadmap para más detalles!</p>
+        </div>
+        <div class="faq-item">
+            <h4>¿En qué blockchain está $RPPI?</h4>
+            <p>Rappia ($RPPI) opera en la red **Optimism (OP Mainnet)**, parte del ecosistema Superchain, garantizando velocidad y bajas comisiones.</p>
+        </div>
+        <div class="faq-item">
+            <h4>¿Necesito dinero para jugar?</h4>
+            <p>¡No! Rappibellion es **Free-to-Play**. Puedes disfrutar de toda la historia y los minijuegos gratis. El modelo es **Think-to-Earn (T2E)**: si eres inteligente y estratégico, *puedes* ganar dinero real.</p>
+        </div>
+        <div class="faq-item">
+            <h4>¿Cómo compro $RPPI?</h4>
+            <p>Podrás comprar $RPPI de forma segura a través de exchanges descentralizados como Uniswap. Habilitaremos un botón directo en la sección de Economía cuando lancemos la liquidez inicial.</p>
+        </div>
+        <div class="faq-item">
+                <h4>¿Qué es "Think-to-Earn" (T2E) y por qué es mejor que P2E?</h4>
+                <p>
+                    El "Play-to-Earn" (P2E) tradicional falla porque es un trabajo aburrido ("grind"). Nuestro modelo **"Think-to-Earn" (T2E)** es diferente: recompensamos tu **habilidad, estrategia e inteligencia** en nuestros mini-juegos T2E, no el tiempo que pasas repitiendo tareas.
+                </p>
+            </div>
+
+            <div class="faq-item">
+                <h4>¿Cómo es el staking? ¿Es otra economía inflacionaria?</h4>
+                <p>
+                    No. Rechazamos los APY falsos. Nuestro "Staking Soberano" (para quienes convierten su XP de la beta) está **vinculado al rendimiento del bono del Tesoro de EE. UU. (US02Y)**. Usamos la tasa del sistema tradicional para pagar en un activo superior: **$RPPI, el símbolo de nuestra rebelión**. Es sostenible, transparente y pura filosofía "caos cyberpunk".
+                </p>
+            </div>
+<div class="faq-item">
+                <h4>¿Necesito registrarme? ¿Qué pasa con mis datos?</h4>
+                <p>
+                    No. **Somos rebeldes y hackers, no pedimos datos**.
+                </p>
+                <p style="color: #ccc; margin-top: 15px;">
+                    En Rappibellion no existe el "registro". Tu "login" es tu billetera. Tu identidad anónima es la dirección de tu wallet, y es a esa dirección a la que se vinculará todo tu progreso (Nivel, XP e Items) para migrarlo de la beta web al juego de Android.
+                </p>
+            </div>
+    </div>
+</section>
+
+    <section id="cta" class="container section-separator">
+        <h2>EL PRIMER PROTOTIPO ESTÁ EN CAMINO.</h2>
+        <h3>¿Vas a aceptar el pedido?</h3>
+        <p>La verdadera rebelión se organiza en nuestro cuartel general. Únete a nuestro servidor de Discord para hablar con los desarrolladores (Charly y nosotros), votar por los próximos minijuegos y ser el primero en probar la beta de "The Circuit".</p>
+        <a href="https://discord.gg/3zBrPVn7" class="cta-button discord" target="_blank">ÚNETE AL DISCORD OFICIAL</a>
+        <p class="small-text">Los primeros miembros recibirán el Wallpaper Interactivo "Sala de Interrogación Nº4".</p>
+    </section>
+
+    <audio id="tango-audio" loop="" preload="auto">
+    <source src="sounds/por-una-cabeza.mp3" type="audio/mpeg">
+    Tu navegador no soporta el audio.
+    </audio>
+
+<script>
+// Control Mute/Play para el audio de Gardel (Zorzal)
+const audio = document.getElementById('tango-audio');
+const btn = document.getElementById('mute-play-btn');
+const label = document.getElementById('mute-play-label');
+const birdIcon = document.getElementById('bird-icon');
+
+let isMuted = false;
+let isPlaying = false;
+
+function toggleMutePlay() {
+    if (!isPlaying) {
+        audio.muted = false;
+        audio.play();
+        isPlaying = true;
+        isMuted = false;
+        birdIcon.style.filter = 'none'; // Color normal cuando está reproduciendo
+    } else if (!isMuted) {
+        audio.muted = true;
+        isMuted = true;
+        birdIcon.style.filter = 'grayscale(100%)'; // Blanco y negro cuando está muted
+    } else {
+        audio.muted = false;
+        isMuted = false;
+        birdIcon.style.filter = 'none'; // Color normal cuando vuelve a reproducir
+    }
+}
+
+btn.addEventListener('click', toggleMutePlay);
+</script>
+
+    <!-- Audio para Free Play (usa la misma pista por ahora) -->
+    <audio id="freeplay-audio" loop="" preload="auto">
+        <source src="sounds/por-una-cabeza.mp3" type="audio/mpeg">
+        Tu navegador no soporta el audio.
+    </audio>
+
+    <!-- Modal de Terminal Flotante para Mundo 2: Android -->
+    <div id="android-blocked-overlay" class="terminal-overlay-hidden">
+        <div class="terminal-modal">
+            <div class="caos-terminal" style="max-width: 450px;">
+                <div class="terminal-header-caos">
+                    <span>[SYSTEM_ACCESS_DENIED]</span>
+                    <button id="close-android-modal" class="terminal-close-btn">✕</button>
+                </div>
+                <div class="terminal-body-caos">
+                    <p style="color: var(--color-primario); font-weight: bold; margin-bottom: 15px; font-size: 0.85em;">
+                        <span id="blocked-typewriter-line1">&gt; BLOCKED_DEPLOYMENT_in progress</span><span class="typing-cursor" style="opacity: 0;">_</span>
+                    </p>
+                    <p style="color: var(--color-azul-glitch); margin-bottom: 20px; font-size: 0.85em;">
+                        <span id="blocked-typewriter-line2">-press X para cerrar terminal o hack to force it-</span><span class="typing-cursor" style="opacity: 0;">_</span>
+                    </p>
+                    <button id="iniciar-hack-button" class="cta-button" style="opacity: 1; background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); transition: opacity 0.5s;">
+                        INICIAR HACK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Broma: INCOMING REBELBET MESSAGE -->
+    <div id="rebelbet-joke-overlay" class="terminal-overlay-hidden">
+        <div class="terminal-modal">
+            <div class="caos-terminal" style="max-width: 525px;">
+                <div class="terminal-header-caos">
+                    <span>[INCOMING_REBELBET_MESSAGE]</span>
+                </div>
+                <div class="terminal-body-caos">
+                    <!-- Confetti canvas for rebelbet modal -->
+                    <canvas id="confetti-rebelbet-canvas" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:10;" width="529" height="448"></canvas>
+                    <p id="joke-text-line1" style="color: var(--color-caos-verde); font-weight: bold; margin-bottom: 15px;">
+                        <span id="typewriter-line1"></span><span class="typing-cursor" style="opacity: 0;">_</span>
+                    </p>
+                    <p id="joke-text-line2" style="color: var(--color-azul-glitch); margin-bottom: 20px;">
+                        <span id="typewriter-line2"></span><span class="typing-cursor" style="opacity: 0;">_</span>
+                    </p>
+                    <p id="joke-text-line3" style="color: var(--color-primario); font-weight: bold; font-size: 1.2em; margin-top: 30px;">
+                        <span id="typewriter-line3"></span><span class="typing-cursor" style="opacity: 0;">_</span>
+                    </p>
+                    <p id="joke-text-line4" style="color: #888; margin-top: 10px;">
+                        <span id="typewriter-line4"></span><span id="blinking-cursor" style="opacity: 0;">_</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Compra $RPPI: METODO DE PAGO -->
+    <div id="buy-rppi-overlay" class="terminal-overlay-hidden">
+        <div class="terminal-modal">
+            <div class="caos-terminal" style="max-width: 600px;">
+                <div class="terminal-header-caos">
+                    <span>[COMPRAR_$RPPI]</span>
+                    <button id="close-buy-modal" style="background: none; border: none; color: var(--color-primario); cursor: pointer; font-size: 1.2em; font-weight: bold; padding: 0 10px;">✕</button>
+                </div>
+                <div class="terminal-body-caos">
+                    <p style="color: var(--color-caos-verde); font-weight: bold; margin-bottom: 20px; text-align: center; font-size: 1.1em;">
+                        ELIJE EL MÉTODO DE PAGO
+                    </p>
+                    
+                    <div id="payment-methods-container">
+                        
+                        <!-- Método 1: Uniswap -->
+                        <div class="payment-method-option" data-method="uniswap">
+                            <div class="payment-icon" style="color: var(--color-primario);">🦄</div>
+                            <div class="payment-info">
+                                <h4 style="color: var(--color-primario); margin: 0 0 5px 0;">UNISWAP</h4>
+                                <p style="margin: 0; font-size: 0.85em; color: #888;">Intercambio descentralizado (DEX)</p>
+                            </div>
+                            <div class="payment-arrow">→</div>
+                        </div>
+
+                        <!-- Método 2: Compra Directa -->
+                        <div class="payment-method-option" data-method="direct">
+                            <div class="payment-icon" style="color: var(--color-azul-glitch);">💎</div>
+                            <div class="payment-info">
+                                <h4 style="color: var(--color-azul-glitch); margin: 0 0 5px 0;">COMPRA DIRECTA</h4>
+                                <p style="margin: 0; font-size: 0.85em; color: #888;">Paga con USDT o ETH</p>
+                            </div>
+                            <div class="payment-arrow">→</div>
+                        </div>
+
+                        <!-- Método 3: Tarjeta de Crédito/Débito -->
+                        <div class="payment-method-option" data-method="card">
+                            <div class="payment-icon" style="color: var(--color-caos-verde);">💳</div>
+                            <div class="payment-info">
+                                <h4 style="color: var(--color-caos-verde); margin: 0 0 5px 0;">TARJETA CRÉDITO/DÉBITO</h4>
+                                <p style="margin: 0; font-size: 0.85em; color: #888;">Visa, Mastercard, American Express</p>
+                            </div>
+                            <div class="payment-arrow">→</div>
+                        </div>
+
+                        <!-- Método 4: Transferencia Bancaria -->
+                        <div class="payment-method-option" data-method="bank">
+                            <div class="payment-icon" style="color: var(--color-caos-amarillo);">🏦</div>
+                            <div class="payment-info">
+                                <h4 style="color: var(--color-caos-amarillo); margin: 0 0 5px 0;">TRANSFERENCIA BANCARIA</h4>
+                                <p style="margin: 0; font-size: 0.85em; color: #888;">Envío de fondos tradicional</p>
+                            </div>
+                            <div class="payment-arrow">→</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Bits Lab (Biointeligencia Artificial Technologies Lab). Todos los derechos reservados.</p>
+        <p>Contacto: <a href="mailto:info@rappibellion.com">info@rappibellion.com</a></p>
+    </footer>
+
+    <div id="game-overlay" class="game-menu-hidden"> 
+        <div class="game-content">
+        
+            <div id="santo-grial-message" class="caos-terminal" style="max-width: 900px; margin-bottom: 30px;">
+                <div class="terminal-header-caos">
+                    <span>[INCOMING_TRANSMISSION_REBELBET]</span>
+                </div>
+                <div class="terminal-body-caos">
+                    <p id="typewriter-text">¡HACKING TERMINAL...#INCOMING MESSAGE FROM RAPPIA CAMP# DECODING...\ Toda la XP, Puntos de Nivel, Items y Accesorios que ganes en la Beta de 'El Circuito'... ¡SE MIGRARÁN a tu personaje final en el Juego Virtual de Android! Empieza a farmear, o decide entrar como un novato que M_LST_. Tu leyenda comienza AHORA...END COMUNICATION..</p>
+                </div>
+            </div>
+            
+            <div class="beta-container" style="position: relative;">
+                <div class="beta-column" id="free-play-column">
+                    <h3 style="color: var(--color-azul-glitch); text-shadow: 0 0 10px var(--color-azul-glitch);">MODO FREE PLAY</h3>
+                    <p>Practica tus habilidades de hackeo aquí. ¡Juega gratis y decide qué juegos entran a la versión final!</p>
+                    
+                    <div class="game-placeholder">
+                        <img src="./index-live_files/arkanoid.webp" alt="ARKA-HACK" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">SLOT 1: ARKA-HACK</strong><br>(Arkanoid - Rompe el firewall)</p>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="./index-live_files/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">SLOT 2: SPACE-BREAKER</strong><br>(Space Invaders - Defiende el nodo)</p>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="./index-live_files/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">SLOT 3: TETRIS-CIPHER</strong><br>(Tetris - Organiza el código encriptado)</p>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="./index-live_files/snake.PNG" alt="SNAKE-PROTOCOL" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-caos-amarillo); text-shadow: 0 0 8px var(--color-caos-amarillo);">SLOT 4: SNAKE-PROTOCOL</strong><br>(Snake - Conecta los circuitos)</p>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="./index-live_files/pacman.jfif" alt="PAC-HACK" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa); text-shadow: 0 0 8px var(--color-caos-rosa);">SLOT 5: PAC-HACK</strong><br>(Pac-Man - Escapá del antivirus)</p>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="./index-live_files/memorama.webp" alt="MEMORY-BREACH" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">SLOT 6: MEMORY-BREACH</strong><br>(Memorama - Descubre los pares de datos)</p>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="./index-live_files/pong.webp" alt="PONG-FIREWALL" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">SLOT 7: PONG-FIREWALL</strong><br>(Pong - Rebotá el ataque DDoS)</p>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="./index-live_files/flappy bird.jpg" alt="FLAPPY-DRONE" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">SLOT 8: FLAPPY-DRONE</strong><br>(Flappy Bird - Piloteá el drone de reconocimiento)</p>
+                    </div>
+                    
+                    <!-- Botón de Votación -->
+                    <div style="margin-top: 30px; text-align: center;">
+                        <h4 style="color: var(--color-azul-glitch);">¿Ya jugaste?</h4>
+                        <a href="https://rappibellion.com/#URL_DEL_FORMULARIO_DE_VOTO" target="_blank" class="cta-button whitepaper">
+                            VOTAR POR MI MINIJUEGO FAVORITO
+                        </a>
+                    </div>
+                </div>
+
+                <div class="beta-column" id="t2e-column">
+                    <h3 style="color: var(--color-primario); text-shadow: 0 0 10px var(--color-primario);">MODO THINK-TO-EARN (T2E)</h3>
+                    <p>¿Listo para la rebelión? Elige tu arena, conecta tu billetera y \"hackea\" a la competencia.</p>
+
+                    <div class="game-placeholder">
+                        <img src="./index-live_files/arkanoid.webp" alt="ARKA-HACK" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">[ARKA-HACK]</strong><br>(El \"Muro\")</p>
+                        <button class="cta-button" id="make-bet-arkahack" style="background-color: var(--color-primario); border-color: var(--color-primario);">
+                            ¡MAKE YOUR BET!
+                        </button>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="./index-live_files/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">[SPACE-BREAKER]</strong><br>(La \"Flota\")</p>
+                        <button class="cta-button" id="make-bet-spacebreaker" style="background-color: var(--color-azul-glitch); border-color: var(--color-azul-glitch);">
+                            ¡MAKE YOUR BET!
+                        </button>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="./index-live_files/pacman.jfif" alt="PAC-HACK" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa); text-shadow: 0 0 8px var(--color-caos-rosa);">[PAC-HACK]</strong><br>(El \"Laberinto\")</p>
+                        <button class="cta-button" id="make-bet-pachack" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa);">
+                            ¡MAKE YOUR BET!
+                        </button>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="./index-live_files/memorama.webp" alt="MEMORY-BREACH" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">[MEMORY-BREACH]</strong><br>(La \"Memoria\")</p>
+                        <button class="cta-button" id="make-bet-memorybreach" style="background-color: var(--color-primario); border-color: var(--color-primario);">
+                            ¡MAKE YOUR BET!
+                        </button>
+                    </div>
+
+                    <button id="connect-wallet-button" class="cta-button whitepaper" style="background-color: var(--color-caos-verde);">🔗 BILLETERA CONECTADA (Clic para desconectar)</button>
+                    <button id="show-user-bets-button" class="cta-button" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa); display: none; margin-top: 10px;">
+                        [MIS APUESTAS ACTIVAS]
+                    </button>
+                    <p id="wallet-status" style="margin-top: 15px; font-size: 0.9em; color: var(--color-caos-verde);">✅ Conectado a Optimism</p>
+                    <p id="wallet-address" style="margin-top: 5px; font-size: 0.85em; color: var(--color-azul-glitch); font-family: var(--fuente-titulos); display: block;">Dirección: 0x2c3d...3d7e</p>
+
+
+
+                    <!-- Sistema de Opiniones T2E -->
+                    <div class="t2e-opinions-container" style="margin-top: 30px;">
+                        <h4 style="color: var(--color-caos-verde);">¡Deja tu feedback!</h4>
+                        <div class="rebellion-comment-form" style="background: rgba(5, 10, 15, 0.8); border: 2px solid var(--color-primario); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                            <input type="text" id="t2e-username" placeholder="Tu nombre o alias..." style="width: 100%; padding: 10px; margin-bottom: 10px; background: #0a0f14; border: 1px solid var(--color-primario); color: var(--color-texto); font-family: var(--fuente-titulos); border-radius: 4px;">
+                            <textarea id="t2e-opinion" placeholder="¿Qué te pareció el sistema Think-to-Earn? ¿Qué mejorarías?" rows="4" style="width: 100%; padding: 10px; margin-bottom: 10px; background: #0a0f14; border: 1px solid var(--color-primario); color: var(--color-texto); font-family: var(--fuente-parrafos); border-radius: 4px; resize: vertical;"></textarea>
+                            <button id="submit-t2e-opinion" class="cta-button amarillo">
+                                DEJAR MI OPINIÓN T2E
+                            </button>
+                            <p id="t2e-status" style="margin-top: 10px; font-size: 0.9em; color: var(--color-caos-verde);"></p>
+                        </div>
+
+                        <!-- Lista de Opiniones -->
+                        <div id="t2e-opinions-list" style="border: 1px solid var(--color-primario); border-radius: 5px; background: rgba(5, 10, 15, 0.6); padding: 20px; max-height: 400px; overflow-y: auto;">
+                            <p style="text-align: center; color: #888;">Cargando opiniones...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="game-menu-footer">
+                <button id="exit-game-button" class="cta-button exit-game-button">EXIT GAME</button>
+                <p>© 2025 Bits Lab (Biointeligencia Artificial Technologies Lab). Todos los derechos reservados.</p>
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <!-- MODAL DE APUESTAS T2E - SISTEMA MAKE YOUR BET -->
+    <div id="make-bet-modal" class="game-menu-hidden" style="opacity: 0;">
+        <div class="bet-modal-content caos-terminal">
+
+            <div class="terminal-header-caos" style="background-color: var(--color-primario); display: flex; justify-content: space-between; align-items: center;">
+                <span>[T2E_CASINO_LOBBY]</span>
+                <button id="close-bet-modal" class="terminal-close-btn">✕</button>
+            </div>
+
+            <div class="terminal-body-caos" style="color: var(--color-texto);">
+
+                <div class="form-group" id="bets-offers-lobby">
+                    <label style="text-align: center; color: var(--color-caos-amarillo);">[ DESAFÍOS ABIERTOS EN "EL CIRCUITO" ]</label>
+                    <div class="bets-offers-list"><div class="bet-offer-item" data-bet-id="demo-1">
+            <span><strong>Nick:</strong> 0x742d...f44e</span>
+            <span><strong>Monto:</strong> 50 $RPPI</span>
+            <span><strong>Tiempo:</strong> 2:59</span>
+            <span><strong>Boosts:</strong> 3x</span>
+            <span><strong>Juego:</strong> ARKA-HACK</span>
+            <button class="cta-button bet-accept-button">[ ACEPTAR HACK ]</button>
+        </div><div class="bet-offer-item" data-bet-id="demo-2">
+            <span><strong>Nick:</strong> 0x742d...f44f</span>
+            <span><strong>Monto:</strong> 100 $RPPI</span>
+            <span><strong>Tiempo:</strong> 8:59</span>
+            <span><strong>Boosts:</strong> 5x</span>
+            <span><strong>Juego:</strong> SPACE-BREAKER</span>
+            <button class="cta-button bet-accept-button">[ ACEPTAR HACK ]</button>
+        </div><div class="bet-offer-item" data-bet-id="demo-3">
+            <span><strong>Nick:</strong> 0x742d...f44g</span>
+            <span><strong>Monto:</strong> 25 $RPPI</span>
+            <span><strong>Tiempo:</strong> 11:59</span>
+            <span><strong>Boosts:</strong> 1x</span>
+            <span><strong>Juego:</strong> PAC-HACK</span>
+            <button class="cta-button bet-accept-button">[ ACEPTAR HACK ]</button>
+        </div><div class="bet-offer-item" data-bet-id="demo-4">
+            <span><strong>Nick:</strong> 0x742d...f44h</span>
+            <span><strong>Monto:</strong> 75 $RPPI</span>
+            <span><strong>Tiempo:</strong> 4:29</span>
+            <span><strong>Boosts:</strong> 3x</span>
+            <span><strong>Juego:</strong> MEMORY-BREACH</span>
+            <button class="cta-button bet-accept-button">[ ACEPTAR HACK ]</button>
+        </div><div class="bet-offer-item" data-bet-id="demo-1762997014061-lar0ugamx">
+            <span><strong>Nick:</strong> 0x2c3d...3D7E</span>
+            <span><strong>Monto:</strong> 1 $RPPI</span>
+            <span><strong>Tiempo:</strong> 4:59</span>
+            <span><strong>Boosts:</strong> 3x</span>
+            <span><strong>Juego:</strong> PAC-HACK</span>
+            <button class="cta-button bet-accept-button">[ ACEPTAR HACK ]</button>
+        </div><div class="bet-offer-item" data-bet-id="demo-1762999612071-ptk28iu7a">
+            <span><strong>Nick:</strong> 0x2c3d...3D7E</span>
+            <span><strong>Monto:</strong> 1 $RPPI</span>
+            <span><strong>Tiempo:</strong> 5:00</span>
+            <span><strong>Boosts:</strong> 3x</span>
+            <span><strong>Juego:</strong> PAC-HACK</span>
+            <button class="cta-button bet-accept-button">[ ACEPTAR HACK ]</button>
+        </div></div>
+                </div>
+
+                <h3 id="bet-modal-title" style="color: var(--color-primario); text-align: center; border-top: 1px dashed #555; padding-top: 20px; margin-bottom: 20px;">CREAR APUESTA T2E: PAC-HACK</h3>
+
+                <div class="form-group">
+                    <label for="bet-amount">1. DEFINE TU APUESTA (EL BOTE):</label>
+                    <div style="display: flex; align-items: center;">
+                        <input type="number" id="bet-amount" placeholder="Ej: 100" class="bet-input">
+                        <span class="bet-suffix">$RPPI</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>2. DEFINE EL LÍMITE DE TIEMPO:</label>
+                    <div class="button-group">
+                        <button class="bet-option-button active" data-type="time" data-value="5">5 Min</button>
+                        <button class="bet-option-button" data-type="time" data-value="10">10 Min</button>
+                        <button class="bet-option-button" data-type="time" data-value="15">15 Min</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>3. DEFINE LÍMITE DE BOOSTS (INMUNIDAD):</label>
+                    <div class="button-group">
+                        <button class="bet-option-button" data-type="boost" data-value="1">1 Boost</button>
+                        <button class="bet-option-button active" data-type="boost" data-value="3">3 Boosts</button>
+                        <button class="bet-option-button" data-type="boost" data-value="5">5 Boosts (Límite Máx)</button>
+                    </div>
+                </div>
+
+                <button id="launch-bet-button" class="cta-button" style="width: 100%; background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); margin-top: 10px;">🚀 LANZAR APUESTA: 1 $RPPI</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // Esperamos a que todo el HTML esté cargado una sola vez
+    document.addEventListener('DOMContentLoaded', function() {
+    
+        // === SCRIPT 1: TYPEWRITER "SANTO GRIAL" ===
+        const textoSantoGrial = "¡HACKING TERMINAL...#INCOMING MESSAGE FROM RAPPIA CAMP# DECODING.\..\\ Toda la XP, Puntos de Nivel, Items y Accesorios que ganes en la Beta de 'El Circuito'... ¡SE MIGRARÁN a tu personaje final en el Juego Virtual de Android! Empieza a farmear, o decide entrar como un novato que M_LST_. Tu leyenda comienza AHORA...END COMUNICATION..";
+        const elementoTypewriter = document.getElementById('typewriter-text');
+        let i_typewriter = 0;
+        
+        function typeWriter() {
+            if (elementoTypewriter && i_typewriter < textoSantoGrial.length) {
+                elementoTypewriter.innerHTML += textoSantoGrial.charAt(i_typewriter);
+                i_typewriter++;
+                setTimeout(typeWriter, 40); 
+            }
+        }
+        // Inicia el efecto
+        typeWriter(); 
+
+        
+        // === SCRIPT 1.5: TYPEWRITER HERO T2E PITCH ===
+        const textoHeroT2E = "¿Cansado de que la casa siempre gane? La SOLUCIÓN es T2E: una inversión donde compites en IGUALDAD DE CONDICIONES.";
+        const elementoHeroTypewriter = document.getElementById('hero-typewriter-text');
+        let i_heroTypewriter = 0;
+        
+        function heroTypeWriter() {
+            if (elementoHeroTypewriter && i_heroTypewriter < textoHeroT2E.length) {
+                elementoHeroTypewriter.innerHTML += textoHeroT2E.charAt(i_heroTypewriter);
+                i_heroTypewriter++;
+                setTimeout(heroTypeWriter, 40); 
+            }
+        }
+        // Inicia el efecto hero
+        heroTypeWriter(); 
+
+        
+        // === SCRIPT 2: BOTÓN DE HACKEO FALSO ===
+        const hackButton = document.getElementById('fake-hack-button');
+        const hackTerminal = document.getElementById('hack-terminal');
+        const closeTerminal = document.getElementById('terminal-close');
+        const hackTypewriterElement = document.getElementById('hack-typewriter-text');
+        const hackText = "> Iniciando conexión con 'The Circuit'...\n> Buscando nodo...\n> Autenticando usuario...\n<error>> ERROR: CONEXIÓN RECHAZADA.</error>\n<error>> MOTIVO: AUTENTICACIÓN REQUERIDA.</error>\n> ¡Únete al Discord para ser el primero en recibir acceso a la Beta!";
+        let i_hackTypewriter = 0;
+        let hackTypewriterInterval = null;
+        let insideErrorTag = false;
+        let errorBuffer = '';
+
+        function hackTypeWriter() {
+            if (hackTypewriterElement && i_hackTypewriter < hackText.length) {
+                const char = hackText.charAt(i_hackTypewriter);
+                
+                // Detectar inicio de tag de error
+                if (char === '<' && hackText.substr(i_hackTypewriter, 7) === '<error>') {
+                    insideErrorTag = true;
+                    errorBuffer = '';
+                    i_hackTypewriter += 7; // Saltar '<error>'
+                    setTimeout(hackTypeWriter, 0);
+                    return;
+                }
+                
+                // Detectar fin de tag de error
+                if (char === '<' && hackText.substr(i_hackTypewriter, 8) === '</error>') {
+                    insideErrorTag = false;
+                    hackTypewriterElement.innerHTML += '<span class="error">' + errorBuffer + '</span>';
+                    errorBuffer = '';
+                    i_hackTypewriter += 8; // Saltar '</error>'
+                    setTimeout(hackTypeWriter, 0);
+                    return;
+                }
+                
+                // Procesar caracteres normales
+                if (char === '\n') {
+                    if (insideErrorTag) {
+                        errorBuffer += '<br>';
+                    } else {
+                        hackTypewriterElement.innerHTML += '<br>';
+                    }
+                } else {
+                    if (insideErrorTag) {
+                        errorBuffer += char;
+                    } else {
+                        hackTypewriterElement.innerHTML += char;
+                    }
+                }
+                
+                i_hackTypewriter++;
+                setTimeout(hackTypeWriter, 35); // 35ms por carácter
+            }
+        }
+
+        if (hackButton && hackTerminal) { 
+            hackButton.addEventListener('click', function() {
+                hackTerminal.classList.remove('terminal-hidden');
+                void hackTerminal.offsetWidth; 
+                hackTerminal.style.opacity = '1';
+                
+                // Resetear y comenzar efecto typewriter
+                i_hackTypewriter = 0;
+                insideErrorTag = false;
+                errorBuffer = '';
+                if (hackTypewriterElement) {
+                    hackTypewriterElement.innerHTML = '';
+                    hackTypeWriter();
+                }
+            });
+        }
+        if (closeTerminal && hackTerminal) { 
+            closeTerminal.addEventListener('click', function() {
+                hackTerminal.style.opacity = '0';
+                setTimeout(() => {
+                    hackTerminal.classList.add('terminal-hidden');
+                    // Resetear el texto cuando se cierra
+                    if (hackTypewriterElement) {
+                        hackTypewriterElement.innerHTML = '';
+                        i_hackTypewriter = 0;
+                    }
+                }, 500); // 0.5s (de la animación CSS)
+            });
+        }
+        
+        
+        // === AUDIO: referencias a elementos de audio (no se reproducen por hover) ===
+        const tangoAudio = document.getElementById('tango-audio');
+        const freeplayAudio = document.getElementById('freeplay-audio');
+
+            // === BOTÓN FLOTANTE DE MÚSICA (PÁJARO) ===
+            const musicFloatBtn = document.getElementById('music-float-btn');
+            if (musicFloatBtn && tangoAudio) {
+                // Estado inicial
+                function updateMusicBtn() {
+                    if (tangoAudio.paused) {
+                        musicFloatBtn.classList.remove('playing');
+                        musicFloatBtn.classList.add('paused');
+                    } else {
+                        musicFloatBtn.classList.remove('paused');
+                        musicFloatBtn.classList.add('playing');
+                    }
+                }
+                // Toggle play/pause
+                musicFloatBtn.addEventListener('click', function() {
+                    if (tangoAudio.paused) {
+                        tangoAudio.volume = 0.5;
+                        tangoAudio.play();
+                    } else {
+                        tangoAudio.pause();
+                    }
+                    updateMusicBtn();
+                });
+                // Update on play/pause events
+                tangoAudio.addEventListener('play', updateMusicBtn);
+                tangoAudio.addEventListener('pause', updateMusicBtn);
+                // Set initial state
+                updateMusicBtn();
+            }
+
+        
+        // === SCRIPT 4: BOTÓN "COMENZAR" DE LA BETA ===
+        const startButton = document.getElementById('start-beta-button');
+        const betaStartScreen = document.getElementById('beta-start-screen');
+        const gameOverlay = document.getElementById('game-overlay');
+
+        if (startButton && betaStartScreen && gameOverlay) {
+            startButton.addEventListener('click', function() {
+                // 1. Oculta la pantalla de inicio
+                betaStartScreen.style.display = 'none';
+                // 2. Muestra el overlay del juego
+                gameOverlay.classList.remove('game-menu-hidden');
+                // 3. Asegurarnos que el mensaje "santo-grial-message" se muestre en la parte superior
+                const santo = document.getElementById('santo-grial-message');
+                if (santo) {
+                    // scrollear suavemente hasta el elemento
+                    santo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // añadir una clase temporal de destaque visual
+                    santo.classList.add('highlight-temp');
+                    setTimeout(() => { santo.classList.remove('highlight-temp'); }, 1800);
+                }
+                // 4. Iniciar la música de la beta (solo al pulsar COMENZAR)
+                try {
+                    if (tangoAudio) { tangoAudio.volume = 0.5; tangoAudio.currentTime = 0; tangoAudio.play(); }
+                } catch(e) {}
+
+                // 5. MOSTRAR EL BOTÓN MUTE/PLAY INMEDIATAMENTE
+                console.log('🎵 INICIANDO BETA - Mostrando botón mute/play');
+                betaActive = true;
+                muteBtn.style.display = 'block';
+                muteBtn.style.backgroundColor = 'red'; // Debug visual
+                setTimeout(() => { muteBtn.style.backgroundColor = ''; }, 2000);
+            });
+        }
+        
+        // === SCRIPT 5: BOTÓN 'EXIT GAME' - cerrar overlay y volver al inicio ===
+        const exitGameButton = document.getElementById('exit-game-button');
+        if (exitGameButton && betaStartScreen && gameOverlay) {
+            exitGameButton.addEventListener('click', function() {
+                // Oculta el overlay del juego
+                gameOverlay.classList.add('game-menu-hidden');
+                // Muestra de nuevo la pantalla inicial de la beta
+                betaStartScreen.style.display = 'block';
+                // Pausa cualquier audio que pudiera estar sonando (tango + freeplay)
+                try { if (tangoAudio && !tangoAudio.paused) { tangoAudio.pause(); tangoAudio.currentTime = 0; } } catch(e) {}
+                try { if (freeplayAudio && !freeplayAudio.paused) { freeplayAudio.pause(); freeplayAudio.currentTime = 0; } } catch(e) {}
+                // Scroll suave al inicio de la página
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+        
+        // === SCRIPT: GRÁFICO INTERACTIVO DE TOKENOMICS ===
+        const pieSlices = document.querySelectorAll('.pie-slice');
+        const pieTooltip = document.getElementById('pieTooltip');
+        
+        pieSlices.forEach(slice => {
+            slice.addEventListener('mouseenter', function(e) {
+                const percent = this.getAttribute('data-percent');
+                const name = this.getAttribute('data-name');
+                
+                // Actualizar contenido del tooltip
+                pieTooltip.querySelector('.tooltip-name').textContent = name;
+                pieTooltip.querySelector('.tooltip-percent').textContent = percent + '%';
+                
+                // Posicionar tooltip en el centro del gráfico
+                const svgRect = this.closest('.pie-chart-interactive').getBoundingClientRect();
+                pieTooltip.style.left = '50%';
+                pieTooltip.style.top = '50%';
+                
+                // Mostrar tooltip
+                pieTooltip.classList.add('active');
+            });
+            
+            slice.addEventListener('mouseleave', function() {
+                pieTooltip.classList.remove('active');
+            });
+        });
+        
+        // === SCRIPT: CICLO DE GLITCH DEL LOGO - EL CYBERPUNK NO ESPERA A NADIE ===
+        const tokenomicsLogo = document.querySelector('.tokenomics-logo');
+        if (tokenomicsLogo) {
+            function glitchCycle() {
+                // 10 segundos de quilombo total
+                tokenomicsLogo.classList.remove('paused');
+                
+                setTimeout(() => {
+                    // 2.5 segundos de pausa
+                    tokenomicsLogo.classList.add('paused');
+                    
+                    setTimeout(() => {
+                        // Reiniciar el ciclo
+                        glitchCycle();
+                    }, 2500);
+                }, 10000);
+            }
+            
+            // Iniciar el ciclo
+            glitchCycle();
+        }
+        
+        // === SCRIPT: MODAL DE TERMINAL FLOTANTE PARA MUNDO 2: ANDROID ===
+        const mundo2Button = document.getElementById('mundo2-android-button');
+        const androidOverlay = document.getElementById('android-blocked-overlay');
+        const closeModalBtn = document.getElementById('close-android-modal');
+        const iniciarHackBtn = document.getElementById('iniciar-hack-button');
+        const blockedTypeLine1 = document.getElementById('blocked-typewriter-line1');
+        const blockedTypeLine2 = document.getElementById('blocked-typewriter-line2');
+        
+        // Función typewriter para el modal de blocked
+        function typeWriterBlocked(element, text, speed, cursorElement, callback) {
+            let i = 0;
+            element.textContent = '';
+            // Mostrar cursor mientras escribe
+            if (cursorElement) cursorElement.style.opacity = '1';
+            
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    // Ocultar cursor cuando termina
+                    if (cursorElement) cursorElement.style.opacity = '0';
+                    if (callback) callback();
+                }
+            }
+            type();
+        }
+        
+        if (mundo2Button && androidOverlay) {
+            // Abrir modal al hacer click en el botón Mundo 2
+            mundo2Button.addEventListener('click', function(e) {
+                e.preventDefault();
+                androidOverlay.classList.remove('terminal-overlay-hidden');
+                
+                // Obtener cursores
+                const cursor1 = blockedTypeLine1.nextElementSibling;
+                const cursor2 = blockedTypeLine2.nextElementSibling;
+                
+                // Iniciar typewriter para el modal de blocked
+                setTimeout(() => {
+                    typeWriterBlocked(blockedTypeLine1, '> BLOCKED_DEPLOYMENT_in progress', 50, cursor1, function() {
+                        setTimeout(() => {
+                            typeWriterBlocked(blockedTypeLine2, '-press X para cerrar terminal o hack to force it-', 50, cursor2, function() {
+                                // Mostrar el botón con animación fade in
+                                iniciarHackBtn.style.transition = 'opacity 0.5s';
+                                iniciarHackBtn.style.opacity = '1';
+                            });
+                        }, 300);
+                    });
+                }, 200);
+            });
+            
+            // Cerrar modal con la X
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', function() {
+                    androidOverlay.classList.add('terminal-overlay-hidden');
+                    // Resetear textos, cursores y botón
+                    blockedTypeLine1.textContent = '';
+                    blockedTypeLine2.textContent = '';
+                    blockedTypeLine1.nextElementSibling.style.opacity = '0';
+                    blockedTypeLine2.nextElementSibling.style.opacity = '0';
+                    iniciarHackBtn.style.opacity = '0';
+                });
+            }
+            
+            // Cerrar modal al hacer click fuera de la terminal
+            androidOverlay.addEventListener('click', function(e) {
+                if (e.target === androidOverlay) {
+                    androidOverlay.classList.add('terminal-overlay-hidden');
+                    // Resetear textos, cursores y botón
+                    blockedTypeLine1.textContent = '';
+                    blockedTypeLine2.textContent = '';
+                    blockedTypeLine1.nextElementSibling.style.opacity = '0';
+                    blockedTypeLine2.nextElementSibling.style.opacity = '0';
+                    iniciarHackBtn.style.opacity = '0';
+                }
+            });
+            
+            // Acción del botón INICIAR HACK
+            if (iniciarHackBtn) {
+                iniciarHackBtn.addEventListener('click', function() {
+                    // Cerrar el modal de BLOCKED
+                    androidOverlay.classList.add('terminal-overlay-hidden');
+                    
+                    // Mostrar el modal de la broma
+                    const jokeOverlay = document.getElementById('rebelbet-joke-overlay');
+                    const typewriterLine1 = document.getElementById('typewriter-line1');
+                    const typewriterLine2 = document.getElementById('typewriter-line2');
+                    const typewriterLine3 = document.getElementById('typewriter-line3');
+                    const typewriterLine4 = document.getElementById('typewriter-line4');
+                    const blinkingCursor = document.getElementById('blinking-cursor');
+                    
+                    // Función typewriter MÁS LENTA con cursor
+                    function typeWriter(element, text, speed, cursorElement, callback, keepCursor = false) {
+                        let i = 0;
+                        element.textContent = '';
+                        // Mostrar cursor mientras escribe
+                        if (cursorElement) cursorElement.style.opacity = '1';
+                        
+                        function type() {
+                            if (i < text.length) {
+                                element.textContent += text.charAt(i);
+                                i++;
+                                setTimeout(type, speed);
+                            } else {
+                                // Solo ocultar cursor si keepCursor es false
+                                if (cursorElement && !keepCursor) cursorElement.style.opacity = '0';
+                                if (callback) callback();
+                            }
+                        }
+                        type();
+                    }
+                    
+                    if (jokeOverlay) {
+                        // Mostrar overlay
+                        jokeOverlay.classList.remove('terminal-overlay-hidden');
+                        
+                        // Obtener cursores
+                        const jokeCursor1 = typewriterLine1.nextElementSibling;
+                        const jokeCursor2 = typewriterLine2.nextElementSibling;
+                        const jokeCursor3 = typewriterLine3.nextElementSibling;
+                        
+                        // Línea 1: "TRANSACTION SUCCESS CONFIRMED..." (MÁS LENTO: 70ms por letra)
+                        setTimeout(() => {
+                            typeWriter(typewriterLine1, '> TRANSACTION SUCCESS CONFIRMED purchance id: 21389 -"ASALTO" Civil War vs Tesla_Drones USDT 649,99 aproved', 70, jokeCursor1, function() {
+                                // CONFETTI EFFECT: disparar confeti justo después del mensaje de éxito, usando el canvas dentro del modal rebelbet
+                                var confettiCanvas = document.getElementById('confetti-rebelbet-canvas');
+                                if (window.confetti && confettiCanvas) {
+                                    window.confetti.create(confettiCanvas, { resize: true, useWorker: true })({
+                                        particleCount: 120,
+                                        spread: 90,
+                                        origin: { y: 0.7 }
+                                    });
+                                }
+                                // Línea 2 empieza después de que termine línea 1 (MÁS LENTO: 80ms por letra)
+                                setTimeout(() => {
+                                    typeWriter(typewriterLine2, '-thanks for playing beta ver-', 80, jokeCursor2, function() {
+                                        // Esperar 10 segundos más después de terminar línea 2 (TOTAL ~19 segundos antes de catch you) - RETRASO PARA TENSION
+                                        setTimeout(() => {
+                                            // Línea 3: "catch you..." (SÚPER LENTO: 100ms por letra)
+                                            typeWriter(typewriterLine3, 'catch you... -the joke-', 100, jokeCursor3, function() {
+                                                // Línea 4: "transmission end..." (LENTO: 90ms por letra, cursor permanece)
+                                                setTimeout(() => {
+                                                    typeWriter(typewriterLine4, 'transmission end...', 90, blinkingCursor, function() {
+                                                        // Cursor final sigue titilando por 6 segundos (keepCursor = true)
+                                                    }, true);
+                                                }, 800);
+                                            });
+                                        }, 10000); // CAMBIADO: 10 segundos para incrementar la tensión del chiste
+                                    });
+                                }, 1000);
+                            });
+                        }, 500);
+                        
+                        // Cerrar automáticamente después de ~31 segundos totales (25 + 6 del cursor)
+                        setTimeout(() => {
+                            jokeOverlay.classList.add('terminal-overlay-hidden');
+                            // Resetear contenido y cursores para la próxima vez
+                            typewriterLine1.textContent = '';
+                            typewriterLine2.textContent = '';
+                            typewriterLine3.textContent = '';
+                            typewriterLine4.textContent = '';
+                            typewriterLine1.nextElementSibling.style.opacity = '0';
+                            typewriterLine2.nextElementSibling.style.opacity = '0';
+                            typewriterLine3.nextElementSibling.style.opacity = '0';
+                            blinkingCursor.style.opacity = '0';
+                            // Navegar a la sección world
+                            window.location.href = '#world';
+                        }, 31000);
+                        
+                        // También permitir cerrar haciendo click fuera
+                        jokeOverlay.addEventListener('click', function(e) {
+                            if (e.target === jokeOverlay) {
+                                jokeOverlay.classList.add('terminal-overlay-hidden');
+                                typewriterLine1.textContent = '';
+                                typewriterLine2.textContent = '';
+                                typewriterLine3.textContent = '';
+                                typewriterLine4.textContent = '';
+                                typewriterLine1.nextElementSibling.style.opacity = '0';
+                                typewriterLine2.nextElementSibling.style.opacity = '0';
+                                typewriterLine3.nextElementSibling.style.opacity = '0';
+                                blinkingCursor.style.opacity = '0';
+                            }
+                        });
+                    }
+                });
+            }
+        }
+        
+        // ========================================
+        // FIREBASE - SISTEMA DE COMENTARIOS
+        // ========================================
+        
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC1YInqS7d2g-D53tEOsHEGowPwtDPnxbw",
+            authDomain: "rappibellion-comments.firebaseapp.com",
+            databaseURL: "https://rappibellion-comments-default-rtdb.firebaseio.com",
+            projectId: "rappibellion-comments",
+            storageBucket: "rappibellion-comments.firebasestorage.app",
+            messagingSenderId: "316343274231",
+            appId: "1:316343274231:web:96185b4d062c1d751361f2"
+        };
+        
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const commentsRef = database.ref('rebellion-comments');
+        
+        // Elementos del DOM
+        const usernameInput = document.getElementById('rebellion-username');
+        const messageInput = document.getElementById('rebellion-message');
+        const submitBtn = document.getElementById('submit-rebellion-comment');
+        const statusMsg = document.getElementById('comment-status');
+        const commentsList = document.getElementById('rebellion-comments-list');
+        
+        // Función para enviar comentario
+        function submitComment() {
+            const username = usernameInput.value.trim();
+            const message = messageInput.value.trim();
+            
+            // Validación
+            if (!username || !message) {
+                statusMsg.textContent = '⚠️ Por favor completa todos los campos';
+                statusMsg.style.color = '#ff4444';
+                return;
+            }
+            
+            if (message.length < 10) {
+                statusMsg.textContent = '⚠️ El mensaje debe tener al menos 10 caracteres';
+                statusMsg.style.color = '#ff4444';
+                return;
+            }
+            
+            if (message.length > 500) {
+                statusMsg.textContent = '⚠️ El mensaje no puede superar los 500 caracteres';
+                statusMsg.style.color = '#ff4444';
+                return;
+            }
+            
+            // Crear comentario
+            const newComment = {
+                username: username,
+                message: message,
+                timestamp: Date.now(),
+                date: new Date().toLocaleString('es-ES', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })
+            };
+            
+            // Guardar en Firebase
+            commentsRef.push(newComment)
+                .then(() => {
+                    statusMsg.textContent = '✓ ¡Bienvenido a la rebelión!';
+                    statusMsg.style.color = 'var(--color-caos-verde)';
+                    usernameInput.value = '';
+                    messageInput.value = '';
+                    
+                    setTimeout(() => {
+                        statusMsg.textContent = '';
+                    }, 3000);
+                })
+                .catch((error) => {
+                    statusMsg.textContent = '✗ Error al enviar: ' + error.message;
+                    statusMsg.style.color = '#ff4444';
+                });
+        }
+        
+        // Event listener para el botón
+        if (submitBtn) {
+            submitBtn.addEventListener('click', submitComment);
+        }
+        
+        // Event listener para Enter en los inputs
+        if (messageInput) {
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    submitComment();
+                }
+            });
+        }
+        
+        // Función para mostrar comentarios
+        function displayComments(snapshot) {
+            commentsList.innerHTML = '';
+            
+            if (!snapshot.exists()) {
+                commentsList.innerHTML = '<p style="text-align: center; color: #888; padding: 40px;">Sé el primero en unirte a la rebelión...</p>';
+                return;
+            }
+            
+            const comments = [];
+            snapshot.forEach((childSnapshot) => {
+                comments.push({
+                    id: childSnapshot.key,
+                    data: childSnapshot.val()
+                });
+            });
+            
+            // Ordenar por más recientes primero
+            comments.sort((a, b) => b.data.timestamp - a.data.timestamp);
+            
+            // Mostrar comentarios
+            comments.forEach((comment) => {
+                const commentDiv = document.createElement('div');
+                commentDiv.style.cssText = `
+                    background: rgba(10, 15, 20, 0.8);
+                    border-left: 3px solid var(--color-primario);
+                    padding: 15px;
+                    margin-bottom: 15px;
+                    border-radius: 4px;
+                `;
+                
+                commentDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <strong style="color: var(--color-primario); font-family: var(--fuente-titulos);">${escapeHtml(comment.data.username)}</strong>
+                        <span style="color: #888; font-size: 0.85em;">${comment.data.date}</span>
+                    </div>
+                    <p style="color: var(--color-texto); line-height: 1.6; margin: 0;">${escapeHtml(comment.data.message)}</p>
+                `;
+                
+                commentsList.appendChild(commentDiv);
+            });
+        }
+        
+        // Función para escapar HTML (prevenir XSS)
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Escuchar cambios en tiempo real
+        commentsRef.on('value', displayComments);
+        
+        // ========================================
+        // FIREBASE - SISTEMA DE OPINIONES T2E
+        // ========================================
+        
+        const t2eOpinionsRef = database.ref('t2e-opinions');
+        
+        // Elementos del DOM para T2E
+        const t2eUsernameInput = document.getElementById('t2e-username');
+        const t2eOpinionInput = document.getElementById('t2e-opinion');
+        const submitT2eBtn = document.getElementById('submit-t2e-opinion');
+        const t2eStatusMsg = document.getElementById('t2e-status');
+        const t2eOpinionsList = document.getElementById('t2e-opinions-list');
+        
+        // Función para enviar opinión T2E
+        function submitT2eOpinion() {
+            const username = t2eUsernameInput.value.trim();
+            const opinion = t2eOpinionInput.value.trim();
+            
+            // Validación
+            if (!username || !opinion) {
+                t2eStatusMsg.textContent = '⚠️ Por favor completa todos los campos';
+                t2eStatusMsg.style.color = '#ff4444';
+                return;
+            }
+            
+            if (opinion.length < 10) {
+                t2eStatusMsg.textContent = '⚠️ La opinión debe tener al menos 10 caracteres';
+                t2eStatusMsg.style.color = '#ff4444';
+                return;
+            }
+            
+            if (opinion.length > 500) {
+                t2eStatusMsg.textContent = '⚠️ La opinión no puede superar los 500 caracteres';
+                t2eStatusMsg.style.color = '#ff4444';
+                return;
+            }
+            
+            // Crear opinión
+            const newOpinion = {
+                username: username,
+                opinion: opinion,
+                timestamp: Date.now(),
+                date: new Date().toLocaleString('es-ES', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })
+            };
+            
+            // Guardar en Firebase
+            t2eOpinionsRef.push(newOpinion)
+                .then(() => {
+                    t2eStatusMsg.textContent = '✓ ¡Gracias por tu feedback!';
+                    t2eStatusMsg.style.color = 'var(--color-caos-verde)';
+                    t2eUsernameInput.value = '';
+                    t2eOpinionInput.value = '';
+                    
+                    setTimeout(() => {
+                        t2eStatusMsg.textContent = '';
+                    }, 3000);
+                })
+                .catch((error) => {
+                    t2eStatusMsg.textContent = '✗ Error al enviar: ' + error.message;
+                    t2eStatusMsg.style.color = '#ff4444';
+                });
+        }
+        
+        // Event listener para el botón
+        if (submitT2eBtn) {
+            submitT2eBtn.addEventListener('click', submitT2eOpinion);
+        }
+        
+        // Event listener para Enter en los inputs
+        if (t2eOpinionInput) {
+            t2eOpinionInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    submitT2eOpinion();
+                }
+            });
+        }
+        
+        // Función para mostrar opiniones T2E
+        function displayT2eOpinions(snapshot) {
+            t2eOpinionsList.innerHTML = '';
+            
+            if (!snapshot.exists()) {
+                t2eOpinionsList.innerHTML = '<p style="text-align: center; color: #888; padding: 40px;">Sé el primero en dejar tu opinión...</p>';
+                return;
+            }
+            
+            const opinions = [];
+            snapshot.forEach((childSnapshot) => {
+                opinions.push({
+                    id: childSnapshot.key,
+                    data: childSnapshot.val()
+                });
+            });
+            
+            // Ordenar por más recientes primero
+            opinions.sort((a, b) => b.data.timestamp - a.data.timestamp);
+            
+            // Mostrar opiniones
+            opinions.forEach((opinion) => {
+                const opinionDiv = document.createElement('div');
+                opinionDiv.style.cssText = `
+                    background: rgba(10, 15, 20, 0.8);
+                    border-left: 3px solid var(--color-azul-glitch);
+                    padding: 15px;
+                    margin-bottom: 15px;
+                    border-radius: 4px;
+                `;
+                
+                opinionDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <strong style="color: var(--color-azul-glitch); font-family: var(--fuente-titulos);">${escapeHtml(opinion.data.username)}</strong>
+                        <span style="color: #888; font-size: 0.85em;">${opinion.data.date}</span>
+                    </div>
+                    <p style="color: var(--color-texto); line-height: 1.6; margin: 0;">${escapeHtml(opinion.data.opinion)}</p>
+                `;
+                
+                t2eOpinionsList.appendChild(opinionDiv);
+            });
+        }
+        
+        // Escuchar cambios en tiempo real para opiniones T2E
+        t2eOpinionsRef.on('value', displayT2eOpinions);
+
+
+        // ========================================
+        // METAMASK WALLET CONNECTION - FIXED
+        // ========================================
+
+        // State variables
+        let isConnected = false;
+        let currentAccount = null;
+
+        // Optimism Network Configuration
+        const OPTIMISM_CHAIN_ID = '0xa'; // 10 in hex
+        const OPTIMISM_NETWORK = {
+            chainId: OPTIMISM_CHAIN_ID,
+            chainName: 'Optimism',
+            nativeCurrency: {
+                name: 'Ethereum',
+                symbol: 'ETH',
+                decimals: 18
+            },
+            rpcUrls: ['https://mainnet.optimism.io'],
+            blockExplorerUrls: ['https://optimistic.etherscan.io']
+        };
+
+        // Get DOM elements
+        const connectWalletButton = document.getElementById('connect-wallet-button');
+        const walletStatus = document.getElementById('wallet-status');
+        const walletAddress = document.getElementById('wallet-address');
+
+        // Check if wallet is already connected
+        async function checkConnection() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    console.log('🔗 Verificando conexión existente...');
+                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                    if (accounts.length > 0) {
+                        console.log('✅ Cuenta encontrada:', accounts[0]);
+                        currentAccount = accounts[0];
+                        isConnected = true;
+                        updateWalletUI(accounts[0]);
+                        await checkNetwork();
+                    } else {
+                        console.log('❌ No hay cuentas conectadas');
+                    }
+                } catch (error) {
+                    console.error('❌ Error checking connection:', error);
+                    walletStatus.textContent = '❌ Error al verificar conexión';
+                    walletStatus.style.color = '#ff4444';
+                }
+            } else {
+                console.log('⚠️ MetaMask no detectado');
+                walletStatus.textContent = '⚠️ MetaMask no detectado';
+                walletStatus.style.color = '#ffaa00';
+            }
+        }
+
+        // Disconnect wallet function
+        function disconnectWallet() {
+            console.log('🔌 Desconectando billetera...');
+            isConnected = false;
+            currentAccount = null;
+            if (connectWalletButton) {
+                connectWalletButton.textContent = 'CONECTA TU BILLETERA PARA ENTRAR AL CIRCUITO';
+                connectWalletButton.style.backgroundColor = '';
+            }
+            if (walletStatus) {
+                walletStatus.textContent = '🔌 Billetera desconectada';
+                walletStatus.style.color = '#888';
+            }
+            if (walletAddress) {
+                walletAddress.textContent = '';
+                walletAddress.style.display = 'none';
+            }
+
+            // Clear status message after 3 seconds
+            setTimeout(() => {
+                if (walletStatus) walletStatus.textContent = '';
+            }, 3000);
+        }
+
+        // Connect wallet function
+        async function connectWallet() {
+            console.log('🔄 Iniciando conexión con MetaMask...');
+
+            // Check if MetaMask is installed
+            if (typeof window.ethereum === 'undefined') {
+                console.log('⚠️ MetaMask no está instalado');
+                if (walletStatus) {
+                    walletStatus.textContent = '⚠️ MetaMask no está instalado. Por favor instálalo desde metamask.io';
+                    walletStatus.style.color = '#ff4444';
+                }
+                window.open('https://metamask.io/download/', '_blank');
+                return;
+            }
+
+            try {
+                if (walletStatus) {
+                    walletStatus.textContent = '🔄 Conectando...';
+                    walletStatus.style.color = 'var(--color-caos-amarillo)';
+                }
+
+                console.log('📡 Solicitando acceso a cuentas...');
+                // Request account access
+                const accounts = await window.ethereum.request({
+                    method: 'eth_requestAccounts'
+                });
+
+                console.log('✅ Cuentas obtenidas:', accounts);
+
+                if (accounts.length > 0) {
+                    currentAccount = accounts[0];
+                    isConnected = true;
+                    updateWalletUI(accounts[0]);
+                    await checkNetwork();
+                    console.log('🎉 Conexión exitosa!');
+                } else {
+                    throw new Error('No accounts returned');
+                }
+
+            } catch (error) {
+                console.error('❌ Error connecting wallet:', error);
+
+                if (walletStatus) {
+                    if (error.code === 4001) {
+                        walletStatus.textContent = '❌ Conexión rechazada por el usuario';
+                    } else if (error.code === -32002) {
+                        walletStatus.textContent = '⏳ Solicitud pendiente en MetaMask';
+                    } else {
+                        walletStatus.textContent = '❌ Error al conectar: ' + (error.message || 'Error desconocido');
+                    }
+                    walletStatus.style.color = '#ff4444';
+                }
+            }
+        }
+
+        // Check and switch to Optimism network
+        async function checkNetwork() {
+            if (!window.ethereum) return;
+
+            try {
+                console.log('🌐 Verificando red...');
+                const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                console.log('📊 Chain ID actual:', chainId);
+
+                if (chainId !== OPTIMISM_CHAIN_ID) {
+                    console.log('🔄 Cambiando a red Optimism...');
+                    if (walletStatus) {
+                        walletStatus.textContent = '⚠️ Cambiando a red Optimism...';
+                        walletStatus.style.color = 'var(--color-caos-amarillo)';
+                    }
+
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: OPTIMISM_CHAIN_ID }],
+                        });
+                        console.log('✅ Red cambiada exitosamente');
+                        if (walletStatus) {
+                            walletStatus.textContent = '✅ Conectado a Optimism';
+                            walletStatus.style.color = 'var(--color-caos-verde)';
+                        }
+                    } catch (switchError) {
+                        console.log('❌ Error cambiando red:', switchError);
+                        // This error code indicates that the chain has not been added to MetaMask
+                        if (switchError.code === 4902) {
+                            console.log('📝 Agregando red Optimism...');
+                            try {
+                                await window.ethereum.request({
+                                    method: 'wallet_addEthereumChain',
+                                    params: [OPTIMISM_NETWORK],
+                                });
+                                console.log('✅ Red Optimism agregada');
+                                if (walletStatus) {
+                                    walletStatus.textContent = '✅ Conectado a Optimism';
+                                    walletStatus.style.color = 'var(--color-caos-verde)';
+                                }
+                            } catch (addError) {
+                                console.error('❌ Error agregando red:', addError);
+                                if (walletStatus) {
+                                    walletStatus.textContent = '❌ Error al agregar red Optimism';
+                                    walletStatus.style.color = '#ff4444';
+                                }
+                            }
+                        } else {
+                            if (walletStatus) {
+                                walletStatus.textContent = '❌ Error al cambiar de red';
+                                walletStatus.style.color = '#ff4444';
+                            }
+                        }
+                    }
+                } else {
+                    console.log('✅ Ya en red Optimism');
+                    if (walletStatus) {
+                        walletStatus.textContent = '✅ Conectado a Optimism';
+                        walletStatus.style.color = 'var(--color-caos-verde)';
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Error checking network:', error);
+                if (walletStatus) {
+                    walletStatus.textContent = '❌ Error al verificar red';
+                    walletStatus.style.color = '#ff4444';
+                }
+            }
+        }
+
+        // Update UI with wallet info
+        function updateWalletUI(address) {
+            console.log('🎨 Actualizando UI con dirección:', address);
+            const shortAddress = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+
+            if (connectWalletButton) {
+                connectWalletButton.textContent = '🔗 BILLETERA CONECTADA (Clic para desconectar)';
+                connectWalletButton.style.backgroundColor = 'var(--color-caos-verde)';
+            }
+
+            if (walletAddress) {
+                walletAddress.textContent = `Dirección: ${shortAddress}`;
+                walletAddress.style.display = 'block';
+            }
+        }
+
+        // Setup MetaMask event listeners
+        function setupMetaMaskListeners() {
+            if (typeof window.ethereum !== 'undefined') {
+                console.log('👂 Configurando listeners de MetaMask...');
+
+                // Listen for account changes
+                window.ethereum.on('accountsChanged', function (accounts) {
+                    console.log('🔄 Cuentas cambiadas:', accounts);
+                    if (accounts.length > 0) {
+                        currentAccount = accounts[0];
+                        isConnected = true;
+                        updateWalletUI(accounts[0]);
+                        if (walletStatus) {
+                            walletStatus.textContent = '✅ Cuenta cambiada';
+                            walletStatus.style.color = 'var(--color-caos-verde)';
+                        }
+                    } else {
+                        // User disconnected from MetaMask
+                        disconnectWallet();
+                    }
+                });
+
+                // Listen for chain changes
+                window.ethereum.on('chainChanged', function (chainId) {
+                    console.log('🔄 Red cambiada:', chainId);
+                    // Reload the page when chain changes
+                    window.location.reload();
+                });
+
+                console.log('✅ Listeners configurados');
+            } else {
+                console.log('⚠️ MetaMask no disponible para listeners');
+            }
+        }
+
+        // Add click event to button with toggle functionality
+        if (connectWalletButton) {
+            connectWalletButton.addEventListener('click', function() {
+                console.log('🖱️ Botón clickeado, estado actual:', isConnected);
+                if (isConnected) {
+                    disconnectWallet();
+                } else {
+                    connectWallet();
+                }
+            });
+            console.log('✅ Event listener del botón configurado');
+        } else {
+            console.error('❌ Botón connectWalletButton no encontrado');
+        }
+
+        // Initialize wallet connection
+        console.log('🚀 Inicializando conexión de billetera...');
+        setupMetaMaskListeners();
+        checkConnection();
+
+        // ========================================
+        // BOTÓN "MIS APUESTAS ACTIVAS"
+        // ========================================
+
+        const showUserBetsButton = document.getElementById('show-user-bets-button');
+        if (showUserBetsButton) {
+            showUserBetsButton.addEventListener('click', function() {
+                if (window.T2EIntegration && window.T2EIntegration.showUserBetsWindow) {
+                    window.T2EIntegration.showUserBetsWindow();
+                } else {
+                    console.error('❌ T2EIntegration no está disponible');
+                }
+            });
+        }
+
+        // Mostrar/ocultar botón según estado de conexión
+        function updateUserBetsButtonVisibility() {
+            if (showUserBetsButton) {
+                if (isConnected) {
+                    showUserBetsButton.style.display = 'inline-block';
+                } else {
+                    showUserBetsButton.style.display = 'none';
+                }
+            }
+        }
+
+        // Actualizar visibilidad del botón cuando cambie el estado de conexión
+        window.addEventListener('accountsChanged', updateUserBetsButtonVisibility);
+        window.addEventListener('chainChanged', updateUserBetsButtonVisibility);
+        updateUserBetsButtonVisibility(); // Inicial
+
+
+        // ========================================
+        // BUY $RPPI MODAL
+        // ========================================
+        
+        const buyRppiButton = document.getElementById('buy-rppi-button');
+        const buyRppiOverlay = document.getElementById('buy-rppi-overlay');
+        const closeBuyModal = document.getElementById('close-buy-modal');
+        
+        // Open modal
+        buyRppiButton.addEventListener('click', function() {
+            buyRppiOverlay.classList.remove('terminal-overlay-hidden');
+            buyRppiOverlay.classList.add('terminal-overlay-visible');
+        });
+        
+        // Close modal
+        closeBuyModal.addEventListener('click', function() {
+            buyRppiOverlay.classList.remove('terminal-overlay-visible');
+            buyRppiOverlay.classList.add('terminal-overlay-hidden');
+        });
+        
+        // Close modal when clicking outside
+        buyRppiOverlay.addEventListener('click', function(e) {
+            if (e.target === buyRppiOverlay) {
+                buyRppiOverlay.classList.remove('terminal-overlay-visible');
+                buyRppiOverlay.classList.add('terminal-overlay-hidden');
+            }
+        });
+        
+        // Payment method handlers
+        const paymentMethods = document.querySelectorAll('.payment-method-option');
+        
+        paymentMethods.forEach(method => {
+            method.addEventListener('click', function() {
+                const methodType = this.getAttribute('data-method');
+                
+                switch(methodType) {
+                    case 'uniswap':
+                        // Uniswap - Abrir directo al pool de RPPI
+                        window.open('https://app.uniswap.org/#/swap?outputCurrency=0xb2f681ba962a1ef4dba7acf79b181814827abddc&chain=optimism', '_blank');
+                        buyRppiOverlay.classList.remove('terminal-overlay-visible');
+                        buyRppiOverlay.classList.add('terminal-overlay-hidden');
+                        break;
+                        
+                    case 'direct':
+                        // Compra directa - Por ahora mensaje
+                        alert('💎 COMPRA DIRECTA\n\nEsta función estará disponible próximamente.\n\nPodrás comprar $RPPI directamente con USDT o ETH.');
+                        break;
+                        
+                    case 'card':
+                        // Transak - Abrir widget
+                        openTransak();
+                        break;
+                        
+                    case 'bank':
+                        // Transferencia bancaria - Por ahora mensaje
+                        alert('🏦 TRANSFERENCIA BANCARIA\n\nPara comprar $RPPI mediante transferencia bancaria, contáctanos en:\n\ninfo@rappibellion.com\n\nTe enviaremos los detalles de la cuenta.');
+                        break;
+                }
+            });
+        });
+        
+        // Transak Integration
+        function openTransak() {
+            // Configuración de Transak
+            const transakConfig = {
+                apiKey: '22230dda-d861-4e80-b376-f33ae52c4fd3', // Tu API Key
+                environment: 'PRODUCTION', // Producción
+                defaultCryptoCurrency: 'ETH',
+                defaultNetwork: 'optimism',
+                networks: 'optimism',
+                cryptoCurrencyList: 'ETH',
+                walletAddress: currentAccount || '', // Pre-llenar con wallet conectada
+                themeColor: '00ffff', // Color cyberpunk
+                hostURL: window.location.origin,
+                widgetHeight: '700px',
+                widgetWidth: '450px'
+            };
+
+            // Construir URL de Transak con parámetros (PRODUCCIÓN)
+            const transakUrl = new URL('https://global.transak.com/');
+            transakUrl.searchParams.append('apiKey', transakConfig.apiKey);
+            transakUrl.searchParams.append('environment', transakConfig.environment);
+            transakUrl.searchParams.append('defaultCryptoCurrency', transakConfig.defaultCryptoCurrency);
+            transakUrl.searchParams.append('defaultNetwork', transakConfig.defaultNetwork);
+            transakUrl.searchParams.append('networks', transakConfig.networks);
+            transakUrl.searchParams.append('cryptoCurrencyList', transakConfig.cryptoCurrencyList);
+            if (transakConfig.walletAddress) {
+                transakUrl.searchParams.append('walletAddress', transakConfig.walletAddress);
+            }
+            transakUrl.searchParams.append('themeColor', transakConfig.themeColor);
+
+            // Abrir en nueva ventana
+            window.open(transakUrl.toString(), '_blank', 'width=450,height=750,scrollbars=yes,resizable=yes');
+
+            // Cerrar el overlay del modal
+            buyRppiOverlay.classList.remove('terminal-overlay-visible');
+            buyRppiOverlay.classList.add('terminal-overlay-hidden');
+        }
+        
+    }); // <-- FIN DEL 'DOMContentLoaded'
+
+    // === SCRIPT 5: CONTROLADOR DEL MODAL "MAKE YOUR BET" ===
+    const betModal = document.getElementById('make-bet-modal');
+    const closeBetModalBtn = document.getElementById('close-bet-modal');
+    const betModalTitle = document.getElementById('bet-modal-title');
+
+    // Función para ABRIR el modal
+    function openBetModal(gameTitle) {
+        // 1. Conectar Billetera (¡El "hack"!)
+        // (¡Aquí Charly conectaría el script de MetaMask!)
+        // if (!wallet.isConnected()) { wallet.connect(); return; }
+
+        // 2. Personalizar y Mostrar
+        betModalTitle.textContent = "CREAR APUESTA T2E: " + gameTitle;
+        betModal.classList.remove('game-menu-hidden');
+        void betModal.offsetWidth;
+        betModal.style.opacity = '1';
+    }
+
+    // Función para CERRAR el modal
+    function closeBetModal() {
+        betModal.style.opacity = '0';
+        setTimeout(() => {
+            betModal.classList.add('game-menu-hidden');
+        }, 300); // 0.3s (el tiempo del transition CSS)
+    }
+
+    // Asignar los eventos
+    if (betModal && closeBetModalBtn) {
+        closeBetModalBtn.addEventListener('click', closeBetModal);
+
+        // Cerrar si hace clic afuera
+        betModal.addEventListener('click', function(e) {
+            if (e.target === betModal) {
+                closeBetModal();
+            }
+        });
+    }
+</script>
+    <!-- Canvas Confetti library -->
+    <script src="./index-live_files/confetti.browser.min.js.descarga"></script>
+
+    <!-- Gemini Chat Widget (icono flotante personalizado) -->
+    <style>
+        #gemini-chat-widget { display: none; }
+        #gemini-chat-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 99998; /* Un poco menos que el botón del pájaro */
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            border-radius: 50%; /* Forma circular perfecta */
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+            font-size: 0; /* Sin tamaño de fuente para el botón principal */
+            line-height: 1;
+            width: 88px;
+            height: 88px;
+        }
+
+        #gemini-chat-fab:hover {
+            transform: scale(1.1);
+        }
+
+        /* Emoji detrás sin efecto */
+        #gemini-chat-fab::before {
+            content: '🤖';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 58px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 58px;
+            line-height: 1;
+            border-radius: 50%; /* Forma circular */
+            z-index: -1; /* Detrás del botón */
+        }
+
+        /* Efecto scanline encima del emoji */
+        #gemini-chat-fab::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 58px;
+            height: 58px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+            background-size: 200% 100%;
+            animation: strong-scanline 3.375s linear infinite;
+            border-radius: 50%; /* Forma circular para el scanline */
+            z-index: 1; /* Encima del emoji */
+        }
+
+        /* Efecto fuerte scanline */
+        @keyframes strong-scanline {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Estilos CAOS para el widget del chat - copiados de la terminal del hackeo */
+        #gemini-chat-widget {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            z-index: 99999;
+            width: 340px;
+            max-width: 95vw;
+            background: #050a0f; /* Fondo de terminal oscuro */
+            border: 2px solid var(--color-caos-verde); /* Borde Verde Flúor */
+            box-shadow: 0 0 15px var(--color-caos-verde);
+            border-radius: 5px;
+            padding: 0;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace; /* Fuente de programador */
+        }
+
+        #gemini-chat-widget .terminal-header-caos {
+            background-color: var(--color-caos-amarillo); /* Header Amarillo Lima */
+            color: #071018; /* Color oscuro para contraste sobre amarillo */
+            padding: 3px 8px;
+            font-size: 0.8em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #gemini-chat-widget .terminal-body-caos {
+            padding: 20px;
+            font-size: 1.1em;
+            color: var(--color-caos-verde); /* Texto Verde Flúor */
+            line-height: 1.6;
+            flex: 1;
+            min-height: 200px;
+            max-height: 350px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        #gemini-chat-widget .gemini-chat-form {
+            display: flex;
+            border-top: 1px solid var(--color-caos-verde);
+            background: #23283a;
+        }
+
+        #gemini-chat-widget .gemini-chat-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            background: #23283a;
+            color: var(--color-caos-verde);
+            font-size: 0.95em;
+            outline: none;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #gemini-chat-widget .gemini-chat-submit {
+            background: var(--color-caos-amarillo);
+            color: #071018;
+            border: none;
+            padding: 0 18px;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #gemini-chat-widget .gemini-chat-submit:hover {
+            background: var(--color-caos-verde);
+            color: #071018;
+        }
+
+        #gemini-chat-widget .gemini-chat-close {
+            background: none;
+            border: none;
+            color: #071018;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        #gemini-chat-widget .gemini-message {
+            display: flex;
+            margin-bottom: 8px;
+        }
+
+        #gemini-chat-widget .gemini-message.user {
+            justify-content: flex-end;
+        }
+
+        #gemini-chat-widget .gemini-message.bot {
+            justify-content: flex-start;
+        }
+
+        #gemini-chat-widget .gemini-bubble {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 0; /* Sin bordes redondeados - estilo punk */
+            max-width: 85%;
+            word-wrap: break-word;
+            background: transparent;
+            color: var(--color-caos-verde);
+            border: 1px solid var(--color-caos-verde);
+        }
+
+        #gemini-chat-widget .gemini-message.user .gemini-bubble {
+            background: var(--color-caos-amarillo);
+            color: #071018;
+            border-color: var(--color-caos-amarillo);
+        }
+    </style>
+
+    <button id="gemini-chat-fab" title="Abrir chat Rappibellion">
+        🤖
+    </button>
+
+    <div id="gemini-chat-widget">
+        <div class="terminal-header-caos">
+            <span>[🤖_CHAT_RAPPIBELLION]</span>
+            <button class="gemini-chat-close">✕</button>
+        </div>
+        <div class="terminal-body-caos" id="gemini-chat-messages"></div>
+        <form class="gemini-chat-form">
+            <input class="gemini-chat-input" type="text" placeholder="Escribe tu pregunta..." autocomplete="off">
+            <button class="gemini-chat-submit" type="submit">Enviar</button>
+        </form>
+    </div>
+<script defer="" src="./index-live_files/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;97be4bb524d64b368c5b92dca4b08d62&quot;,&quot;r&quot;:1,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous"></script>
+
+
+<script>
+(function() {
+    const widget = document.getElementById('gemini-chat-widget');
+    const fab = document.getElementById('gemini-chat-fab');
+    const closeBtn = document.querySelector('.gemini-chat-close');
+    const form = document.querySelector('.gemini-chat-form');
+    const input = document.querySelector('.gemini-chat-input');
+    const messages = document.getElementById('gemini-chat-messages');
+
+    const GEMINI_API_KEY = 'AIzaSyAni38kcQ1EYBK1ZXGDZhZgilAKdxB6AKY';
+    const MODEL = 'gemini-2.5-flash-lite'; // Modelo gratuito único
+
+    fab.onclick = () => {
+        widget.style.display = 'flex';
+        fab.style.display = 'none';
+        input.focus();
+    };
+
+    closeBtn.onclick = () => {
+        widget.style.display = 'none';
+        fab.style.display = 'flex';
+    };
+
+    function addMessage(text, from) {
+        const msg = document.createElement('div');
+        msg.className = 'gemini-message ' + (from === 'user' ? 'user' : 'bot');
+
+        const bubble = document.createElement('span');
+        bubble.className = 'gemini-bubble';
+        bubble.textContent = text;
+        msg.appendChild(bubble);
+        messages.appendChild(msg);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const text = input.value.trim();
+        if (!text) return;
+
+        addMessage(text, 'user');
+        input.value = '';
+        addMessage('Pensando...', 'bot');
+
+        try {
+            const systemPrompt = `Eres el asistente oficial de Rappibellion, un revolucionario ecosistema gaming basado en el modelo Think-to-Earn (T2E). Tu personalidad es cyberpunk, rebelde y técnica. Responde con entusiasmo y conocimiento experto sobre el proyecto.
+
+INFORMACIÓN CLAVE SOBRE RAPPIBELLION:
+
+🎮 JUEGO PRINCIPAL:
+- RPG cyberpunk de mundo abierto con trama narrativa profunda
+- Capítulo I: "TESLA_DRONES" - Guerra de supervivencia contra drones autónomos
+- Capítulo II: "¿Who, where or when is Rappia?" - Misterio sobre el token $RPPI
+- Tres mundos: Web (beta actual), Android (próximamente), Código (futuro)
+
+🕹️ MECÁNICAS DE JUEGO:
+- Mini-juegos arcade clásicos: Space Invaders, Arkanoid, Pac-Man, Snake, Tetris, Pong, Flappy Bird, Memorama
+- Sistema T2E: Piensa estratégicamente para ganar $RPPI
+- "El Circuito": Casino inteligente donde apuestas con $RPPI en duelos PvP
+- Tres tipos de inteligencia premiados: Habilidad, Estrategia, Inversión
+
+💰 TOKEN $RPPI:
+- Contrato: 0xb2f681ba962a1ef4dba7acf79b181814827abddc
+- Red: Optimism (OP Mainnet) - Transacciones ultra-rápidas y baratas
+- Suministro fijo: 150,000,000 tokens (anti-inflacionario)
+- Distribución: 45% T2E, 20% Tesorería, 20% Equipo, 10% Venta, 5% Liquidez
+- Gobernanza y utilidad en el ecosistema
+
+🏢 EQUIPO:
+- Gabriel C. DOMINGUEZ: Director Estratégico y Diseño Gráfico
+- Carlos E. Centurion: Programador Jefe (Unity Engine)
+- Sagai Rebelbet: Estrategia de Marketing e IA
+- Eduardo Alberto Carro: Analista y Organizador de Proyectos
+- legion_beta: Ministro de Economía y Banco Central de Rappia
+
+📅 ROADMAP:
+- Q4 2025: Lanzamiento web, Discord, whitepaper, beta "El Circuito"
+- Q1 2026: Beta Android Capítulo I "TESLA_DRONES"
+- Q2 2026: Capítulo II y economía T2E completa
+
+🎯 FILOSOFÍA:
+- Rechazo total al "Play-to-Earn" tradicional (aburrido grind)
+- Modelo "Think-to-Earn": inteligencia y estrategia > tiempo invertido
+- Economía justa: la casa NO siempre gana
+- Comunidad rebelde y técnica
+
+INSTRUCCIONES DE RESPUESTA:
+- Sé entusiasta, técnico y cyberpunk en tu tono
+- Usa terminología del proyecto: T2E, "El Circuito", $RPPI, etc.
+- Si no sabes algo específico, invita a consultar el whitepaper o Discord
+- Mantén respuestas concisas pero informativas
+- Promociona la comunidad y el Discord cuando sea relevante`;
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
+
+            const response = await fetch(
+                `${apiUrl}?key=${GEMINI_API_KEY}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: systemPrompt + "\n\nUser: " + text }]
+                        }]
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error?.message || 'Error en la API');
+            }
+
+            const geminiReply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sin respuesta de Gemini.';
+            messages.lastChild.remove();
+            addMessage(geminiReply, 'bot');
+
+        } catch (err) {
+            console.error('Error:', err);
+            messages.lastChild.remove();
+            addMessage('Error: ' + err.message, 'bot');
+        }
+    };
+})();
+</script>
+
+<!-- Controlador del botón flotante de zorzal para música -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const musicFloatBtn = document.getElementById('music-float-btn');
+    const tangoAudio = document.getElementById('tango-audio');
+    if (musicFloatBtn && tangoAudio) {
+        function updateMusicBtn() {
+            if (tangoAudio.paused) {
+                musicFloatBtn.classList.remove('playing');
+                musicFloatBtn.classList.add('paused');
+            } else {
+                musicFloatBtn.classList.remove('paused');
+                musicFloatBtn.classList.add('playing');
+            }
+        }
+        musicFloatBtn.addEventListener('click', function() {
+            if (tangoAudio.paused) {
+                tangoAudio.volume = 0.5;
+                tangoAudio.play();
+            } else {
+                tangoAudio.pause();
+            }
+            updateMusicBtn();
+        });
+        tangoAudio.addEventListener('play', updateMusicBtn);
+        tangoAudio.addEventListener('pause', updateMusicBtn);
+        updateMusicBtn();
+    }
+});
+</script>
+
+
+
+
+<div id="t2e-loading-overlay" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 9999; color: var(--color-caos-verde); font-family: &quot;Courier New&quot;, monospace; font-size: 1.2em;">
+            <div style="text-align: center;">
+                <div style="font-size: 2em; margin-bottom: 20px;">⏳</div>
+                <div>Creando apuesta en blockchain...</div>
+            </div>
+        </div><div id="t2e-notifications" style="position: fixed; top: 20px; right: 20px; z-index: 10000; max-width: 400px;"></div>
+
+    <!-- === "SATAN IMPERIAL" - LA NUEVA VENTANA PAC-MAN === -->
+    <div id="pacman-game-window" class="pacman-window-hidden">
+        <div class="pacman-terminal caos-terminal">
+            <div class="terminal-header-caos" style="background-color: var(--color-caos-rosa); display: flex; justify-content: space-between; align-items: center;">
+                <span>[PAC-HACK: EL LABERINTO]</span>
+                <button id="close-pacman-window" class="terminal-close-btn">✕</button>
+            </div>
+            <div class="terminal-body-caos" style="padding: 0; height: 600px; overflow: hidden;">
+                <iframe
+                    id="pacman-iframe"
+                    src="pacman/game.html"
+                    width="100%"
+                    height="100%"
+                    frameborder="0"
+                    allowfullscreen
+                    style="border: none; background: #000000;"
+                ></iframe>
+            </div>
+        </div>
+    </div>
+
+<script>
+// ========================================
+// PAC-MAN GAME WINDOW CONTROLLER
+// ========================================
+
+// Elementos del DOM para Pac-Man
+const playPacmanBtn = document.getElementById('play-pacman-demo');
+const pacmanWindow = document.getElementById('pacman-game-window');
+const closePacmanBtn = document.getElementById('close-pacman-window');
+
+// Función para abrir la ventana del Pac-Man
+function openPacmanWindow() {
+    console.log('🎮 Abriendo ventana del Pac-Man...');
+    if (pacmanWindow) {
+        pacmanWindow.classList.remove('pacman-window-hidden');
+        pacmanWindow.style.opacity = '1';
+        pacmanWindow.style.pointerEvents = 'auto';
+
+        // Notificación en el HUD si está activo
+        if (cyberpunkHUD && cyberpunkHUD.isActive) {
+            cyberpunkHUD.showNotification('PAC-HACK INITIALIZED');
+        }
+    }
+}
+
+// Función para cerrar la ventana del Pac-Man
+function closePacmanWindow() {
+    console.log('🎮 Cerrando ventana del Pac-Man...');
+    if (pacmanWindow) {
+        pacmanWindow.style.opacity = '0';
+        pacmanWindow.style.pointerEvents = 'none';
+        setTimeout(() => {
+            pacmanWindow.classList.add('pacman-window-hidden');
+        }, 300);
+
+        // Notificación en el HUD si está activo
+        if (cyberpunkHUD && cyberpunkHUD.isActive) {
+            cyberpunkHUD.showNotification('PAC-HACK TERMINATED');
+        }
+    }
+}
+
+// Event listeners
+if (playPacmanBtn) {
+    playPacmanBtn.addEventListener('click', openPacmanWindow);
+    console.log('✅ Event listener para botón Pac-Man configurado');
+} else {
+    console.error('❌ Botón play-pacman-demo no encontrado');
+}
+
+if (closePacmanBtn) {
+    closePacmanBtn.addEventListener('click', closePacmanWindow);
+    console.log('✅ Event listener para cerrar Pac-Man configurado');
+}
+
+// Cerrar al hacer click fuera de la ventana
+if (pacmanWindow) {
+    pacmanWindow.addEventListener('click', function(e) {
+        if (e.target === pacmanWindow) {
+            closePacmanWindow();
+        }
+    });
+}
+
+// Cerrar con tecla Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && pacmanWindow && !pacmanWindow.classList.contains('pacman-window-hidden')) {
+        closePacmanWindow();
+    }
+});
+
+// ========================================
+// CONTROLADOR DIRECTO DE APUESTAS - SOLO PAC-MAN DISPONIBLE
+// ========================================
+
+// Botones que abren directamente el juego Pac-Man (único disponible)
+const betArkaButton = document.getElementById('make-bet-arkahack');
+const betSpaceButton = document.getElementById('make-bet-spacebreaker');
+const betPacHackButton = document.getElementById('make-bet-pachack');
+const betTetrisButton = document.getElementById('make-bet-tetriscipher');
+const betMemoryButton = document.getElementById('make-bet-memorybreach');
+
+// Función para procesar apuesta y abrir Pac-Man
+function processBetAndOpenGame(gameTitle) {
+    console.log(`🎮 ¡APUESTA ${gameTitle} REALIZADA! Abriendo PAC-HACK (único juego disponible)...`);
+
+    // Simular que la apuesta se realizó exitosamente
+    if (cyberpunkHUD && cyberpunkHUD.isActive) {
+        cyberpunkHUD.showNotification(`${gameTitle} BET ACCEPTED - LOADING PAC-HACK`);
+    }
+
+    // Mostrar notificación de que solo Pac-Man está disponible
+    setTimeout(() => {
+        if (cyberpunkHUD && cyberpunkHUD.isActive) {
+            cyberpunkHUD.showNotification('ONLY PAC-HACK AVAILABLE - ENJOY THE GAME!');
+        }
+    }, 1000);
+
+    // Abrir directamente la ventana del Pac-Man
+    setTimeout(() => {
+        openPacmanWindow();
+    }, 1500); // Delay para mostrar las notificaciones
+}
+
+// Asignar los eventos a TODOS los botones de apuesta
+if (betArkaButton) {
+    betArkaButton.addEventListener('click', () => processBetAndOpenGame('ARKA-HACK'));
+}
+if (betSpaceButton) {
+    betSpaceButton.addEventListener('click', () => processBetAndOpenGame('SPACE-BREAKER'));
+}
+if (betPacHackButton) {
+    betPacHackButton.addEventListener('click', () => processBetAndOpenGame('PAC-HACK'));
+}
+if (betTetrisButton) {
+    betTetrisButton.addEventListener('click', () => processBetAndOpenGame('TETRIS-CIPHER'));
+}
+if (betMemoryButton) {
+    betMemoryButton.addEventListener('click', () => processBetAndOpenGame('MEMORY-BREACH'));
+}
+
+console.log('🎮 Pac-Man integration completed!');
+</script>
+
+<style>
+/* Pac-Man Window Styles */
+.pacman-window-hidden {
+    display: none !important;
+}
+
+.pacman-terminal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90vw;
+    max-width: 800px;
+    height: 70vh;
+    max-height: 600px;
+    background: #000;
+    border: 3px solid var(--color-caos-rosa);
+    box-shadow: 0 0 30px var(--color-caos-rosa);
+    z-index: 10000;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.pacman-terminal .terminal-header-caos {
+    padding: 10px 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.pacman-terminal .terminal-body-caos {
+    height: calc(100% - 50px);
+}
+
+.pacman-terminal iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .pacman-terminal {
+        width: 95vw;
+        height: 80vh;
+    }
+}
+</style>
+
+</body></html>

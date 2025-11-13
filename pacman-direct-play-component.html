@@ -1,0 +1,268 @@
+<!-- ===========================================
+     PAC-MAN DIRECT PLAY COMPONENT
+     Componente reutilizable para jugar Pac-Man directamente
+     =========================================== -->
+
+<!-- HTML Structure -->
+<div class="pacman-direct-play-container">
+    <div class="game-placeholder">
+        <img src="juegos beta/pacman.jfif" alt="PAC-HACK" style="width: 100%; height: auto; display: block;">
+        <p style="margin-top: 10px;">
+            <strong style="color: var(--color-caos-rosa); text-shadow: 0 0 8px var(--color-caos-rosa);">[PAC-HACK]</strong><br>
+            (El "Laberinto")
+        </p>
+        <button class="cta-button pacman-direct-play-btn" id="play-pacman-direct" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde);">
+            🎮 ¡JUGAR PAC-HACK!
+        </button>
+    </div>
+</div>
+
+<!-- Pac-Man Game Window Modal -->
+<div id="pacman-game-window" class="pacman-window-hidden">
+    <div class="pacman-terminal caos-terminal">
+        <div class="terminal-header-caos" style="background-color: var(--color-caos-rosa); display: flex; justify-content: space-between; align-items: center;">
+            <span>[PAC-HACK: EL LABERINTO]</span>
+            <button id="close-pacman-window" class="terminal-close-btn">✕</button>
+        </div>
+        <div class="terminal-body-caos" style="padding: 0; height: 600px; overflow: hidden;">
+            <iframe
+                id="pacman-iframe"
+                src="pacman/game.html"
+                width="100%"
+                height="100%"
+                frameborder="0"
+                allowfullscreen
+                style="border: none; background: #000000;"
+            ></iframe>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript Functionality -->
+<script>
+// Pac-Man Direct Play Component
+class PacmanDirectPlay {
+    constructor(options = {}) {
+        this.containerId = options.containerId || 'play-pacman-direct';
+        this.windowId = options.windowId || 'pacman-game-window';
+        this.onOpen = options.onOpen || null;
+        this.onClose = options.onClose || null;
+
+        this.initialize();
+    }
+
+    initialize() {
+        this.button = document.getElementById(this.containerId);
+        this.window = document.getElementById(this.windowId);
+        this.closeBtn = document.getElementById('close-pacman-window');
+        this.iframe = document.getElementById('pacman-iframe');
+
+        if (this.button) {
+            this.button.addEventListener('click', () => this.openGame());
+        }
+
+        if (this.closeBtn) {
+            this.closeBtn.addEventListener('click', () => this.closeGame());
+        }
+
+        // Close on click outside
+        if (this.window) {
+            this.window.addEventListener('click', (e) => {
+                if (e.target === this.window) {
+                    this.closeGame();
+                }
+            });
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.window && !this.window.classList.contains('pacman-window-hidden')) {
+                this.closeGame();
+            }
+        });
+
+        console.log('🎮 Pac-Man Direct Play Component initialized');
+    }
+
+    openGame() {
+        console.log('🎮 Opening Pac-Man Direct Play...');
+
+        if (this.window) {
+            this.window.classList.remove('pacman-window-hidden');
+            this.window.style.opacity = '1';
+            this.window.style.pointerEvents = 'auto';
+        }
+
+        // Call custom open callback
+        if (this.onOpen) {
+            this.onOpen();
+        }
+
+        // Trigger HUD notification if available
+        if (window.cyberpunkHUD && window.cyberpunkHUD.isActive) {
+            window.cyberpunkHUD.showNotification('PAC-HACK INITIALIZED');
+        }
+    }
+
+    closeGame() {
+        console.log('🎮 Closing Pac-Man Direct Play...');
+
+        if (this.window) {
+            this.window.style.opacity = '0';
+            this.window.style.pointerEvents = 'none';
+            setTimeout(() => {
+                this.window.classList.add('pacman-window-hidden');
+            }, 300);
+        }
+
+        // Call custom close callback
+        if (this.onClose) {
+            this.onClose();
+        }
+
+        // Trigger HUD notification if available
+        if (window.cyberpunkHUD && window.cyberpunkHUD.isActive) {
+            window.cyberpunkHUD.showNotification('PAC-HACK TERMINATED');
+        }
+    }
+
+    // Method to check if game is currently open
+    isOpen() {
+        return this.window && !this.window.classList.contains('pacman-window-hidden');
+    }
+
+    // Method to programmatically open/close
+    toggle() {
+        if (this.isOpen()) {
+            this.closeGame();
+        } else {
+            this.openGame();
+        }
+    }
+}
+
+// Auto-initialize if button exists on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const pacmanBtn = document.getElementById('play-pacman-direct');
+    if (pacmanBtn) {
+        // Create global instance
+        window.pacmanDirectPlay = new PacmanDirectPlay({
+            onOpen: () => {
+                console.log('✅ Pac-Man game opened');
+            },
+            onClose: () => {
+                console.log('❌ Pac-Man game closed');
+            }
+        });
+    }
+});
+</script>
+
+<!-- CSS Styles (Add to your main stylesheet) -->
+<style>
+/* Pac-Man Direct Play Styles */
+.pacman-direct-play-container {
+    text-align: center;
+}
+
+.pacman-direct-play-container .game-placeholder {
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(10, 15, 20, 0.8);
+    border: 2px solid var(--color-caos-rosa);
+    border-radius: 8px;
+}
+
+.pacman-direct-play-container img {
+    max-width: 200px;
+    height: auto;
+    border-radius: 4px;
+}
+
+.pacman-direct-play-container p {
+    margin: 10px 0;
+    color: var(--color-texto);
+}
+
+.pacman-direct-play-btn {
+    margin-top: 15px !important;
+    padding: 12px 24px !important;
+    font-size: 1.1em !important;
+    font-weight: bold !important;
+    transition: all 0.3s ease !important;
+}
+
+.pacman-direct-play-btn:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 0 20px var(--color-caos-verde) !important;
+}
+
+/* Pac-Man Window Styles */
+.pacman-window-hidden {
+    display: none !important;
+}
+
+.pacman-terminal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90vw;
+    max-width: 800px;
+    height: 70vh;
+    max-height: 600px;
+    background: #000;
+    border: 3px solid var(--color-caos-rosa);
+    box-shadow: 0 0 30px var(--color-caos-rosa);
+    z-index: 10000;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.pacman-terminal .terminal-header-caos {
+    padding: 10px 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.pacman-terminal .terminal-body-caos {
+    height: calc(100% - 50px);
+}
+
+.pacman-terminal iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .pacman-terminal {
+        width: 95vw;
+        height: 80vh;
+    }
+
+    .pacman-direct-play-container img {
+        max-width: 150px;
+    }
+}
+</style>
+
+<!-- ===========================================
+     HOW TO USE THIS COMPONENT:
+
+     1. Copy the HTML structure above to your page
+     2. Include the JavaScript and CSS
+     3. The component auto-initializes on page load
+
+     Example usage:
+     <div class="pacman-direct-play-container">
+         <!-- Component HTML here -->
+     </div>
+
+     // JavaScript control:
+     window.pacmanDirectPlay.openGame();
+     window.pacmanDirectPlay.closeGame();
+     window.pacmanDirectPlay.toggle();
+
+     =========================================== -->

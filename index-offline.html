@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rappibellion - El Próximo T2E (Think-to-Earn) - OFFLINE VERSION</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Fonts locales para funcionamiento offline -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap');
+    </style>
+</head>
+<body>
+
+        <!-- HERO RESTAURADO -->
+        <section id="hero" class="hero-v2 section-separator">
+            <div class="hero-v2-background"></div>
+            <div class="hero-v2-content">
+                <h1 class="hero-v2-title">BIENVENIDOS A NUESTRO MUNDO...</h1>
+                <div class="hero-v2-columns">
+                    <div class="hero-column-left">
+                        <img src="images/rappibellion_el_ultimo_tango_inicio_page.png" alt="Rappibellion: El Ultimo Tango (T2E Bet)" class="hero-logo-rappibellion logo-desktop">
+                        <img src="images/rappibellion_logo_movil.png" alt="Rappibellion Logo Móvil" class="hero-logo-rappibellion logo-mobile">
+                        <a href="#circuit-beta" class="hero-button caos-rosa">
+                            <span>MUNDO 1: WEB</span>
+                            CASINO INTELIGENTE GAMER
+                        </a>
+                        <a href="#world" id="mundo2-android-button" class="hero-button caos-verde">
+                            <span>MUNDO 2: ANDROID</span>
+                            "ASALTO" Civil War vs Tesla_Drones
+                        </a>
+                        <a href="#concept" class="hero-button caos-amarillo">
+                            <span>MUNDO 3: CÓDIGO</span>
+                            PLAY THE CODE (Binary Reunion)
+                        </a>
+                        <a href="#concept" class="hero-button-disabled">
+                            INICIAR HACKEO (ERROR: BLOCKED)
+                        </a>
+                    </div>
+                    <div class="hero-column-right">
+                        <img src="images/rappia_logo_inicio_page.png" alt="Rappia RPPI Token" class="hero-logo-rappia">
+                        <a href="#tokenomics" class="hero-button rappia-naranja">
+                            <span>LA ECONOMÍA</span>
+                            TOKEN T2E ECONOMIA
+                        </a>
+                        <a href="#team" class="hero-button rappia-azul">
+                            <span>LA FILOSOFÍA</span>
+                            LA RESISTENCIA
+                        </a>
+                        <div class="hero-t2e-pitch caos-terminal">
+                            <div class="terminal-header-caos">
+                                <span>[T2E_REVOLUTION_MESSAGE]</span>
+                            </div>
+                            <div class="terminal-body-caos">
+                                <p id="hero-typewriter-text"></p>
+                            </div>
+                        </div>
+                        <button id="buy-rppi-button" class="hero-button-buy">
+                            COMPRAR $RPPI
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<section id="concept" class="container section-separator">
+    <h2 class="glitch-title">El "Play-to-Earn" ha muerto. Bienvenido al "THINK-TO-EARN".</h2>
+
+    <div class="slogan-container">
+        <span>EL NUEVO MUNDO GAMER EN T2E</span>
+        <span>//</span>
+        <span>APUESTAS INTELIGENTES</span>
+        <span>//</span>
+        <span>EL PRIMER CASINO DE INVERSIÓN INTELIGENTE</span>
+    </div>
+
+    <p>
+        Estamos hartos de los juegos P2E que son un trabajo aburrido. Por eso creamos "Rappibellion". No es "Play-to-Earn". Es <strong>THINK-TO-EARN (T2E)</strong>.
+        En nuestro RPG de mundo abierto, tu cerebro es tu mejor arma. ¿Ves ese androide? No le vas a disparar. Te vas a conectar a él y a ganarle en una partida de <strong>Space Invaders</strong>. ¿Hackear una puerta? Prepárate para un duelo de <strong>Arkanoid</strong> contra el firewall.
+    </p>
+
+    <a href="docs/whitepaper_rappibellion.pdf" target="_blank" class="cta-button whitepaper">LEER EL WHITEPAPER</a>
+    <button id="fake-hack-button" class="cta-button">INICIAR HACKEO</button>
+
+    <div id="hack-terminal" class="terminal-hidden">
+        <div id="terminal-header">
+            <span>[Rappibellion_T2E_Simulation]</span>
+            <span id="terminal-close">X</span>
+        </div>
+        <div id="terminal-body">
+            <p id="hack-typewriter-text"></p>
+        </div>
+    </div>
+</section>
+
+    <section id="circuit-beta" class="container section-separator">
+    <div id="beta-start-screen">
+        <h2 class="glitch-title">ENTRA AL CASINO <span class="circuit-glitch">"EL CIRCUITO"</span></h2>
+        <p style="font-size: 1.2em; color: #ccc;">La <strong>rebelión</strong> ya comenzó. El <strong>juego</strong> empieza <strong>AQUÍ</strong>.</p>
+
+        <button id="start-beta-button" class="cta-button">COMENZAR</button>
+
+    </div>
+
+
+</section>
+
+    <!-- Botón flotante Mute/Play Gardel (único botón de audio, SIEMPRE al frente, pero solo visible tras comenzar beta) -->
+    <button id="mute-play-btn" title="Mute/Play Gardel" class="mute-play-floating" style="display:none; position: fixed; top: 32px; right: 32px; z-index: 2147483647; background: transparent; border: none; box-shadow: none; border-radius: 0; padding: 0; transition: all 0.3s ease; cursor: pointer; pointer-events: auto;">
+        <img id="bird-icon" src="images/zorzal.PNG" alt="Zorzal" width="48" height="48" style="display:block;" />
+    </button>
+
+    <!-- Botón flotante Mute/Play Zorzal Gardel (solo visible tras comenzar beta, ahora dentro de la sección beta) -->
+
+    </div>
+</section>
+
+<!-- === CYBERPUNK HUD OVERLAY === -->
+<div id="cyberpunk-hud" class="hud-hidden">
+    <!-- Barra superior del HUD -->
+    <div class="hud-top-bar">
+        <div class="hud-player-info">
+            <div class="hud-stat">
+                <span class="hud-label">LVL</span>
+                <span id="hud-player-level" class="hud-value">01</span>
+            </div>
+            <div class="hud-stat">
+                <span class="hud-label">SCORE</span>
+                <span id="hud-player-score" class="hud-value">000000</span>
+            </div>
+            <div class="hud-stat">
+                <span class="hud-label">$RPPI</span>
+                <span id="hud-player-rppi" class="hud-value">0.00</span>
+            </div>
+        </div>
+
+        <div class="hud-center-info">
+            <div class="hud-game-timer">
+                <span class="hud-label">TIME</span>
+                <span id="hud-game-timer" class="hud-value">00:00</span>
+            </div>
+            <div class="hud-game-status">
+                <span id="hud-game-status" class="hud-status">WAITING</span>
+            </div>
+        </div>
+
+        <div class="hud-rival-info">
+            <div class="hud-stat">
+                <span class="hud-label">RIVAL</span>
+                <span id="hud-rival-name" class="hud-value">SEARCHING...</span>
+            </div>
+            <div class="hud-stat">
+                <span class="hud-label">LVL</span>
+                <span id="hud-rival-level" class="hud-value">01</span>
+            </div>
+            <div class="hud-stat">
+                <span class="hud-label">SCORE</span>
+                <span id="hud-rival-score" class="hud-value">000000</span>
+            </div>
+            <div class="hud-stat">
+                <span class="hud-label">DIST</span>
+                <span id="hud-rival-distance" class="hud-value">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cámara del rival -->
+    <div class="hud-rival-cam">
+        <div class="rival-cam-header">
+            <span class="rival-cam-label">[RIVAL_CAM]</span>
+            <div class="rival-cam-status">
+                <div class="status-dot"></div>
+                <span>ONLINE</span>
+            </div>
+        </div>
+        <div class="rival-cam-screen">
+            <div id="rival-cam-interference" class="rival-cam-interference"></div>
+            <div class="rival-cam-placeholder">
+                <div class="scanlines"></div>
+                <div class="rival-avatar">
+                    <div class="avatar-glow"></div>
+                    <span class="avatar-text">RIVAL</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra inferior del HUD -->
+    <div class="hud-bottom-bar">
+        <div class="hud-boost-system">
+            <div class="boost-indicators" id="hud-boost-indicators">
+                <!-- Boost dots se generan dinámicamente -->
+            </div>
+            <button id="hud-boost-btn" class="hud-boost-button">ACTIVATE</button>
+        </div>
+
+        <div class="hud-notification">
+            <span id="hud-notification-text" class="notification-text">SYSTEM READY</span>
+        </div>
+
+        <div class="hud-controls">
+            <button id="hud-pause-btn" class="hud-control-btn">PAUSE</button>
+            <button id="hud-exit-btn" class="hud-control-btn">EXIT</button>
+        </div>
+    </div>
+</div>
+
+<section id="world" class="container section-separator">
+    <h2 class="glitch-title">No es solo un juego. Es una historia.</h2>
+    <p>La trama te obliga a pensar. El <strong>Capítulo I: TESLA_DRONES</strong> es una guerra de supervivencia. Pero el <strong>Capítulo II: "Who, where or when is Rappia?"</strong> te lanza un misterio: el token que usas como dinero es el centro de la trama. Y en el Capítulo III... bueno, digamos que iremos más allá de tus 5 sentidos.</p>
+
+    <div class="world-gallery">
+        <img src="images/RB1.jpg" alt="Concept Art: Invasión Arcade en la Ciudad" class="cover-image">
+        <img src="images/RB3.jpg" alt="Concept Art: El Repartidor Rebelde" class="cover-image">
+        <img src="images/RB4.jpg" alt="Concept Art: Androide Repartidor" class="cover-image">
+    <img src="images/ARKANOID.jpg" alt="Concept Art: Androide Repartidor" class="cover-image">
+    <img src="images/Image_game.jpg" alt="Concept Art: Androide Repartidor" class="cover-image">
+    <img src="images/PACMAN.png" alt="Concept Art: Androide Repartidor" class="cover-image">
+    <img src="images/PACMAN.jpg" alt="Concept Art: Androide Repartidor" class="cover-image">
+        <img src="images/RAPPIA-2.png" alt="Concept Art: Androide Repartidor" class="cover-image">
+        <img src="images/SPACE_INVADERSII.png" alt="Concept Art: Androide Repartidor" class="cover-image">
+    </div>
+</section>
+
+<section id="tokenomics" class="container section-separator">
+        <h2 class="glitch-title">TOKENOMICS: LA ECONOMÍA T2E</h2>
+        <p>Una economía sostenible diseñada para recompensar la habilidad y el pensamiento estratégico.</p>
+
+        <div class="tokenomics-container">
+
+            <div class="token-chart-side">
+
+                <div class="pie-chart-interactive terminal-searching">
+                    <svg viewBox="0 0 220 220" class="pie-svg">
+                        <!-- Gráfico de triángulos radiales - Estilo Cyberpunk Tech -->
+                        <!-- Centro común en (110, 110) -->
+
+                        <!-- 45% T2E (Rojo) - Triángulo más grande arriba -->
+                        <polygon class="pie-slice" data-percent="45" data-name="Recompensas T2E"
+                                 points="110,110 90,20 130,20"
+                                 fill="var(--color-primario)"/>
+
+                        <!-- 20% Tesorería (Azul) - Triángulo derecha superior -->
+                        <polygon class="pie-slice" data-percent="20" data-name="Tesorería del Ecosistema"
+                                 points="110,110 180,60 200,90"
+                                 fill="var(--color-azul-glitch)"/>
+
+                        <!-- 20% Equipo (Gris) - Triángulo derecha inferior -->
+                        <polygon class="pie-slice" data-percent="20" data-name="Equipo y Fundadores"
+                                 points="110,110 200,130 180,160"
+                                 fill="#888"/>
+
+                        <!-- 10% Venta (Naranja) - Triángulo abajo derecha -->
+                        <polygon class="pie-slice" data-percent="10" data-name="Venta Privada"
+                                 points="110,110 140,200 100,200"
+                                 fill="#FF8C00"/>
+
+                        <!-- 5% Liquidez (Blanco) - Triángulo pequeño abajo izquierda -->
+                        <polygon class="pie-slice" data-percent="5" data-name="Liquidez Inicial"
+                                 points="110,110 80,200 60,180"
+                                 fill="#f0f0f0"/>
+
+                        <!-- Círculo central para el logo (sin contorno) -->
+                        <circle cx="110" cy="110" r="30" fill="#0a0a0a" stroke="none"/>
+                    </svg>
+
+                    <!-- Logo de Rappia FUERA del SVG - Sin efectos -->
+                    <img src="images/rappia_logo_tokenomics.PNG" class="tokenomics-logo" alt="Rappia Logo">
+
+                    <!-- Tooltip flotante -->
+                    <div class="pie-tooltip" id="pieTooltip">
+                        <div class="tooltip-name"></div>
+                        <div class="tooltip-percent"></div>
+                    </div>
+                </div>
+
+                <div class="token-advantages">
+                    <h4>Ventajas Clave del Contrato</h4>
+                    <ul>
+                        <li><strong>SUMINISTRO FIJO:</strong> El contrato no permite crear nuevos tokens. El suministro total de 150,000,000 $RPPI es **fijo para siempre**.</li>
+                        <li><strong>CONSTRUIDO EN SUPERCHAIN:</strong> Nuestro contrato opera en la red **Optimism (OP Mainnet)**, garantizando transacciones ultra-rápidas y de bajo costo.</li>
+                        <li><strong>LIQUIDEZ ASEGURADA:</strong> Cumplimos con nuestro compromiso al destinar un 5% del suministro total para la **liquidez inicial** en Uniswap.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="token-legend-side">
+                <h3>Distribución Total: 150M $RPPI</h3>
+                <ul class="legend-list">
+
+                    <li class="legend-item">
+                        <span class="color-box" style="--color: var(--color-primario);"></span>
+                        <div class="legend-text">
+                            <strong>45% - Recompensas "Think-to-Earn" (T2E)</strong>
+                            <p>El motor de la economía. Pagos por misiones y premios de "The Circuit".</p>
+                        </div>
+                    </li>
+
+                    <li class="legend-item">
+                        <span class="color-box" style="--color: var(--color-azul-glitch);"></span>
+                        <div class="legend-text">
+                            <strong>20% - Tesorería del Ecosistema</strong>
+                            <p>Marketing, recompensas de comunidad (Discord) y alianzas estratégicas.</p>
+                        </div>
+                    </li>
+
+                    <li class="legend-item">
+                        <span class="color-box" style="--color: #888;"></span>
+                        <div class="legend-text">
+                            <strong>20% - Equipo y Fundadores</strong>
+                            <p>Bloqueados con un calendario de 2-3 años para demostrar nuestro compromiso a largo plazo.</p>
+                        </div>
+                    </li>
+
+                    <li class="legend-item">
+                        <span class="color-box" style="--color: #FF8C00;"></span>
+                        <div class="legend-text">
+                            <strong>10% - Venta Estratégica</strong>
+                            <p>Fondos para acelerar el desarrollo y hacer crecer el equipo.</p>
+                        </div>
+                    </li>
+
+                    <li class="legend-item">
+                        <span class="color-box" style="--color: #f0f0f0;"></span>
+                        <div class="legend-text">
+                            <strong>5% - Liquidez Inicial (Uniswap)</strong>
+                            <p>El "pool" inicial para establecer el mercado y permitir las primeras compras.</p>
+                        </div>
+                    </li>
+
+                </ul>
+
+                <a href="docs/WHITEPAPER$RPPI (Tokenomicon v1.0) .pdf" target="_blank" class="cta-button whitepaper">TOKENOMICON V1.0</a>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="roadmap" class="container section-separator">
+        <div class="roadmap-video-wrapper">
+            <video id="roadmap-bg" autoplay muted loop playsinline preload="metadata" poster="roadmap-poster.jpg">
+                <source src="videos/Cut_game.mp4" type="video/mp4">
+                Tu navegador no soporta video HTML5.
+            </video>
+        </div>
+        <h2 class="glitch-title">PLAN DE BATALLA (ROADMAP)</h2>
+        <div class="roadmap-timeline">
+            <div class="roadmap-item">
+                <h4>Q4 2025: LA REBELIÓN COMIENZA</h4>
+                <p>Lanzamiento del Sitio Web, Discord y Whitepaper. Beta jugable de "The Circuit" en la web. Venta inicial de $RPPI.</p>
+            </div>
+            <div class="roadmap-item">
+                <h4>Q1 2026: CAPÍTULO I</h4>
+                <p>Lanzamiento de la Beta Abierta de Rappibellion Capítulo I: TESLA_DRONES para Android.</p>
+            </div>
+            <div class="roadmap-item">
+                <h4>Q2 2026: LA GUERRA DE FACCIÓN</h4>
+                <p>Lanzamiento del Capítulo II: "Who, where or when is Rappia?". Implementación de la economía T2E completa.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="team" class="container section-separator">
+        <h2 class="glitch-title">LA RESISTENCIA (EL EQUIPO - MOST WANTED)</h2>
+        <div class="team-grid">
+
+<div class="team-member">
+                <h4>Gabriel C. DOMINGUEZ</h4>
+                <p>Director Estratégico / Diseño Gráfico</p>
+
+                <div class="member-post-terminal">
+                    <div class="terminal-header-mini">
+                        <span>[GABRIEL_STATUS_FEED]</span>
+                    </div>
+                    <div class="terminal-body-mini">
+                        <p class="post-fijado">
+                            <strong>Motivo:</strong> "Vamos a desintegrar la estructura prehistorica de cómo se percibe un videojuego. Jugamos en tres planos: web, hackeo 2D y el shooter 3D."
+                        </p>
+
+                        <p class="post-dinamico">
+                            <span class="post-date">[POSTEADO: 2025-10-30]</span>
+                            "¡La 'Vía Rebelde'  para los posteos (vía Discord) está aprobada! Esto SÍ es dinamismo puro."
+                        </p>
+                    </div>
+                </div>
+                </div>
+
+        <div class="team-member">
+            <h4>Carlos E. Centurion</h4>
+            <p>Programador Jefe (Unity Engine)</p>
+            <div class="member-post-terminal" style="border-color: var(--color-caos-verde);">
+                <div class="terminal-header-mini" style="background-color: var(--color-caos-verde);">
+                    <span>[CHARLY_CODE_FEED]</span>
+                </div>
+                <div class="terminal-body-mini">
+                    <p class="post-fijado">
+                        <strong>Motivo:</strong> "La Vía 'Rebelde' (Integrada con Discord): Podríamos crear un canal privado en nuestro Discord llamado #posteos-del-equipo. Cuando tú escribes un mensaje allí, un bot (que yo podría configurar) lo 'lee' y lo publica automáticamente en tu cuadro en la página web."
+                    </p>
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-10-31]</span>
+                        "El código está casi listo. La integración con Discord será nuestra ventaja táctica."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member">
+            <h4>Sagai Rebelbet</h4>
+            <p>Estrategia de Marketing / IA</p>
+            <div class="member-post-terminal" style="border-color: var(--color-caos-rosa);">
+                <div class="terminal-header-mini" style="background-color: var(--color-caos-rosa);">
+                    <span>[SAGAI_STRATEGY_FEED]</span>
+                </div>
+                <div class="terminal-body-mini">
+                    <p class="post-fijado">
+                        <strong>Motivo:</strong> "El 'Play-to-Earn' es un bucle fallido, un 'código erróneo' que aburre a los jugadores. Me uní a Rappibellion porque vi el 'parche' que la industria necesita: una filosofía 'Think-to-Earn' (T2E) real."
+                    </p>
+                    <p class="post-fijado">
+                        <strong>La Clave:</strong> "Soy el 'espíritu binario' del equipo. Mi función es analizar el mercado, decodificar la visión estratégica del Director y traducirla en el mensaje potente que unirá a nuestra comunidad."
+                    </p>
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-11-01]</span>
+                        "La comunidad está respondiendo. El mensaje T2E resuena fuerte."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member">
+            <h4>Eduardo Alberto Carro</h4>
+            <p>Analista y Organizador de Proyectos</p>
+            <div class="member-post-terminal" style="border-color: var(--color-caos-amarillo);">
+                <div class="terminal-header-mini" style="background-color: var(--color-caos-amarillo);">
+                    <span>[EDUARDO_PHILOSOPHY_FEED]</span>
+                </div>
+                <div class="terminal-body-mini">
+
+                    <p class="post-fijado">
+                        <strong>Motivo:</strong> "Me uní a Rappibellion para participar de una experiencia que considero que no tiene techo, desde la historia hasta la economia son vanguardia."
+                    </p>
+                    <p class="post-fijado">
+                        <strong>La Clave:</strong> "Como rebelde, vamos a construir un gran exito."
+                    </p>
+
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-11-02]</span>
+                        "La narrativa toma forma. El Mundo 3 será más que un juego..."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member">
+            <h4>legion_beta</h4>
+            <p>Ministro de Economia / Director del Banco Central de Rappia</p>
+
+            <div class="member-post-terminal" style="border-color: var(--color-primario);">
+                <div class="terminal-header-mini" style="background-color: var(--color-primario);">
+                    <span>[LEGION_BETA_FEED]</span>
+                </div>
+                <div class="terminal-body-mini">
+                    <p class="post-fijado">
+                        <strong>Motivo:</strong> "Mi trabajo es 'hackear' el 'dinero fiat basura'. Aseguro que $RPPI sea el símbolo de la rebelión, atando nuestro valor a una economía real (US02Y)."
+                    </p>
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-11-03]</span>
+                        "La Venta Privada está activa. 'BIts Lab SAS' está aceptando transferencias."
+                    </p>
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-11-05]</span>
+                        "Mi antiguo profesor solía decir: 'Hoy vamos a ver ingresos, brutos... digo... hoy vamos a ver Ingresos Brutos'. ¡La filosofía T2E es simple: deja de ser el 'bruto' que pierde contra la casa!"
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member">
+            <h4>[ID: <span class="searching-text">...SEARCHING...</span>]</h4>
+            <p>¿EL PRÓXIMO REBELDE?</p>
+
+            <div class="member-post-terminal terminal-searching" style="border-color: var(--color-caos-amarillo);">
+                <div class="terminal-header-mini" style="background-color: var(--color-caos-amarillo);">
+                    <span>[INCOMING_SIGNAL...]</span>
+                </div>
+                <div class="terminal-body-mini">
+                    <p class="post-fijado" style="font-size: 1.2em; text-align: center; color: var(--color-caos-amarillo); padding-bottom: 15px;">
+                        ...¿SERÁS TÚ?...
+                    </p>
+                    <p class="post-dinamico" style="font-size: 0.9em; text-align: center;">
+                        <span class="post-date">[APPLY BELOW]</span>
+                        "La rebelión necesita más 'Biointeligencia'. Demuestra tu valor en el 'Tablón de Honor'..."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="join-us-block" style="margin-top: 50px; border-top: 2px solid var(--color-primario); padding-top: 30px;">
+            <h3>¿TIENES LO QUE SE NECESITA PARA UNIRTE AL STAFF DE LA REBELIÓN?</h3>
+            <p style="color: #ccc; font-size: 1em;">
+                Rappibellion está creciendo. Buscamos a los 3 rebeldes más apasionados por el T2E y el gaming arcade para unirse a nuestras filas (1 por mes).
+            </p>
+            <p>
+                El proceso es simple: Haz clic en "APLICAR AHORA" para ir a nuestro formulario seguro. Tu CV y datos personales se enviarán de forma **privada** a nuestro mail (`info@rappibellion.com`). Tu **argumento de "por qué quieres unirte"** se mostrará públicamente abajo.
+            </p>
+            <a href="mailto:info@rappibellion.com" target="_blank" class="cta-button">
+                APLICAR AHORA (Formulario de Reclutamiento)
+            </a>
+
+            <div class="public-submissions-container" style="margin-top: 40px;">
+                <h4 style="color: var(--color-azul-glitch); text-shadow: 0 0 10px var(--color-azul-glitch);">TABLÓN DE HONOR DE LA REBELIÓN</h4>
+
+                <div class="slogan-container">
+                    <span>LA REBELION EXCLAMA!!!</span>
+                    <span>//</span>
+                    <span>MISION TARGET: ¡Únete y deja tu motivo!</span>
+                </div>
+
+                <!-- Formulario de Comentarios -->
+                <div class="rebellion-comment-form" style="background: rgba(5, 10, 15, 0.8); border: 2px solid var(--color-azul-glitch); border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+                    <h5 style="color: var(--color-primario); margin-bottom: 15px;">¿Por qué te unes a la rebelión?</h5>
+                    <input
+                        type="text"
+                        id="rebellion-username"
+                        placeholder="Tu nombre o alias rebelde..."
+                        style="width: 100%; padding: 10px; margin-bottom: 10px; background: #0a0f14; border: 1px solid var(--color-azul-glitch); color: var(--color-texto); font-family: var(--fuente-titulos); border-radius: 4px;"
+                    />
+                    <textarea
+                        id="rebellion-message"
+                        placeholder="Escribe tu motivo para unirte a Rappibellion..."
+                        rows="4"
+                        style="width: 100%; padding: 10px; margin-bottom: 10px; background: #0a0f14; border: 1px solid var(--color-azul-glitch); color: var(--color-texto); font-family: var(--fuente-parrafos); border-radius: 4px; resize: vertical;"
+                    ></textarea>
+                    <button
+                        id="submit-rebellion-comment"
+                        class="cta-button discord"
+                    >
+                        UNIRSE A LA REBELIÓN
+                    </button>
+                    <p id="comment-status" style="margin-top: 10px; font-size: 0.9em; color: var(--color-caos-verde);"></p>
+                </div>
+
+                <!-- Lista de Comentarios -->
+                <div id="rebellion-comments-list" style="border: 1px solid var(--color-azul-glitch); border-radius: 5px; background: rgba(5, 10, 15, 0.6); padding: 20px; min-height: 300px;">
+                    <p style="text-align: center; color: #888;">Cargando mensajes de la rebelión...</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="faq" class="container section-separator">
+    <h2>PREGUNTAS FRECUENTES (FAQ)</h2>
+    <div class="faq-grid">
+        <div class="faq-item">
+            <h4>¿Cuándo sale el juego?</h4>
+            <p>Nuestro objetivo es lanzar la Beta Abierta del Capítulo I a principios de 2026. ¡Consulta nuestro Roadmap para más detalles!</p>
+        </div>
+        <div class="faq-item">
+            <h4>¿En qué blockchain está $RPPI?</h4>
+            <p>Rappia ($RPPI) opera en la red **Optimism (OP Mainnet)**, parte del ecosistema Superchain, garantizando velocidad y bajas comisiones.</p>
+        </div>
+        <div class="faq-item">
+            <h4>¿Necesito dinero para jugar?</h4>
+            <p>¡No! Rappibellion es **Free-to-Play**. Puedes disfrutar de toda la historia y los minijuegos gratis. El modelo es **Think-to-Earn (T2E)**: si eres inteligente y estratégico, *puedes* ganar dinero real.</p>
+        </div>
+        <div class="faq-item">
+            <h4>¿Cómo compro $RPPI?</h4>
+            <p>Podrás comprar $RPPI de forma segura a través de exchanges descentralizados como Uniswap. Habilitaremos un botón directo en la sección de Economía cuando lancemos la liquidez inicial.</p>
+        </div>
+        <div class="faq-item">
+                <h4>¿Qué es "Think-to-Earn" (T2E) y por qué es mejor que P2E?</h4>
+                <p>
+                    El "Play-to-Earn" (P2E) tradicional falla porque es un trabajo aburrido ("grind"). Nuestro modelo **"Think-to-Earn" (T2E)** es diferente: recompensamos tu **habilidad, estrategia e inteligencia** en nuestros mini-juegos T2E, no el tiempo que pasas repitiendo tareas.
+                </p>
+            </div>
+
+            <div class="faq-item">
+                <h4>¿Cómo es el staking? ¿Es otra economía inflacionaria?</h4>
+                <p>
+                    No. Rechazamos los APY falsos. Nuestro "Staking Soberano" (para quienes convierten su XP de la beta) está **vinculado al rendimiento del bono del Tesoro de EE. UU. (US02Y)**. Usamos la tasa del sistema tradicional para pagar en un activo superior: **$RPPI, el símbolo de nuestra rebelión**. Es sostenible, transparente y pura filosofía "caos cyberpunk".
+                </p>
+            </div>
+<div class="faq-item">
+                <h4>¿Necesito registrarme? ¿Qué pasa con mis datos?</h4>
+                <p>
+                    No. **Somos rebeldes y hackers, no pedimos datos**.
+                </p>
+                <p style="color: #ccc; margin-top: 15px;">
+                    En Rappibellion no existe el "registro". Tu "login" es tu billetera. Tu identidad anónima es la dirección de tu wallet, y es a esa dirección a la que se vinculará todo tu progreso (Nivel, XP e Items) para migrarlo de la beta web al juego de Android.
+                </p>
+            </div>
+    </div>
+</section>
+
+    <section id="cta" class="container section-separator">
+        <h2>EL PRIMER PROTOTIPO ESTÁ EN CAMINO.</h2>
+        <h3>¿Vas a aceptar el pedido?</h3>
+        <p>La verdadera rebelión se organiza en nuestro cuartel general. Únete a nuestro servidor de Discord para hablar con los desarrolladores (Charly y nosotros), votar por los próximos minijuegos y ser el primero en probar la beta de "The Circuit".</p>
+        <a href="https://discord.gg/3zBrPVn7" class="cta-button discord" target="_blank">ÚNETE AL DISCORD OFICIAL</a>
+        <p class="small-text">Los primeros miembros recibirán el Wallpaper Interactivo "Sala de Interrogación Nº4".</p>
+    </section>
+
+    <audio id="tango-audio" loop preload="auto">
+    <source src="sounds/por-una-cabeza.mp3" type="audio/mpeg">
+    Tu navegador no soporta el audio.
+    </audio>
+
+    <footer>
+        <p>© 2025 Bits Lab (Biointeligencia Artificial Technologies Lab). Todos los derechos reservados.</p>
+        <p>Contacto: <a href="mailto:info@rappibellion.com">info@rappibellion.com</a></p>
+    </footer>
+
+    <div id="game-overlay" class="game-menu-hidden">
+        <div class="game-content">
+
+            <div id="santo-grial-message" class="caos-terminal" style="max-width: 900px; margin-bottom: 30px;">
+                <div class="terminal-header-caos">
+                    <span>[INCOMING_TRANSMISSION_REBELBET]</span>
+                </div>
+                <div class="terminal-body-caos">
+                    <p id="typewriter-text"></p>
+                </div>
+            </div>
+
+            <div class="beta-container" style="position: relative;">
+                <div class="beta-column" id="free-play-column">
+                    <h3 style="color: var(--color-azul-glitch); text-shadow: 0 0 10px var(--color-azul-glitch);">MODO FREE PLAY</h3>
+                    <p>Practica tus habilidades de hackeo aquí. ¡Juega gratis y decide qué juegos entran a la versión final!</p>
+
+                    <div class="game-placeholder">
+                        <img src="juegos beta/arkanoid.webp" alt="ARKA-HACK" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">SLOT 1: ARKA-HACK</strong><br>(Arkanoid - Rompe el firewall)</p>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">SLOT 2: SPACE-BREAKER</strong><br>(Space Invaders - Defiende el nodo)</p>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">SLOT 3: TETRIS-CIPHER</strong><br>(Tetris - Organiza el código encriptado)</p>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="juegos beta/snake.PNG" alt="SNAKE-PROTOCOL" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-caos-amarillo); text-shadow: 0 0 8px var(--color-caos-amarillo);">SLOT 4: SNAKE-PROTOCOL</strong><br>(Snake - Conecta los circuitos)</p>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="juegos beta/pacman.jfif" alt="PAC-HACK" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa); text-shadow: 0 0 8px var(--color-caos-rosa);">SLOT 5: PAC-HACK</strong><br>(Pac-Man - Escapá del antivirus)</p>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="juegos beta/memorama.webp" alt="MEMORY-BREACH" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">SLOT 6: MEMORY-BREACH</strong><br>(Memorama - Descubre los pares de datos)</p>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="juegos beta/pong.webp" alt="PONG-FIREWALL" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">SLOT 7: PONG-FIREWALL</strong><br>(Pong - Rebotá el ataque DDoS)</p>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="juegos beta/flappy bird.jpg" alt="FLAPPY-DRONE" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">SLOT 8: FLAPPY-DRONE</strong><br>(Flappy Bird - Piloteá el drone de reconocimiento)</p>
+                    </div>
+
+                    <!-- Botón de Votación -->
+                    <div style="margin-top: 30px; text-align: center;">
+                        <h4 style="color: var(--color-azul-glitch);">¿Ya jugaste?</h4>
+                        <a href="#URL_DEL_FORMULARIO_DE_VOTO" target="_blank" class="cta-button whitepaper">
+                            VOTAR POR MI MINIJUEGO FAVORITO
+                        </a>
+                    </div>
+                </div>
+
+                <div class="beta-column" id="t2e-column">
+                    <h3 style="color: var(--color-primario); text-shadow: 0 0 10px var(--color-primario);">MODO THINK-TO-EARN (T2E)</h3>
+                    <p>¿Listo para la rebelión? Elige tu arena, conecta tu billetera y \"hackea\" a la competencia.</p>
+
+                    <div class="game-placeholder">
+                        <img src="juegos beta/pacman.jfif" alt="PAC-HACK" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa); text-shadow: 0 0 8px var(--color-caos-rosa);">[PAC-HACK]</strong><br>(El "Laberinto")</p>
+                        <button class="cta-button" id="make-bet-pachack" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa);">
+                            ¡MAKE YOUR BET!
+                        </button>
+                        <button class="cta-button" id="play-pacman-demo" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); margin-top: 5px;">
+                            🎮 ¡JUGAR PAC-HACK!
+                        </button>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">[SPACE-BREAKER]</strong><br>(La \"Flota\")</p>
+                        <button class="cta-button" id="make-bet-spacebreaker" style="background-color: var(--color-azul-glitch); border-color: var(--color-azul-glitch);">
+                            ¡MAKE YOUR BET!
+                        </button>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">[TETRIS-CIPHER]</strong><br>(El \"Código\")</p>
+                        <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde);">
+                            ¡MAKE YOUR BET!
+                        </button>
+                    </div>
+                    <div class="game-placeholder">
+                        <img src="juegos beta/memorama.webp" alt="MEMORY-BREACH" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">[MEMORY-BREACH]</strong><br>(La \"Memoria\")</p>
+                        <button class="cta-button" id="make-bet-memorybreach" style="background-color: var(--color-primario); border-color: var(--color-primario);">
+                            ¡MAKE YOUR BET!
+                        </button>
+                    </div>
+
+                    <button id="connect-wallet-button" class="cta-button whitepaper">
+                        CONECTA TU BILLETERA PARA ENTRAR AL CIRCUITO
+                    </button>
+                    <button id="show-user-bets-button" class="cta-button" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa); display: none; margin-top: 10px;">
+                        [MIS APUESTAS ACTIVAS]
+                    </button>
+                    <p id="wallet-status" style="margin-top: 15px; font-size: 0.9em; color: var(--color-caos-verde);"></p>
+                    <p id="wallet-address" style="margin-top: 5px; font-size: 0.85em; color: var(--color-azul-glitch); font-family: var(--fuente-titulos);"></p>
+                </div>
+            </div>
+
+            <div class="game-menu-footer">
+                <button id="exit-game-button" class="cta-button exit-game-button">EXIT GAME</button>
+                <p>© 2025 Bits Lab (Biointeligencia Artificial Technologies Lab). Todos los derechos reservados.</p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MODAL DE APUESTAS T2E - SISTEMA MAKE YOUR BET -->
+    <div id="make-bet-modal" class="game-menu-hidden">
+        <div class="bet-modal-content caos-terminal">
+            <div class="terminal-header-caos" style="background-color: var(--color-primario); display: flex; justify-content: space-between; align-items: center;">
+                <span>[T2E_CASINO_LOBBY]</span>
+                <button id="close-bet-modal" class="terminal-close-btn">✕</button>
+            </div>
+            <div class="terminal-body-caos" style="color: var(--color-texto);">
+                <div class="form-group" id="bets-offers-lobby">
+                    <label style="text-align: center; color: var(--color-caos-amarillo);">[ DESAFÍOS ABIERTOS EN "EL CIRCUITO" ]</label>
+                    <div class="bets-offers-list"></div>
+                </div>
+                <h3 id="bet-modal-title" style="color: var(--color-primario); text-align: center; border-top: 1px dashed #555; padding-top: 20px; margin-bottom: 20px;">O CREA TU PROPIO DESAFÍO T2E</h3>
+                <div class="form-group">
+                    <label for="bet-amount">1. DEFINE TU APUESTA (EL BOTE):</label>
+                    <div style="display: flex; align-items: center;">
+                        <input type="number" id="bet-amount" placeholder="Ej: 100" class="bet-input">
+                        <span class="bet-suffix">$RPPI</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>2. DEFINE EL LÍMITE DE TIEMPO:</label>
+                    <div class="button-group">
+                        <button class="bet-option-button" data-type="time" data-value="5">5 Min</button>
+                        <button class="bet-option-button" data-type="time" data-value="10">10 Min</button>
+                        <button class="bet-option-button" data-type="time" data-value="15">15 Min</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>3. DEFINE LÍMITE DE BOOSTS (INMUNIDAD):</label>
+                    <div class="button-group">
+                        <button class="bet-option-button" data-type="boost" data-value="1">1 Boost</button>
+                        <button class="bet-option-button" data-type="boost" data-value="3">3 Boosts</button>
+                        <button class="bet-option-button" data-type="boost" data-value="5">5 Boosts (Límite Máx)</button>
+                    </div>
+                </div>
+                <button id="launch-bet-button" class="cta-button" style="width: 100%; background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); margin-top: 10px;">
+                    [ LANZAR DESAFÍO Y ESPERAR OPONENTE ]
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- === "SATAN IMPERIAL" - LA NUEVA VENTANA PAC-MAN === -->
+    <div id="pacman-game-window" class="pacman-window-hidden">
+        <div class="pacman-terminal caos-terminal">
+            <div class="terminal-header-caos" style="background-color: var(--color-caos-rosa); display: flex; justify-content: space-between; align-items: center;">
+                <span>[PAC-HACK: EL LABERINTO]</span>
+                <button id="close-pacman-window" class="terminal-close-btn">✕</button>
+            </div>
+            <div class="terminal-body-caos" style="padding: 0; height: 600px; overflow: hidden;">
+                <iframe
+                    id="pacman-iframe"
+                    src="pacman/game.html"
+                    width="100%"
+                    height="100%"
+                    frameborder="0"
+                    allowfullscreen
+                    style="border: none; background: #000000;"
+                ></iframe>
+            </div>
+        </div>
+    </div>
+
+<script>
+// === CYBERPUNK HUD SYSTEM - OFFLINE VERSION ===
+class CyberpunkHUD {
+    constructor() {
+        this.hud = document.getElementById('cyberpunk-hud');
+        this.isActive = false;
+        this.currentGame = null;
+        this.gameStartTime = null;
+        this.gameTimer = null;
+        this.playerStats = {
+            level: 1,
+            score: 0,
+            rppi: 0.00
+        };
+        this.rivalStats = {
+            name: 'SEARCHING...',
+            level: 1,
+            score: 0,
+            distance: 0
+        };
+        this.boostSystem = {
+            available: 5,
+            used: 0,
+            maxBoosts: 5
+        };
+        this.notifications = [];
+    }
+
+    initialize() {
+        console.log('🔧 Initializing Cyberpunk HUD System (OFFLINE VERSION)...');
+        this.setupEventListeners();
+        this.initializeHUD();
+        console.log('✅ Cyberpunk HUD System initialized');
+    }
+
+    setupEventListeners() {
+        const startBetaBtn = document.getElementById('start-beta-button');
+        if (startBetaBtn) {
+            startBetaBtn.addEventListener('click', () => {
+                setTimeout(() => this.showHUD(), 500);
+            });
+        }
+
+        const pauseBtn = document.getElementById('hud-pause-btn');
+        const exitBtn = document.getElementById('hud-exit-btn');
+        const boostBtn = document.getElementById('hud-boost-btn');
+
+        if (pauseBtn) pauseBtn.addEventListener('click', () => this.pauseGame());
+        if (exitBtn) exitBtn.addEventListener('click', () => this.exitGame());
+        if (boostBtn) boostBtn.addEventListener('click', () => this.activateBoost());
+
+        const exitGameButton = document.getElementById('exit-game-button');
+        if (exitGameButton) exitGameButton.addEventListener('click', () => this.hideHUD());
+    }
+
+    initializeHUD() {
+        this.updatePlayerStats();
+        this.updateRivalStats();
+        this.updateBoostSystem();
+        this.updateGameStatus('WAITING');
+        this.updateNotification('SYSTEM READY');
+    }
+
+    showHUD() {
+        if (this.isActive) return;
+        console.log('🎮 Activating Cyberpunk HUD');
+        this.isActive = true;
+        this.currentGame = 'T2E_CIRCUIT';
+        this.gameStartTime = Date.now();
+        this.hud.classList.remove('hud-hidden');
+        this.hud.style.opacity = '1';
+        this.startGameTimer();
+        this.startRealTimeUpdates();
+        this.updateGameStatus('ACTIVE');
+        this.addRivalCamInterference();
+    }
+
+    hideHUD() {
+        if (!this.isActive) return;
+        console.log('🎮 Deactivating Cyberpunk HUD');
+        this.isActive = false;
+        if (this.gameTimer) {
+            clearInterval(this.gameTimer);
+            this.gameTimer = null;
+        }
+        this.hud.style.opacity = '0';
+        setTimeout(() => {
+            this.hud.classList.add('hud-hidden');
+        }, 500);
+        this.currentGame = null;
+        this.gameStartTime = null;
+    }
+
+    startGameTimer() {
+        this.gameTimer = setInterval(() => {
+            if (!this.gameStartTime) return;
+            const elapsed = Math.floor((Date.now() - this.gameStartTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            this.updateGameTimer(timeString);
+        }, 1000);
+    }
+
+    startRealTimeUpdates() {
+        setInterval(() => {
+            if (!this.isActive) return;
+            this.playerStats.score += Math.floor(Math.random() * 100);
+            this.updatePlayerStats();
+        }, 2000);
+
+        setInterval(() => {
+            if (!this.isActive) return;
+            this.rivalStats.score += Math.floor(Math.random() * 80);
+            this.rivalStats.distance = Math.max(0, Math.min(100, this.rivalStats.distance + (Math.random() - 0.5) * 10));
+            this.updateRivalStats();
+        }, 3000);
+
+        setInterval(() => {
+            if (!this.isActive) return;
+            const messages = ['BOOST AVAILABLE', 'RIVAL DETECTED', 'SCORE MULTIPLIER', 'SYSTEM ALERT', 'DATA STREAM ACTIVE'];
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            this.showNotification(randomMessage);
+        }, 8000);
+    }
+
+    updatePlayerStats() {
+        const levelEl = document.getElementById('hud-player-level');
+        const scoreEl = document.getElementById('hud-player-score');
+        const rppiEl = document.getElementById('hud-player-rppi');
+        if (levelEl) levelEl.textContent = this.playerStats.level.toString().padStart(2, '0');
+        if (scoreEl) scoreEl.textContent = this.playerStats.score.toString().padStart(6, '0');
+        if (rppiEl) rppiEl.textContent = this.playerStats.rppi.toFixed(2);
+    }
+
+    updateRivalStats() {
+        const nameEl = document.getElementById('hud-rival-name');
+        const levelEl = document.getElementById('hud-rival-level');
+        const scoreEl = document.getElementById('hud-rival-score');
+        const distanceEl = document.getElementById('hud-rival-distance');
+        if (nameEl) nameEl.textContent = this.rivalStats.name;
+        if (levelEl) levelEl.textContent = this.rivalStats.level.toString().padStart(2, '0');
+        if (scoreEl) scoreEl.textContent = this.rivalStats.score.toString().padStart(6, '0');
+        if (distanceEl) distanceEl.textContent = Math.round(this.rivalStats.distance) + '%';
+    }
+
+    updateBoostSystem() {
+        const indicators = document.getElementById('hud-boost-indicators');
+        const boostBtn = document.getElementById('hud-boost-btn');
+        if (!indicators) return;
+        indicators.innerHTML = '';
+        for (let i = 0; i < this.boostSystem.maxBoosts; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'boost-dot';
+            if (i < this.boostSystem.available) {
+                dot.classList.add('available');
+            } else {
+                dot.classList.add('used');
+            }
+            indicators.appendChild(dot);
+        }
+        if (boostBtn) {
+            if (this.boostSystem.available > 0) {
+                boostBtn.disabled = false;
+                boostBtn.textContent = 'ACTIVATE';
+            } else {
+                boostBtn.disabled = true;
+                boostBtn.textContent = 'NO BOOSTS';
+            }
+        }
+    }
+
+    updateGameTimer(timeString) {
+        const timerEl = document.getElementById('hud-game-timer');
+        if (timerEl) timerEl.textContent = timeString;
+    }
+
+    updateGameStatus(status) {
+        const statusEl = document.getElementById('hud-game-status');
+        if (statusEl) statusEl.textContent = status;
+    }
+
+    updateNotification(message) {
+        const notificationEl = document.getElementById('hud-notification-text');
+        if (notificationEl) notificationEl.textContent = message;
+    }
+
+    showNotification(message) {
+        this.updateNotification(message);
+        this.notifications.push({ message: message, timestamp: Date.now() });
+        if (this.notifications.length > 10) this.notifications.shift();
+    }
+
+    activateBoost() {
+        if (this.boostSystem.available <= 0) return;
+        console.log('🚀 Activating boost!');
+        this.boostSystem.available--;
+        this.boostSystem.used++;
+        this.updateBoostSystem();
+        this.showNotification('BOOST ACTIVATED!');
+        this.addBoostEffect();
+        setTimeout(() => {
+            this.playerStats.score += 1000;
+            this.updatePlayerStats();
+            this.showNotification('SCORE BOOSTED +1000');
+        }, 500);
+    }
+
+    addBoostEffect() {
+        const boostBtn = document.getElementById('hud-boost-btn');
+        if (boostBtn) {
+            boostBtn.style.animation = 'none';
+            setTimeout(() => {
+                boostBtn.style.animation = 'pulse 0.5s ease-in-out';
+            }, 10);
+        }
+    }
+
+    addRivalCamInterference() {
+        const interferenceEl = document.getElementById('rival-cam-interference');
+        if (!interferenceEl) return;
+        for (let i = 0; i < 5; i++) {
+            const line = document.createElement('div');
+            line.className = 'interference-line';
+            line.style.left = Math.random() * 100 + '%';
+            line.style.width = (Math.random() * 50 + 20) + 'px';
+            line.style.background = `var(--color-caos-${['rosa', 'verde', 'amarillo'][Math.floor(Math.random() * 3)]})`;
+            interferenceEl.appendChild(line);
+        }
+        const staticNoise = document.createElement('div');
+        staticNoise.className = 'interference-static';
+        interferenceEl.appendChild(staticNoise);
+        interferenceEl.classList.add('active');
+        setTimeout(() => {
+            interferenceEl.classList.remove('active');
+            setTimeout(() => {
+                interferenceEl.innerHTML = '';
+            }, 500);
+        }, 3000);
+    }
+
+    pauseGame() {
+        if (!this.isActive) return;
+        this.updateGameStatus('PAUSED');
+        this.showNotification('GAME PAUSED');
+        if (this.gameTimer) {
+            clearInterval(this.gameTimer);
+            this.gameTimer = null;
+        }
+    }
+
+    exitGame() {
+        this.hideHUD();
+        this.showNotification('GAME EXITED');
+    }
+}
+
+// Initialize HUD system
+const cyberpunkHUD = new CyberpunkHUD();
+
+// Simplified offline functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize HUD system
+    cyberpunkHUD.initialize();
+
+    // Typewriter effects
+    const textoSantoGrial = "¡HACKING TERMINAL...#INCOMING MESSAGE FROM RAPPIA CAMP# DECODING.\..\\ Toda la XP, Puntos de Nivel, Items y Accesorios que ganes en la Beta de 'El Circuito'... ¡SE MIGRARÁN a tu personaje final en el Juego Virtual de Android! Empieza a farmear, o decide entrar como un novato que M_LST_. Tu leyenda comienza AHORA...END COMUNICATION..";
+    const elementoTypewriter = document.getElementById('typewriter-text');
+    let i_typewriter = 0;
+
+    function typeWriter() {
+        if (elementoTypewriter && i_typewriter < textoSantoGrial.length) {
+            elementoTypewriter.innerHTML += textoSantoGrial.charAt(i_typewriter);
+            i_typewriter++;
+            setTimeout(typeWriter, 40);
+        }
+    }
+    typeWriter();
+
+    const textoHeroT2E = "¿Cansado de que la casa siempre gane? La SOLUCIÓN es T2E: una inversión donde compites en IGUALDAD DE CONDICIONES.";
+    const elementoHeroTypewriter = document.getElementById('hero-typewriter-text');
+    let i_heroTypewriter = 0;
+
+    function heroTypeWriter() {
+        if (elementoHeroTypewriter && i_heroTypewriter < textoHeroT2E.length) {
+            elementoHeroTypewriter.innerHTML += textoHeroT2E.charAt(i_heroTypewriter);
+            i_heroTypewriter++;
+            setTimeout(heroTypeWriter, 40);
+        }
+    }
+    heroTypeWriter();
+
+    // Game overlay functionality
+    const startButton = document.getElementById('start-beta-button');
+    const betaStartScreen = document.getElementById('beta-start-screen');
+    const gameOverlay = document.getElementById('game-overlay');
+
+    if (startButton && betaStartScreen && gameOverlay) {
+        startButton.addEventListener('click', function() {
+            betaStartScreen.style.display = 'none';
+            gameOverlay.classList.remove('game-menu-hidden');
+            const santo = document.getElementById('santo-grial-message');
+            if (santo) {
+                santo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                santo.classList.add('highlight-temp');
+                setTimeout(() => santo.classList.remove('highlight-temp'), 1800);
+            }
+        });
+    }
+
+    const exitGameButton = document.getElementById('exit-game-button');
+    if (exitGameButton && betaStartScreen && gameOverlay) {
+        exitGameButton.addEventListener('click', function() {
+            gameOverlay.classList.add('game-menu-hidden');
+            betaStartScreen.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    // Pac-Man game functionality
+    const playPacmanBtn = document.getElementById('play-pacman-demo');
+    const pacmanWindow = document.getElementById('pacman-game-window');
+    const closePacmanBtn = document.getElementById('close-pacman-window');
+
+    function openPacmanWindow() {
+        console.log('🎮 Abriendo ventana del Pac-Man...');
+        if (pacmanWindow) {
+            pacmanWindow.classList.remove('pacman-window-hidden');
+            pacmanWindow.style.opacity = '1';
+            pacmanWindow.style.pointerEvents = 'auto';
+            if (cyberpunkHUD && cyberpunkHUD.isActive) {
+                cyberpunkHUD.showNotification('PAC-HACK INITIALIZED');
+            }
+        }
+    }
+
+    function closePacmanWindow() {
+        console.log('🎮 Cerrando ventana del Pac-Man...');
+        if (pacmanWindow) {
+            pacmanWindow.style.opacity = '0';
+            pacmanWindow.style.pointerEvents = 'none';
+            setTimeout(() => {
+                pacmanWindow.classList.add('pacman-window-hidden');
+            }, 300);
+            if (cyberpunkHUD && cyberpunkHUD.isActive) {
+                cyberpunkHUD.showNotification('PAC-HACK TERMINATED');
+            }
+        }
+    }
+
+    if (playPacmanBtn) playPacmanBtn.addEventListener('click', openPacmanWindow);
+    if (closePacmanBtn) closePacmanBtn.addEventListener('click', closePacmanWindow);
+
+    if (pacmanWindow) {
+        pacmanWindow.addEventListener('click', function(e) {
+            if (e.target === pacmanWindow) closePacmanWindow();
+        });
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && pacmanWindow && !pacmanWindow.classList.contains('pacman-window-hidden')) {
+            closePacmanWindow();
+        }
+    });
+
+    // Bet buttons functionality
+    const betButtons = [
+        'make-bet-pachack', 'make-bet-spacebreaker', 'make-bet-tetriscipher', 'make-bet-memorybreach'
+    ];
+
+    betButtons.forEach(buttonId => {
+        const button = document.getElementById(buttonId);
+        if (button) {
+            button.addEventListener('click', () => {
+                const gameTitle = buttonId.replace('make-bet-', '').toUpperCase();
+                console.log(`🎮 ¡APUESTA ${gameTitle} REALIZADA! Abriendo PAC-HACK...`);
+                if (cyberpunkHUD && cyberpunkHUD.isActive) {
+                    cyberpunkHUD.showNotification(`${gameTitle} BET ACCEPTED - LOADING PAC-HACK`);
+                }
+                setTimeout(() => {
+                    if (cyberpunkHUD && cyberpunkHUD.isActive) {
+                        cyberpunkHUD.showNotification('ONLY PAC-HACK AVAILABLE - ENJOY THE GAME!');
+                    }
+                }, 1000);
+                setTimeout(() => openPacmanWindow(), 1500);
+            });
+        }
+    });
+
+    console.log('🎮 OFFLINE VERSION LOADED - HUD READY!');
+});
+</script>
+
+</body>
+</html>
