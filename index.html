@@ -254,6 +254,96 @@
     </div>
 </section>
 
+<!-- === CYBERPUNK HUD OVERLAY === -->
+<div id="cyberpunk-hud" class="hud-hidden">
+    <!-- Barra superior del HUD -->
+    <div class="hud-top-bar">
+        <div class="hud-player-info">
+            <div class="hud-stat">
+                <span class="hud-label">LVL</span>
+                <span id="hud-player-level" class="hud-value">01</span>
+            </div>
+            <div class="hud-stat">
+                <span class="hud-label">SCORE</span>
+                <span id="hud-player-score" class="hud-value">000000</span>
+            </div>
+            <div class="hud-stat">
+                <span class="hud-label">$RPPI</span>
+                <span id="hud-player-rppi" class="hud-value">0.00</span>
+            </div>
+        </div>
+
+        <div class="hud-center-info">
+            <div class="hud-game-timer">
+                <span class="hud-label">TIME</span>
+                <span id="hud-game-timer" class="hud-value">00:00</span>
+            </div>
+            <div class="hud-game-status">
+                <span id="hud-game-status" class="hud-status">WAITING</span>
+            </div>
+        </div>
+
+        <div class="hud-rival-info">
+            <div class="hud-stat">
+                <span class="hud-label">RIVAL</span>
+                <span id="hud-rival-name" class="hud-value">SEARCHING...</span>
+            </div>
+            <div class="hud-stat">
+                <span class="hud-label">LVL</span>
+                <span id="hud-rival-level" class="hud-value">01</span>
+            </div>
+            <div class="hud-stat">
+                <span class="hud-label">SCORE</span>
+                <span id="hud-rival-score" class="hud-value">000000</span>
+            </div>
+            <div class="hud-stat">
+                <span class="hud-label">DIST</span>
+                <span id="hud-rival-distance" class="hud-value">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cámara del rival -->
+    <div class="hud-rival-cam">
+        <div class="rival-cam-header">
+            <span class="rival-cam-label">[RIVAL_CAM]</span>
+            <div class="rival-cam-status">
+                <div class="status-dot"></div>
+                <span>ONLINE</span>
+            </div>
+        </div>
+        <div class="rival-cam-screen">
+            <div id="rival-cam-interference" class="rival-cam-interference"></div>
+            <div class="rival-cam-placeholder">
+                <div class="scanlines"></div>
+                <div class="rival-avatar">
+                    <div class="avatar-glow"></div>
+                    <span class="avatar-text">RIVAL</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra inferior del HUD -->
+    <div class="hud-bottom-bar">
+        <div class="hud-boost-system">
+            <div class="boost-indicators" id="hud-boost-indicators">
+                <!-- Boost dots se generan dinámicamente -->
+            </div>
+            <button id="hud-boost-btn" class="hud-boost-button">ACTIVATE</button>
+        </div>
+
+        <div class="hud-notification">
+            <span id="hud-notification-text" class="notification-text">SYSTEM READY</span>
+        </div>
+
+        <div class="hud-controls">
+            <button id="hud-pause-btn" class="hud-control-btn">PAUSE</button>
+            <button id="hud-exit-btn" class="hud-control-btn">EXIT</button>
+        </div>
+    </div>
+</div>
+
 <!-- === VENTANA FLOTANTE DE APUESTAS ACTIVAS DEL USUARIO === -->
 <div id="user-bets-floating-window" class="user-bets-floating-hidden">
     <div class="user-bets-terminal">
@@ -988,10 +1078,13 @@ btn.addEventListener('click', toggleMutePlay);
                     <p>¿Listo para la rebelión? Elige tu arena, conecta tu billetera y \"hackea\" a la competencia.</p>
 
                     <div class="game-placeholder">
-                        <img src="juegos beta/arkanoid.webp" alt="ARKA-HACK" style="width: 100%; height: auto; display: block;">
-                        <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">[ARKA-HACK]</strong><br>(El \"Muro\")</p>
-                        <button class="cta-button" id="make-bet-arkahack" style="background-color: var(--color-primario); border-color: var(--color-primario);">
+                        <img src="juegos beta/pacman.jfif" alt="PAC-HACK" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa); text-shadow: 0 0 8px var(--color-caos-rosa);">[PAC-HACK]</strong><br>(El "Laberinto")</p>
+                        <button class="cta-button" id="make-bet-pachack" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa);">
                             ¡MAKE YOUR BET!
+                        </button>
+                        <button class="cta-button" id="play-pacman-demo" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); margin-top: 5px;">
+                            🎮 ¡JUGAR PAC-HACK!
                         </button>
                     </div>
                     <div class="game-placeholder">
@@ -1002,9 +1095,9 @@ btn.addEventListener('click', toggleMutePlay);
                         </button>
                     </div>
                     <div class="game-placeholder">
-                        <img src="juegos beta/pacman.jfif" alt="PAC-HACK" style="width: 100%; height: auto; display: block;">
-                        <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa); text-shadow: 0 0 8px var(--color-caos-rosa);">[PAC-HACK]</strong><br>(El \"Laberinto\")</p>
-                        <button class="cta-button" id="make-bet-pachack" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa);">
+                        <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
+                        <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">[TETRIS-CIPHER]</strong><br>(El \"Código\")</p>
+                        <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde);">
                             ¡MAKE YOUR BET!
                         </button>
                     </div>
@@ -1122,24 +1215,430 @@ btn.addEventListener('click', toggleMutePlay);
         </div>
     </div>
 
+    <!-- === "SATAN IMPERIAL" - LA NUEVA VENTANA PAC-MAN === -->
+    <div id="pacman-game-window" class="pacman-window-hidden">
+        <div class="pacman-terminal caos-terminal">
+            <div class="terminal-header-caos" style="background-color: var(--color-caos-rosa); display: flex; justify-content: space-between; align-items: center;">
+                <span>[PAC-HACK: EL LABERINTO]</span>
+                <button id="close-pacman-window" class="terminal-close-btn">✕</button>
+            </div>
+            <div class="terminal-body-caos" style="padding: 0; height: 600px; overflow: hidden;">
+                <!-- ¡EL PORTAL HACKEADO! ¡EL IFRAME! -->
+                <iframe
+                    id="pacman-iframe"
+                    src="pacman/game.html"
+                    width="100%"
+                    height="100%"
+                    frameborder="0"
+                    allowfullscreen
+                    style="border: none; background: #000000;"
+                ></iframe>
+            </div>
+        </div>
+    </div>
+
 <script>
+    // === CYBERPUNK HUD SYSTEM ===
+    class CyberpunkHUD {
+        constructor() {
+            this.hud = document.getElementById('cyberpunk-hud');
+            this.isActive = false;
+            this.currentGame = null;
+            this.gameStartTime = null;
+            this.gameTimer = null;
+            this.playerStats = {
+                level: 1,
+                score: 0,
+                rppi: 0.00
+            };
+            this.rivalStats = {
+                name: 'SEARCHING...',
+                level: 1,
+                score: 0,
+                distance: 0
+            };
+            this.boostSystem = {
+                available: 5,
+                used: 0,
+                maxBoosts: 5
+            };
+            this.notifications = [];
+        }
+
+        // Initialize HUD system
+        initialize() {
+            console.log('🔧 Initializing Cyberpunk HUD System...');
+
+            // Setup event listeners
+            this.setupEventListeners();
+
+            // Initialize HUD elements
+            this.initializeHUD();
+
+            console.log('✅ Cyberpunk HUD System initialized');
+        }
+
+        // Setup event listeners
+        setupEventListeners() {
+            // Game launch integration - activate HUD when game overlay is shown
+            const startBetaBtn = document.getElementById('start-beta-button');
+            if (startBetaBtn) {
+                startBetaBtn.addEventListener('click', () => {
+                    // Show HUD immediately when game starts
+                    setTimeout(() => this.showHUD(), 500);
+                });
+            }
+
+            // HUD controls
+            const pauseBtn = document.getElementById('hud-pause-btn');
+            const exitBtn = document.getElementById('hud-exit-btn');
+            const boostBtn = document.getElementById('hud-boost-btn');
+
+            if (pauseBtn) {
+                pauseBtn.addEventListener('click', () => this.pauseGame());
+            }
+
+            if (exitBtn) {
+                exitBtn.addEventListener('click', () => this.exitGame());
+            }
+
+            if (boostBtn) {
+                boostBtn.addEventListener('click', () => this.activateBoost());
+            }
+
+            // Game overlay exit
+            const exitGameButton = document.getElementById('exit-game-button');
+            if (exitGameButton) {
+                exitGameButton.addEventListener('click', () => this.hideHUD());
+            }
+        }
+
+        // Initialize HUD elements
+        initializeHUD() {
+            this.updatePlayerStats();
+            this.updateRivalStats();
+            this.updateBoostSystem();
+            this.updateGameStatus('WAITING');
+            this.updateNotification('SYSTEM READY');
+        }
+
+        // Show HUD overlay
+        showHUD() {
+            if (this.isActive) return;
+
+            console.log('🎮 Activating Cyberpunk HUD');
+
+            this.isActive = true;
+            this.currentGame = 'T2E_CIRCUIT';
+            this.gameStartTime = Date.now();
+
+            // Show HUD
+            this.hud.classList.remove('hud-hidden');
+            this.hud.style.opacity = '1';
+
+            // Start game timer
+            this.startGameTimer();
+
+            // Simulate real-time updates
+            this.startRealTimeUpdates();
+
+            // Update game status
+            this.updateGameStatus('ACTIVE');
+
+            // Add interference effect to rival cam
+            this.addRivalCamInterference();
+        }
+
+        // Hide HUD overlay
+        hideHUD() {
+            if (!this.isActive) return;
+
+            console.log('🎮 Deactivating Cyberpunk HUD');
+
+            this.isActive = false;
+
+            // Stop timers
+            if (this.gameTimer) {
+                clearInterval(this.gameTimer);
+                this.gameTimer = null;
+            }
+
+            // Hide HUD
+            this.hud.style.opacity = '0';
+            setTimeout(() => {
+                this.hud.classList.add('hud-hidden');
+            }, 500);
+
+            // Reset game state
+            this.currentGame = null;
+            this.gameStartTime = null;
+        }
+
+        // Start game timer
+        startGameTimer() {
+            this.gameTimer = setInterval(() => {
+                if (!this.gameStartTime) return;
+
+                const elapsed = Math.floor((Date.now() - this.gameStartTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+
+                const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                this.updateGameTimer(timeString);
+            }, 1000);
+        }
+
+        // Start real-time updates simulation
+        startRealTimeUpdates() {
+            // Simulate score updates
+            setInterval(() => {
+                if (!this.isActive) return;
+                this.playerStats.score += Math.floor(Math.random() * 100);
+                this.updatePlayerStats();
+            }, 2000);
+
+            // Simulate rival updates
+            setInterval(() => {
+                if (!this.isActive) return;
+                this.rivalStats.score += Math.floor(Math.random() * 80);
+                this.rivalStats.distance = Math.max(0, Math.min(100, this.rivalStats.distance + (Math.random() - 0.5) * 10));
+                this.updateRivalStats();
+            }, 3000);
+
+            // Simulate notifications
+            setInterval(() => {
+                if (!this.isActive) return;
+                const messages = [
+                    'BOOST AVAILABLE',
+                    'RIVAL DETECTED',
+                    'SCORE MULTIPLIER',
+                    'SYSTEM ALERT',
+                    'DATA STREAM ACTIVE'
+                ];
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                this.showNotification(randomMessage);
+            }, 8000);
+        }
+
+        // Update player stats
+        updatePlayerStats() {
+            const levelEl = document.getElementById('hud-player-level');
+            const scoreEl = document.getElementById('hud-player-score');
+            const rppiEl = document.getElementById('hud-player-rppi');
+
+            if (levelEl) levelEl.textContent = this.playerStats.level.toString().padStart(2, '0');
+            if (scoreEl) scoreEl.textContent = this.playerStats.score.toString().padStart(6, '0');
+            if (rppiEl) rppiEl.textContent = this.playerStats.rppi.toFixed(2);
+        }
+
+        // Update rival stats
+        updateRivalStats() {
+            const nameEl = document.getElementById('hud-rival-name');
+            const levelEl = document.getElementById('hud-rival-level');
+            const scoreEl = document.getElementById('hud-rival-score');
+            const distanceEl = document.getElementById('hud-rival-distance');
+
+            if (nameEl) nameEl.textContent = this.rivalStats.name;
+            if (levelEl) levelEl.textContent = this.rivalStats.level.toString().padStart(2, '0');
+            if (scoreEl) scoreEl.textContent = this.rivalStats.score.toString().padStart(6, '0');
+            if (distanceEl) distanceEl.textContent = Math.round(this.rivalStats.distance) + '%';
+        }
+
+        // Update boost system
+        updateBoostSystem() {
+            const indicators = document.getElementById('hud-boost-indicators');
+            const boostBtn = document.getElementById('hud-boost-btn');
+
+            if (!indicators) return;
+
+            // Clear existing indicators
+            indicators.innerHTML = '';
+
+            // Create boost dots
+            for (let i = 0; i < this.boostSystem.maxBoosts; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'boost-dot';
+
+                if (i < this.boostSystem.available) {
+                    dot.classList.add('available');
+                } else {
+                    dot.classList.add('used');
+                }
+
+                indicators.appendChild(dot);
+            }
+
+            // Update boost button
+            if (boostBtn) {
+                if (this.boostSystem.available > 0) {
+                    boostBtn.disabled = false;
+                    boostBtn.textContent = 'ACTIVATE';
+                } else {
+                    boostBtn.disabled = true;
+                    boostBtn.textContent = 'NO BOOSTS';
+                }
+            }
+        }
+
+        // Update game timer
+        updateGameTimer(timeString) {
+            const timerEl = document.getElementById('hud-game-timer');
+            if (timerEl) timerEl.textContent = timeString;
+        }
+
+        // Update game status
+        updateGameStatus(status) {
+            const statusEl = document.getElementById('hud-game-status');
+            if (statusEl) statusEl.textContent = status;
+        }
+
+        // Update notification
+        updateNotification(message) {
+            const notificationEl = document.getElementById('hud-notification-text');
+            if (notificationEl) notificationEl.textContent = message;
+        }
+
+        // Show notification with animation
+        showNotification(message) {
+            this.updateNotification(message);
+
+            // Add to notification queue for potential future features
+            this.notifications.push({
+                message: message,
+                timestamp: Date.now()
+            });
+
+            // Keep only last 10 notifications
+            if (this.notifications.length > 10) {
+                this.notifications.shift();
+            }
+        }
+
+        // Activate boost
+        activateBoost() {
+            if (this.boostSystem.available <= 0) return;
+
+            console.log('🚀 Activating boost!');
+
+            this.boostSystem.available--;
+            this.boostSystem.used++;
+
+            this.updateBoostSystem();
+            this.showNotification('BOOST ACTIVATED!');
+
+            // Visual boost effect
+            this.addBoostEffect();
+
+            // Simulate boost benefits
+            setTimeout(() => {
+                this.playerStats.score += 1000; // Bonus points
+                this.updatePlayerStats();
+                this.showNotification('SCORE BOOSTED +1000');
+            }, 500);
+        }
+
+        // Add boost visual effect
+        addBoostEffect() {
+            const boostBtn = document.getElementById('hud-boost-btn');
+            if (boostBtn) {
+                boostBtn.style.animation = 'none';
+                setTimeout(() => {
+                    boostBtn.style.animation = 'pulse 0.5s ease-in-out';
+                }, 10);
+            }
+        }
+
+        // Add rival cam interference
+        addRivalCamInterference() {
+            const interferenceEl = document.getElementById('rival-cam-interference');
+            if (!interferenceEl) return;
+
+            // Create interference lines
+            for (let i = 0; i < 5; i++) {
+                const line = document.createElement('div');
+                line.className = 'interference-line';
+                line.style.left = Math.random() * 100 + '%';
+                line.style.width = (Math.random() * 50 + 20) + 'px';
+                line.style.background = `var(--color-caos-${['rosa', 'verde', 'amarillo'][Math.floor(Math.random() * 3)]})`;
+                interferenceEl.appendChild(line);
+            }
+
+            // Add static noise
+            const staticNoise = document.createElement('div');
+            staticNoise.className = 'interference-static';
+            interferenceEl.appendChild(staticNoise);
+
+            // Show interference
+            interferenceEl.classList.add('active');
+
+            // Hide after some time
+            setTimeout(() => {
+                interferenceEl.classList.remove('active');
+                setTimeout(() => {
+                    interferenceEl.innerHTML = '';
+                }, 500);
+            }, 3000);
+        }
+
+        // Pause game
+        pauseGame() {
+            if (!this.isActive) return;
+
+            this.updateGameStatus('PAUSED');
+            this.showNotification('GAME PAUSED');
+
+            // Stop real-time updates (simplified)
+            if (this.gameTimer) {
+                clearInterval(this.gameTimer);
+                this.gameTimer = null;
+            }
+        }
+
+        // Exit game
+        exitGame() {
+            this.hideHUD();
+            this.showNotification('GAME EXITED');
+        }
+
+        // Update rival information (called from T2E integration)
+        updateRivalInfo(rivalData) {
+            if (rivalData.name) this.rivalStats.name = rivalData.name;
+            if (rivalData.level) this.rivalStats.level = rivalData.level;
+            if (rivalData.score !== undefined) this.rivalStats.score = rivalData.score;
+
+            this.updateRivalStats();
+        }
+
+        // Update player RPPI balance
+        updateRPPIBalance(balance) {
+            this.playerStats.rppi = parseFloat(balance) || 0;
+            this.updatePlayerStats();
+        }
+    }
+
+    // Global HUD instance
+    const cyberpunkHUD = new CyberpunkHUD();
+
     // Esperamos a que todo el HTML esté cargado una sola vez
     document.addEventListener('DOMContentLoaded', function() {
-    
+
+        // Initialize HUD system
+        cyberpunkHUD.initialize();
+
         // === SCRIPT 1: TYPEWRITER "SANTO GRIAL" ===
         const textoSantoGrial = "¡HACKING TERMINAL...#INCOMING MESSAGE FROM RAPPIA CAMP# DECODING.\..\\ Toda la XP, Puntos de Nivel, Items y Accesorios que ganes en la Beta de 'El Circuito'... ¡SE MIGRARÁN a tu personaje final en el Juego Virtual de Android! Empieza a farmear, o decide entrar como un novato que M_LST_. Tu leyenda comienza AHORA...END COMUNICATION..";
         const elementoTypewriter = document.getElementById('typewriter-text');
         let i_typewriter = 0;
-        
+
         function typeWriter() {
             if (elementoTypewriter && i_typewriter < textoSantoGrial.length) {
                 elementoTypewriter.innerHTML += textoSantoGrial.charAt(i_typewriter);
                 i_typewriter++;
-                setTimeout(typeWriter, 40); 
+                setTimeout(typeWriter, 40);
             }
         }
         // Inicia el efecto
-        typeWriter(); 
+        typeWriter();
 
         
         // === SCRIPT 1.5: TYPEWRITER HERO T2E PITCH ===
@@ -2252,52 +2751,126 @@ btn.addEventListener('click', toggleMutePlay);
             buyRppiOverlay.classList.remove('terminal-overlay-visible');
             buyRppiOverlay.classList.add('terminal-overlay-hidden');
         }
+
+        // ========================================
+        // PAC-MAN GAME WINDOW CONTROLLER
+        // ========================================
+
+        // Elementos del DOM para Pac-Man
+        const playPacmanBtn = document.getElementById('play-pacman-demo');
+        const pacmanWindow = document.getElementById('pacman-game-window');
+        const closePacmanBtn = document.getElementById('close-pacman-window');
+
+        // Función para abrir la ventana del Pac-Man
+        function openPacmanWindow() {
+            console.log('🎮 Abriendo ventana del Pac-Man...');
+            if (pacmanWindow) {
+                pacmanWindow.classList.remove('pacman-window-hidden');
+                pacmanWindow.style.opacity = '1';
+                pacmanWindow.style.pointerEvents = 'auto';
+
+                // Notificación en el HUD si está activo
+                if (cyberpunkHUD && cyberpunkHUD.isActive) {
+                    cyberpunkHUD.showNotification('PAC-HACK INITIALIZED');
+                }
+            }
+        }
+
+        // Función para cerrar la ventana del Pac-Man
+        function closePacmanWindow() {
+            console.log('🎮 Cerrando ventana del Pac-Man...');
+            if (pacmanWindow) {
+                pacmanWindow.style.opacity = '0';
+                pacmanWindow.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    pacmanWindow.classList.add('pacman-window-hidden');
+                }, 300);
+
+                // Notificación en el HUD si está activo
+                if (cyberpunkHUD && cyberpunkHUD.isActive) {
+                    cyberpunkHUD.showNotification('PAC-HACK TERMINATED');
+                }
+            }
+        }
+
+        // Event listeners
+        if (playPacmanBtn) {
+            playPacmanBtn.addEventListener('click', openPacmanWindow);
+            console.log('✅ Event listener para botón Pac-Man configurado');
+        } else {
+            console.error('❌ Botón play-pacman-demo no encontrado');
+        }
+
+        if (closePacmanBtn) {
+            closePacmanBtn.addEventListener('click', closePacmanWindow);
+            console.log('✅ Event listener para cerrar Pac-Man configurado');
+        }
+
+        // Cerrar al hacer click fuera de la ventana
+        if (pacmanWindow) {
+            pacmanWindow.addEventListener('click', function(e) {
+                if (e.target === pacmanWindow) {
+                    closePacmanWindow();
+                }
+            });
+        }
+
+        // Cerrar con tecla Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && pacmanWindow && !pacmanWindow.classList.contains('pacman-window-hidden')) {
+                closePacmanWindow();
+            }
+        });
         
     }); // <-- FIN DEL 'DOMContentLoaded'
 
-    // === SCRIPT 5: CONTROLADOR DEL MODAL "MAKE YOUR BET" ===
-    const betModal = document.getElementById('make-bet-modal');
-    const closeBetModalBtn = document.getElementById('close-bet-modal');
-    const betModalTitle = document.getElementById('bet-modal-title');
+        // === SCRIPT 5: CONTROLADOR DIRECTO DE APUESTAS - SOLO PAC-MAN DISPONIBLE ===
+        // Botones que abren directamente el juego Pac-Man (único disponible)
+        const betArkaButton = document.getElementById('make-bet-arkahack');
+        const betSpaceButton = document.getElementById('make-bet-spacebreaker');
+        const betPacHackButton = document.getElementById('make-bet-pachack');
+        const betTetrisButton = document.getElementById('make-bet-tetriscipher');
+        const betMemoryButton = document.getElementById('make-bet-memorybreach');
 
-    // Botones que abren el modal
-    const betArkaButton = document.getElementById('make-bet-arkahack');
-    const betSpaceButton = document.getElementById('make-bet-spacebreaker');
+        // Función para procesar apuesta y abrir Pac-Man
+        function processBetAndOpenGame(gameTitle) {
+            console.log(`🎮 ¡APUESTA ${gameTitle} REALIZADA! Abriendo PAC-HACK (único juego disponible)...`);
 
-    // Función para ABRIR el modal
-    function openBetModal(gameTitle) {
-        // 1. Conectar Billetera (¡El "hack"!)
-        // (¡Aquí Charly conectaría el script de MetaMask!)
-        // if (!wallet.isConnected()) { wallet.connect(); return; }
-
-        // 2. Personalizar y Mostrar
-        betModalTitle.textContent = "CREAR APUESTA T2E: " + gameTitle;
-        betModal.classList.remove('game-menu-hidden');
-        void betModal.offsetWidth;
-        betModal.style.opacity = '1';
-    }
-
-    // Función para CERRAR el modal
-    function closeBetModal() {
-        betModal.style.opacity = '0';
-        setTimeout(() => {
-            betModal.classList.add('game-menu-hidden');
-        }, 300); // 0.3s (el tiempo del transition CSS)
-    }
-
-    // Asignar los eventos
-    if (betModal && closeBetModalBtn && betArkaButton && betSpaceButton) {
-        betArkaButton.addEventListener('click', () => openBetModal('ARKA-HACK'));
-        betSpaceButton.addEventListener('click', () => openBetModal('SPACE-BREAKER'));
-        closeBetModalBtn.addEventListener('click', closeBetModal);
-
-        // Cerrar si hace clic afuera
-        betModal.addEventListener('click', function(e) {
-            if (e.target === betModal) {
-                closeBetModal();
+            // Simular que la apuesta se realizó exitosamente
+            if (cyberpunkHUD && cyberpunkHUD.isActive) {
+                cyberpunkHUD.showNotification(`${gameTitle} BET ACCEPTED - LOADING PAC-HACK`);
             }
-        });
-    }
+
+            // Mostrar notificación de que solo Pac-Man está disponible
+            setTimeout(() => {
+                if (cyberpunkHUD && cyberpunkHUD.isActive) {
+                    cyberpunkHUD.showNotification('ONLY PAC-HACK AVAILABLE - ENJOY THE GAME!');
+                }
+            }, 1000);
+
+            // Abrir directamente la ventana del Pac-Man
+            setTimeout(() => {
+                openPacmanWindow();
+            }, 1500); // Delay para mostrar las notificaciones
+        }
+
+        // Asignar los eventos a TODOS los botones de apuesta
+        if (betArkaButton) {
+            betArkaButton.addEventListener('click', () => processBetAndOpenGame('ARKA-HACK'));
+        }
+        if (betSpaceButton) {
+            betSpaceButton.addEventListener('click', () => processBetAndOpenGame('SPACE-BREAKER'));
+        }
+        if (betPacHackButton) {
+            betPacHackButton.addEventListener('click', () => processBetAndOpenGame('PAC-HACK'));
+        }
+        if (betTetrisButton) {
+            betTetrisButton.addEventListener('click', () => processBetAndOpenGame('TETRIS-CIPHER'));
+        }
+        if (betMemoryButton) {
+            betMemoryButton.addEventListener('click', () => processBetAndOpenGame('MEMORY-BREACH'));
+        }
+    }); // <-- FIN DEL 'DOMContentLoaded'
 </script>
     <!-- Canvas Confetti library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>

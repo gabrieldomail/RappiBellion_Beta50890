@@ -252,10 +252,21 @@ class Web3Config {
      */
     async getUserAddress() {
         try {
+            // Verificar si hay cuentas conectadas
+            const accounts = await this.provider.listAccounts();
+            if (!accounts || accounts.length === 0) {
+                throw new Error('No hay cuentas conectadas. Por favor conecta MetaMask.');
+            }
+
+            // Verificar si el signer está disponible
+            if (!this.signer) {
+                throw new Error('Signer no disponible. Web3 no está inicializado correctamente.');
+            }
+
             return await this.signer.getAddress();
         } catch (error) {
             console.error('❌ Error obteniendo dirección del usuario:', error);
-            throw error;
+            throw new Error('MetaMask no está conectado. Haz clic en "CONECTA TU BILLETERA" primero.');
         }
     }
 

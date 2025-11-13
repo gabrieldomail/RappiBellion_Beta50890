@@ -364,10 +364,15 @@ class T2EIntegration {
             // Recargar apuestas activas
             await this.bettingEngine.loadActiveBets();
 
-            // Mostrar automáticamente la ventana flotante con las apuestas del usuario
-            setTimeout(async () => {
-                await this.showUserBetsWindow();
-            }, 1000); // Pequeño delay para que se note la transición
+            // ACTIVAR EL GAME OVERLAY CON HUD AUTOMÁTICAMENTE
+            setTimeout(() => {
+                console.log('🎮 Activando game overlay después de apuesta creada...');
+                // Simular clic en "COMENZAR" para activar el game overlay
+                const startBetaBtn = document.getElementById('start-beta-button');
+                if (startBetaBtn) {
+                    startBetaBtn.click();
+                }
+            }, 1500); // Dar tiempo para que se note la transición
 
         } catch (error) {
             this.hideLoading();
@@ -394,6 +399,16 @@ class T2EIntegration {
 
             // Mostrar éxito
             this.showNotification('¡Apuesta aceptada exitosamente!', 'success');
+
+            // ACTIVAR EL GAME OVERLAY CON HUD AUTOMÁTICAMENTE
+            setTimeout(() => {
+                console.log('🎮 Activando game overlay después de apuesta aceptada...');
+                // Simular clic en "COMENZAR" para activar el game overlay
+                const startBetaBtn = document.getElementById('start-beta-button');
+                if (startBetaBtn) {
+                    startBetaBtn.click();
+                }
+            }, 1500); // Dar tiempo para que se note la transición
 
         } catch (error) {
             this.hideLoading();
