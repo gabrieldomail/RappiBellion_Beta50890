@@ -1515,9 +1515,18 @@ btn.addEventListener('click', toggleMutePlay);
             // Acción del botón INICIAR HACK
             if (iniciarHackBtn) {
                 iniciarHackBtn.addEventListener('click', function() {
+                    // 🎉 EFECTO DE CONFETTI AL HACER CLIC EN "INICIAR HACK"
+                    if (window.confetti) {
+                        window.confetti({
+                            particleCount: 150,
+                            spread: 70,
+                            origin: { y: 0.6 }
+                        });
+                    }
+
                     // Cerrar el modal de BLOCKED
                     androidOverlay.classList.add('terminal-overlay-hidden');
-                    
+
                     // Mostrar el modal de la broma
                     const jokeOverlay = document.getElementById('rebelbet-joke-overlay');
                     const typewriterLine1 = document.getElementById('typewriter-line1');
