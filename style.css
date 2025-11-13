@@ -3796,6 +3796,124 @@ footer a {
 .rival-cam-header { background: var(--color-caos-rosa); color: var(--color-fondo); font-size: 0.8em; font-weight: bold; padding: 2px 5px; }
 .rival-cam-screen { width: 150px; height: 100px; background: #000; display: flex; justify-content: center; align-items: center; }
 
+/* --- ESTILOS PARA "LA MADRE DE TODAS LAS BATALLAS" (HUD) --- */
+
+#game-hud-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000; /* Fondo negro puro */
+    z-index: 3000; /* ¡Por encima de TODO! */
+    transition: opacity 0.5s ease-in-out;
+    display: flex;
+}
+
+/* CAPA 0: El "Portal" <iframe> */
+#game-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none; /* Sin bordes feos */
+    z-index: 3001;
+    /* ¡El "Fondo" es el juego! */
+}
+
+/* CAPA 1: El "Quilombo" de Scanlines */
+.hud-scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 4px
+    );
+    background-size: 100% 4px;
+    animation: scanline 5s linear infinite;
+    z-index: 3002;
+    pointer-events: none; /* No bloquea el juego */
+}
+
+/* CAPA 2: El HUD T2E */
+.hud-container {
+    position: relative;
+    z-index: 3003;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* No bloquea el juego */
+    padding: 20px;
+    box-sizing: border-box;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.hud-box {
+    position: absolute;
+    background: rgba(5, 10, 15, 0.6);
+    backdrop-filter: blur(3px);
+    border: 1px solid var(--color-azul-glitch);
+    padding: 10px 15px;
+    color: var(--color-texto);
+}
+
+.hud-title {
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-bottom: 5px;
+    border-bottom: 1px dashed #555;
+    padding-bottom: 5px;
+}
+.hud-score {
+    font-size: 1.5em;
+    font-family: var(--fuente-titulos);
+    color: var(--color-caos-amarillo);
+    text-shadow: 0 0 8px var(--color-caos-amarillo);
+}
+.hud-boosts {
+    font-size: 1.2em;
+    font-family: var(--fuente-titulos);
+    color: var(--color-caos-rosa);
+}
+
+/* Posicionamiento del HUD */
+.hud-player-1 { top: 20px; left: 20px; }
+.hud-player-2 { top: 20px; right: 20px; text-align: right; }
+.hud-game-info { bottom: 20px; left: 50%; transform: translateX(-50%); text-align: center; }
+
+.hud-time {
+    font-size: 1.8em;
+    font-family: var(--fuente-titulos);
+    color: var(--color-primario);
+    text-shadow: 0 0 10px var(--color-primario);
+}
+.hud-pot { font-size: 1.2em; color: var(--color-texto); }
+
+/* El botón de "BOOST" */
+.hud-boost-button {
+    pointer-events: auto; /* ¡Este SÍ es clickeable! */
+    margin-top: 10px !important;
+    padding: 8px 12px !important;
+    font-size: 0.9em !important;
+    width: 100%;
+    background-color: var(--color-caos-rosa);
+    border-color: var(--color-caos-rosa);
+    animation: pulse 1.5s infinite;
+}
+.hud-boost-button:hover {
+    color: var(--color-caos-rosa);
+    box-shadow: 0 0 15px var(--color-caos-rosa);
+}
+
+/* La "Rival Cam" */
+.hud-rival-cam { margin-top: 10px; border: 1px solid var(--color-caos-rosa); }
+.rival-cam-header { background: var(--color-caos-rosa); color: var(--color-fondo); font-size: 0.8em; font-weight: bold; padding: 2px 5px; }
+.rival-cam-screen { width: 150px; height: 100px; background: #000; display: flex; justify-content: center; align-items: center; }
+
 /* === PAC-MAN GAME WINDOW === */
 
 .pacman-window-hidden {
