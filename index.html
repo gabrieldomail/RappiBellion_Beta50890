@@ -38,9 +38,9 @@
     </script>
 
     <!-- T2E Web3 System -->
-    <script src="web3-config.js?v=20260325"></script>
-    <script src="betting-engine.js?v=20260325"></script>
-    <script src="t2e-integration.js?v=20260325"></script>
+    <script src="web3-config.js?v=20260325b"></script>
+    <script src="betting-engine.js?v=20260325b"></script>
+    <script src="t2e-integration.js?v=20260325b"></script>
 </head>
 <body>
 
@@ -1235,6 +1235,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fpRestart() { clearInterval(fpState.interval); if (fpCdOverlay) fpCdOverlay.classList.remove('show'); fpOpenArena(); }
+
+    // Exponer globalmente para que t2e-integration.js pueda llamarlas desde fuera del closure
+    window.fpOpenArena  = fpOpenArena;
+    window.fpCloseArena = fpCloseArena;
 
     window.addEventListener('message', function(e) {
         const d = e.data;
