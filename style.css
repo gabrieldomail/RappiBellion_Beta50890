@@ -1342,6 +1342,18 @@ footer a {
     }
 }
 
+/* ── Mobile fix: #beta-start-screen overflow horizontal ── */
+@media (max-width: 768px) {
+    #beta-start-screen {
+        padding: 60px 16px; /* Reduce los 40px horizontales que causan overflow */
+    }
+    #beta-start-screen h2 {
+        font-size: 1.6em;
+        overflow-wrap: break-word;
+        word-break: break-word;
+    }
+}
+
 /* ============================================
    FIN SECCIÓN T2E REDISEÑADA
    ============================================ */
