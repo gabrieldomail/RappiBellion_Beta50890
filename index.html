@@ -1250,7 +1250,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (walletStatus) walletStatus.textContent = 'Error: ' + err.message;
             }
         } else {
-            if (walletStatus) walletStatus.textContent = 'MetaMask no detectado. Instalalo en metamask.io';
+            const _isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+            if (_isMobile) {
+                const _deepLink = 'https://metamask.app.link/dapp/' + window.location.hostname + window.location.pathname + window.location.search;
+                if (walletStatus) walletStatus.textContent = '📱 Abriendo en MetaMask...';
+                window.location.href = _deepLink;
+            } else {
+                if (walletStatus) walletStatus.textContent = 'MetaMask no detectado. Instalalo en metamask.io';
+            }
         }
     }
 
@@ -3472,12 +3479,24 @@ btn.addEventListener('click', toggleMutePlay);
 
             // Check if MetaMask is installed
             if (typeof window.ethereum === 'undefined') {
-                console.log('⚠️ MetaMask no está instalado');
-                if (walletStatus) {
-                    walletStatus.textContent = '⚠️ MetaMask no está instalado. Por favor instálalo desde metamask.io';
-                    walletStatus.style.color = '#ff4444';
+                const _isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+                if (_isMobile) {
+                    // En mobile abrir la DApp dentro del browser de MetaMask
+                    const _deepLink = 'https://metamask.app.link/dapp/' + window.location.hostname + window.location.pathname + window.location.search;
+                    console.log('📱 Mobile sin window.ethereum → redirigiendo a MetaMask app:', _deepLink);
+                    if (walletStatus) {
+                        walletStatus.textContent = '📱 Abriendo en MetaMask...';
+                        walletStatus.style.color = 'var(--color-caos-amarillo)';
+                    }
+                    window.location.href = _deepLink;
+                } else {
+                    console.log('⚠️ MetaMask no está instalado');
+                    if (walletStatus) {
+                        walletStatus.textContent = '⚠️ MetaMask no está instalado. Por favor instálalo desde metamask.io';
+                        walletStatus.style.color = '#ff4444';
+                    }
+                    window.open('https://metamask.io/download/', '_blank');
                 }
-                window.open('https://metamask.io/download/', '_blank');
                 return;
             }
 
