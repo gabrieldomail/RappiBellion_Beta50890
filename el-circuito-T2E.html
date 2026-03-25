@@ -511,28 +511,6 @@
     </div>
 </div>
 
-<!-- === VENTANA PAC-HACK: DEATH (PvP Arena) === -->
-<div id="pacman-game-window" class="pacman-window-hidden">
-    <div class="pacman-terminal caos-terminal">
-        <div class="terminal-header-caos" style="background-color: var(--color-caos-rosa); display: flex; justify-content: space-between; align-items: center;">
-            <span>[PAC-HACK: DEATH // EL LABERINTO]</span>
-            <button id="close-pacman-window" class="terminal-close-btn">✕</button>
-        </div>
-        <div class="terminal-body-caos" style="padding: 0; height: 600px; overflow: hidden;">
-            <iframe
-                id="pacman-iframe"
-                src="pac-hack/game.html"
-                width="100%"
-                height="100%"
-                frameborder="0"
-                allowfullscreen
-                style="border: none; background: #000;"
-                sandbox="allow-scripts allow-same-origin"
-            ></iframe>
-        </div>
-    </div>
-</div>
-
 <!-- === FREE PLAY ARENA — 3 COLUMNAS === -->
 <div id="freeplay-arena">
 
@@ -1386,23 +1364,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === 'Escape' && fpArena && fpArena.classList.contains('show')) fpCloseArena();
     });
 
-    // ── VENTANA PAC-MAN (modo T2E) ──
-    function openPacmanWindow() {
-        const w = document.getElementById('pacman-game-window');
-        if (w) { w.classList.remove('pacman-window-hidden'); w.style.opacity='1'; w.style.pointerEvents='auto'; }
-    }
-    function closePacmanWindow() {
-        const w = document.getElementById('pacman-game-window');
-        if (w) {
-            w.style.opacity='0'; w.style.pointerEvents='none';
-            setTimeout(() => w.classList.add('pacman-window-hidden'), 300);
-            const iframe = document.getElementById('pacman-iframe');
-            if (iframe) { const src=iframe.src; iframe.src=''; iframe.src=src; }
-        }
-    }
-    const closePacmanBtn = document.getElementById('close-pacman-window');
-    if (closePacmanBtn) closePacmanBtn.addEventListener('click', closePacmanWindow);
-
     // ── BET BUTTONS ──
     const makeBetModal     = document.getElementById('make-bet-modal');
     const betModalTitle    = document.getElementById('bet-modal-title');
@@ -1463,7 +1424,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 cyberpunkHUD.showHUD();
                 cyberpunkHUD.showNotification('BET CONFIRMED: ' + betAmount + ' $RPPI - LAUNCHING ' + (selectedGame || 'PAC-HACK: DEATH'));
             }
-            setTimeout(() => openPacmanWindow(), 600);
+            setTimeout(() => fpOpenArena(), 600);
         });
     }
 
@@ -2478,28 +2439,6 @@ btn.addEventListener('click', toggleMutePlay);
                 <button id="launch-bet-button" class="cta-button" style="width: 100%; background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); margin-top: 10px;">
                     [ LANZAR DESAFÍO Y ESPERAR OPONENTE ]
                 </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- === "SATAN IMPERIAL" - LA NUEVA VENTANA PAC-MAN === -->
-    <div id="pacman-game-window" class="pacman-window-hidden">
-        <div class="pacman-terminal caos-terminal">
-            <div class="terminal-header-caos" style="background-color: var(--color-caos-rosa); display: flex; justify-content: space-between; align-items: center;">
-                <span>[PAC-HACK: EL LABERINTO]</span>
-                <button id="close-pacman-window" class="terminal-close-btn">✕</button>
-            </div>
-            <div class="terminal-body-caos" style="padding: 0; height: 600px; overflow: hidden;">
-                <!-- ¡EL PORTAL HACKEADO! ¡EL IFRAME! -->
-                <iframe
-                    id="pacman-iframe"
-                    src="pacman/game.html"
-                    width="100%"
-                    height="100%"
-                    frameborder="0"
-                    allowfullscreen
-                    style="border: none; background: #000000;"
-                ></iframe>
             </div>
         </div>
     </div>
@@ -4078,72 +4017,7 @@ btn.addEventListener('click', toggleMutePlay);
             buyRppiOverlay.classList.add('terminal-overlay-hidden');
         }
 
-        // ========================================
-        // PAC-MAN GAME WINDOW CONTROLLER
-        // ========================================
-
-        // Elementos del DOM para Pac-Man
-        const playPacmanBtn = document.getElementById('play-pacman-demo');
-        const pacmanWindow = document.getElementById('pacman-game-window');
-        const closePacmanBtn = document.getElementById('close-pacman-window');
-
-        // Función para abrir la ventana del Pac-Man
-        function openPacmanWindow() {
-            console.log('🎮 Abriendo ventana del Pac-Man...');
-            if (pacmanWindow) {
-                pacmanWindow.classList.remove('pacman-window-hidden');
-                pacmanWindow.style.opacity = '1';
-                pacmanWindow.style.pointerEvents = 'auto';
-
-                // Notificación en el HUD si está activo
-                if (cyberpunkHUD && cyberpunkHUD.isActive) {
-                    cyberpunkHUD.showNotification('PAC-HACK INITIALIZED');
-                }
-            }
-        }
-
-        // Función para cerrar la ventana del Pac-Man
-        function closePacmanWindow() {
-            console.log('🎮 Cerrando ventana del Pac-Man...');
-            if (pacmanWindow) {
-                pacmanWindow.style.opacity = '0';
-                pacmanWindow.style.pointerEvents = 'none';
-                setTimeout(() => {
-                    pacmanWindow.classList.add('pacman-window-hidden');
-                }, 300);
-
-                // Notificación en el HUD si está activo
-                if (cyberpunkHUD && cyberpunkHUD.isActive) {
-                    cyberpunkHUD.showNotification('PAC-HACK TERMINATED');
-                }
-            }
-        }
-
-        // Event listeners
-        if (closePacmanBtn) {
-            closePacmanBtn.addEventListener('click', closePacmanWindow);
-        }
-
-        // Cerrar al hacer click fuera de la ventana
-        if (pacmanWindow) {
-            pacmanWindow.addEventListener('click', function(e) {
-                if (e.target === pacmanWindow) {
-                    closePacmanWindow();
-                }
-            });
-        }
-
-        // Cerrar con tecla Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && pacmanWindow && !pacmanWindow.classList.contains('pacman-window-hidden')) {
-                closePacmanWindow();
-            }
-        });
-        
-    // (DOMContentLoaded original merged)
-
         // === SCRIPT 5: CONTROLADOR DIRECTO DE APUESTAS - ARENA PAC-HACK PvP ===
-        // Botones que abren directamente el juego Pac-Man (único disponible)
         const betArkaButton = document.getElementById('make-bet-arkahack');
         const betSpaceButton = document.getElementById('make-bet-spacebreaker');
         const betPacHackButton = document.getElementById('make-bet-pachack');
