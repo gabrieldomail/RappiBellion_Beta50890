@@ -687,6 +687,27 @@
                 </div>
             </div>
 
+            <!-- Terminal INCOMING_SIGNAL — mensajes del rival -->
+            <div class="caos-terminal" style="width:100%; margin:0; border-radius:0;
+                         border-color:rgba(255,68,68,0.5); flex-shrink:0;">
+                <div class="terminal-header-caos" style="
+                    background-color: #ff4444;
+                    display:flex; justify-content:space-between; align-items:center;
+                    padding: 5px 10px;">
+                    <span style="font-size:0.7em; letter-spacing:2px;">[INCOMING_SIGNAL // RIVAL_COMM]</span>
+                    <span id="rival-signal-dot" style="width:7px;height:7px;border-radius:50%;
+                          background:#fff; display:inline-block;
+                          animation: rivalBlink 1.2s step-start infinite;"></span>
+                </div>
+                <div class="terminal-body-caos" id="rival-comm-log"
+                     style="min-height:80px; max-height:120px; overflow-y:auto;
+                            padding:8px 10px; font-size:0.78em;
+                            font-family:'Courier New',monospace; color:#ff8888;
+                            scrollbar-width:thin; scrollbar-color:#ff4444 #111;">
+                    <p style="color:#555; margin:0;">[ SIN SEÑAL ]</p>
+                </div>
+            </div>
+
             <!-- Apuesta -->
             <div style="background:rgba(255,220,0,0.06); border:1px solid rgba(255,220,0,0.3);
                         padding:10px 12px; margin-top:auto;">
@@ -1003,9 +1024,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     let _rivalTimerInterval = null;
+    let _rivalCommInterval  = null;
 
     function _fpStartRivalTimer() {
         _fpStopRivalTimer();
+
+        // Limpiar log y mostrar estado de conexión real
+        const log = document.getElementById('rival-comm-log');
+        if (log) log.innerHTML = '<p style="color:#ff4444;margin:0;">> RIVAL CONECTADO. EN PARTIDA.</p>';
+
+        // Timer espejado
         _rivalTimerInterval = setInterval(function() {
             if (!fpState || !fpState.running) return;
             const timerEl = document.getElementById('rival-timer');
@@ -1016,10 +1044,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function _fpStopRivalTimer() {
-        if (_rivalTimerInterval) {
-            clearInterval(_rivalTimerInterval);
-            _rivalTimerInterval = null;
-        }
+        if (_rivalTimerInterval) { clearInterval(_rivalTimerInterval); _rivalTimerInterval = null; }
+        if (_rivalCommInterval)  { clearInterval(_rivalCommInterval);  _rivalCommInterval  = null; }
     }
 
     // Devuelve string MM:SS sin modificar el DOM
@@ -4327,6 +4353,10 @@ btn.addEventListener('click', toggleMutePlay);
 
     <!-- Gemini Chat Widget (icono flotante personalizado) -->
     <style>
+        @keyframes rivalBlink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
         #gemini-chat-widget { display: none; }
         #gemini-chat-fab {
             position: fixed;
