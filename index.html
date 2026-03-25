@@ -38,9 +38,9 @@
     </script>
 
     <!-- T2E Web3 System -->
-    <script src="web3-config.js?v=20260325c"></script>
-    <script src="betting-engine.js?v=20260325c"></script>
-    <script src="t2e-integration.js?v=20260325c"></script>
+    <script src="web3-config.js?v=20260325d"></script>
+    <script src="betting-engine.js?v=20260325d"></script>
+    <script src="t2e-integration.js?v=20260325d"></script>
 </head>
 <body>
 
@@ -876,20 +876,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const betRef = fbDB.ref('t2e_bets/' + betId);
 
-        // Marcar este dispositivo como listo
+        // Marcar este device como listo
         betRef.child('ready/' + myRole).set(true);
 
-        // Cuando ambos estén listos → escribir startAt (solo uno lo hace via transaction)
-        const readyRef = betRef.child('ready');
-        _fpSyncRefs.push(readyRef);
-        readyRef.on('value', function(snap) {
-            const ready = snap.val();
-            if (!ready || !ready.p1 || !ready.p2) return;
-            readyRef.off();
-            // Transaction: solo el primer device en llegar escribe startAt
-            betRef.child('startAt').transaction(function(current) {
-                return current === null ? Date.now() + 2500 : undefined;
-            });
+        // El PRIMER device en llegar fija startAt = ahora + 5000ms
+        // El segundo llega antes de esos 5s y lee el mismo startAt
+        // Ambos arrancan exactamente al mismo tiempo
+        betRef.child('startAt').transaction(function(current) {
+            return current === null ? Date.now() + 5000 : undefined;
         });
 
         // Escuchar startAt → arrancar countdown sincronizado
@@ -905,6 +899,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const delay = Math.max(0, startAt - Date.now());
             setTimeout(fpStartCountdown, delay);
         });
+
+        // Fallback: si Firebase no responde en 7s, arrancar igual
+        setTimeout(function() {
+            if (!startListened && !fpState.running) {
+                startListened = true;
+                fpStartCountdown();
+            }
+        }, 7000);
 
         // Escuchar score del rival en tiempo real
         const rivalScoreRef = betRef.child('scores/' + fpState.rivalRole);
@@ -929,11 +931,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpIframe && fpIframe.contentWindow) {
             fpIframe.contentWindow.postMessage({ type:'SET_CONTROL', mode: mode }, '*');
         }
-        // Ocultar selector
+        // Ocultar selector y limpiar countdown
         if (fpControlSelector) fpControlSelector.classList.remove('show');
+        const cdEl = document.getElementById('ctrl-auto-countdown');
+        if (cdEl) { clearInterval(cdEl._interval); cdEl.textContent = ''; }
         if (document.getElementById('fp-verdict')) document.getElementById('fp-verdict').classList.remove('show');
 
-        // Ejecutar todo lo que el return cortó en fpOpenArena
+        // Mostrar arena
         const dur = parseInt(fpDurSelect ? fpDurSelect.value : 600);
         fpRenderTimer(dur);
         if (fpTimerBar) { fpTimerBar.style.transition='none'; fpTimerBar.style.width='100%'; }
@@ -941,13 +945,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpTimerEl)  fpTimerEl.style.color = '';
         if (fpArena)    fpArena.classList.add('show');
 
-        // En betMode sincronizar con Firebase antes de arrancar
-        if (fpState.betMode && fpState.betId) {
-            _fpToggleRivalPanel(true, fpState.betId);
-            _fpSetupBetSync(fpState.betId);
-        } else {
-            setTimeout(fpStartCountdown, 600);
-        }
+        // _fpSetupBetSync ya fue llamado desde fpOpenArena — la arena espera startAt de Firebase
+        // En free play (sin betMode), también se arrancó desde fpOpenArena
     }
 
     if (ctrlSwipeBtn) ctrlSwipeBtn.addEventListener('click', () => fpStartWithControl('swipe'));
@@ -995,7 +994,32 @@ document.addEventListener('DOMContentLoaded', function() {
         // En mobile mostrar selector de control, en desktop ir directo
         if (window.innerWidth <= 768) {
             const sel = document.getElementById('fp-control-selector');
-            if (sel) { sel.classList.add('show'); return; }
+            if (sel) {
+                sel.classList.add('show');
+                // Arrancar sync AHORA (no esperar a que el usuario elija)
+                _fpToggleRivalPanel(fpState.betMode, betId);
+                if (fpState.betMode && betId) {
+                    _fpSetupBetSync(betId);
+                }
+                // Countdown de 5s para auto-elegir swipe
+                const cdEl = document.getElementById('ctrl-auto-countdown');
+                if (cdEl) {
+                    let secsLeft = 5;
+                    cdEl.textContent = secsLeft + 's';
+                    cdEl._interval = setInterval(function() {
+                        secsLeft--;
+                        if (secsLeft <= 0) {
+                            clearInterval(cdEl._interval);
+                            fpStartWithControl('swipe');
+                        } else {
+                            cdEl.textContent = secsLeft + 's';
+                        }
+                    }, 1000);
+                } else if (!fpState.betMode) {
+                    setTimeout(fpStartCountdown, 600);
+                }
+                return;
+            }
         }
         fpRenderTimer(dur);
         if (fpTimerBar) { fpTimerBar.style.transition='none'; fpTimerBar.style.width='100%'; }
@@ -1007,7 +1031,6 @@ document.addEventListener('DOMContentLoaded', function() {
         _fpToggleRivalPanel(fpState.betMode, betId);
 
         if (fpState.betMode && betId) {
-            // betMode: sincronizar inicio via Firebase
             _fpSetupBetSync(betId);
         } else {
             setTimeout(fpStartCountdown, 1200);
@@ -5994,6 +6017,9 @@ btn.addEventListener('click', toggleMutePlay);
 
     <div class="fp-ctrl-disclaimer">
         * Los zurdos también pueden jugar. Nadie dijo que sería fácil.
+    </div>
+    <div style="margin-top:12px; font-family:'Courier New',monospace; font-size:11px; color:rgba(0,255,65,0.5); letter-spacing:2px;">
+        AUTO-SWIPE EN <span id="ctrl-auto-countdown" style="color:#00ff41; font-weight:bold;"></span>
     </div>
 </div>
 
