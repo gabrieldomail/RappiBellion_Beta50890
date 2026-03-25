@@ -1,0 +1,6 @@
+/* PvP scale overrides — applied only when game runs in PvP iframe mode */
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}

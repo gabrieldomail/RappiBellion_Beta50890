@@ -586,6 +586,21 @@ if (startBetaBtn) {
         updateMuteBtnVisibility();
         setTimeout(updateMuteBtnVisibility, 100);
         setTimeout(updateMuteBtnVisibility, 500);
+
+        // MOSTRAR EL GAME OVERLAY CON EL MENÚ DE JUEGOS
+        const gameOverlay = document.getElementById('game-overlay');
+        const betaStartScreen = document.getElementById('beta-start-screen');
+
+        if (gameOverlay && betaStartScreen) {
+            // Ocultar pantalla de inicio
+            betaStartScreen.style.display = 'none';
+
+            // Mostrar game overlay
+            gameOverlay.classList.remove('game-menu-hidden');
+            gameOverlay.style.opacity = '1';
+
+            console.log('🎮 GAME OVERLAY ACTIVADO - Menú de juegos visible');
+        }
     });
 }
 

@@ -501,9 +501,9 @@
                 Rappibellion está creciendo. Buscamos a los 3 rebeldes más apasionados por el T2E y el gaming arcade para unirse a nuestras filas (1 por mes).
             </p>
             <p>
-                El proceso es simple: Haz clic en "APLICAR AHORA" para ir a nuestro formulario seguro. Tu CV y datos personales se enviarán de forma **privada** a nuestro mail (`info@rappibellion.com`). Tu **argumento de "por qué quieres unirte"** se mostrará públicamente abajo.
+                El proceso es simple: Haz clic en "APLICAR AHORA" para ir a nuestro formulario seguro. Tu CV y datos personales se enviarán de forma **privada** a nuestro mail (`<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8be2e5ede4cbf9eafbfbe2e9eee7e7e2e4e5a5e8e4e6">[email&#160;protected]</a>`). Tu **argumento de "por qué quieres unirte"** se mostrará públicamente abajo.
             </p>
-            <a href="mailto:info@rappibellion.com" target="_blank" class="cta-button">
+            <a href="/cdn-cgi/l/email-protection#137a7d757c53617263637a71767f7f7a7c7d3d707c7e" target="_blank" class="cta-button">
                 APLICAR AHORA (Formulario de Reclutamiento)
             </a>
 
@@ -609,7 +609,7 @@
 
     <footer>
         <p>© 2025 Bits Lab (Biointeligencia Artificial Technologies Lab). Todos los derechos reservados.</p>
-        <p>Contacto: <a href="mailto:info@rappibellion.com">info@rappibellion.com</a></p>
+        <p>Contacto: <a href="/cdn-cgi/l/email-protection#254c4b434a65574455554c474049494c4a4b0b464a48"><span class="__cf_email__" data-cfemail="6f060109002f1d0e1f1f060d0a0303060001410c0002">[email&#160;protected]</span></a></p>
     </footer>
 
     <div id="game-overlay" class="game-menu-hidden">
@@ -791,7 +791,7 @@
         </div>
     </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // === CYBERPUNK HUD SYSTEM - OFFLINE VERSION ===
 class CyberpunkHUD {
     constructor() {
@@ -1156,7 +1156,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Bet buttons functionality
+    // Bet buttons — abren el modal de apuesta, NO el juego directamente
+    const makeBetModal     = document.getElementById('make-bet-modal');
+    const betModalTitle    = document.getElementById('bet-modal-title');
+    const closeBetModalBtn = document.getElementById('close-bet-modal');
+    const launchBetBtn     = document.getElementById('launch-bet-button');
+    let selectedGame       = null;
+
+    // Estilo activo para opciones
+    const betOptStyle = document.createElement('style');
+    betOptStyle.textContent = '.bet-option-button.active{background-color:var(--color-caos-verde)!important;border-color:var(--color-caos-verde)!important;color:#000!important;font-weight:bold;}';
+    document.head.appendChild(betOptStyle);
+
     const betButtons = [
         'make-bet-pachack', 'make-bet-spacebreaker', 'make-bet-tetriscipher', 'make-bet-memorybreach'
     ];
@@ -1165,24 +1176,57 @@ document.addEventListener('DOMContentLoaded', function() {
         const button = document.getElementById(buttonId);
         if (button) {
             button.addEventListener('click', () => {
-                const gameTitle = buttonId.replace('make-bet-', '').toUpperCase();
-                console.log(`🎮 ¡APUESTA ${gameTitle} REALIZADA! Abriendo PAC-HACK...`);
+                selectedGame = buttonId.replace('make-bet-', '').toUpperCase();
+                if (betModalTitle) betModalTitle.textContent = 'DESAFIO: ' + selectedGame + ' - CONFIGURA TU APUESTA';
+                if (makeBetModal)  makeBetModal.classList.remove('game-menu-hidden');
                 if (cyberpunkHUD && cyberpunkHUD.isActive) {
-                    cyberpunkHUD.showNotification(`${gameTitle} BET ACCEPTED - LOADING PAC-HACK`);
+                    cyberpunkHUD.showNotification(selectedGame + ' SELECTED - CONFIGURE YOUR BET');
                 }
-                setTimeout(() => {
-                    if (cyberpunkHUD && cyberpunkHUD.isActive) {
-                        cyberpunkHUD.showNotification('ONLY PAC-HACK AVAILABLE - ENJOY THE GAME!');
-                    }
-                }, 1000);
-                setTimeout(() => openPacmanWindow(), 1500);
             });
         }
     });
 
-    console.log('🎮 OFFLINE VERSION LOADED - HUD READY!');
+    // Seleccion de opciones (tiempo y boosts)
+    document.querySelectorAll('.bet-option-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const type = btn.getAttribute('data-type');
+            document.querySelectorAll('.bet-option-button[data-type="' + type + '"]')
+                    .forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+
+    // Cerrar modal con X o click fuera
+    if (closeBetModalBtn) {
+        closeBetModalBtn.addEventListener('click', () => {
+            if (makeBetModal) makeBetModal.classList.add('game-menu-hidden');
+        });
+    }
+    if (makeBetModal) {
+        makeBetModal.addEventListener('click', (e) => {
+            if (e.target === makeBetModal) makeBetModal.classList.add('game-menu-hidden');
+        });
+    }
+
+    // Lanzar desafio -> confirmar apuesta -> abrir juego
+    if (launchBetBtn) {
+        launchBetBtn.addEventListener('click', () => {
+            const betInput  = document.getElementById('bet-amount');
+            const betAmount = betInput ? parseFloat(betInput.value) : 0;
+            if (!betAmount || betAmount <= 0) {
+                alert('Ingresa un monto de apuesta valido en $RPPI.');
+                return;
+            }
+            makeBetModal.classList.add('game-menu-hidden');
+            if (cyberpunkHUD && cyberpunkHUD.isActive) {
+                cyberpunkHUD.showNotification('BET CONFIRMED: ' + betAmount + ' $RPPI - LAUNCHING ' + (selectedGame || 'PAC-HACK'));
+            }
+            setTimeout(() => openPacmanWindow(), 600);
+        });
+    }
+
+    console.log('OFFLINE VERSION LOADED - HUD READY!');
 });
 </script>
-
 </body>
 </html>

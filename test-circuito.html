@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEST — El Circuito PvP // Rappibellion</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --p1:  #00e5ff;
+  --p2:  #ff00aa;
+  --grn: #00ff41;
+  --amb: #ffb700;
+  --red: #ff2244;
+  --bg:  #030a06;
+  --pan: #050f08;
+  --dim: rgba(0,255,65,0.18);
+}
+
+body {
+  background: var(--bg);
+  color: var(--grn);
+  font-family: 'Courier New', monospace;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── SCANLINES ── */
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:9999;
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);
+}
+
+/* ══ TOP BAR ══ */
+.top-bar {
+  height: 40px; background: var(--pan);
+  border-bottom: 1px solid var(--dim);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px; flex-shrink: 0;
+}
+.top-bar-logo {
+  font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 900;
+  letter-spacing: 3px; color: var(--grn); text-shadow: 0 0 10px rgba(0,255,65,.5);
+}
+.top-bar-logo span { color: var(--amb); }
+.top-bar-info {
+  font-size: 10px; color: rgba(0,255,65,.4); letter-spacing: 2px;
+  display: flex; gap: 20px; align-items: center;
+}
+.status-dot {
+  display: inline-block; width:6px; height:6px; border-radius:50%;
+  background: var(--grn); box-shadow: 0 0 6px var(--grn);
+  margin-right: 5px; animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ══ LOBBY ══ */
+#lobby {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 20px; padding: 20px;
+}
+.lobby-title {
+  font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 900;
+  letter-spacing: 4px; color: var(--grn); text-shadow: 0 0 20px rgba(0,255,65,.5);
+  text-align: center;
+}
+.lobby-box {
+  background: rgba(0,255,65,.03); border: 1px solid rgba(0,255,65,.2);
+  padding: 24px 32px; width: 100%; max-width: 520px;
+}
+.lobby-label {
+  font-size: 10px; color: rgba(0,255,65,.45); letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+.lobby-row {
+  display: flex; align-items: center; gap: 16px; margin-bottom: 12px;
+}
+.lobby-row label { color: #ccc; font-size: 13px; min-width: 130px; }
+.lobby-row input, .lobby-row select {
+  background: #0a0a0a; border: 1px solid rgba(0,255,65,.3);
+  color: var(--grn); padding: 6px 12px; font-family: 'Courier New', monospace;
+  font-size: 14px;
+}
+.lobby-row input { width: 90px; }
+.boost-cost-lbl {
+  font-size: 11px; color: rgba(255,183,0,.6); letter-spacing: 1px;
+}
+
+/* Controles info */
+.controls-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  width: 100%; max-width: 520px;
+}
+.ctrl-box {
+  padding: 12px 16px; border: 1px solid;
+  font-size: 11px; line-height: 2;
+}
+.ctrl-box.p1 { border-color: rgba(0,229,255,.3); }
+.ctrl-box.p2 { border-color: rgba(255,0,170,.3); }
+.ctrl-title { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700; margin-bottom: 6px; }
+.ctrl-box.p1 .ctrl-title { color: var(--p1); }
+.ctrl-box.p2 .ctrl-title { color: var(--p2); }
+.ctrl-box kbd {
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
+  padding: 1px 6px; border-radius: 3px; font-size: 11px; color: #fff;
+}
+
+.start-btn {
+  font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700;
+  letter-spacing: 4px; padding: 14px 48px;
+  background: transparent; border: 1px solid var(--grn); color: var(--grn);
+  cursor: pointer; transition: all .2s; text-transform: uppercase;
+}
+.start-btn:hover { background: rgba(0,255,65,.08); box-shadow: 0 0 20px rgba(0,255,65,.2); }
+
+/* ══ ARENA ══ */
+#arena {
+  display: none; flex: 1; flex-direction: column; min-height: 0;
+}
+
+/* Split screen */
+.split {
+  flex: 1; display: grid; grid-template-columns: 1fr 6px 1fr;
+  min-height: 0; overflow: hidden; position: relative;
+}
+.player-pane {
+  display: flex; flex-direction: column; background: var(--bg); position: relative; min-height: 0;
+}
+.player-tag {
+  position: absolute; top: 0; z-index: 20;
+  font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; padding: 5px 12px; pointer-events: none;
+}
+.p1-pane .player-tag {
+  left:0; color: var(--p1); text-shadow: 0 0 10px rgba(0,229,255,.7);
+  background: linear-gradient(90deg,rgba(0,229,255,.15),transparent);
+  border-bottom: 1px solid rgba(0,229,255,.3);
+}
+.p2-pane .player-tag {
+  right:0; color: var(--p2); text-shadow: 0 0 10px rgba(255,0,170,.7);
+  background: linear-gradient(270deg,rgba(255,0,170,.15),transparent);
+  border-bottom: 1px solid rgba(255,0,170,.3);
+}
+.iframe-wrap { flex:1; margin-top:32px; overflow:hidden; }
+.iframe-wrap iframe { width:100%; height:100%; border:none; display:block; }
+
+
+.vs-divider {
+  background: var(--pan);
+  border-left: 1px solid var(--dim); border-right: 1px solid var(--dim);
+  display: flex; align-items: center; justify-content: center;
+}
+.vs-hex {
+  width:34px; height:34px; border:1px solid rgba(0,255,65,.5);
+  background: var(--pan); display:flex; align-items:center; justify-content:center;
+  font-family:'Orbitron',monospace; font-size:8px; font-weight:900;
+  color: var(--grn); text-shadow: 0 0 8px rgba(0,255,65,.7);
+  clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+}
+
+/* ══ HUD BAR ══ */
+.hud-bar {
+  height: 140px; background: var(--pan);
+  border-top: 1px solid var(--dim);
+  display: grid; grid-template-columns: 1fr 200px 1fr;
+  align-items: center; padding: 0 16px; flex-shrink: 0; gap: 8px;
+  position: relative;
+}
+.hud-bar::before {
+  content:''; position:absolute; top:-2px; left:0; right:0; height:2px;
+  background: linear-gradient(90deg,var(--p1),transparent 30%,transparent 70%,var(--p2));
+  opacity: .5;
+}
+
+/* Score blocks */
+.score-block { display:flex; flex-direction:column; gap:2px; align-self:stretch; justify-content:center; }
+.score-block.right { align-items:flex-end; }
+.score-lbl { font-size:9px; letter-spacing:3px; }
+.p1-block .score-lbl { color:rgba(0,229,255,.5); }
+.p2-block .score-lbl { color:rgba(255,0,170,.5); }
+.score-num {
+  font-family:'Orbitron',monospace; font-size:24px; font-weight:900; line-height:1;
+  transition: filter .2s;
+}
+.p1-block .score-num { color:var(--p1); text-shadow:0 0 16px rgba(0,229,255,.5); }
+.p2-block .score-num { color:var(--p2); text-shadow:0 0 16px rgba(255,0,170,.5); }
+.boost-pips { display:flex; gap:4px; margin-top:2px; }
+.pip {
+  width:12px; height:4px; border-radius:2px; transition:all .3s;
+}
+.p1-block .pip { background:rgba(0,229,255,.7); box-shadow:0 0 4px rgba(0,229,255,.5); }
+.p2-block .pip { background:rgba(255,0,170,.7); box-shadow:0 0 4px rgba(255,0,170,.5); }
+.pip.used { background:rgba(255,255,255,.06) !important; box-shadow:none !important; }
+.spent-lbl { font-size:9px; color:rgba(255,183,0,.5); letter-spacing:1px; min-height:12px; }
+
+/* Boost button */
+.boost-btn {
+  margin-top: 4px; padding: 4px 10px;
+  font-family:'Courier New',monospace; font-size:10px; letter-spacing:2px;
+  border: 1px solid; cursor:pointer; transition:all .15s; background:transparent;
+  text-transform: uppercase;
+}
+.p1-block .boost-btn {
+  border-color:rgba(0,229,255,.4); color:rgba(0,229,255,.7);
+}
+.p1-block .boost-btn:hover:not(:disabled) {
+  background:rgba(0,229,255,.1); border-color:var(--p1); color:var(--p1);
+}
+.p2-block .boost-btn {
+  border-color:rgba(255,0,170,.4); color:rgba(255,0,170,.7);
+}
+.p2-block .boost-btn:hover:not(:disabled) {
+  background:rgba(255,0,170,.1); border-color:var(--p2); color:var(--p2);
+}
+.boost-btn:disabled { opacity:.3; cursor:not-allowed; }
+.boost-key-hint { font-size:8px; color:rgba(255,255,255,.25); letter-spacing:1px; margin-top:2px; }
+
+/* Timers — one per player, embedded in score blocks */
+.player-timer {
+  display:flex; flex-direction:column; gap:2px; margin-top:3px;
+}
+.timer-num {
+  font-family:'Orbitron',monospace; font-size:20px; font-weight:900;
+  line-height:1; letter-spacing:2px; transition:color .3s;
+}
+.p1-block .timer-num { color:var(--p1); text-shadow:0 0 12px rgba(0,229,255,.5); }
+.p2-block .timer-num { color:var(--p2); text-shadow:0 0 12px rgba(255,0,170,.5); }
+.timer-num.urgent { color:var(--red) !important; text-shadow:0 0 16px rgba(255,34,68,.7) !important; animation:tpulse .5s infinite; }
+.timer-num.frozen {
+  animation: frozenPulse 0.6s ease-in-out infinite;
+}
+@keyframes frozenPulse {
+  0%,100% { opacity:1; }
+  50%      { opacity:0.4; }
+}
+@keyframes tpulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
+.timer-bar-wrap { width:100%; height:3px; border-radius:2px; overflow:hidden; margin-top:1px; }
+.p1-block .timer-bar-wrap { background:rgba(0,229,255,.1); }
+.p2-block .timer-bar-wrap { background:rgba(255,0,170,.1); }
+.timer-bar { height:100%; width:100%; transition:width 1s linear; }
+.p1-block .timer-bar { background:linear-gradient(90deg,var(--p1),var(--grn)); }
+.p2-block .timer-bar { background:linear-gradient(90deg,var(--p2),var(--grn)); }
+.frozen-lbl {
+  font-size:9px; letter-spacing:2px; min-height:12px;
+}
+.p1-block .frozen-lbl { color:rgba(0,229,255,.7); }
+.p2-block .frozen-lbl { color:rgba(255,0,170,.7); }
+
+/* Center block — just bet info */
+.timer-block { display:flex; flex-direction:column; align-items:center; gap:6px; }
+.bet-info { font-size:10px; color:rgba(0,255,65,.4); letter-spacing:2px; }
+.bet-info span { color:var(--amb); font-family:'Orbitron',monospace; font-size:11px; font-weight:700; }
+.vs-center {
+  font-family:'Orbitron',monospace; font-size:28px; font-weight:900;
+  color:rgba(0,255,65,.15); letter-spacing:6px;
+}
+
+/* ══ OVERLAYS ══ */
+.boost-overlay {
+  display:none; position:absolute; inset:0; align-items:center;
+  justify-content:center; pointer-events:none; z-index:500;
+  flex-direction:column; gap:8px;
+}
+.boost-overlay.show { display:flex; }
+.boost-txt {
+  font-family:'Orbitron',monospace; font-size:24px; font-weight:900;
+  letter-spacing:6px; text-align:center; animation:boostAnim 2s ease-out forwards;
+}
+@keyframes boostAnim {
+  0%   { opacity:1; transform:scale(.8); }
+  20%  { opacity:1; transform:scale(1.1); }
+  80%  { opacity:1; transform:scale(1); }
+  100% { opacity:0; transform:scale(1.2); }
+}
+
+/* End game overlay */
+.endgame {
+  display:none; position:absolute; inset:0;
+  background:rgba(3,10,6,.93); flex-direction:column;
+  align-items:center; justify-content:center; z-index:800; gap:16px;
+}
+.endgame.show { display:flex; }
+.endgame-title {
+  font-family:'Courier New',monospace; font-size:64px;
+  color:var(--amb); text-shadow:0 0 40px rgba(255,183,0,.6);
+  letter-spacing:8px; animation:flick .4s steps(3);
+}
+@keyframes flick { 0%{opacity:0} 33%{opacity:1} 66%{opacity:0} 100%{opacity:1} }
+.endgame-winner {
+  font-family:'Orbitron',monospace; font-size:18px;
+  font-weight:900; letter-spacing:5px;
+}
+.endgame-stats {
+  display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px;
+}
+.stat-card {
+  background:rgba(0,255,65,.03); border:1px solid var(--dim);
+  padding:14px 24px; text-align:center;
+}
+.stat-card-lbl { font-size:9px; color:rgba(0,255,65,.4); letter-spacing:3px; margin-bottom:5px; }
+.stat-card-val { font-family:'Orbitron',monospace; font-size:26px; font-weight:700; }
+.replay-btn {
+  margin-top:12px; padding:11px 36px; background:transparent;
+  border:1px solid var(--grn); color:var(--grn);
+  font-family:'Orbitron',monospace; font-size:11px; font-weight:700;
+  letter-spacing:4px; cursor:pointer; transition:all .2s;
+}
+.replay-btn:hover { background:rgba(0,255,65,.08); box-shadow:0 0 16px rgba(0,255,65,.2); }
+
+/* ══ RIVAL BOOST WARNING ══ */
+.rival-warn {
+  position:absolute; top:40px; left:50%; transform:translateX(-50%);
+  background:rgba(255,183,0,.1); border:1px solid rgba(255,183,0,.4);
+  color:var(--amb); font-size:11px; letter-spacing:3px; padding:6px 18px;
+  z-index:400; pointer-events:none; opacity:0; transition:opacity .2s;
+  white-space:nowrap;
+}
+.rival-warn.show { opacity:1; }
+
+/* Immunity timer bar (shown in each player pane during boost) */
+.immunity-bar-wrap {
+  position:absolute; bottom:0; left:0; right:0; height:3px;
+  background:transparent; z-index:30; pointer-events:none;
+}
+.immunity-bar {
+  height:100%; width:0; transition:width 10s linear;
+}
+.p1-pane .immunity-bar { background:rgba(0,229,255,.7); }
+.p2-pane .immunity-bar { background:rgba(255,0,170,.7); }
+
+/* ══ COUNTDOWN OVERLAY ══ */
+#countdown-overlay {
+  display: none; position: absolute; inset: 0; z-index: 900;
+  align-items: center; justify-content: center;
+  background: rgba(3,10,6,.85); flex-direction: column; gap: 12px;
+}
+#countdown-overlay.show { display: flex; }
+.countdown-num {
+  font-family: 'Orbitron', monospace; font-weight: 900;
+  color: var(--grn); text-shadow: 0 0 40px rgba(0,255,65,.8);
+  animation: cdown-pop .9s ease-out forwards;
+  line-height: 1;
+}
+.countdown-num.big { font-size: 140px; }
+.countdown-num.ready { font-size: 52px; letter-spacing: 16px; color: var(--amb);
+  text-shadow: 0 0 40px rgba(255,183,0,.8); }
+.countdown-num.go { font-size: 80px; letter-spacing: 8px; color: var(--p1);
+  text-shadow: 0 0 50px rgba(0,229,255,.9); }
+@keyframes cdown-pop {
+  0%   { opacity:0; transform: scale(2); }
+  15%  { opacity:1; transform: scale(1); }
+  75%  { opacity:1; transform: scale(1); }
+  100% { opacity:0; transform: scale(0.6); }
+}
+.countdown-sub {
+  font-size: 11px; letter-spacing: 4px; color: rgba(0,255,65,.4);
+  font-family: 'Courier New', monospace;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ TOP BAR ══ -->
+<div class="top-bar">
+  <div class="top-bar-logo">RAPP<span>I</span>BELLION // <span>EL CIRCUITO</span> <span style="color:rgba(0,255,65,.3);font-size:10px;margin-left:8px;">[OFFLINE TEST]</span></div>
+  <div class="top-bar-info">
+    <span><span class="status-dot"></span>MODO LOCAL</span>
+    <span style="color:var(--amb);">SESSION #<span id="sessionId">------</span></span>
+  </div>
+</div>
+
+<!-- ══ LOBBY ══ -->
+<div id="lobby">
+  <div class="lobby-title">CONFIGURAR DESAFÍO T2E</div>
+
+  <div class="lobby-box">
+    <div class="lobby-label">// PARÁMETROS DE LA PARTIDA //</div>
+
+    <div class="lobby-row">
+      <label>APUESTA ($RPPI):</label>
+      <input id="cfg-bet" type="number" value="100" min="1"
+        oninput="document.getElementById('boost-cost-lbl').textContent='(costo: '+Math.ceil((parseInt(this.value)||0)*.1)+' $RPPI c/u)'">
+      <span id="boost-cost-lbl" class="boost-cost-lbl">(costo: 10 $RPPI c/u)</span>
+    </div>
+
+    <div class="lobby-row">
+      <label>DURACIÓN:</label>
+      <select id="cfg-duration">
+        <option value="120">2 min</option>
+        <option value="300">5 min</option>
+        <option value="600">10 min</option>
+      </select>
+    </div>
+
+    <div class="lobby-row">
+      <label>BOOST LÍMITE:</label>
+      <select id="cfg-boosts">
+        <option value="1">1 boost</option>
+        <option value="3">3 boosts</option>
+        <option value="5" selected>5 boosts (máx)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Controles -->
+  <div class="controls-grid">
+    <div class="ctrl-box p1">
+      <div class="ctrl-title">// J1 — HACKER_01</div>
+      <div>Mover: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div>
+      <div>Boost: <kbd>Q</kbd> o botón en HUD</div>
+      <div>Pausa: <kbd>P</kbd></div>
+    </div>
+    <div class="ctrl-box p2">
+      <div class="ctrl-title">// J2 — HACKER_02</div>
+      <div>Mover: <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd></div>
+      <div>Boost: <kbd>0</kbd> (numpad) o botón HUD</div>
+      <div>Pausa: <kbd>P</kbd></div>
+    </div>
+  </div>
+
+  <button class="start-btn" onclick="startMatch()">[ INICIAR PARTIDA ]</button>
+</div>
+
+<!-- ══ ARENA ══ -->
+<div id="arena">
+
+  <!-- Countdown overlay -->
+  <div id="countdown-overlay">
+    <div class="countdown-num big" id="cdNum">3</div>
+    <div class="countdown-sub" id="cdSub">PREPÁRATE PARA HACKEAR</div>
+  </div>
+
+  <!-- Split screen -->
+  <div class="split">
+
+    <!-- J1 -->
+    <div class="player-pane p1-pane" id="pane1">
+      <div class="player-tag">[ J1 // HACKER_01 ]</div>
+      <div class="iframe-wrap">
+        <iframe id="gameFrame1" src="pac-hack/game.html?player=p1"
+          allow="autoplay" sandbox="allow-scripts allow-same-origin"></iframe>
+      </div>
+      <div class="immunity-bar-wrap"><div class="immunity-bar" id="immunityBar1"></div></div>
+    </div>
+
+    <!-- VS divider -->
+    <div class="vs-divider"><div class="vs-hex">VS</div></div>
+
+    <!-- J2 -->
+    <div class="player-pane p2-pane" id="pane2">
+      <div class="player-tag">[ J2 // HACKER_02 ]</div>
+      <div class="iframe-wrap">
+        <iframe id="gameFrame2" src="pac-hack/game.html?player=p2"
+          allow="autoplay" sandbox="allow-scripts allow-same-origin"></iframe>
+      </div>
+      <div class="immunity-bar-wrap"><div class="immunity-bar" id="immunityBar2"></div></div>
+    </div>
+
+  </div>
+
+  <!-- HUD BAR -->
+  <div class="hud-bar">
+
+    <!-- J1: score + timer + boost -->
+    <div class="score-block p1-block">
+      <div class="score-lbl">// PUNTOS J1</div>
+      <div class="score-num" id="score1">0000</div>
+      <div class="player-timer">
+        <div class="timer-num" id="timerNum1">02:00</div>
+        <div class="timer-bar-wrap"><div class="timer-bar" id="timerBar1"></div></div>
+        <div class="frozen-lbl" id="frozenLbl1"></div>
+      </div>
+      <div class="boost-pips" id="pips1"></div>
+      <div class="spent-lbl" id="spent1"></div>
+      <button class="boost-btn" id="boostBtn1" onclick="activateBoost('p1')" title="Tecla Q">
+        ⚡ BOOST <span style="font-size:9px;opacity:.5;">[Q]</span>
+      </button>
+    </div>
+
+    <!-- CENTER: apuesta + VS -->
+    <div class="timer-block">
+      <div class="vs-center">VS</div>
+      <div class="bet-info">APUESTA: <span id="betDisplay">100 $RPPI</span></div>
+      <div style="font-size:9px;color:rgba(0,255,65,.25);letter-spacing:1px;text-align:center;line-height:1.6;">
+        BOOST congela<br>tu timer 10s
+      </div>
+    </div>
+
+    <!-- J2: score + timer + boost -->
+    <div class="score-block p2-block right">
+      <div class="score-lbl">PUNTOS J2 //</div>
+      <div class="score-num" id="score2">0000</div>
+      <div class="player-timer">
+        <div class="timer-num" id="timerNum2">02:00</div>
+        <div class="timer-bar-wrap"><div class="timer-bar" id="timerBar2"></div></div>
+        <div class="frozen-lbl" id="frozenLbl2" style="text-align:right;"></div>
+      </div>
+      <div class="boost-pips" id="pips2" style="justify-content:flex-end;"></div>
+      <div class="spent-lbl" id="spent2" style="text-align:right;"></div>
+      <button class="boost-btn" id="boostBtn2" onclick="activateBoost('p2')" title="Tecla 0 numpad">
+        ⚡ BOOST <span style="font-size:9px;opacity:.5;">[0]</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Boost overlay -->
+  <div class="boost-overlay" id="boostOverlay">
+    <div class="boost-txt" id="boostTxt"></div>
+  </div>
+
+  <!-- Rival boost warning -->
+  <div class="rival-warn" id="rivalWarn"></div>
+
+  <!-- End game overlay -->
+  <div class="endgame" id="endgame">
+    <div class="endgame-title">GAME OVER</div>
+    <div class="endgame-winner" id="endWinner"></div>
+    <div class="endgame-stats">
+      <div class="stat-card">
+        <div class="stat-card-lbl">PUNTOS J1</div>
+        <div class="stat-card-val" id="endS1" style="color:var(--p1);">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-lbl">PUNTOS J2</div>
+        <div class="stat-card-val" id="endS2" style="color:var(--p2);">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-lbl">BOOST GASTADO J1</div>
+        <div class="stat-card-val" id="endB1" style="color:var(--p1);font-size:18px;">0 $RPPI</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-lbl">BOOST GASTADO J2</div>
+        <div class="stat-card-val" id="endB2" style="color:var(--p2);font-size:18px;">0 $RPPI</div>
+      </div>
+    </div>
+    <button class="replay-btn" onclick="resetMatch()">[ NUEVA PARTIDA ]</button>
+  </div>
+
+</div><!-- /#arena -->
+
+<script>
+// ════════════════════════════════════════════
+//  RAPPIBELLION — EL CIRCUITO
+//  Coordinador PvP offline (test local)
+// ════════════════════════════════════════════
+
+const BOOST_COST_PCT = 0.10;
+const IMMUNITY_SECS  = 10;
+
+const state = {
+  scores:    { p1:0, p2:0 },
+  boosts:    { p1:0, p2:0 },
+  rppiSpent: { p1:0, p2:0 },
+  frozen:    { p1:false, p2:false },  // timer congelado por boost
+  timeLeft:  { p1:120, p2:120 },      // timers independientes
+  totalTime: 120,
+  maxBoosts: 5,
+  betAmount: 100,
+  boostCost: 10,
+  running:   false,
+  ended:     false,
+  interval:  null,
+};
+
+// ── INICIAR ──
+function startMatch() {
+  const bet      = parseInt(document.getElementById('cfg-bet').value)      || 100;
+  const duration = parseInt(document.getElementById('cfg-duration').value) || 120;
+  const boosts   = parseInt(document.getElementById('cfg-boosts').value)   || 5;
+
+  state.betAmount  = bet;
+  state.boostCost  = Math.ceil(bet * BOOST_COST_PCT);
+  state.timeLeft   = { p1:duration, p2:duration };
+  state.totalTime  = duration;
+  state.maxBoosts  = boosts;
+  state.scores     = {p1:0,p2:0};
+  state.boosts     = {p1:0,p2:0};
+  state.rppiSpent  = {p1:0,p2:0};
+  state.frozen     = {p1:false,p2:false};
+  state.ended      = false;
+
+  document.getElementById('sessionId').textContent =
+    Math.random().toString(16).slice(2,8).toUpperCase();
+  document.getElementById('betDisplay').textContent = bet + ' $RPPI';
+  document.getElementById('score1').textContent = '0000';
+  document.getElementById('score2').textContent = '0000';
+  document.getElementById('spent1').textContent = '';
+  document.getElementById('spent2').textContent = '';
+  document.getElementById('frozenLbl1').textContent = '';
+  document.getElementById('frozenLbl2').textContent = '';
+
+  // Reset timers
+  ['p1','p2'].forEach(function(p) {
+    var n = p==='p1'?'1':'2';
+    var el = document.getElementById('timerNum'+n);
+    var bar = document.getElementById('timerBar'+n);
+    el.classList.remove('urgent','frozen');
+    bar.style.width = '100%';
+    bar.style.transition = 'width 1s linear';
+    renderTimer(p, duration);
+  });
+
+  // Reset boost buttons
+  document.getElementById('boostBtn1').disabled = false;
+  document.getElementById('boostBtn1').innerHTML = '⚡ BOOST <span style="font-size:9px;opacity:.5;">[Q]</span>';
+  document.getElementById('boostBtn2').disabled = false;
+  document.getElementById('boostBtn2').innerHTML = '⚡ BOOST <span style="font-size:9px;opacity:.5;">[0]</span>';
+
+  document.getElementById('endgame').classList.remove('show');
+  renderPips('p1'); renderPips('p2');
+
+  document.getElementById('lobby').style.display = 'none';
+  document.getElementById('arena').style.display = 'flex';
+  document.getElementById('arena').style.flexDirection = 'column';
+
+  setTimeout(function() { startCountdown(); }, 800);
+}
+
+function startCountdown() {
+  const overlay = document.getElementById('countdown-overlay');
+  const numEl   = document.getElementById('cdNum');
+  const subEl   = document.getElementById('cdSub');
+  overlay.classList.add('show');
+
+  const steps = [
+    { num:'3', cls:'big',   sub:'PREPÁRATE PARA HACKEAR',   dur:900 },
+    { num:'2', cls:'big',   sub:'LOS FANTASMAS TE ESPERAN', dur:900 },
+    { num:'1', cls:'big',   sub:'¡ÚLTIMA OPORTUNIDAD!',     dur:900 },
+    { num:'READY', cls:'ready', sub:'',                     dur:900 },
+    { num:'HACK!', cls:'go',    sub:'',                     dur:700 },
+  ];
+
+  var i = 0;
+  function showStep() {
+    if (i >= steps.length) {
+      overlay.classList.remove('show');
+      broadcastAll({ type:'START_MATCH' });
+      state.running  = true;
+      state.interval = setInterval(tick, 1000);
+      return;
+    }
+    var s = steps[i];
+    numEl.className  = 'countdown-num ' + s.cls;
+    numEl.textContent = s.num;
+    subEl.textContent = s.sub;
+    void numEl.offsetWidth;
+    numEl.style.animation = 'none';
+    void numEl.offsetWidth;
+    numEl.style.animation = '';
+    i++;
+    setTimeout(showStep, s.dur);
+  }
+  showStep();
+}
+
+// ── TICK: cada segundo baja el timer de cada jugador (si no está congelado) ──
+function tick() {
+  if (!state.running || state.ended) return;
+
+  var bothZero = true;
+  ['p1','p2'].forEach(function(p) {
+    if (!state.frozen[p] && state.timeLeft[p] > 0) {
+      state.timeLeft[p]--;
+    }
+    renderTimer(p, state.timeLeft[p]);
+    if (state.timeLeft[p] > 0) bothZero = false;
+  });
+
+  if (bothZero) {
+    clearInterval(state.interval);
+    endMatch();
+  }
+}
+
+function renderTimer(player, secs) {
+  var n   = player==='p1'?'1':'2';
+  var m   = Math.floor(secs/60), s = secs%60;
+  var str = (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  var el  = document.getElementById('timerNum'+n);
+  var bar = document.getElementById('timerBar'+n);
+
+  el.textContent = str;
+
+  // Urgent cuando quedan menos de 20s
+  if (secs <= 20 && secs > 0) {
+    el.classList.add('urgent');
+  }
+
+  // Barra de progreso
+  bar.style.width = (secs / state.totalTime * 100) + '%';
+}
+
+// ── SCORE ──
+function updateScore(player, newScore) {
+  state.scores[player] = newScore;
+  var el = document.getElementById(player==='p1'?'score1':'score2');
+  el.textContent = String(newScore).padStart(4,'0');
+  var rival = player==='p1'?'p2':'p1';
+  el.style.filter = newScore > state.scores[rival] ? 'brightness(1.5)' : 'brightness(1)';
+  broadcastToRival(player, { type:'RIVAL_SCORE', rivalScore:newScore });
+}
+
+// ── BOOST: congela el timer del jugador que lo activa ──
+function activateBoost(player) {
+  if (!state.running || state.ended) return;
+  if (state.boosts[player] >= state.maxBoosts) {
+    flashWarn('⚠ LÍMITE DE BOOSTS ALCANZADO');
+    return;
+  }
+  if (state.frozen[player]) {
+    flashWarn('⚠ TU TIMER YA ESTÁ CONGELADO');
+    return;
+  }
+
+  state.boosts[player]++;
+  state.rppiSpent[player] += state.boostCost;
+  state.frozen[player] = true;
+
+  renderPips(player);
+
+  var spentEl = document.getElementById(player==='p1'?'spent1':'spent2');
+  spentEl.textContent = '-' + state.rppiSpent[player] + ' $RPPI gastado';
+
+  // Mostrar "CONGELADO" en el timer del jugador
+  var n = player==='p1'?'1':'2';
+  var timerEl   = document.getElementById('timerNum'+n);
+  var frozenLbl = document.getElementById('frozenLbl'+n);
+  timerEl.classList.add('frozen');
+  timerEl.classList.remove('urgent');
+  frozenLbl.textContent = '❄ TIMER CONGELADO';
+
+  // Overlay
+  var txt  = document.getElementById('boostTxt');
+  var left = state.maxBoosts - state.boosts[player];
+  txt.innerHTML =
+    (player==='p1'?'J1':'J2') + ' // TIMER CONGELADO<br>' +
+    '<span style="font-size:13px;letter-spacing:2px;">-' + state.boostCost +
+    ' $RPPI &nbsp;|&nbsp; ' + left + ' boost' + (left!==1?'s':'') +
+    ' restante' + (left!==1?'s':'') + '</span>';
+  txt.style.color      = player==='p1'?'var(--p1)':'var(--p2)';
+  txt.style.textShadow = player==='p1'?
+    '0 0 30px rgba(0,229,255,.8)':'0 0 30px rgba(255,0,170,.8)';
+  txt.style.textAlign  = 'center';
+
+  var ov = document.getElementById('boostOverlay');
+  ov.classList.add('show');
+  setTimeout(function() { ov.classList.remove('show'); }, 2200);
+
+  // Barra de inmunidad en el iframe
+  var bar = document.getElementById(player==='p1'?'immunityBar1':'immunityBar2');
+  bar.style.transition = 'none';
+  bar.style.width = '100%';
+  setTimeout(function() {
+    bar.style.transition = 'width ' + IMMUNITY_SECS + 's linear';
+    bar.style.width = '0%';
+  }, 50);
+
+  broadcastToPlayer(player,   { type:'BOOST_ACTIVATED', duration:IMMUNITY_SECS });
+  broadcastToRival(player, { type:'RIVAL_BOOST', boostsRemaining:left });
+
+  // Descongelar después de 10s
+  setTimeout(function() {
+    state.frozen[player] = false;
+    timerEl.classList.remove('frozen');
+    frozenLbl.textContent = '';
+    // Restaurar urgente si corresponde
+    if (state.timeLeft[player] <= 20) timerEl.classList.add('urgent');
+  }, IMMUNITY_SECS * 1000);
+
+  updateBoostBtn(player);
+}
+
+function updateBoostBtn(player) {
+  var btn  = document.getElementById(player==='p1'?'boostBtn1':'boostBtn2');
+  var left = state.maxBoosts - state.boosts[player];
+  if (left <= 0) {
+    btn.disabled = true;
+    btn.textContent = '✗ SIN BOOSTS';
+  }
+}
+
+// ── PIPS ──
+function renderPips(player) {
+  var el   = document.getElementById(player==='p1'?'pips1':'pips2');
+  var used = state.boosts[player];
+  el.innerHTML = '';
+  for (var i=0; i<state.maxBoosts; i++) {
+    var pip = document.createElement('div');
+    pip.className = 'pip' + (i < used ? ' used' : '');
+    el.appendChild(pip);
+  }
+}
+
+// ── FIN DE PARTIDA: cuando AMBOS timers llegan a 0 ──
+function endMatch() {
+  if (state.ended) return;
+  state.ended = true;
+  state.running = false;
+  clearInterval(state.interval);
+
+  var s1=state.scores.p1, s2=state.scores.p2;
+  var txt, color;
+  if      (s1>s2) { txt='▶ J1 // HACKER_01 — GANADOR ◀'; color='var(--p1)'; }
+  else if (s2>s1) { txt='▶ J2 // HACKER_02 — GANADOR ◀'; color='var(--p2)'; }
+  else            { txt='⚡ EMPATE — REVANCHA OBLIGATORIA ⚡'; color='var(--amb)'; }
+
+  document.getElementById('endWinner').textContent  = txt;
+  document.getElementById('endWinner').style.color  = color;
+  document.getElementById('endWinner').style.textShadow = '0 0 20px ' + color;
+  document.getElementById('endS1').textContent = String(s1).padStart(4,'0');
+  document.getElementById('endS2').textContent = String(s2).padStart(4,'0');
+  document.getElementById('endB1').textContent = state.rppiSpent.p1 + ' $RPPI';
+  document.getElementById('endB2').textContent = state.rppiSpent.p2 + ' $RPPI';
+  document.getElementById('endgame').classList.add('show');
+
+  broadcastAll({ type:'MATCH_ENDED', winner: s1>s2?'p1':s2>s1?'p2':'draw' });
+}
+
+// ── RESET ──
+function resetMatch() {
+  clearInterval(state.interval);
+  document.getElementById('endgame').classList.remove('show');
+  document.getElementById('arena').style.display = 'none';
+  document.getElementById('lobby').style.display = 'flex';
+  document.getElementById('gameFrame1').src = 'pac-hack/game.html?player=p1';
+  document.getElementById('gameFrame2').src = 'pac-hack/game.html?player=p2';
+  ['immunityBar1','immunityBar2'].forEach(function(id) {
+    var b = document.getElementById(id);
+    b.style.transition = 'none';
+    b.style.width = '0%';
+  });
+}
+
+// ── WARN FLASH ──
+var warnTimeout;
+function flashWarn(msg) {
+  var el = document.getElementById('rivalWarn');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(warnTimeout);
+  warnTimeout = setTimeout(function() { el.classList.remove('show'); }, 2000);
+}
+
+// ── BROADCAST ──
+function broadcastToRival(sender, msg) {
+  var rival = document.getElementById(sender==='p1'?'gameFrame2':'gameFrame1');
+  if (rival && rival.contentWindow) rival.contentWindow.postMessage(msg, '*');
+}
+function broadcastToPlayer(player, msg) {
+  var f = document.getElementById(player==='p1'?'gameFrame1':'gameFrame2');
+  if (f && f.contentWindow) f.contentWindow.postMessage(msg, '*');
+}
+function broadcastAll(msg) {
+  ['gameFrame1','gameFrame2'].forEach(function(id) {
+    var f = document.getElementById(id);
+    if (f && f.contentWindow) f.contentWindow.postMessage(msg, '*');
+  });
+}
+
+// ── MENSAJES DESDE LOS IFRAMES ──
+window.addEventListener('message', function(e) {
+  var d = e.data;
+  if (!d || !d.type) return;
+  if (d.type === 'SCORE_UPDATE' && d.player && typeof d.score==='number') {
+    updateScore(d.player, d.score);
+  } else if (d.type === 'BOOST_USED') {
+    // Ignorado — boost solo via botón/tecla
+  } else if (d.type === 'GAME_OVER') {
+    endMatch();
+  }
+});
+
+// ── TECLAS DE BOOST ──
+document.addEventListener('keydown', function(e) {
+  if (!state.running || state.ended) return;
+  if (e.keyCode === 81) { e.preventDefault(); activateBoost('p1'); }       // Q
+  else if (e.keyCode === 96 || e.keyCode === 48) { e.preventDefault(); activateBoost('p2'); } // 0
+});
+
+// ── INIT ──
+document.getElementById('sessionId').textContent =
+  Math.random().toString(16).slice(2,8).toUpperCase();
+</script>
+</body>
+</html>

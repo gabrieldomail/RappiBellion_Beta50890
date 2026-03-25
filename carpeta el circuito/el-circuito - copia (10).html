@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EL CIRCUITO // RAPPIBELLION T2E</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Reset mínimo para standalone ── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Navbar mínima de contexto ── */
+        /* ── TOPBAR ── */
+        /* ══════════════════════════════════════
+           TOPBAR — 3 columnas alineadas con el arena
+           Siempre visible, responsive mobile/tablet
+        ══════════════════════════════════════ */
+        /* topbar CSS eliminada */
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+        /* ── RESPONSIVE TABLET (≤900px) ── */
+        @media (max-width: 900px) {
+            .casino-topbar {
+                grid-template-columns: 1fr 1fr;
+                height: auto;
+            }
+            .casino-topbar-center {
+                grid-column: 1 / -1;
+                order: -1;
+                font-size: 14px;
+                padding: 6px 12px;
+                justify-content: center;
+            }
+
+            .casino-topbar-logo span { font-size: 13px; }
+            .casino-topbar-status { font-size: 12px; gap: 10px; padding: 0 12px; }
+        }
+
+        /* ── RESPONSIVE MOBILE (≤480px) ── */
+        @media (max-width: 480px) {
+            .casino-topbar {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            .casino-topbar-center { font-size: 12px; padding: 5px 10px; }
+            .casino-topbar-logo { padding: 6px 12px; }
+            .casino-topbar-logo img { height: 32px !important; }
+            .casino-topbar-logo span { display: none; }
+            .casino-topbar-status {
+                justify-content: center;
+                padding: 4px 12px;
+                border-left: none;
+                border-top: 1px solid rgba(248,255,43,0.15);
+                font-size: 11px;
+            }
+        }
+
+        /* ── Ajuste de la sección para standalone ── */
+        body > section#circuit-beta.container.section-separator {
+            padding-top: 20px;
+            min-height: 100vh;
+        }
+
+        /* ══════════════════════════════════════
+           HUD — TERMINAL CYBERPUNK REBELDE
+           Identidad visual: caos-terminal
+        ══════════════════════════════════════ */
+
+        /* ── GLITCH logo — mismo que .glitch-title del sitio ── */
+        @keyframes logo-glitch {
+            0%   { text-shadow: .05em 0 0 rgba(255,0,0,.75), -.05em 0 0 rgba(0,255,0,.75), 0 0 .05em rgba(0,0,255,.75); filter: none; }
+            14%  { text-shadow: .05em 0 0 rgba(255,0,0,.75), -.05em 0 0 rgba(0,255,0,.75), 0 0 .05em rgba(0,0,255,.75); filter: none; }
+            15%  { text-shadow: -.05em 0 0 rgba(255,0,0,.75), .025em 0 0 rgba(0,255,0,.75); filter: hue-rotate(90deg); }
+            16%  { text-shadow: .025em 0 0 rgba(255,0,0,.75), .05em 0 0 rgba(0,255,0,.75);  filter: none; }
+            17%  { text-shadow: .05em 0 0 rgba(255,0,0,.75), -.05em 0 0 rgba(0,255,0,.75); filter: none; }
+            49%  { transform: none; }
+            50%  { transform: translateX(-3px) skewX(-2deg); filter: brightness(1.5); }
+            51%  { transform: translateX(3px)  skewX(2deg);  filter: none; }
+            52%  { transform: none; }
+            100% { text-shadow: .05em 0 0 rgba(255,0,0,.75), -.05em 0 0 rgba(0,255,0,.75), 0 0 .05em rgba(0,0,255,.75); filter: none; }
+        }
+
+        .fp-logo-glitch {
+            animation: logo-glitch 1.5s linear infinite;
+            display: block;
+            width: 100%;       /* mismo ancho que el timer */
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 12px rgba(255,60,94,0.5))
+                    drop-shadow(0 0 24px rgba(0,255,255,0.3));
+            margin-bottom: 28px;
+            align-self: flex-start;
+        }
+
+        @keyframes scanlineAggressive {
+            0%   { transform: translateY(0); }
+            100% { transform: translateY(15px); }
+        }
+
+        /* ══════════════════════════════════════════
+           CAOS TOTAL — FREE PLAY CYBERPUNK EFFECTS
+        ══════════════════════════════════════════ */
+
+        /* Grid cyberpunk cyan pulsante — igual que tokenomics */
+        @keyframes gridPulseAggressive {
+            0%,100% { opacity: 0.15; background-size: 20px 20px; }
+            50%      { opacity: 0.35; background-size: 22px 22px; }
+        }
+
+        /* Glitch de color en bordes */
+        @keyframes borderGlitch {
+            0%,100% { border-color: var(--color-caos-rosa); box-shadow: 4px 0 20px rgba(255,0,255,0.2); }
+            20%  { border-color: var(--color-azul-glitch); box-shadow: 4px 0 40px rgba(0,255,255,0.6); }
+            40%  { border-color: var(--color-caos-amarillo); box-shadow: 4px 0 30px rgba(248,255,43,0.5); }
+            60%  { border-color: var(--color-primario); box-shadow: 4px 0 35px rgba(255,60,94,0.5); }
+            80%  { border-color: var(--color-caos-verde); box-shadow: 4px 0 25px rgba(0,255,0,0.4); }
+        }
+
+        /* Glitch de color en bordes — columna derecha */
+        @keyframes borderGlitchRight {
+            0%,100% { border-color: var(--color-primario); box-shadow: -4px 0 20px rgba(255,60,94,0.2); }
+            20%  { border-color: var(--color-caos-verde); box-shadow: -4px 0 40px rgba(0,255,0,0.6); }
+            40%  { border-color: var(--color-caos-rosa); box-shadow: -4px 0 30px rgba(255,0,255,0.5); }
+            60%  { border-color: var(--color-azul-glitch); box-shadow: -4px 0 35px rgba(0,255,255,0.5); }
+            80%  { border-color: var(--color-caos-amarillo); box-shadow: -4px 0 25px rgba(248,255,43,0.4); }
+        }
+
+        /* Flicker de fondo — como un monitor viejo */
+        @keyframes bgFlicker {
+            0%,19%,21%,23%,25%,54%,56%,100% { opacity: 1; }
+            20%,22%,24%  { opacity: 0.4; }
+            55%          { opacity: 0.6; }
+        }
+
+        /* Glitch logo — igual que tokenomics pero más violento */
+        @keyframes fp-logo-chaos {
+            0%,13%,100% {
+                filter: drop-shadow(.16em 0 0 rgba(255,0,0,.9))
+                        drop-shadow(-.16em 0 0 rgba(0,255,0,.9))
+                        drop-shadow(0 0 .16em rgba(0,0,255,.9));
+                transform: skewX(0deg) translateX(0);
+            }
+            14% {
+                filter: drop-shadow(-.3em 0 0 rgba(255,0,0,1))
+                        drop-shadow(.15em 0 0 rgba(0,255,255,1));
+                transform: skewX(-8deg) translateX(-6px);
+            }
+            15% {
+                filter: drop-shadow(.3em 0 0 rgba(255,60,94,1))
+                        drop-shadow(-.15em 0 0 rgba(0,255,0,1));
+                transform: skewX(8deg) translateX(6px);
+            }
+            16% {
+                filter: drop-shadow(.16em 0 0 rgba(248,255,43,.9))
+                        drop-shadow(-.16em 0 0 rgba(255,0,255,.9));
+                transform: skewX(0deg) translateX(0);
+            }
+            50% {
+                filter: drop-shadow(.2em 0 0 rgba(0,255,255,.8))
+                        drop-shadow(-.2em 0 0 rgba(255,0,255,.8));
+                transform: skewX(-3deg) scaleX(1.05);
+            }
+            51% {
+                filter: drop-shadow(.16em 0 0 rgba(255,0,0,.9))
+                        drop-shadow(-.16em 0 0 rgba(0,255,0,.9));
+                transform: skewX(0deg) scaleX(1);
+            }
+        }
+
+        /* Timer — glitch de color cíclico */
+        @keyframes timerColorChaos {
+            0%,100% { color: var(--color-caos-amarillo); text-shadow: 0 0 24px rgba(248,255,43,0.7); }
+            25% { color: var(--color-azul-glitch); text-shadow: 0 0 24px rgba(0,255,255,0.9), 0 0 50px rgba(0,255,255,0.4); }
+            50% { color: var(--color-caos-verde); text-shadow: 0 0 24px rgba(0,255,0,0.9), 0 0 50px rgba(0,255,0,0.4); }
+            75% { color: var(--color-caos-rosa); text-shadow: 0 0 24px rgba(255,0,255,0.9), 0 0 50px rgba(255,0,255,0.4); }
+        }
+
+        /* Score — glitch de tamaño */
+        @keyframes scoreGlitch {
+            0%,90%,100% { transform: scale(1) skewX(0); }
+            91% { transform: scale(1.08) skewX(-4deg); filter: hue-rotate(90deg); }
+            92% { transform: scale(0.95) skewX(4deg); filter: hue-rotate(180deg); }
+            93% { transform: scale(1) skewX(0); filter: none; }
+        }
+
+        /* Línea de ruido horizontal que cruza la columna */
+        @keyframes noiseLine {
+            0%   { top: -10%; opacity: 0; }
+            5%   { opacity: 0.8; }
+            95%  { opacity: 0.8; }
+            100% { top: 110%; opacity: 0; }
+        }
+
+        /* ── APLICAR CAOS A COLUMNA IZQUIERDA ── */
+        .fp-col-left {
+            animation: borderGlitch 3s linear infinite, bgFlicker 8s linear infinite;
+        }
+
+        /* Grid cyan sobre columna izquierda */
+        .fp-col-left .fp-hover-glow {
+            background-image:
+                linear-gradient(rgba(0,255,255,0.12) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,255,0.12) 1px, transparent 1px) !important;
+            background-size: 20px 20px;
+            animation: gridPulseAggressive 2s ease-in-out infinite !important;
+            opacity: 1 !important;
+            border-radius: 0;
+        }
+
+        /* Logo — glitch brutal */
+        .fp-logo-glitch {
+            animation: fp-logo-chaos 0.08s linear infinite !important;
+        }
+
+        /* Timer — color cycling */
+        .fp-timer-val {
+            animation: timerColorChaos 4s linear infinite !important;
+        }
+
+        /* Score — glitch cada 3s */
+        .fp-stat-val {
+            animation: scoreGlitch 3s linear infinite !important;
+        }
+
+        /* Línea de ruido que barre la columna izquierda */
+        .fp-col-left::before {
+            background: repeating-linear-gradient(
+                0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.5) 2px,
+                transparent 2px, transparent 4px
+            ),
+            linear-gradient(transparent 49.5%, rgba(0,255,255,0.15) 49.5%, rgba(0,255,255,0.15) 50.5%, transparent 50.5%);
+            animation: scanlineAggressive 2s linear infinite, noiseLine 4s linear infinite !important;
+        }
+
+        /* ── APLICAR CAOS A COLUMNA DERECHA ── */
+        .fp-col-right {
+            animation: borderGlitchRight 2.5s linear infinite, bgFlicker 11s linear infinite;
+        }
+
+        /* Grid magenta sobre columna derecha */
+        .fp-col-right .fp-hover-glow-right {
+            background-image:
+                linear-gradient(rgba(255,0,255,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,60,94,0.1) 1px, transparent 1px) !important;
+            background-size: 25px 25px;
+            animation: gridPulseAggressive 1.5s ease-in-out infinite reverse !important;
+            opacity: 1 !important;
+        }
+
+        /* FREE_PLAY — glitch de color */
+        .fp-mode-val {
+            animation: timerColorChaos 3s linear infinite reverse !important;
+            font-size: 40px !important;
+        }
+
+        /* MODO // label — parpadeo */
+        .fp-mode-label {
+            animation: bgFlicker 1.5s linear infinite !important;
+        }
+
+        /* Botón EXIT — pulse + color cycling */
+        .fp-exit-cta {
+            animation: fp-exit-pulse 2s infinite, timerColorChaos 5s linear infinite !important;
+            border-color: currentColor !important;
+        }
+
+        /* ── TERMINAL CENTRAL — caos en el borde ── */
+        .fp-game-wrap > .caos-terminal {
+            animation: borderGlitch 4s linear infinite !important;
+        }
+
+        /* Header de la terminal — flicker */
+        .fp-game-wrap .terminal-header-caos {
+            animation: bgFlicker 6s linear infinite !important;
+        }
+        @keyframes hudGlitch {
+            0%,95%,100% { clip-path: none; transform: none; }
+            96%  { clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%); transform: translateX(-3px); }
+            97%  { clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); transform: translateX(3px); }
+            98%  { clip-path: none; transform: translateX(-1px); }
+        }
+        @keyframes borderPulse {
+            0%,100% { box-shadow: 0 0 15px var(--color-caos-verde), 0 4px 30px rgba(0,255,0,0.15); }
+            50%     { box-shadow: 0 0 30px var(--color-caos-verde), 0 4px 40px rgba(0,255,0,0.3); }
+        }
+
+        /* ── Contenedor principal del HUD ── */
+        #cyberpunk-hud {
+            position: fixed;
+            top: 48px; left: 0; right: 0;
+            z-index: 8000;
+            pointer-events: auto;
+
+            /* Fondo terminal sólido — mismo que .caos-terminal */
+            background-color: #050a0f;
+            border-bottom: 2px solid var(--color-caos-verde);
+            box-shadow: 0 0 15px var(--color-caos-verde), 0 4px 30px rgba(0,255,0,0.15);
+            animation: borderPulse 3s ease-in-out infinite;
+
+            overflow: hidden;
+        }
+
+        /* Scanlines horizontales */
+        #cyberpunk-hud::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,0,0,0.45),
+                rgba(0,0,0,0.45) 2px,
+                transparent 2px,
+                transparent 4px
+            );
+            pointer-events: none;
+            animation: scanlineAggressive 3s linear infinite;
+            z-index: 0;
+        }
+
+        /* Scanlines diagonales amarillas */
+        #cyberpunk-hud::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(248,255,43,0.04),
+                rgba(248,255,43,0.04) 1px,
+                transparent 1px,
+                transparent 5px
+            );
+            pointer-events: none;
+            animation: scanlineAggressive 2s linear infinite reverse;
+            z-index: 0;
+        }
+
+        /* ── Header del HUD ── */
+        .hud-terminal-header {
+            background-color: var(--color-caos-amarillo);
+            color: #071018;
+            padding: 6px 16px;
+            font-size: 16px;          /* x2 de 0.8em */
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative; z-index: 3;
+        }
+        .hud-terminal-header .hud-session-id {
+            color: #071018;
+            opacity: 0.6;
+            font-size: 14px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        /* ── Cuerpo del HUD ── */
+        .hud-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            align-items: stretch;
+            gap: 0;
+            position: relative; z-index: 3;
+        }
+
+        .hud-stat-block {
+            padding: 12px 20px;
+            border-right: 1px solid rgba(0,255,0,0.2);
+            font-family: 'Courier New', monospace;
+        }
+        .hud-stat-block:last-of-type { border-right: none; }
+
+        .hud-stat-block .stat-label {
+            font-size: 18px;           /* x2 de 9px */
+            letter-spacing: 4px;
+            color: var(--color-caos-amarillo);
+            display: block;
+            margin-bottom: 4px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+        }
+        .hud-stat-block .stat-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 36px;           /* x2 de 18px */
+            font-weight: 900;
+            color: var(--color-caos-verde);
+            text-shadow: 0 0 14px rgba(0,255,0,0.6);
+            line-height: 1;
+        }
+        .hud-stat-block .stat-value.rival-val {
+            font-size: 26px;           /* x2 de 13px */
+            color: var(--color-primario);
+            text-shadow: 0 0 12px rgba(255,60,94,0.5);
+        }
+        .hud-stat-block .stat-value.timer-val {
+            font-size: 44px;           /* x2 de 22px */
+            color: var(--color-caos-amarillo);
+            text-shadow: 0 0 20px rgba(248,255,43,0.7);
+            animation: hudGlitch 8s infinite;
+        }
+
+        /* Bloque de controles */
+        .hud-controls-block {
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: stretch;
+            position: relative; z-index: 3;
+        }
+
+        .hud-ctrl-btn {
+            background: transparent;
+            border: 1px solid var(--color-caos-verde);
+            color: var(--color-caos-verde);
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;           /* x2 de 9px — misma fuente que modal */
+            font-weight: 700;
+            letter-spacing: 2px;
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+            text-align: center;
+        }
+        .hud-ctrl-btn:hover {
+            background: rgba(0,255,0,0.1);
+            box-shadow: 0 0 14px rgba(0,255,0,0.4);
+        }
+        .hud-ctrl-btn.boost-btn {
+            border-color: var(--color-caos-amarillo);
+            color: var(--color-caos-amarillo);
+        }
+        .hud-ctrl-btn.boost-btn:hover {
+            background: rgba(248,255,43,0.1);
+            box-shadow: 0 0 14px rgba(248,255,43,0.4);
+        }
+        .hud-ctrl-btn.exit-btn {
+            border-color: var(--color-primario);
+            color: var(--color-primario);
+        }
+        .hud-ctrl-btn.exit-btn:hover {
+            background: rgba(255,60,94,0.1);
+            box-shadow: 0 0 14px rgba(255,60,94,0.4);
+        }
+
+        /* ── RESPONSIVE ANDROID (max 480px) ── */
+        @media (max-width: 480px) {
+
+            .hud-terminal-header { font-size: 11px; padding: 4px 10px; }
+            .hud-body { grid-template-columns: 1fr 1fr; }
+            .hud-controls-block { grid-column: 1 / -1; flex-direction: row; justify-content: center; }
+            .hud-stat-block .stat-label { font-size: 11px; }
+            .hud-stat-block .stat-value { font-size: 22px; }
+            .hud-stat-block .stat-value.timer-val { font-size: 28px; }
+            .hud-stat-block .stat-value.rival-val { font-size: 16px; }
+            .hud-ctrl-btn { font-size: 10px; padding: 6px 10px; }
+        }
+
+        /* ── RESPONSIVE TABLET (max 768px) ── */
+        @media (max-width: 768px) {
+            .casino-topbar-logo img { height: 44px !important; }
+            .hud-stat-block .stat-label { font-size: 13px; }
+            .hud-stat-block .stat-value { font-size: 26px; }
+            .hud-stat-block .stat-value.timer-val { font-size: 32px; }
+            .hud-ctrl-btn { font-size: 11px; }
+        }
+
+        /* ══════════════════════════════════════
+           FREE PLAY ARENA — Overlay fullscreen
+        ══════════════════════════════════════ */
+        /* ══ FREE PLAY ARENA — 3 columnas ══ */
+        #freeplay-arena {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9500;  /* encima de todo — pantalla completa */
+            flex-direction: row;  /* 3 columnas — por encima de topbar y HUD */
+            background: #030a06;
+        }
+        #freeplay-arena.show { display: flex; }
+
+        /* Columna izquierda — TIMER + SCORE */
+        .fp-col-left {
+            width: 460px;
+            flex-shrink: 0;
+            background:
+                linear-gradient(rgba(5,10,15,0.72), rgba(5,10,15,0.72)),
+                url('images/pac-hack-column-izq.png');
+            background-size: cover;
+            background-position: center bottom;
+            border-right: 2px solid var(--color-caos-rosa);
+            border-bottom: 3px solid var(--color-primario);
+            box-shadow:
+                4px 0 20px rgba(255,0,255,0.2),
+                inset 0 0 40px rgba(255,0,255,0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 28px 36px;
+            position: relative;
+            overflow: hidden;
+            /* Transición suave como .beta-column */
+            transition: all 0.3s ease-in-out;
+        }
+        /* Hover: escala + iluminación — igual que .game-placeholder:hover */
+        .fp-col-left:hover {
+            transform: scale(1.08);
+            box-shadow:
+                4px 0 40px rgba(255,0,255,0.4),
+                inset 0 0 60px rgba(255,0,255,0.06),
+                0 0 30px rgba(0,255,255,0.2);
+            border-right-color: var(--color-azul-glitch);
+            border-bottom-color: var(--color-azul-glitch);
+        }
+        /* Scanlines horizontales */
+        .fp-col-left::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: repeating-linear-gradient(
+                0deg, rgba(0,0,0,0.45), rgba(0,0,0,0.45) 2px,
+                transparent 2px, transparent 4px
+            );
+            pointer-events: none;
+            animation: scanlineAggressive 3s linear infinite;
+            z-index: 0;
+        }
+        /* Scanlines diagonales amarillas */
+        .fp-col-left::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(248,255,43,0.04), rgba(248,255,43,0.04) 1px,
+                transparent 1px, transparent 5px
+            );
+            pointer-events: none;
+            animation: scanlineAggressive 2s linear infinite reverse;
+            z-index: 0;
+        }
+        .fp-col-left > * { position: relative; z-index: 1; }
+
+        /* Timer — hover scale como game-placeholder img */
+        .fp-timer-val {
+            display: inline-block;
+            transition: transform 0.3s ease, text-shadow 0.3s ease;
+        }
+        .fp-col-left:hover .fp-timer-val {
+            transform: scale(1.05);
+            text-shadow: 0 0 30px rgba(248,255,43,0.9);
+        }
+        /* Score — hover glow cyan como botones SLOT */
+        .fp-stat-val {
+            display: inline-block;
+            transition: transform 0.3s ease, text-shadow 0.3s ease;
+        }
+        .fp-col-left:hover .fp-stat-val {
+            transform: scale(1.05);
+            text-shadow: 0 0 25px rgba(0,255,255,0.8);
+        }
+        /* Efecto radial en hover — mismo que game-placeholder button::before */
+        .fp-col-left .fp-hover-glow {
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at center,
+                rgba(0,255,255,0.06) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .fp-col-left:hover .fp-hover-glow { opacity: 1; }
+
+        /* Columna central — JUEGO */
+        .fp-game-wrap {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* La terminal centrada dentro de la columna */
+        .fp-game-wrap > .caos-terminal {
+            width: 90%;
+            max-width: 900px;
+            height: 90%;
+            margin: 0 auto !important;
+            border-radius: 4px !important;
+        }
+        .fp-game-wrap iframe {
+            width: 100%;
+            height: 1200px; /* altura fija proporcional */
+            border: none;
+            display: block;
+            overflow: hidden;
+        }
+
+        /* Columna derecha — MODO + EXIT */
+        .fp-col-right {
+            width: 360px;
+            flex-shrink: 0;
+            background:
+                linear-gradient(rgba(13,10,20,0.37), rgba(13,10,20,0.37)),
+                url('images/pac-hack-column-der.png');
+            background-size: cover;
+            background-position: center bottom;
+            border-left: 2px solid var(--color-primario);
+            border-bottom: 3px solid var(--color-azul-glitch);
+            box-shadow:
+                -4px 0 20px rgba(255,60,94,0.2),
+                inset 0 0 40px rgba(255,60,94,0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 32px 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+        /* Hover: escala + iluminación roja/magenta */
+        .fp-col-right:hover {
+            transform: scale(1.08);
+            box-shadow:
+                -4px 0 40px rgba(255,60,94,0.5),
+                inset 0 0 60px rgba(255,60,94,0.07),
+                0 0 30px rgba(255,0,255,0.25);
+            border-left-color: var(--color-caos-rosa);
+            border-bottom-color: var(--color-caos-amarillo);
+        }
+        /* Scanlines horizontales — más rápidas que la izquierda para caos */
+        .fp-col-right::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: repeating-linear-gradient(
+                0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.5) 2px,
+                transparent 2px, transparent 3px
+            );
+            pointer-events: none;
+            animation: scanlineAggressive 2s linear infinite;
+            z-index: 0;
+        }
+        /* Scanlines diagonales — rosa/rojo en vez de amarillo */
+        .fp-col-right::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: repeating-linear-gradient(
+                -45deg,
+                rgba(255,60,94,0.05), rgba(255,60,94,0.05) 1px,
+                transparent 1px, transparent 5px
+            );
+            pointer-events: none;
+            animation: scanlineAggressive 1.5s linear infinite reverse;
+            z-index: 0;
+        }
+        .fp-col-right > * { position: relative; z-index: 1; }
+
+        /* FREE_PLAY text — hover glow rojo */
+        .fp-mode-val {
+            transition: transform 0.3s ease, text-shadow 0.3s ease;
+        }
+        .fp-col-right:hover .fp-mode-val {
+            transform: scale(1.05);
+            text-shadow: 0 0 25px rgba(255,60,94,0.9),
+                         0 0 50px rgba(255,0,255,0.4);
+        }
+        /* Botón EXIT — en hover de columna se intensifica */
+        .fp-col-right:hover .fp-exit-cta {
+            border-color: var(--color-caos-amarillo);
+            color: var(--color-caos-amarillo);
+            box-shadow: 0 0 40px rgba(248,255,43,0.5),
+                        inset 0 0 20px rgba(248,255,43,0.08);
+            text-shadow: 0 0 16px rgba(248,255,43,0.9);
+        }
+        /* Efecto radial — rojo en vez de cyan */
+        .fp-col-right .fp-hover-glow-right {
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at center,
+                rgba(255,60,94,0.07) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .fp-col-right:hover .fp-hover-glow-right { opacity: 1; }
+
+        /* Labels y valores */
+        .fp-stat { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+        .fp-stat.right { align-items: flex-end; text-align: right; }
+        .fp-stat-lbl {
+            font-size: 18px; letter-spacing: 4px;
+            color: rgba(0,255,255,0.5);
+            font-family: 'Orbitron', monospace;
+        }
+        .fp-stat-val {
+            font-family: 'Orbitron', monospace;
+            font-size: 84px; font-weight: 900; line-height: 1;
+            color: var(--color-azul-glitch);
+            text-shadow: 0 0 20px rgba(0,255,255,0.6);
+        }
+
+        /* Timer */
+        .fp-timer-block { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+        .fp-timer-lbl {
+            font-size: 16px; letter-spacing: 4px;
+            color: var(--color-azul-glitch);
+            font-family: 'Courier New', monospace;
+            white-space: nowrap;
+        }
+        .fp-timer-val {
+            font-family: 'Orbitron', monospace;
+            font-size: 112px; font-weight: 900;
+            color: var(--color-caos-amarillo);
+            text-shadow: 0 0 24px rgba(248,255,43,0.7);
+            line-height: 1; letter-spacing: 2px;
+        }
+        .fp-timer-bar-wrap {
+            width: 100%; height: 6px;
+            background: rgba(255,0,255,0.15); border-radius: 3px; overflow: hidden;
+        }
+        .fp-timer-bar {
+            height: 100%; width: 100%;
+            background: linear-gradient(90deg, var(--color-caos-rosa), var(--color-caos-amarillo));
+            transition: width 1s linear;
+        }
+        .fp-practice-lbl {
+            font-size: 16px; letter-spacing: 3px;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            margin-top: 4px;
+        }
+
+        /* Modo info — columna derecha */
+        .fp-mode-label {
+            font-size: 18px; letter-spacing: 4px;
+            color: var(--color-caos-amarillo);
+            font-family: 'Orbitron', monospace;
+            margin-bottom: 6px;
+        }
+        .fp-mode-val {
+            font-family: 'Orbitron', monospace;
+            font-size: 36px; font-weight: 900;
+            color: #ffffff;
+            text-shadow: 0 0 16px rgba(255,0,255,0.5);
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+        .fp-mode-sub {
+            font-size: 16px; letter-spacing: 2px;
+            color: var(--color-azul-glitch);
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Botón EXIT — idéntico al botón COMENZAR del circuito */
+        @keyframes fp-exit-pulse {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .fp-exit-cta {
+            display: block;
+            width: 100%;
+            padding: 20px 30px;
+            background-color: var(--color-azul-glitch);
+            color: var(--color-fondo);
+            border: 2px solid var(--color-azul-glitch);
+            font-family: var(--fuente-titulos);
+            font-size: 1.5em;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: fp-exit-pulse 2s infinite;
+            position: relative; z-index: 1;
+        }
+        .fp-exit-cta:hover {
+            background-color: transparent;
+            color: var(--color-azul-glitch);
+            box-shadow: 0 0 30px rgba(0,255,255,0.5);
+            animation: none;
+            transform: scale(1.05);
+        }
+
+        /* ══════════════════════════════════════
+           RESPONSIVE MOBILE — pantalla chica
+           3 columnas → 1 columna vertical
+        ══════════════════════════════════════ */
+        @media (max-width: 768px) {
+
+            /* Arena: columna única con scroll */
+            #freeplay-arena {
+                flex-direction: column !important;
+                overflow-y: auto !important;
+            }
+
+            /* Columna izquierda: horizontal compacta */
+            .fp-col-left {
+                width: 100% !important;
+                flex-direction: row !important;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                padding: 12px 16px !important;
+                min-height: auto !important;
+                border-right: none !important;
+                border-bottom: 2px solid var(--color-caos-rosa);
+            }
+
+            /* Logo — ocultar en mobile para ahorrar espacio */
+            .fp-logo-glitch { display: none !important; }
+
+            /* Timer y score en fila */
+            .fp-timer-block {
+                flex-direction: row !important;
+                align-items: center;
+                gap: 12px !important;
+                flex-wrap: wrap;
+            }
+            .fp-timer-val { font-size: 48px !important; }
+            .fp-timer-lbl { font-size: 10px !important; white-space: nowrap; }
+            .fp-timer-bar-wrap { width: 120px !important; }
+            .fp-practice-lbl { font-size: 10px !important; }
+
+            .fp-stat { margin-top: 0 !important; }
+            .fp-stat-val { font-size: 36px !important; }
+            .fp-stat-lbl { font-size: 11px !important; }
+
+            /* Chaos bar — ocultar en mobile */
+            #fp-chaos-bar-wrap { display: none !important; }
+
+            /* Juego — altura calculada para dejar espacio a las barras */
+            .fp-game-wrap {
+                flex: none !important;
+                width: 100% !important;
+                height: 60vh !important;
+            }
+            .fp-game-wrap > .caos-terminal {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: 100% !important;
+                border-radius: 0 !important;
+            }
+            .fp-game-wrap iframe {
+                height: 100% !important;
+            }
+
+            /* Columna derecha: horizontal compacta abajo */
+            .fp-col-right {
+                width: 100% !important;
+                flex-direction: row !important;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                padding: 10px 16px !important;
+                border-left: none !important;
+                border-top: 2px solid var(--color-primario);
+                min-height: auto !important;
+            }
+
+            .fp-mode-label { font-size: 11px !important; }
+            .fp-mode-val   { font-size: 18px !important; }
+            .fp-mode-sub   { font-size: 11px !important; display: none; }
+
+            /* Controles en fila */
+            .fp-col-right > div:nth-child(3) {
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 8px;
+                align-items: center;
+            }
+            #fp-duration-select {
+                width: auto !important;
+                font-size: 11px !important;
+                padding: 4px 8px !important;
+                margin-bottom: 0 !important;
+            }
+            .fp-btn {
+                width: auto !important;
+                font-size: 11px !important;
+                padding: 4px 10px !important;
+                margin-bottom: 0 !important;
+            }
+
+            /* EXIT — compacto */
+            .fp-exit-cta {
+                font-size: 13px !important;
+                padding: 8px 16px !important;
+                animation: fp-exit-pulse 2s infinite !important;
+                width: auto !important;
+            }
+        }
+
+        /* ── EXTRA SMALL (≤400px) ── */
+        @media (max-width: 400px) {
+            .fp-timer-val { font-size: 36px !important; }
+            .fp-stat-val  { font-size: 28px !important; }
+        }
+
+        /* Botón ctrl pequeño (restart) */
+        .fp-btn {
+            background: transparent;
+            border: 1px solid rgba(255,0,255,0.4);
+            color: rgba(255,0,255,0.7);
+            font-family: 'Orbitron', monospace;
+            font-size: 14px; font-weight: 700;
+            letter-spacing: 2px; padding: 8px 16px;
+            cursor: pointer; transition: all 0.15s;
+            width: 100%; margin-bottom: 8px;
+        }
+        .fp-btn:hover { background: rgba(255,0,255,0.1); }
+
+        /* ── CHAOS LEVEL INDICATOR ── */
+        #fp-chaos-bar-wrap {
+            width: 100%; margin-top: 12px;
+            position: relative; z-index: 1;
+        }
+        .fp-chaos-label {
+            font-family: 'Orbitron', monospace;
+            font-size: 13px; letter-spacing: 3px;
+            color: var(--color-caos-verde);
+            margin-bottom: 4px;
+            display: flex; justify-content: space-between;
+            transition: color 0.5s;
+        }
+        .fp-chaos-bar-outer {
+            width: 100%; height: 8px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(0,255,0,0.3);
+            border-radius: 2px; overflow: hidden;
+        }
+        .fp-chaos-bar-inner {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, var(--color-caos-verde), var(--color-caos-amarillo));
+            transition: width 1s ease, background 1s ease;
+            border-radius: 2px;
+        }
+        /* Al llegar al 100% — barra roja pulsante */
+        .fp-chaos-bar-inner.apocalypse {
+            background: linear-gradient(90deg, var(--color-primario), var(--color-caos-rosa));
+            animation: borderGlitch 0.3s linear infinite;
+        }
+
+        /* ── COUNTDOWN FREE PLAY — mismo que test-circuito ── */
+        #fp-countdown {
+            display: none; position: fixed; inset: 0; z-index: 9999;
+            background: rgba(3,10,6,0.92);
+            align-items: center; justify-content: center;
+            flex-direction: column; gap: 12px;
+            overflow: visible;
+        }
+        #fp-countdown.show { display: flex; }
+
+        /* Números del countdown */
+
+        #fp-countdown .countdown-num.big   { font-size: 140px; }
+        #fp-countdown .countdown-num.ready {
+            font-size: 52px; letter-spacing: 16px;
+            color: var(--color-caos-amarillo);
+            text-shadow: 0 0 40px rgba(248,255,43,0.8);
+        }
+        #fp-countdown .countdown-num.go {
+            font-size: 80px; letter-spacing: 8px;
+            color: var(--color-azul-glitch);
+            text-shadow: 0 0 50px rgba(0,229,255,0.9);
+        }
+        /* ── CAOS POP — scale gigante → colapsa ── */
+        @keyframes fp-cdown-pop {
+            0%   { opacity:1;   transform: scale(20);   }
+            25%  { opacity:1;   transform: scale(1.1);  }
+            32%  { opacity:1;   transform: scale(0.92); }
+            38%  { opacity:1;   transform: scale(1);    }
+            75%  { opacity:1;   transform: scale(1);    }
+            88%  { opacity:0.6; transform: scale(0.7);  }
+            100% { opacity:0;   transform: scale(0.3);  }
+        }
+
+        /* Glitch — solo clip-path, NO toca transform para no cancelar el scale */
+        @keyframes fp-cdown-glitch {
+            0%,100% { clip-path: none; }
+            40% { clip-path: polygon(0 15%, 100% 15%, 100% 35%, 0 35%); }
+            42% { clip-path: polygon(0 55%, 100% 55%, 100% 75%, 0 75%); }
+            44% { clip-path: none; }
+            60% { clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%); }
+            62% { clip-path: none; }
+        }
+
+        #fp-countdown .countdown-num {
+            font-family: 'Orbitron', monospace; font-weight: 900;
+            color: var(--color-caos-verde);
+            text-shadow:
+                0 0 40px rgba(0,255,65,0.8),
+                0 0 80px rgba(0,255,65,0.4),
+                0 0 120px rgba(0,255,65,0.2);
+            /* Una sola animación en transform — glitch en clip-path separado */
+            animation: fp-cdown-pop 1.125s ease-out forwards,
+                       fp-cdown-glitch 1.125s linear forwards;
+            line-height: 1;
+        }
+        #fp-countdown .countdown-sub {
+            font-size: 13px; letter-spacing: 4px;
+            color: rgba(0,255,65,0.5);
+            font-family: 'Courier New', monospace;
+            text-align: center;
+        }
+
+        /* Notificaciones */
+        .hud-notifications {
+            position: fixed;
+            top: 48px;
+            right: 0;
+            width: 320px;
+            z-index: 8001;
+            pointer-events: none;
+        }
+        .hud-notification {
+            background: #050a0f;
+            border-left: 3px solid var(--color-caos-verde);
+            border-bottom: 1px solid rgba(0,255,0,0.2);
+            color: var(--color-caos-verde);
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            padding: 6px 12px;
+            letter-spacing: 1px;
+            opacity: 1;
+            transition: opacity 0.5s;
+            animation: slideInRight 0.2s ease-out;
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to   { transform: translateX(0);    opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── Topbar de contexto ── -->
+<div class="casino-topbar" id="casino-topbar">
+
+    <!-- topbar eliminada -->
+
+    <!-- Columna derecha: status -->
+    <div class="casino-topbar-status">
+        <span class="status-online"><span class="status-dot"></span>MODO OFFLINE</span>
+        <span style="color:#ffffff;">T2E BETA v1.0</span>
+    </div>
+
+</div>
+
+<!-- ════════════════════════════════════════
+     SECCIÓN CIRCUIT-BETA
+     (extraída del index principal)
+════════════════════════════════════════ -->
+    <section id="circuit-beta" class="container section-separator">
+    <div id="beta-start-screen">
+        <h2 class="glitch-title">ENTRA AL CASINO <span class="circuit-glitch">"EL CIRCUITO"</span></h2>
+        <p style="font-size: 1.2em; color: #ccc;">La <strong>rebelión</strong> ya comenzó. El <strong>juego</strong> empieza <strong>AQUÍ</strong>.</p>
+
+        <button id="start-beta-button" class="cta-button">COMENZAR</button>
+
+    </div>
+
+
+</section>
+
+    <!-- Botón flotante Mute/Play Gardel -->
+    <button id="mute-play-btn" title="Mute/Play Gardel" class="mute-play-floating" style="display:none; position: fixed; top: 32px; right: 32px; z-index: 2147483647; background: transparent; border: none; box-shadow: none; border-radius: 0; padding: 0; transition: all 0.3s ease; cursor: pointer; pointer-events: auto;">
+        <img id="bird-icon" src="images/zorzal.PNG" alt="Zorzal" width="48" height="48" style="display:block;" />
+    </button>
+
+<!-- === CYBERPUNK HUD — TERMINAL T2E === -->
+<div id="cyberpunk-hud" class="hud-hidden">
+
+    <!-- Header tipo terminal-header-caos -->
+    <div class="hud-terminal-header">
+        <span>[T2E_CIRCUIT // EL CIRCUITO // RAPPIBELLION]</span>
+        <span class="hud-session-id">SESSION #<span id="hud-session-id">------</span></span>
+    </div>
+
+    <!-- Cuerpo con stats en grid -->
+    <div class="hud-body">
+
+        <!-- HACKER / SCORE -->
+        <div class="hud-stat-block">
+            <span class="stat-label">// HACKER</span>
+            <div class="stat-value" id="hud-player-name">PLAYER_01</div>
+            <span class="stat-label" style="margin-top:6px;">SCORE</span>
+            <div class="stat-value" id="hud-score">0000</div>
+        </div>
+
+        <!-- TIMER / JUEGO -->
+        <div class="hud-stat-block" style="text-align:center;">
+            <span class="stat-label">// TIEMPO</span>
+            <div class="stat-value timer-val" id="hud-timer">00:00</div>
+            <span class="stat-label" style="margin-top:6px;">GAME</span>
+            <div class="stat-value" id="hud-game-title" style="font-size:11px;letter-spacing:2px;">T2E_CIRCUIT</div>
+        </div>
+
+        <!-- RIVAL / APUESTA -->
+        <div class="hud-stat-block">
+            <span class="stat-label">// RIVAL</span>
+            <div class="stat-value rival-val" id="hud-rival-name">SEARCHING...</div>
+            <span class="stat-label" style="margin-top:6px;">APUESTA</span>
+            <div class="stat-value" id="hud-rppi" style="font-size:14px;">0 $RPPI</div>
+        </div>
+
+        <!-- CONTROLES -->
+        <div class="hud-controls-block">
+            <button id="hud-boost-btn" class="hud-ctrl-btn boost-btn">
+                ⚡ BOOST [<span id="hud-boost-count">5</span>]
+            </button>
+            <button id="hud-pause-btn" class="hud-ctrl-btn">⏸ PAUSE</button>
+            <button id="hud-exit-btn" class="hud-ctrl-btn exit-btn">✕ EXIT</button>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Notificaciones fuera del HUD para no afectar layout -->
+<div id="hud-notifications" class="hud-notifications"></div>
+
+<!-- === GAME OVERLAY (contenido del circuito) === -->
+<div id="game-overlay" class="game-menu-hidden">
+    <div class="game-content">
+
+        <div id="santo-grial-message" class="caos-terminal" style="max-width: 900px; margin-bottom: 30px;">
+            <div class="terminal-header-caos">
+                <span>[INCOMING_TRANSMISSION_REBELBET]</span>
+            </div>
+            <div class="terminal-body-caos">
+                <p id="typewriter-text"></p>
+            </div>
+        </div>
+
+        <div class="beta-container" style="position: relative;">
+            <div class="beta-column" id="free-play-column">
+                <h3 style="color: var(--color-azul-glitch); text-shadow: 0 0 10px var(--color-azul-glitch);">MODO FREE PLAY</h3>
+                <p>Practica tus habilidades de hackeo aquí. ¡Juega gratis y decide qué juegos entran a la versión final!</p>
+
+                <div class="game-placeholder">
+                    <img src="juegos beta/arkanoid.webp" alt="ARKA-HACK" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario);">SLOT 1: ARKA-HACK</strong><br>(Arkanoid - Rompe el firewall)</p>
+                </div>
+                <div class="game-placeholder">
+                    <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch);">SLOT 2: SPACE-BREAKER</strong><br>(Space Invaders - Defiende el nodo)</p>
+                </div>
+                <div class="game-placeholder">
+                    <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde);">SLOT 3: TETRIS-CIPHER</strong><br>(Tetris - Organiza el código encriptado)</p>
+                </div>
+                <div class="game-placeholder">
+                    <img src="juegos beta/snake.PNG" alt="SNAKE-PROTOCOL" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-amarillo);">SLOT 4: SNAKE-PROTOCOL</strong><br>(Snake - Conecta los circuitos)</p>
+                </div>
+                <div class="game-placeholder">
+                    <img src="juegos beta/pacman.jfif" alt="PAC-HACK: DEATH" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa);">SLOT 5: PAC-HACK: DEATH</strong><br>(Pac-Man - Escapá del antivirus)</p>
+                    <button class="cta-button" id="play-pacman-demo"
+                            style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa); margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px;">
+                        &gt; EJECUTAR_PACKHACK_DEATH.exe
+                    </button>
+                </div>
+                <div class="game-placeholder">
+                    <img src="juegos beta/memorama.webp" alt="MEMORY-BREACH" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario);">SLOT 6: MEMORY-BREACH</strong><br>(Memorama - Descubre los pares de datos)</p>
+                </div>
+                <div class="game-placeholder">
+                    <img src="juegos beta/pong.webp" alt="PONG-FIREWALL" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch);">SLOT 7: PONG-FIREWALL</strong><br>(Pong - Rebotá el ataque DDoS)</p>
+                </div>
+                <div class="game-placeholder">
+                    <img src="juegos beta/flappy bird.jpg" alt="FLAPPY-DRONE" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde);">SLOT 8: FLAPPY-DRONE</strong><br>(Flappy Bird - Piloteá el drone)</p>
+                </div>
+
+                <div style="margin-top: 30px; text-align: center;">
+                    <h4 style="color: var(--color-azul-glitch);">¿Ya jugaste?</h4>
+                    <a href="#" class="cta-button whitepaper">VOTAR POR MI MINIJUEGO FAVORITO</a>
+                </div>
+            </div>
+
+            <div class="beta-column" id="t2e-column">
+                <h3 style="color: var(--color-primario); text-shadow: 0 0 10px var(--color-primario);">MODO THINK-TO-EARN (T2E)</h3>
+                <p>¿Listo para la rebelión? Elige tu arena, conecta tu billetera y "hackea" a la competencia.</p>
+
+                <div class="game-placeholder">
+                    <img src="juegos beta/pacman.jfif" alt="PAC-HACK: DEATH" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa);">[PAC-HACK: DEATH]</strong><br>(El "Laberinto")</p>
+                    <button class="cta-button" id="make-bet-pachack" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa);">
+                        ¡MAKE YOUR BET!
+                    </button>
+
+                </div>
+                <div class="game-placeholder">
+                    <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch);">[SPACE-BREAKER]</strong><br>(La "Flota")</p>
+                    <button class="cta-button" id="make-bet-spacebreaker" style="background-color: var(--color-azul-glitch); border-color: var(--color-azul-glitch);">
+                        ¡MAKE YOUR BET!
+                    </button>
+                </div>
+                <div class="game-placeholder">
+                    <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde);">[TETRIS-CIPHER]</strong><br>(El "Código")</p>
+                    <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde);">
+                        ¡MAKE YOUR BET!
+                    </button>
+                </div>
+                <div class="game-placeholder">
+                    <img src="juegos beta/memorama.webp" alt="MEMORY-BREACH" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario);">[MEMORY-BREACH]</strong><br>(La "Memoria")</p>
+                    <button class="cta-button" id="make-bet-memorybreach" style="background-color: var(--color-primario); border-color: var(--color-primario);">
+                        ¡MAKE YOUR BET!
+                    </button>
+                </div>
+
+                <button id="connect-wallet-button" class="cta-button whitepaper">
+                    CONECTA TU BILLETERA PARA ENTRAR AL CIRCUITO
+                </button>
+                <button id="show-user-bets-button" class="cta-button" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa); display: none; margin-top: 10px;">
+                    [MIS APUESTAS ACTIVAS]
+                </button>
+                <p id="wallet-status" style="margin-top: 15px; font-size: 0.9em; color: var(--color-caos-verde);"></p>
+                <p id="wallet-address" style="margin-top: 5px; font-size: 0.85em; color: var(--color-azul-glitch); font-family: var(--fuente-titulos);"></p>
+
+                <!-- Opiniones T2E -->
+                <div class="t2e-opinions-container" style="margin-top: 30px;">
+                    <h4 style="color: var(--color-caos-verde);">¡Deja tu feedback!</h4>
+                    <button id="dejar-opinion-btn" class="cta-button" style="margin-top: 10px;">DEJAR MI OPINIÓN T2E</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-menu-footer">
+            <button id="exit-game-button" class="cta-button" style="background-color: var(--color-primario); border-color: var(--color-primario);">
+                EXIT GAME
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- === MODAL DE APUESTAS T2E === -->
+<div id="make-bet-modal" class="game-menu-hidden">
+    <div class="bet-modal-content caos-terminal">
+        <div class="terminal-header-caos" style="background-color: var(--color-primario); display: flex; justify-content: space-between; align-items: center;">
+            <span>[T2E_CASINO_LOBBY]</span>
+            <button id="close-bet-modal" class="terminal-close-btn">✕</button>
+        </div>
+        <div class="terminal-body-caos" style="color: var(--color-texto);">
+            <div class="form-group" id="bets-offers-lobby">
+                <label style="text-align: center; color: var(--color-caos-amarillo);">[ DESAFÍOS ABIERTOS EN "EL CIRCUITO" ]</label>
+                <div class="bets-offers-list"></div>
+            </div>
+            <h3 id="bet-modal-title" style="color: var(--color-primario); text-align: center; border-top: 1px dashed #555; padding-top: 0px; margin-bottom: 20px;">
+                O CREA TU PROPIO DESAFÍO T2E
+            </h3>
+            <div class="form-group">
+                <label for="bet-amount">1. DEFINE TU APUESTA (EL BOTE):</label>
+                <div style="display: flex; align-items: center;">
+                    <input type="number" id="bet-amount" placeholder="Ej: 100" class="bet-input">
+                    <span class="bet-suffix">$RPPI</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>2. DEFINE EL LÍMITE DE TIEMPO:</label>
+                <div class="button-group">
+                    <button class="bet-option-button" data-type="time" data-value="5">5 Min</button>
+                    <button class="bet-option-button" data-type="time" data-value="10">10 Min</button>
+                    <button class="bet-option-button" data-type="time" data-value="15">15 Min</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>3. DEFINE LÍMITE DE BOOSTS (INMUNIDAD):</label>
+                <div class="button-group">
+                    <button class="bet-option-button" data-type="boost" data-value="1">1 Boost</button>
+                    <button class="bet-option-button" data-type="boost" data-value="3">3 Boosts</button>
+                    <button class="bet-option-button" data-type="boost" data-value="5">5 Boosts (Límite Máx)</button>
+                </div>
+            </div>
+            <button id="launch-bet-button" class="cta-button" style="width: 100%; background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); margin-top: 10px;">
+                [ LANZAR DESAFÍO Y ESPERAR OPONENTE ]
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- === VENTANA PAC-HACK: DEATH (PvP Arena) === -->
+<div id="pacman-game-window" class="pacman-window-hidden">
+    <div class="pacman-terminal caos-terminal">
+        <div class="terminal-header-caos" style="background-color: var(--color-caos-rosa); display: flex; justify-content: space-between; align-items: center;">
+            <span>[PAC-HACK: DEATH // EL LABERINTO]</span>
+            <button id="close-pacman-window" class="terminal-close-btn">✕</button>
+        </div>
+        <div class="terminal-body-caos" style="padding: 0; height: 600px; overflow: hidden;">
+            <iframe
+                id="pacman-iframe"
+                src="pac-hack/game.html"
+                width="100%"
+                height="100%"
+                frameborder="0"
+                allowfullscreen
+                style="border: none; background: #000;"
+                sandbox="allow-scripts allow-same-origin"
+            ></iframe>
+        </div>
+    </div>
+</div>
+
+<!-- === FREE PLAY ARENA — 3 COLUMNAS === -->
+<div id="freeplay-arena">
+
+    <!-- COLUMNA IZQUIERDA: TIMER + SCORE -->
+    <div class="fp-col-left">
+        <div class="fp-hover-glow"></div>
+
+        <!-- Logo con efecto glitch -->
+        <img src="rappibellion_logo_movil.png"
+             alt="Rappibellion"
+             class="fp-logo-glitch">
+
+        <div class="fp-timer-block">
+            <div class="fp-timer-lbl">// TIEMPO DE PRÁCTICA //</div>
+            <div class="fp-timer-val" id="fp-timer">10:00</div>
+            <div class="fp-timer-bar-wrap">
+                <div class="fp-timer-bar" id="fp-timer-bar"></div>
+            </div>
+            <div class="fp-practice-lbl">MODO FREE PLAY — SIN APUESTA</div>
+        </div>
+        <div class="fp-stat" style="margin-top:28px;">
+            <div class="fp-stat-lbl">// SCORE</div>
+            <div class="fp-stat-val" id="fp-score">0000</div>
+        </div>
+
+        <!-- CHAOS LEVEL -->
+        <div id="fp-chaos-bar-wrap">
+            <div class="fp-chaos-label">
+                <span>// CHAOS LEVEL</span>
+                <span id="fp-chaos-pct">0%</span>
+            </div>
+            <div class="fp-chaos-bar-outer">
+                <div class="fp-chaos-bar-inner" id="fp-chaos-bar"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- COLUMNA CENTRAL: JUEGO en terminal caos -->
+    <div class="fp-game-wrap">
+        <div class="caos-terminal" style="height:100%;margin:0;border-radius:0;
+             border-left:none;border-right:none;display:flex;flex-direction:column;">
+
+            <!-- Header idéntico al de rebelbet -->
+            <div class="terminal-header-caos" style="
+                background-color: var(--color-caos-amarillo);
+                display: flex; justify-content: space-between; align-items: center;
+                flex-shrink: 0;">
+                <span>[PAC-HACK: DEATH // FREE_PLAY]</span>
+                <span style="font-family:'Orbitron',monospace;font-size:10px;opacity:0.7;">
+                    VER 2.1.9
+                </span>
+            </div>
+
+            <!-- Cuerpo: el iframe ocupa todo -->
+            <div class="terminal-body-caos" style="
+                padding: 0; flex: 1; overflow: hidden; position: relative;">
+                <iframe id="fp-iframe" src=""
+                    sandbox="allow-scripts allow-same-origin"
+                    allow="autoplay"
+                    style="width:100%;height:100%;border:none;display:block;">
+                </iframe>
+                <!-- countdown moved to body level -->
+            </div>
+
+        </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: MODO + CONTROLES + EXIT -->
+    <div class="fp-col-right">
+        <div class="fp-hover-glow-right"></div>
+        <div>
+            <div class="fp-mode-label">MODO //</div>
+            <div class="fp-mode-val">FREE_PLAY</div>
+            <div class="fp-mode-sub">Practicá antes de apostar</div>
+        </div>
+        <div>
+            <div style="font-size:13px;letter-spacing:3px;color:#ffffff;
+                        font-family:'Courier New',monospace;margin-bottom:12px;">// CONTROLES //</div>
+            <select id="fp-duration-select"
+                style="width:100%;background:#0a0a0a;border:1px solid rgba(255,0,255,0.3);
+                       color:var(--color-caos-rosa);padding:8px 12px;
+                       font-family:'Orbitron',monospace;font-size:14px;
+                       letter-spacing:2px;margin-bottom:10px;">
+                <option value="300">5 MIN</option>
+                <option value="600" selected>10 MIN</option>
+            </select>
+            <button class="fp-btn" id="fp-restart-btn">↺ RESTART</button>
+        </div>
+        <button class="fp-exit-cta" id="fp-exit-btn">EXIT FREE PLAY</button>
+    </div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════════════════
+//  EL CIRCUITO — STANDALONE
+//  Toda la lógica de la sección casino aislada
+// ════════════════════════════════════════════════════
+
+// ── CYBERPUNK HUD SYSTEM ──
+class CyberpunkHUD {
+    constructor() {
+        this.hud           = document.getElementById('cyberpunk-hud');
+        this.isActive      = false;
+        this.currentGame   = null;
+        this.gameStartTime = null;
+        this.gameTimer     = null;
+        this.playerStats   = { level: 1, score: 0, rppi: 0.00 };
+        this.rivalStats    = { name: 'SEARCHING...', level: 1, score: 0 };
+        this.boostSystem   = { available: 5, used: 0, maxBoosts: 5 };
+        this.notifications = [];
+    }
+
+    initialize() {
+        this.setupEventListeners();
+        console.log('HUD System initialized');
+    }
+
+    setupEventListeners() {
+        // El HUD se activa solo cuando arranca una partida real (ver launchBetBtn)
+        const pauseBtn = document.getElementById('hud-pause-btn');
+        const exitBtn  = document.getElementById('hud-exit-btn');
+        const boostBtn = document.getElementById('hud-boost-btn');
+        if (pauseBtn) pauseBtn.addEventListener('click', () => this.togglePause());
+        if (exitBtn)  exitBtn.addEventListener('click',  () => this.hideHUD());
+        if (boostBtn) boostBtn.addEventListener('click', () => this.activateBoost());
+    }
+
+    showHUD() {
+        if (!this.hud) return;
+        this.isActive = true;
+        this.hud.classList.remove('hud-hidden');
+        this.hud.classList.add('hud-visible');
+
+        this.currentGame   = 'T2E_CIRCUIT';
+        this.gameStartTime = Date.now();
+        this.startTimer();
+        setTimeout(() => {
+            const notifEl = document.getElementById('hud-notifications');
+            if (notifEl && this.hud) {
+                notifEl.style.top = (this.hud.offsetHeight + 48) + 'px';
+            }
+        }, 100);
+        this.showNotification('CIRCUITO T2E INICIADO');
+    }
+
+    hideHUD() {
+        if (!this.hud) return;
+        this.isActive = false;
+        this.hud.classList.add('hud-hidden');
+        this.hud.classList.remove('hud-visible');
+        const topbar = document.querySelector('.casino-topbar');
+        if (topbar) topbar.classList.remove('visible');
+        this.stopTimer();
+    }
+
+    startTimer() {
+        this.stopTimer();
+        this.gameTimer = setInterval(() => {
+            if (!this.gameStartTime) return;
+            const elapsed = Math.floor((Date.now() - this.gameStartTime) / 1000);
+            const m = Math.floor(elapsed / 60), s = elapsed % 60;
+            const timerEl = document.getElementById('hud-timer');
+            if (timerEl) timerEl.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+        }, 1000);
+    }
+
+    stopTimer() {
+        if (this.gameTimer) { clearInterval(this.gameTimer); this.gameTimer = null; }
+    }
+
+    togglePause() { this.showNotification('JUEGO PAUSADO'); }
+
+    activateBoost() {
+        if (this.boostSystem.available <= 0) { this.showNotification('SIN BOOSTS DISPONIBLES'); return; }
+        this.boostSystem.available--;
+        this.boostSystem.used++;
+        const boostCount = document.getElementById('hud-boost-count');
+        if (boostCount) boostCount.textContent = this.boostSystem.available;
+        this.showNotification('BOOST ACTIVADO — INMUNIDAD 10s');
+    }
+
+    showNotification(message) {
+        const container = document.getElementById('hud-notifications');
+        if (!container) return;
+        const notif = document.createElement('div');
+        notif.className = 'hud-notification';
+        notif.textContent = '> ' + message;
+        container.appendChild(notif);
+        setTimeout(() => { notif.style.opacity = '0'; setTimeout(() => notif.remove(), 500); }, 3000);
+    }
+}
+
+// ── INIT ──
+let cyberpunkHUD;
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    cyberpunkHUD = new CyberpunkHUD();
+    cyberpunkHUD.initialize();
+
+    // ── TYPEWRITER ──
+    const textoSantoGrial = "¡HACKING TERMINAL...#INCOMING MESSAGE FROM RAPPIA CAMP# DECODING...\ Toda la XP, Puntos de Nivel, Items y Accesorios que ganes en la Beta de 'El Circuito'... ¡SE MIGRARÁN a tu personaje final en el Juego Virtual de Android! Empieza a farmear, o decide entrar como un novato. Tu leyenda comienza AHORA...END COMUNICATION..";
+    const typewriterEl = document.getElementById('typewriter-text');
+    function typeWriter(element, text, speed, callback) {
+        if (!element) return;
+        let i = 0; element.textContent = '';
+        function type() {
+            if (i < text.length) { element.textContent += text.charAt(i); i++; setTimeout(type, speed); }
+            else if (callback) callback();
+        }
+        type();
+    }
+
+    // ── BOTÓN COMENZAR ──
+    const startButton     = document.getElementById('start-beta-button');
+    const betaStartScreen = document.getElementById('beta-start-screen');
+    const gameOverlay     = document.getElementById('game-overlay');
+
+    if (startButton && betaStartScreen && gameOverlay) {
+        startButton.addEventListener('click', function() {
+            betaStartScreen.style.display = 'none';
+            gameOverlay.classList.remove('game-menu-hidden');
+            if (typewriterEl) setTimeout(() => typeWriter(typewriterEl, textoSantoGrial, 30), 300);
+            const santo = document.getElementById('santo-grial-message');
+            if (santo) setTimeout(() => santo.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+        });
+    }
+
+    // ── EXIT GAME ──
+    const exitGameButton = document.getElementById('exit-game-button');
+    if (exitGameButton && betaStartScreen && gameOverlay) {
+        exitGameButton.addEventListener('click', function() {
+            gameOverlay.classList.add('game-menu-hidden');
+            betaStartScreen.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (cyberpunkHUD) cyberpunkHUD.hideHUD();
+        });
+    }
+
+    // ── FREE PLAY ARENA ──
+    const fpArena      = document.getElementById('freeplay-arena');
+    const fpIframe     = document.getElementById('fp-iframe');
+    const fpTimerEl    = document.getElementById('fp-timer');
+    const fpTimerBar   = document.getElementById('fp-timer-bar');
+    const fpScoreEl    = document.getElementById('fp-score');
+    const fpCdOverlay  = document.getElementById('fp-countdown');
+    const fpCdNum      = document.getElementById('fp-cd-num');
+    const fpCdSub      = document.getElementById('fp-cd-sub');
+    const fpExitBtn    = document.getElementById('fp-exit-btn');
+    const fpRestartBtn = document.getElementById('fp-restart-btn');
+    const fpDurSelect  = document.getElementById('fp-duration-select');
+    const playPacmanBtn= document.getElementById('play-pacman-demo');
+
+    let fpState = { timeLeft:600, totalTime:600, running:false, ended:false, interval:null, score:0 };
+
+    function fpOpenArena() {
+        const dur = parseInt(fpDurSelect ? fpDurSelect.value : 600);
+        fpState = { timeLeft:dur, totalTime:dur, running:false, ended:false, interval:null, score:0 };
+        // Bloquear scroll de la página mientras el juego está activo
+        document.body.style.overflow = 'hidden';
+        document.body.style.touchAction = 'none';
+        // Mostrar topbar + activar header de free play
+        const topbar = document.querySelector('.casino-topbar');
+        if (topbar) topbar.classList.add('visible');
+        if (fpIframe) fpIframe.src = 'pac-hack/game.html?player=p1';
+        fpRenderTimer(dur);
+        if (fpTimerBar) { fpTimerBar.style.transition='none'; fpTimerBar.style.width='100%'; }
+        if (fpScoreEl)  fpScoreEl.textContent = '0000';
+        if (fpTimerEl)  fpTimerEl.style.color = '';
+        if (fpArena)    fpArena.classList.add('show');
+        setTimeout(fpStartCountdown, 1200);
+    }
+
+    function fpStartCountdown() {
+        const steps = [
+            { num:'3',     cls:'big',   sub:'PREPÁRATE PARA HACKEAR',      dur:1125 },
+            { num:'2',     cls:'big',   sub:'LOS FANTASMAS TE ESPERAN',    dur:1125 },
+            { num:'1',     cls:'big',   sub:'¡ÚLTIMA OPORTUNIDAD!',        dur:1125 },
+            { num:'READY', cls:'ready', sub:'',                             dur:1125 },
+            { num:'HACK!', cls:'go',    sub:'',                             dur:875 },
+        ];
+        if (fpCdOverlay) fpCdOverlay.classList.add('show');
+        let i = 0;
+        function step() {
+            if (i >= steps.length) {
+                if (fpCdOverlay) fpCdOverlay.classList.remove('show');
+                if (fpIframe && fpIframe.contentWindow) {
+                    fpIframe.contentWindow.postMessage({ type:'START_MATCH' }, '*');
+                }
+                fpState.running  = true;
+                fpState.interval = setInterval(fpTick, 1000);
+                return;
+            }
+            const s = steps[i];
+            if (fpCdNum) {
+                fpCdNum.className   = 'countdown-num ' + s.cls;
+                fpCdNum.textContent = s.num;
+                // Reiniciar animación — truco del test-circuito
+                fpCdNum.style.animation = 'none';
+                void fpCdNum.offsetWidth;
+                fpCdNum.style.animation = '';
+            }
+            if (fpCdSub) fpCdSub.textContent = s.sub;
+            i++;
+            setTimeout(step, s.dur);
+        }
+        step();
+    }
+
+    function fpTick() {
+        if (!fpState.running || fpState.ended) return;
+        fpState.timeLeft--;
+        fpRenderTimer(fpState.timeLeft);
+        if (fpTimerBar) fpTimerBar.style.width = (fpState.timeLeft / fpState.totalTime * 100) + '%';
+        if (fpState.timeLeft <= 0) { clearInterval(fpState.interval); fpState.ended = true; fpEndPractice(); }
+    }
+
+    function fpRenderTimer(secs) {
+        const m = Math.floor(secs/60), s = secs%60;
+        if (fpTimerEl) fpTimerEl.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    }
+
+    function fpEndPractice() {
+        if (fpIframe && fpIframe.contentWindow) fpIframe.contentWindow.postMessage({ type:'MATCH_ENDED', winner:'draw' }, '*');
+        if (fpTimerEl) { fpTimerEl.textContent = 'FIN'; fpTimerEl.style.color = 'var(--color-caos-rosa)'; }
+    }
+
+    function fpCloseArena() {
+        clearInterval(fpState.interval);
+        if (fpArena)  fpArena.classList.remove('show');
+        if (fpIframe) fpIframe.src = '';
+        if (fpTimerEl) fpTimerEl.style.color = '';
+        // Restaurar scroll al salir del juego
+        document.body.style.overflow = '';
+        document.body.style.touchAction = '';
+        const topbar = document.querySelector('.casino-topbar');
+        if (topbar) topbar.classList.remove('visible');
+    }
+
+    function fpRestart() { clearInterval(fpState.interval); if (fpCdOverlay) fpCdOverlay.classList.remove('show'); fpOpenArena(); }
+
+    window.addEventListener('message', function(e) {
+        const d = e.data;
+        if (!d || !d.type) return;
+        if (d.type === 'SCORE_UPDATE' && d.player === 'p1') {
+            fpState.score = d.score;
+            if (fpScoreEl) fpScoreEl.textContent = String(d.score).padStart(4,'0');
+        }
+        // Recibir nivel de caos del juego
+        if (d.type === 'CHAOS_LEVEL') {
+            const bar   = document.getElementById('fp-chaos-bar');
+            const pct   = document.getElementById('fp-chaos-pct');
+            const label = document.querySelector('.fp-chaos-label');
+            if (bar) {
+                bar.style.width = d.level + '%';
+                if (d.level >= 80) {
+                    bar.classList.add('apocalypse');
+                } else {
+                    bar.classList.remove('apocalypse');
+                }
+            }
+            if (pct) pct.textContent = d.level + '%';
+            // Color del label según nivel de caos
+            if (label) {
+                if (d.level < 30)      label.style.color = 'var(--color-caos-verde)';
+                else if (d.level < 60) label.style.color = 'var(--color-caos-amarillo)';
+                else if (d.level < 80) label.style.color = 'var(--color-caos-rosa)';
+                else                   label.style.color = 'var(--color-primario)';
+            }
+        }
+    });
+
+    if (playPacmanBtn) playPacmanBtn.addEventListener('click', fpOpenArena);
+    if (fpExitBtn)     fpExitBtn.addEventListener('click',    fpCloseArena);
+    if (fpRestartBtn)  fpRestartBtn.addEventListener('click',  fpRestart);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && fpArena && fpArena.classList.contains('show')) fpCloseArena();
+    });
+
+    // ── VENTANA PAC-MAN (modo T2E) ──
+    function openPacmanWindow() {
+        const w = document.getElementById('pacman-game-window');
+        if (w) { w.classList.remove('pacman-window-hidden'); w.style.opacity='1'; w.style.pointerEvents='auto'; }
+    }
+    function closePacmanWindow() {
+        const w = document.getElementById('pacman-game-window');
+        if (w) {
+            w.style.opacity='0'; w.style.pointerEvents='none';
+            setTimeout(() => w.classList.add('pacman-window-hidden'), 300);
+            const iframe = document.getElementById('pacman-iframe');
+            if (iframe) { const src=iframe.src; iframe.src=''; iframe.src=src; }
+        }
+    }
+    const closePacmanBtn = document.getElementById('close-pacman-window');
+    if (closePacmanBtn) closePacmanBtn.addEventListener('click', closePacmanWindow);
+
+    // ── BET BUTTONS ──
+    const makeBetModal     = document.getElementById('make-bet-modal');
+    const betModalTitle    = document.getElementById('bet-modal-title');
+    const closeBetModalBtn = document.getElementById('close-bet-modal');
+    const launchBetBtn     = document.getElementById('launch-bet-button');
+    let selectedGame       = null;
+
+    const betOptStyle = document.createElement('style');
+    betOptStyle.textContent = '.bet-option-button.active{background-color:var(--color-caos-verde)!important;border-color:var(--color-caos-verde)!important;color:#000!important;font-weight:bold;}';
+    document.head.appendChild(betOptStyle);
+
+    const betButtons = ['make-bet-pachack','make-bet-spacebreaker','make-bet-tetriscipher','make-bet-memorybreach'];
+    betButtons.forEach(buttonId => {
+        const btn = document.getElementById(buttonId);
+        if (btn) {
+            btn.addEventListener('click', () => {
+                selectedGame = buttonId.replace('make-bet-','').toUpperCase();
+                if (betModalTitle) betModalTitle.textContent = 'DESAFIO: ' + selectedGame + ' — CONFIGURA TU APUESTA';
+                if (makeBetModal)  makeBetModal.classList.remove('game-menu-hidden');
+                if (cyberpunkHUD)  cyberpunkHUD.showNotification(selectedGame + ' SELECTED - CONFIGURE YOUR BET');
+            });
+        }
+    });
+
+    document.querySelectorAll('.bet-option-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const type = btn.getAttribute('data-type');
+            document.querySelectorAll('.bet-option-button[data-type="'+type+'"]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+
+    if (closeBetModalBtn) closeBetModalBtn.addEventListener('click', () => makeBetModal && makeBetModal.classList.add('game-menu-hidden'));
+    if (makeBetModal)     makeBetModal.addEventListener('click', e => { if (e.target===makeBetModal) makeBetModal.classList.add('game-menu-hidden'); });
+
+    if (launchBetBtn) {
+        launchBetBtn.addEventListener('click', () => {
+            const betInput  = document.getElementById('bet-amount');
+            const betAmount = betInput ? parseFloat(betInput.value) : 0;
+            const timeBtn   = document.querySelector('.bet-option-button.active[data-type="time"]');
+            const boostBtn  = document.querySelector('.bet-option-button.active[data-type="boost"]');
+            if (!betAmount || betAmount <= 0) { alert('Ingresa un monto de apuesta valido en $RPPI.'); return; }
+            if (!timeBtn)  { alert('Selecciona el limite de tiempo.'); return; }
+            if (!boostBtn) { alert('Selecciona el limite de boosts.'); return; }
+            makeBetModal.classList.add('game-menu-hidden');
+            if (cyberpunkHUD) {
+                cyberpunkHUD.boostSystem.maxBoosts = parseInt(boostBtn.getAttribute('data-value')) || 5;
+                cyberpunkHUD.boostSystem.available = cyberpunkHUD.boostSystem.maxBoosts;
+                cyberpunkHUD.boostSystem.used      = 0;
+                const boostCountEl = document.getElementById('hud-boost-count');
+                if (boostCountEl) boostCountEl.textContent = cyberpunkHUD.boostSystem.available;
+                const rppiEl = document.getElementById('hud-rppi');
+                if (rppiEl) rppiEl.textContent = betAmount + ' $RPPI';
+                const gameEl = document.getElementById('hud-game-title');
+                if (gameEl) gameEl.textContent = selectedGame || 'PAC-HACK: DEATH';
+                const sessionEl = document.getElementById('hud-session-id');
+                if (sessionEl) sessionEl.textContent = Math.random().toString(16).slice(2,8).toUpperCase();
+                cyberpunkHUD.showHUD();
+                cyberpunkHUD.showNotification('BET CONFIRMED: ' + betAmount + ' $RPPI - LAUNCHING ' + (selectedGame || 'PAC-HACK: DEATH'));
+            }
+            setTimeout(() => openPacmanWindow(), 600);
+        });
+    }
+
+    // ── DISCLAIMER + WALLET ──
+    const connectWalletBtn  = document.getElementById('connect-wallet-button');
+    const walletStatus      = document.getElementById('wallet-status');
+    const walletAddress     = document.getElementById('wallet-address');
+    const disclaimerModal   = document.getElementById('disclaimer-modal');
+    const disclaimerCheck   = document.getElementById('disclaimer-check');
+    const acceptBtn         = document.getElementById('accept-disclaimer');
+    const rejectBtn         = document.getElementById('reject-disclaimer');
+    const closeDisclaimerBtn= document.getElementById('close-disclaimer');
+    let walletConnected     = false;
+    let disclaimerAccepted  = false;
+
+    if (disclaimerCheck) {
+        disclaimerCheck.addEventListener('change', function() {
+            if (acceptBtn) {
+                acceptBtn.disabled = !this.checked;
+                acceptBtn.style.backgroundColor = this.checked ? 'var(--color-caos-verde)' : 'rgba(0,255,0,0.2)';
+                acceptBtn.style.borderColor      = this.checked ? 'var(--color-caos-verde)' : 'rgba(0,255,0,0.3)';
+                acceptBtn.style.color            = this.checked ? '#000' : 'rgba(0,255,0,0.4)';
+                acceptBtn.style.cursor           = this.checked ? 'pointer' : 'not-allowed';
+            }
+        });
+    }
+
+    function closeDisclaimer() {
+        if (disclaimerModal) disclaimerModal.style.display = 'none';
+        if (disclaimerCheck) disclaimerCheck.checked = false;
+        if (acceptBtn) { acceptBtn.disabled=true; acceptBtn.style.backgroundColor='rgba(0,255,0,0.2)'; acceptBtn.style.borderColor='rgba(0,255,0,0.3)'; acceptBtn.style.color='rgba(0,255,0,0.4)'; acceptBtn.style.cursor='not-allowed'; }
+    }
+
+    async function doConnectWallet() {
+        if (typeof window.ethereum !== 'undefined') {
+            try {
+                if (walletStatus) walletStatus.textContent = 'Conectando...';
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                if (accounts.length > 0) {
+                    walletConnected = true;
+                    const short = accounts[0].substring(0,6)+'...'+accounts[0].substring(accounts[0].length-4);
+                    if (connectWalletBtn) { connectWalletBtn.textContent='BILLETERA CONECTADA (clic para desconectar)'; connectWalletBtn.style.backgroundColor='var(--color-caos-verde)'; connectWalletBtn.style.color='#000'; }
+                    if (walletStatus)  walletStatus.textContent = 'Conectado a Optimism';
+                    if (walletAddress) walletAddress.textContent = 'Dirección: ' + short;
+                    if (cyberpunkHUD)  cyberpunkHUD.showNotification('WALLET CONNECTED: ' + short);
+                }
+            } catch(err) {
+                if (walletStatus) walletStatus.textContent = 'Error: ' + err.message;
+            }
+        } else {
+            if (walletStatus) walletStatus.textContent = 'MetaMask no detectado. Instalalo en metamask.io';
+        }
+    }
+
+    if (acceptBtn) acceptBtn.addEventListener('click', function() { if (!this.disabled) { disclaimerAccepted=true; closeDisclaimer(); doConnectWallet(); } });
+    if (rejectBtn)          rejectBtn.addEventListener('click', closeDisclaimer);
+    if (closeDisclaimerBtn) closeDisclaimerBtn.addEventListener('click', closeDisclaimer);
+
+    if (connectWalletBtn) {
+        connectWalletBtn.addEventListener('click', function() {
+            if (walletConnected) {
+                walletConnected=false;
+                connectWalletBtn.textContent='CONECTA TU BILLETERA PARA ENTRAR AL CIRCUITO';
+                connectWalletBtn.style.backgroundColor=''; connectWalletBtn.style.color='';
+                if (walletStatus)  walletStatus.textContent='Billetera desconectada';
+                if (walletAddress) walletAddress.textContent='';
+                return;
+            }
+            if (disclaimerAccepted) { doConnectWallet(); }
+            else { if (disclaimerModal) disclaimerModal.style.display='block'; }
+        });
+    }
+
+    console.log('EL CIRCUITO — STANDALONE LOADED OK');
+});
+</script>
+
+<!-- ── COUNTDOWN — body level, nada lo contiene ── -->
+<div id="fp-countdown">
+    <div class="countdown-num big" id="fp-cd-num">3</div>
+    <div class="countdown-sub" id="fp-cd-sub">PREPÁRATE PARA HACKEAR</div>
+</div>
+
+</body>
+</html>

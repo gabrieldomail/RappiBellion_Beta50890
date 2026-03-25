@@ -154,6 +154,11 @@ class BettingEngine {
                 return await this.createDemoBet(betData);
             }
 
+            // Verificar que los contratos estén disponibles
+            if (!this.web3Config.contracts || !this.web3Config.contracts.Betting) {
+                throw new Error('Contratos no disponibles. Por favor conecta tu billetera primero.');
+            }
+
             // Validar datos de entrada
             this.validateBetData(betData);
 
