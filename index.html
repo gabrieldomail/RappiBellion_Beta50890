@@ -1370,6 +1370,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // FIX: conectar el botón renombrado launch-bet-button-pvp (era ID duplicado con launch-bet-button)
+    const launchBetBtnPvp = document.getElementById('launch-bet-button-pvp');
+    if (launchBetBtnPvp) {
+        launchBetBtnPvp.addEventListener('click', () => {
+            const betInput  = document.getElementById('bet-amount');
+            const betAmount = betInput ? parseFloat(betInput.value) : 0;
+            const timeBtn   = document.querySelector('.bet-option-button.active[data-type="time"]');
+            const boostBtn  = document.querySelector('.bet-option-button.active[data-type="boost"]');
+            if (!betAmount || betAmount <= 0) { alert('Ingresa un monto de apuesta valido en $RPPI.'); return; }
+            if (!timeBtn)  { alert('Selecciona el limite de tiempo.'); return; }
+            if (!boostBtn) { alert('Selecciona el limite de boosts.'); return; }
+            if (window.T2EIntegration && typeof window.T2EIntegration.launchBet === 'function') {
+                window.T2EIntegration.selectedBetOptions = {
+                    amount: betAmount.toString(),
+                    timeLimit: timeBtn.getAttribute('data-value'),
+                    boostLimit: boostBtn.getAttribute('data-value')
+                };
+                window.T2EIntegration.launchBet();
+            }
+        });
+    }
+
     // ── DISCLAIMER + WALLET ──
     const connectWalletBtn  = document.getElementById('connect-wallet-button');
     const walletStatus      = document.getElementById('wallet-status');
@@ -2378,7 +2400,7 @@ btn.addEventListener('click', toggleMutePlay);
                     </div>
                 </div>
 
-                <button id="launch-bet-button" class="cta-button" style="width: 100%; background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); margin-top: 10px;">
+                <button id="launch-bet-button-pvp" class="cta-button" style="width: 100%; background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); margin-top: 10px;">
                     [ LANZAR DESAFÍO Y ESPERAR OPONENTE ]
                 </button>
             </div>
