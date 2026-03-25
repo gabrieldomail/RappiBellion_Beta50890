@@ -512,7 +512,7 @@
 </div>
 
 <!-- === FREE PLAY ARENA — 3 COLUMNAS === -->
-<div id="freeplay-arena">
+<div id="t2eplay-arena">
 
     <!-- COLUMNA IZQUIERDA: TIMER + SCORE -->
     <div class="fp-col-left">
@@ -858,7 +858,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ── FREE PLAY ARENA ──
-    const fpArena      = document.getElementById('freeplay-arena');
+    const fpArena      = document.getElementById('t2eplay-arena');
     const fpIframe     = document.getElementById('fp-iframe');
     const fpTimerEl    = document.getElementById('fp-timer');
     const fpTimerBar   = document.getElementById('fp-timer-bar');
@@ -4896,7 +4896,7 @@ btn.addEventListener('click', toggleMutePlay);
            FREE PLAY ARENA — Overlay fullscreen
         ══════════════════════════════════════ */
         /* ══ FREE PLAY ARENA — 3 columnas ══ */
-        #freeplay-arena {
+        #t2eplay-arena {
             display: none;
             position: fixed;
             inset: 0;
@@ -4904,7 +4904,7 @@ btn.addEventListener('click', toggleMutePlay);
             flex-direction: row;  /* 3 columnas — por encima de topbar y HUD */
             background: #030a06;
         }
-        #freeplay-arena.show { display: flex; }
+        #t2eplay-arena.show { display: flex; }
 
         /* Columna izquierda — TIMER + SCORE */
         .fp-col-left {
@@ -5215,7 +5215,7 @@ btn.addEventListener('click', toggleMutePlay);
         @media (max-width: 768px) {
 
             /* Arena: columna única con scroll */
-            #freeplay-arena {
+            #t2eplay-arena {
                 flex-direction: column !important;
                 overflow-y: auto !important;
             }
