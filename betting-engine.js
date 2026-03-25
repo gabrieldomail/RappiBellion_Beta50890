@@ -54,9 +54,9 @@ class BettingEngine {
 
             // Verificar que el contrato de apuestas esté disponible
             if (!this.web3Config.contracts.Betting) {
-                console.log('ℹ️ Contrato de apuestas no desplegado - Funcionando sin contrato');
-                console.log('ℹ️ Sistema T2E operativo con funcionalidades completas');
-                this.isDemoMode = false; // Desactivar modo demo
+                console.warn('⚠️ Contrato de apuestas no desplegado - Modo DEMO activado');
+                console.warn('⚠️ Funcionalidades limitadas: Solo apuestas simuladas disponibles');
+                this.isDemoMode = true;
             } else {
                 this.isDemoMode = false;
             }
@@ -199,10 +199,19 @@ class BettingEngine {
             const receipt = await tx.wait();
             console.log('✅ Apuesta creada exitosamente:', receipt);
 
-            // Extraer ID de la apuesta del evento
-            const betCreatedEvent = receipt.events.find(e => e.event === 'BetCreated');
-            if (betCreatedEvent) {
-                const betId = betCreatedEvent.args.betId.toString();
+            // Extraer ID de la apuesta del evento (sintaxis ethers.js v5)
+            const bettingContract = this.web3Config.contracts.Betting;
+            let betId = null;
+            for (const log of receipt.logs) {
+                try {
+                    const parsed = bettingContract.interface.parseLog(log);
+                    if (parsed && parsed.name === 'BetCreated') {
+                        betId = parsed.args.betId.toString();
+                        break;
+                    }
+                } catch (_) { /* log no pertenece a este contrato */ }
+            }
+            if (betId) {
                 console.log('🎉 ID de apuesta creada:', betId);
                 return betId;
             }

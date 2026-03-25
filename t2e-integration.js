@@ -421,12 +421,8 @@ class T2EIntegration {
      * Extrae datos de apuesta del DOM
      */
     extractBetDataFromDOM(betItem) {
-        const spans = betItem.querySelectorAll('span strong');
         return {
-            id: 'extract_from_ui', // Esto debería venir del backend
-            creator: 'extract_from_ui',
-            amount: 'extract_from_ui',
-            timeLimit: 'extract_from_ui'
+            id: betItem.getAttribute('data-bet-id') || null
         };
     }
 
