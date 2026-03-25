@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -38,9 +38,9 @@
     </script>
 
     <!-- T2E Web3 System -->
-    <script src="web3-config.js?v=20260325d"></script>
-    <script src="betting-engine.js?v=20260325d"></script>
-    <script src="t2e-integration.js?v=20260325d"></script>
+    <script src="web3-config.js?v=20260325e"></script>
+    <script src="betting-engine.js?v=20260325e"></script>
+    <script src="t2e-integration.js?v=20260325e"></script>
 </head>
 <body>
 
@@ -849,28 +849,39 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Determinar rol: creator = p1, acceptor = p2
+        // Determinar rol SINCRONICAMENTE desde el DOM (ya conectado) sin await que retrase
         const engine = window.BettingEngine;
         const bet = engine ? engine.activeBets.get(betId) : null;
         let myRole = 'p1';
         try {
-            if (bet && bet.creator) {
-                const userAddr = await window.Web3Config.getUserAddress();
-                myRole = bet.creator.toLowerCase() === userAddr.toLowerCase() ? 'p1' : 'p2';
+            const walletEl = document.getElementById('wallet-address');
+            const cachedAddr = walletEl ? walletEl.textContent.trim() : '';
+            if (bet && bet.creator && cachedAddr) {
+                const creatorShort = bet.creator.slice(0,6).toLowerCase();
+                const cachedShort  = cachedAddr.slice(0,6).toLowerCase();
+                myRole = creatorShort === cachedShort ? 'p1' : 'p2';
             }
         } catch(e) {}
+
+        // Refinar con direccion completa en background (no bloquea)
+        (async function() {
+            try {
+                const userAddr = await window.Web3Config.getUserAddress();
+                if (bet && bet.creator) {
+                    fpState.myRole    = bet.creator.toLowerCase() === userAddr.toLowerCase() ? 'p1' : 'p2';
+                    fpState.rivalRole = fpState.myRole === 'p1' ? 'p2' : 'p1';
+                    const rivalAddr = fpState.myRole === 'p1' ? bet.acceptor : bet.creator;
+                    if (rivalAddr) {
+                        const nickEl = document.getElementById('rival-nick');
+                        if (nickEl) nickEl.textContent = rivalAddr.slice(0,6) + '...' + rivalAddr.slice(-4);
+                    }
+                }
+            } catch(e) {}
+        })();
+
         fpState.myRole    = myRole;
         fpState.rivalRole = myRole === 'p1' ? 'p2' : 'p1';
-
-        // Actualizar nick del rival con dirección real
-        if (bet) {
-            const rivalAddr = myRole === 'p1' ? bet.acceptor : bet.creator;
-            if (rivalAddr) {
-                const nickEl = document.getElementById('rival-nick');
-                if (nickEl) nickEl.textContent = rivalAddr.slice(0,6) + '...' + rivalAddr.slice(-4);
-            }
-        }
-
+        console.log('[T2E Sync] Rol asignado:', myRole, '| Rival:', fpState.rivalRole);
         const statusEl = document.getElementById('rival-status');
         if (statusEl) statusEl.textContent = '[ ESPERANDO RIVAL... ]';
 
@@ -6078,4 +6089,5 @@ document.addEventListener('DOMContentLoaded', function() {
                 musicFloatBtn.classList.add('paused');
             } else {
                 musicFloatBtn.classList.remove('paused');
-                musicFloatBtn.classList.add('playing' ) ;
+</body>
+</html>

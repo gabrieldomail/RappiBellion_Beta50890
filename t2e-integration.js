@@ -331,6 +331,11 @@ class T2EIntegration {
      * Lanza la apuesta al blockchain
      */
     async launchBet() {
+        // Guard: prevent double-submit
+        if (this._creatingBet) return;
+        this._creatingBet = true;
+        const launchBtn = document.getElementById('launch-bet-button');
+        if (launchBtn) launchBtn.disabled = true;
         try {
             if (!this.isInitialized) {
                 throw new Error('Sistema no inicializado');
@@ -372,6 +377,9 @@ class T2EIntegration {
             this.hideLoading();
             this.showError('Error creando apuesta: ' + error.message);
             console.error('❌ Error lanzando apuesta:', error);
+        } finally {
+            this._creatingBet = false;
+            if (launchBtn) launchBtn.disabled = false;
         }
     }
 
