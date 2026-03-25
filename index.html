@@ -38,9 +38,9 @@
     </script>
 
     <!-- T2E Web3 System -->
-    <script src="web3-config.js?v=20260325b"></script>
-    <script src="betting-engine.js?v=20260325b"></script>
-    <script src="t2e-integration.js?v=20260325b"></script>
+    <script src="web3-config.js?v=20260325c"></script>
+    <script src="betting-engine.js?v=20260325c"></script>
+    <script src="t2e-integration.js?v=20260325c"></script>
 </head>
 <body>
 
@@ -829,7 +829,96 @@ document.addEventListener('DOMContentLoaded', function() {
     const fpDurSelect  = document.getElementById('fp-duration-select');
     const playPacmanBtn= document.getElementById('play-pacman-demo');
 
-    let fpState = { timeLeft:600, totalTime:600, running:false, ended:false, interval:null, score:0, chaosLevel:0, betId:null, betMode:false };
+    let fpState = { timeLeft:600, totalTime:600, running:false, ended:false, interval:null, score:0, chaosLevel:0, betId:null, betMode:false, myRole:null, rivalRole:null };
+
+    // ── FIREBASE BET SYNC ─────────────────────────────────────────────────────
+    // Sincroniza inicio de partida y score del rival en tiempo real via Firebase.
+    // Rutas: t2e_bets/{betId}/ready/p1|p2, t2e_bets/{betId}/startAt, t2e_bets/{betId}/scores/p1|p2
+    let _fpSyncRefs = []; // refs Firebase activos para poder desuscribir
+
+    function _fpCleanSyncRefs() {
+        _fpSyncRefs.forEach(function(r) { try { r.off(); } catch(e) {} });
+        _fpSyncRefs = [];
+    }
+
+    async function _fpSetupBetSync(betId) {
+        const fbDB = window._fbDB;
+        if (!fbDB || !betId) {
+            // Sin Firebase: arrancar directo
+            fpStartCountdown();
+            return;
+        }
+
+        // Determinar rol: creator = p1, acceptor = p2
+        const engine = window.BettingEngine;
+        const bet = engine ? engine.activeBets.get(betId) : null;
+        let myRole = 'p1';
+        try {
+            if (bet && bet.creator) {
+                const userAddr = await window.Web3Config.getUserAddress();
+                myRole = bet.creator.toLowerCase() === userAddr.toLowerCase() ? 'p1' : 'p2';
+            }
+        } catch(e) {}
+        fpState.myRole    = myRole;
+        fpState.rivalRole = myRole === 'p1' ? 'p2' : 'p1';
+
+        // Actualizar nick del rival con dirección real
+        if (bet) {
+            const rivalAddr = myRole === 'p1' ? bet.acceptor : bet.creator;
+            if (rivalAddr) {
+                const nickEl = document.getElementById('rival-nick');
+                if (nickEl) nickEl.textContent = rivalAddr.slice(0,6) + '...' + rivalAddr.slice(-4);
+            }
+        }
+
+        const statusEl = document.getElementById('rival-status');
+        if (statusEl) statusEl.textContent = '[ ESPERANDO RIVAL... ]';
+
+        const betRef = fbDB.ref('t2e_bets/' + betId);
+
+        // Marcar este dispositivo como listo
+        betRef.child('ready/' + myRole).set(true);
+
+        // Cuando ambos estén listos → escribir startAt (solo uno lo hace via transaction)
+        const readyRef = betRef.child('ready');
+        _fpSyncRefs.push(readyRef);
+        readyRef.on('value', function(snap) {
+            const ready = snap.val();
+            if (!ready || !ready.p1 || !ready.p2) return;
+            readyRef.off();
+            // Transaction: solo el primer device en llegar escribe startAt
+            betRef.child('startAt').transaction(function(current) {
+                return current === null ? Date.now() + 2500 : undefined;
+            });
+        });
+
+        // Escuchar startAt → arrancar countdown sincronizado
+        const startRef = betRef.child('startAt');
+        _fpSyncRefs.push(startRef);
+        let startListened = false;
+        startRef.on('value', function(snap) {
+            const startAt = snap.val();
+            if (!startAt || startListened) return;
+            startListened = true;
+            startRef.off();
+            if (statusEl) statusEl.textContent = '[ RIVAL CONECTADO. EN PARTIDA. ]';
+            const delay = Math.max(0, startAt - Date.now());
+            setTimeout(fpStartCountdown, delay);
+        });
+
+        // Escuchar score del rival en tiempo real
+        const rivalScoreRef = betRef.child('scores/' + fpState.rivalRole);
+        _fpSyncRefs.push(rivalScoreRef);
+        rivalScoreRef.on('value', function(snap) {
+            const score = snap.val();
+            if (score === null || score === undefined) return;
+            const rivalScoreEl = document.getElementById('rival-score');
+            if (rivalScoreEl) {
+                rivalScoreEl.textContent = String(score).padStart(4, '0');
+                rivalScoreEl.style.color = score > fpState.score ? '#ff4444' : '#00ff41';
+            }
+        });
+    }
 
     const fpControlSelector = document.getElementById('fp-control-selector');
     const ctrlSwipeBtn      = document.getElementById('ctrl-swipe-btn');
@@ -852,8 +941,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpTimerEl)  fpTimerEl.style.color = '';
         if (fpArena)    fpArena.classList.add('show');
 
-        // Arrancar countdown
-        setTimeout(fpStartCountdown, 600);
+        // En betMode sincronizar con Firebase antes de arrancar
+        if (fpState.betMode && fpState.betId) {
+            _fpToggleRivalPanel(true, fpState.betId);
+            _fpSetupBetSync(fpState.betId);
+        } else {
+            setTimeout(fpStartCountdown, 600);
+        }
     }
 
     if (ctrlSwipeBtn) ctrlSwipeBtn.addEventListener('click', () => fpStartWithControl('swipe'));
@@ -912,7 +1006,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Activar/desactivar panel rival según betMode
         _fpToggleRivalPanel(fpState.betMode, betId);
 
-        setTimeout(fpStartCountdown, 1200);
+        if (fpState.betMode && betId) {
+            // betMode: sincronizar inicio via Firebase
+            _fpSetupBetSync(betId);
+        } else {
+            setTimeout(fpStartCountdown, 1200);
+        }
     }
 
     // ── RIVAL PANEL ──────────────────────────────────────────────
@@ -1157,19 +1256,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Apagar ticker y panel rival
         _fpStopRivalTimer();
+        _fpCleanSyncRefs(); // desuscribir listeners Firebase
         const statusEl = document.getElementById('rival-status');
         if (statusEl) statusEl.textContent = '[ PARTIDA FINALIZADA ]';
 
-        // Si hay apuesta activa, resolver en modo demo antes del veredicto
+        // Si hay apuesta activa, resolver usando el score REAL del rival (no inventado)
         if (fpState.betMode && fpState.betId && window.T2EIntegration) {
-            _fpResolveDemo(fpState.betId, fpState.score);
-            // Mostrar score final del rival en el panel
-            const result = window._fpLastBetResult;
+            // Leer el score real del rival del panel (fue actualizado por Firebase en tiempo real)
             const rivalScoreEl = document.getElementById('rival-score');
-            if (result && rivalScoreEl) {
-                rivalScoreEl.textContent = String(result.rivalScore).padStart(4, '0');
-                rivalScoreEl.style.color = result.won ? '#888' : '#ff4444';
-            }
+            const realRivalScore = parseInt((rivalScoreEl ? rivalScoreEl.textContent : '0').replace(/\D/g, ''), 10) || 0;
+            _fpResolveDemo(fpState.betId, fpState.score, realRivalScore);
         }
 
         // Volver a panel free play después de mostrar el veredicto
@@ -1182,16 +1278,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1500);
     }
 
-    function _fpResolveDemo(betId, playerScore) {
+    function _fpResolveDemo(betId, playerScore, rivalScore) {
         try {
             const engine = window.T2EIntegration && window.T2EIntegration.bettingEngine;
             if (!engine) return;
             const bet = engine.activeBets.get(betId) || engine.userBets.get(betId);
             if (!bet) return;
 
-            // Simular score del rival (rival tuvo entre 50% y 130% del score del jugador)
-            const rivalMult  = 0.5 + Math.random() * 0.8;
-            const rivalScore = Math.round(Math.max(200, playerScore * rivalMult));
+            // Usar score real del rival (pasado por parámetro, obtenido de Firebase)
+            // Si no hay score real (p.ej. rival desconectado), fallback a 0
+            rivalScore = rivalScore || 0;
             const won = playerScore >= rivalScore;
 
             // Marcar apuesta como completada en el engine demo
@@ -1232,6 +1328,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Restaurar el zorzal si estaba sonando antes
         const tangoAudioFP = document.getElementById('tango-audio');
         if (tangoAudioFP && !isMuted) { tangoAudioFP.muted = false; }
+        // Limpiar listeners Firebase de sync
+        _fpCleanSyncRefs();
     }
 
     function fpRestart() { clearInterval(fpState.interval); if (fpCdOverlay) fpCdOverlay.classList.remove('show'); fpOpenArena(); }
@@ -1246,6 +1344,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (d.type === 'SCORE_UPDATE' && d.player === 'p1') {
             fpState.score = d.score;
             if (fpScoreEl) fpScoreEl.textContent = String(d.score).padStart(4,'0');
+            // Publicar mi score en Firebase para que el rival lo vea en tiempo real
+            if (fpState.betMode && fpState.betId && fpState.myRole && window._fbDB) {
+                window._fbDB.ref('t2e_bets/' + fpState.betId + '/scores/' + fpState.myRole).set(d.score);
+            }
         }
         // Recibir modo de control elegido
         if (d.type === 'SET_CONTROL') {
