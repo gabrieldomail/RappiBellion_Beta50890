@@ -250,57 +250,6 @@
         <img id="bird-icon" src="images/zorzal.PNG" alt="Zorzal" width="48" height="48" style="display:block;" />
     </button>
 
-<!-- === CYBERPUNK HUD — TERMINAL T2E === -->
-<div id="cyberpunk-hud" class="hud-hidden">
-
-    <!-- Header tipo terminal-header-caos -->
-    <div class="hud-terminal-header">
-        <span>[T2E_CIRCUIT // EL CIRCUITO // RAPPIBELLION]</span>
-        <span class="hud-session-id">SESSION #<span id="hud-session-id">------</span></span>
-    </div>
-
-    <!-- Cuerpo con stats en grid -->
-    <div class="hud-body">
-
-        <!-- HACKER / SCORE -->
-        <div class="hud-stat-block">
-            <span class="stat-label">// HACKER</span>
-            <div class="stat-value" id="hud-player-name">PLAYER_01</div>
-            <span class="stat-label" style="margin-top:6px;">SCORE</span>
-            <div class="stat-value" id="hud-score">0000</div>
-        </div>
-
-        <!-- TIMER / JUEGO -->
-        <div class="hud-stat-block" style="text-align:center;">
-            <span class="stat-label">// TIEMPO</span>
-            <div class="stat-value timer-val" id="hud-timer">00:00</div>
-            <span class="stat-label" style="margin-top:6px;">GAME</span>
-            <div class="stat-value" id="hud-game-title" style="font-size:11px;letter-spacing:2px;">T2E_CIRCUIT</div>
-        </div>
-
-        <!-- RIVAL / APUESTA -->
-        <div class="hud-stat-block">
-            <span class="stat-label">// RIVAL</span>
-            <div class="stat-value rival-val" id="hud-rival-name">SEARCHING...</div>
-            <span class="stat-label" style="margin-top:6px;">APUESTA</span>
-            <div class="stat-value" id="hud-rppi" style="font-size:14px;">0 $RPPI</div>
-        </div>
-
-        <!-- CONTROLES -->
-        <div class="hud-controls-block">
-            <button id="hud-boost-btn" class="hud-ctrl-btn boost-btn">
-                ⚡ BOOST [<span id="hud-boost-count">5</span>]
-            </button>
-            <button id="hud-pause-btn" class="hud-ctrl-btn">⏸ PAUSE</button>
-            <button id="hud-exit-btn" class="hud-ctrl-btn exit-btn">✕ EXIT</button>
-        </div>
-
-    </div>
-
-</div>
-
-<!-- Notificaciones fuera del HUD para no afectar layout -->
-<div id="hud-notifications" class="hud-notifications"></div>
 
 <!-- === GAME OVERLAY (contenido del circuito) === -->
 <div id="game-overlay" class="game-menu-hidden">
