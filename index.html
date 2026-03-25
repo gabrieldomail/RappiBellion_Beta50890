@@ -608,8 +608,8 @@
                        color:var(--color-caos-rosa);padding:8px 12px;
                        font-family:'Orbitron',monospace;font-size:14px;
                        letter-spacing:2px;margin-bottom:10px;">
-                <option value="300">5 MIN</option>
-                <option value="600" selected>10 MIN</option>
+                <option value="300" selected>5 MIN</option>
+                <option value="600">10 MIN</option>
             </select>
             <button class="fp-btn" id="fp-restart-btn">↺ RESTART</button>
         </div>
@@ -815,6 +815,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Mutear el zorzal mientras el juego está activo
         const tangoAudioFP = document.getElementById('tango-audio');
         if (tangoAudioFP && !tangoAudioFP.paused) { tangoAudioFP.muted = true; }
+        // Ocultar chatbot para no interferir con los controles
+        const _chatFab = document.getElementById('gemini-chat-fab');
+        const _chatWidget = document.getElementById('gemini-chat-widget');
+        if (_chatFab)    _chatFab.style.display = 'none';
+        if (_chatWidget) _chatWidget.style.display = 'none';
         // Bloquear scroll de la página mientras el juego está activo
         document.body.style.overflow = 'hidden';
         document.body.style.touchAction = 'none';
@@ -1018,6 +1023,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.touchAction = '';
         // Liberar WakeLock
         if (window._fpWakeLock) { window._fpWakeLock.release(); window._fpWakeLock = null; }
+        // Restaurar chatbot
+        const _chatFabClose = document.getElementById('gemini-chat-fab');
+        const _chatWidgetClose = document.getElementById('gemini-chat-widget');
+        if (_chatFabClose) _chatFabClose.style.display = '';
         const topbar = document.querySelector('.casino-topbar');
         if (topbar) topbar.classList.remove('visible');
         // Restaurar el zorzal si estaba sonando antes
@@ -5320,8 +5329,9 @@ btn.addEventListener('click', toggleMutePlay);
             display: none;
             position: fixed; inset: 0; z-index: 9996;
             background: rgba(5,10,15,0.96);
-            align-items: center; justify-content: center;
+            align-items: flex-start; justify-content: center;
             padding: 20px;
+            overflow-y: auto;
         }
         #fp-tips-modal.show { display: flex; }
 
@@ -5331,6 +5341,7 @@ btn.addEventListener('click', toggleMutePlay);
             border: 2px solid var(--color-caos-verde);
             box-shadow: 0 0 30px rgba(0,255,0,0.2);
             font-family: 'Courier New', monospace;
+            margin: auto 0;
         }
         .tips-header {
             background: var(--color-caos-amarillo);
