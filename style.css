@@ -4913,6 +4913,15 @@ footer a {
 /* ===== VENTANA FLOTANTE: LOBBY DE APUESTAS ===== */
 .lobby-float-hidden { display: none !important; }
 
+@keyframes lobbyHeartbeat {
+    0%   { transform: scale(1);    box-shadow: 0 0 18px rgba(255, 220, 0, 0.5); }
+    14%  { transform: scale(1.04); box-shadow: 0 0 30px rgba(255, 220, 0, 0.85); }
+    28%  { transform: scale(1);    box-shadow: 0 0 18px rgba(255, 220, 0, 0.5); }
+    42%  { transform: scale(1.025);box-shadow: 0 0 25px rgba(255, 220, 0, 0.7); }
+    70%  { transform: scale(1);    box-shadow: 0 0 18px rgba(255, 220, 0, 0.5); }
+    100% { transform: scale(1);    box-shadow: 0 0 18px rgba(255, 220, 0, 0.5); }
+}
+
 #lobby-float-window {
     position: fixed;
     top: 20px;
@@ -4921,9 +4930,11 @@ footer a {
     max-width: 92vw;
     z-index: 9998;
     background: rgba(5, 10, 15, 0.97);
-    border: 2px solid var(--color-primario, #00ff88);
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+    border: 2px solid #ffdc00;
+    box-shadow: 0 0 18px rgba(255, 220, 0, 0.5);
     transition: width 0.2s ease;
+    animation: lobbyHeartbeat 2.4s ease-in-out infinite;
+    transform-origin: top right;
 }
 #lobby-float-window.minimized {
     width: 260px;
@@ -4936,7 +4947,7 @@ footer a {
     flex-direction: column;
 }
 .lobby-float-header {
-    background: var(--color-primario, #00ff88);
+    background: #ffdc00;
     color: #000;
     padding: 7px 10px;
     font-family: 'Courier New', monospace;
@@ -4973,11 +4984,11 @@ footer a {
     padding: 8px;
     font-size: 0.82em;
     scrollbar-width: thin;
-    scrollbar-color: var(--color-primario, #00ff88) #111;
+    scrollbar-color: #ffdc00 #111;
 }
 .lobby-float-body::-webkit-scrollbar { width: 4px; }
 .lobby-float-body::-webkit-scrollbar-track { background: #111; }
-.lobby-float-body::-webkit-scrollbar-thumb { background: var(--color-primario, #00ff88); }
+.lobby-float-body::-webkit-scrollbar-thumb { background: #ffdc00; }
 @media (max-width: 768px) {
     #lobby-float-window {
         top: 10px;
