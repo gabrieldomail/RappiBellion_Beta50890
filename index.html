@@ -446,6 +446,26 @@
     </div>
 </div>
 
+<!-- === VENTANA FLOTANTE: LOBBY DE APUESTAS === -->
+<div id="lobby-float-window" class="lobby-float-hidden">
+    <div class="lobby-float-terminal">
+        <div class="lobby-float-header" id="lobby-float-drag">
+            <span>[T2E_CASINO_LOBBY // DESAFÍOS ABIERTOS]</span>
+            <div class="lobby-float-controls">
+                <button id="lobby-float-minimize" class="lobby-float-btn" title="Minimizar">─</button>
+                <button id="lobby-float-close" class="lobby-float-btn" title="Cerrar">✕</button>
+            </div>
+        </div>
+        <div class="lobby-float-body" id="lobby-float-body">
+            <div id="lobby-float-list">
+                <p style="text-align:center;color:#888;padding:20px;font-family:'Courier New',monospace;">
+                    [BUSCANDO_DESAFÍOS...]
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- === MODAL DE APUESTAS T2E === -->
 <div id="make-bet-modal" class="game-menu-hidden">
     <div class="bet-modal-content caos-terminal">
@@ -5830,6 +5850,47 @@ btn.addEventListener('click', toggleMutePlay);
 
 
 
+<!-- Ventana flotante: lobby de apuestas -->
+<script>
+(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        var win = document.getElementById('lobby-float-window');
+        var minBtn = document.getElementById('lobby-float-minimize');
+        var closeBtn = document.getElementById('lobby-float-close');
+        var header = document.getElementById('lobby-float-drag');
+
+        function toggleMinimize() {
+            if (!win) return;
+            var minimized = win.classList.toggle('minimized');
+            if (minBtn) minBtn.textContent = minimized ? '■' : '─';
+        }
+
+        if (header) {
+            header.addEventListener('click', toggleMinimize);
+        }
+        if (minBtn) {
+            minBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleMinimize();
+            });
+        }
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (win) win.classList.add('lobby-float-hidden');
+            });
+        }
+
+        window.showLobbyFloat = function() {
+            if (win) win.classList.remove('lobby-float-hidden');
+        };
+        window.hideLobbyFloat = function() {
+            if (win) win.classList.add('lobby-float-hidden');
+        };
+    });
+})();
+</script>
+
 <!-- Controlador del botón flotante de zorzal para música -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -5842,4 +5903,4 @@ document.addEventListener('DOMContentLoaded', function() {
                 musicFloatBtn.classList.add('paused');
             } else {
                 musicFloatBtn.classList.remove('paused');
-                musicFloatBtn.classList.add('playing'
+                musicFloatBtn.classList.add('playing' ) ;

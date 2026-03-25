@@ -496,27 +496,37 @@ class T2EIntegration {
      */
     async updateBetsLobby(bets = null) {
         const betsList = document.querySelector('.bets-offers-list');
-
-        if (!betsList) return;
+        const floatList = document.getElementById('lobby-float-list');
 
         // Si no se pasaron apuestas, obtener del engine
         if (!bets) {
             bets = Array.from(this.bettingEngine.activeBets.values());
         }
 
-        // Limpiar lista actual
-        betsList.innerHTML = '';
+        const emptyMsg = '<p style="text-align:center;color:#888;padding:20px;font-family:\'Courier New\',monospace;">No hay apuestas disponibles...</p>';
 
-        if (bets.length === 0) {
-            betsList.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">No hay apuestas disponibles...</p>';
-            return;
+        // Actualizar lista en modal
+        if (betsList) {
+            betsList.innerHTML = '';
+            if (bets.length === 0) {
+                betsList.innerHTML = emptyMsg;
+            } else {
+                bets.forEach(bet => betsList.appendChild(this.createBetItem(bet)));
+            }
         }
 
-        // Crear elementos para cada apuesta
-        bets.forEach(bet => {
-            const betItem = this.createBetItem(bet);
-            betsList.appendChild(betItem);
-        });
+        // Actualizar ventana flotante
+        if (floatList) {
+            floatList.innerHTML = '';
+            if (bets.length === 0) {
+                floatList.innerHTML = emptyMsg;
+            } else {
+                bets.forEach(bet => floatList.appendChild(this.createBetItem(bet)));
+                if (typeof window.showLobbyFloat === 'function') {
+                    window.showLobbyFloat();
+                }
+            }
+        }
 
         console.log(`📋 Lobby actualizado con ${bets.length} apuestas`);
     }
@@ -549,18 +559,22 @@ class T2EIntegration {
      * Agrega una apuesta al lobby
      */
     addBetToLobby(bet) {
-        const betsList = document.querySelector('.bets-offers-list');
-        if (!betsList) return;
+        const betItem = this.createBetItem(bet);
 
-        // Remover mensaje de "no hay apuestas"
-        const emptyMessage = betsList.querySelector('p');
-        if (emptyMessage) {
-            emptyMessage.remove();
+        const betsList = document.querySelector('.bets-offers-list');
+        if (betsList) {
+            const emptyMsg = betsList.querySelector('p');
+            if (emptyMsg) emptyMsg.remove();
+            betsList.appendChild(betItem.cloneNode(true));
         }
 
-        // Agregar nueva apuesta
-        const betItem = this.createBetItem(bet);
-        betsList.appendChild(betItem);
+        const floatList = document.getElementById('lobby-float-list');
+        if (floatList) {
+            const emptyMsg = floatList.querySelector('p');
+            if (emptyMsg) emptyMsg.remove();
+            floatList.appendChild(betItem);
+            if (typeof window.showLobbyFloat === 'function') window.showLobbyFloat();
+        }
     }
 
     /**
