@@ -72,6 +72,9 @@ class BettingEngine {
                 await this.generateDemoBets();
             }
 
+            // Escuchar apuestas reales en Firebase (cross-device sync)
+            this.listenFirebaseBets();
+
             this.isInitialized = true;
             console.log('✅ Motor de apuestas T2E inicializado');
 
@@ -775,6 +778,21 @@ class BettingEngine {
             // Notificar actualización
             this.notifyBetUpdate('betCreated', demoBet);
 
+            // Escribir en Firebase para sincronización cross-device
+            const fbDB = window._fbDB;
+            if (fbDB) {
+                fbDB.ref('t2e_bets/' + betId).set({
+                    id: betId,
+                    creator: demoBet.creator,
+                    amount: demoBet.amount,
+                    timeLimit: demoBet.timeLimit,
+                    boostLimit: demoBet.boostLimit,
+                    gameType: demoBet.gameType,
+                    status: 'open',
+                    createdAt: demoBet.createdAt.getTime()
+                });
+            }
+
             console.log('✅ Apuesta demo creada:', betId);
             return betId;
 
@@ -821,6 +839,16 @@ class BettingEngine {
             // Notificar actualización
             this.notifyBetUpdate('betAccepted', bet);
 
+            // Actualizar Firebase para sincronización cross-device
+            const fbDB = window._fbDB;
+            if (fbDB) {
+                fbDB.ref('t2e_bets/' + betId).update({
+                    status: 'matched',
+                    acceptor: userAddress,
+                    acceptedAt: Date.now()
+                });
+            }
+
             console.log('✅ Apuesta demo aceptada');
             return { status: true };
 
@@ -854,6 +882,12 @@ class BettingEngine {
             // Notificar actualización
             this.notifyBetUpdate('betCancelled', { id: betId });
 
+            // Eliminar de Firebase
+            const fbDB = window._fbDB;
+            if (fbDB) {
+                fbDB.ref('t2e_bets/' + betId).remove();
+            }
+
             console.log('✅ Apuesta demo cancelada');
             return { status: true };
 
@@ -861,6 +895,65 @@ class BettingEngine {
             console.error('❌ Error cancelando apuesta demo:', error);
             throw error;
         }
+    }
+
+    /**
+     * Escucha apuestas en Firebase Realtime DB para sincronización cross-device
+     */
+    listenFirebaseBets() {
+        const fbDB = window._fbDB;
+        if (!fbDB) return;
+
+        // Apuesta nueva aparece en Firebase
+        fbDB.ref('t2e_bets').on('child_added', snapshot => {
+            const b = snapshot.val();
+            if (!b || b.status !== 'open') return;
+            // No duplicar apuestas propias que ya están en activeBets
+            if (this.activeBets.has(b.id)) return;
+            const bet = {
+                id: b.id,
+                creator: b.creator,
+                acceptor: null,
+                amount: b.amount,
+                timeLimit: b.timeLimit,
+                boostLimit: b.boostLimit,
+                gameType: b.gameType,
+                status: this.web3Config.BET_STATUS.PENDING,
+                createdAt: new Date(b.createdAt),
+                acceptedAt: null,
+                _fromFirebase: true
+            };
+            this.activeBets.set(b.id, bet);
+            this.notifyBetUpdate('betCreated', bet);
+        });
+
+        // La apuesta fue aceptada o cancelada en otro dispositivo
+        fbDB.ref('t2e_bets').on('child_changed', snapshot => {
+            const b = snapshot.val();
+            if (!b) return;
+            const existing = this.activeBets.get(b.id);
+            if (b.status === 'matched') {
+                this.activeBets.delete(b.id);
+                if (existing) {
+                    existing.status = this.web3Config.BET_STATUS.ACTIVE;
+                    existing.acceptor = b.acceptor;
+                    existing.acceptedAt = new Date(b.acceptedAt);
+                    this.notifyBetUpdate('betAccepted', existing);
+                }
+            } else if (b.status === 'cancelled') {
+                this.activeBets.delete(b.id);
+                this.notifyBetUpdate('betCancelled', { id: b.id });
+            }
+        });
+
+        // Apuesta eliminada de Firebase
+        fbDB.ref('t2e_bets').on('child_removed', snapshot => {
+            const b = snapshot.val();
+            if (!b) return;
+            this.activeBets.delete(b.id);
+        });
+
+        console.log('📡 Escuchando apuestas Firebase en tiempo real');
     }
 
 

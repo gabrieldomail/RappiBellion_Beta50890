@@ -3397,6 +3397,7 @@ btn.addEventListener('click', toggleMutePlay);
         // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        window._fbDB = database; // Exponer para betting-engine (cross-device sync)
         const commentsRef = database.ref('rebellion-comments');
         
         // Elementos del DOM
