@@ -338,6 +338,189 @@
                 e.preventDefault();
             }
         });
+
+        // ── TOUCH CONTROLS — swipe + one-touch + D-PAD ──
+        var _touchStartX = 0, _touchStartY = 0, _touchStartTime = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            _touchStartX    = e.touches[0].clientX;
+            _touchStartY    = e.touches[0].clientY;
+            _touchStartTime = Date.now();
+        }, { passive: false });
+
+        // Bloquear scroll solo mientras se juega
+        document.addEventListener('touchmove', function(e) {
+            if (display.isPlaying()) e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('touchend', function(e) {
+            var touchEndX = e.changedTouches[0].clientX;
+            var touchEndY = e.changedTouches[0].clientY;
+            var dx        = touchEndX - _touchStartX;
+            var dy        = touchEndY - _touchStartY;
+            var absDx     = Math.abs(dx);
+            var absDy     = Math.abs(dy);
+            var elapsed   = Date.now() - _touchStartTime;
+            var minSwipe  = 20;
+            var maxTap    = 200;
+
+            // Pantalla principal — tap arranca el juego
+            if (display.isMainScreen()) {
+                actions['play']();
+                return;
+            }
+
+            // Si D-PAD activo — ignorar swipe/onetouch
+            if (window._controlMode === 'dpad') return;
+
+            // ONE TOUCH — tap rápido
+            if (elapsed < maxTap && absDx < minSwipe && absDy < minSwipe) {
+                if (!display.isPlaying()) return;
+                var W  = window.innerWidth;
+                var H  = window.innerHeight;
+                var tx = _touchStartX - W / 2;
+                var ty = _touchStartY - H / 2;
+                var _zone = null;
+                if (Math.abs(tx) > Math.abs(ty)) {
+                    if (tx > 0) { shortcuts.playing.Right(); _zone = document.querySelector('.tz-right'); }
+                    else        { shortcuts.playing.Left();  _zone = document.querySelector('.tz-left');  }
+                } else {
+                    if (ty > 0) { shortcuts.playing.Down(); _zone = document.querySelector('.tz-down'); }
+                    else        { shortcuts.playing.Up();   _zone = document.querySelector('.tz-up');   }
+                }
+                if (_zone) {
+                    _zone.classList.add('active');
+                    setTimeout(function() { _zone.classList.remove('active'); }, 150);
+                }
+                return;
+            }
+
+            // SWIPE
+            if (absDx < minSwipe && absDy < minSwipe) return;
+            if (!display.isPlaying()) return;
+            if (absDx > absDy) {
+                if (dx > 0) shortcuts.playing.Right();
+                else        shortcuts.playing.Left();
+            } else {
+                if (dy > 0) shortcuts.playing.Down();
+                else        shortcuts.playing.Up();
+            }
+        }, { passive: true });
+
+        // ── D-PAD — solo mobile ──
+        if ('ontouchstart' in window) {
+            var _dpad = document.createElement('div');
+            _dpad.id  = 'dpad';
+            _dpad.innerHTML =
+                '<button class="dp dp-up"    id="dp-up">▲</button>' +
+                '<div class="dp-mid">' +
+                    '<button class="dp dp-left"  id="dp-left">◀</button>' +
+                    '<div class="dp-center"></div>' +
+                    '<button class="dp dp-right" id="dp-right">▶</button>' +
+                '</div>' +
+                '<button class="dp dp-down"  id="dp-down">▼</button>';
+
+            var _dstyle = document.createElement('style');
+            _dstyle.textContent =
+                '#dpad{position:fixed;bottom:24px;right:20px;z-index:200;' +
+                    'display:none;flex-direction:column;align-items:center;gap:4px;opacity:0.75;}' +
+                '#dpad.show{display:flex;}' +
+
+                '.dp-mid{display:flex;align-items:center;gap:4px;}' +
+                '.dp-center{width:44px;height:44px;background:rgba(0,0,0,0.5);' +
+                    'border:1px solid rgba(0,255,255,0.15);}' +
+
+                '.dp{width:64px;height:64px;background:rgba(5,10,15,0.82);' +
+                    'border:2px solid rgba(0,255,255,0.5);color:rgba(0,255,255,0.9);' +
+                    'font-size:26px;font-weight:900;font-family:"Orbitron",monospace;' +
+                    'display:flex;align-items:center;justify-content:center;cursor:pointer;' +
+                    'text-shadow:0 0 8px rgba(0,255,255,0.8);border-radius:8px;' +
+                    'box-shadow:0 0 10px rgba(0,255,255,0.2),inset 0 0 10px rgba(0,0,0,0.5);' +
+                    '-webkit-tap-highlight-color:transparent;user-select:none;transition:all 0.08s;}' +
+
+                '.dp:active,.dp.pressed{background:rgba(0,255,255,0.25);color:#fff;' +
+                    'border-color:rgba(0,255,255,0.9);transform:scale(0.92);' +
+                    'box-shadow:0 0 20px rgba(0,255,255,0.6),inset 0 0 15px rgba(0,255,255,0.15);' +
+                    'text-shadow:0 0 16px #fff,0 0 32px rgba(0,255,255,1);}';
+
+            document.head.appendChild(_dstyle);
+            document.body.appendChild(_dpad);
+
+            window._controlMode = null;
+
+            function _dpadShow() { _dpad.classList.add('show'); }
+            function _dpadHide() { _dpad.classList.remove('show'); }
+
+            function _dpadFire(dir, btn) {
+                if (!display.isPlaying()) return;
+                if (shortcuts.playing && shortcuts.playing[dir]) shortcuts.playing[dir]();
+                btn.classList.add('pressed');
+                setTimeout(function() { btn.classList.remove('pressed'); }, 120);
+            }
+
+            var _dpMap = [
+                { id:'dp-up',    dir:'Up'    },
+                { id:'dp-down',  dir:'Down'  },
+                { id:'dp-left',  dir:'Left'  },
+                { id:'dp-right', dir:'Right' }
+            ];
+            var _lastDpDir = null;
+
+            function _getDpFromTouch(touch) {
+                var el = document.elementFromPoint(touch.clientX, touch.clientY);
+                while (el && !el.classList.contains('dp')) el = el.parentElement;
+                return el;
+            }
+
+            _dpMap.forEach(function(m) {
+                var btn = document.getElementById(m.id);
+                if (!btn) return;
+                btn.addEventListener('touchstart', function(e) {
+                    if (!display.isPlaying()) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    _lastDpDir = m.dir;
+                    _dpadFire(m.dir, btn);
+                }, { passive: false });
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    _dpadFire(m.dir, btn);
+                });
+            });
+
+            document.addEventListener('touchmove', function(e) {
+                if (!display.isPlaying()) return;
+                if (!_dpad.classList.contains('show')) return;
+                var touch = e.touches[0];
+                var btn   = _getDpFromTouch(touch);
+                if (!btn) return;
+                var newDir = null;
+                _dpMap.forEach(function(m) {
+                    if (document.getElementById(m.id) === btn) newDir = m.dir;
+                });
+                if (newDir && newDir !== _lastDpDir) {
+                    _lastDpDir = newDir;
+                    _dpadFire(newDir, btn);
+                }
+            }, { passive: false });
+
+            document.addEventListener('touchend', function(e) {
+                _lastDpDir = null;
+                _dpMap.forEach(function(m) {
+                    var b = document.getElementById(m.id);
+                    if (b) b.classList.remove('pressed');
+                });
+            }, { passive: false });
+
+            // Escuchar SET_CONTROL desde el padre
+            window.addEventListener('message', function(e) {
+                if (e.data && e.data.type === 'SET_CONTROL') {
+                    window._controlMode = e.data.mode;
+                    if (e.data.mode === 'dpad') _dpadShow();
+                    else                        _dpadHide();
+                }
+            });
+        }
     }
     
     /**

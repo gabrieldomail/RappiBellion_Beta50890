@@ -818,6 +818,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Bloquear scroll de la página mientras el juego está activo
         document.body.style.overflow = 'hidden';
         document.body.style.touchAction = 'none';
+        // Mantener la pantalla encendida durante el juego
+        if ('wakeLock' in navigator) {
+            navigator.wakeLock.request('screen')
+                .then(lock => { window._fpWakeLock = lock; })
+                .catch(() => {});
+        }
 
         // En mobile — promover iframe a capa GPU propia
         if (window.innerWidth <= 768) {
@@ -1010,6 +1016,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Restaurar scroll al salir del juego
         document.body.style.overflow = '';
         document.body.style.touchAction = '';
+        // Liberar WakeLock
+        if (window._fpWakeLock) { window._fpWakeLock.release(); window._fpWakeLock = null; }
         const topbar = document.querySelector('.casino-topbar');
         if (topbar) topbar.classList.remove('visible');
         // Restaurar el zorzal si estaba sonando antes
@@ -5579,33 +5587,6 @@ btn.addEventListener('click', toggleMutePlay);
             <button class="gemini-chat-submit" type="submit">Enviar</button>
         </form>
     </div>
-<!-- === SELECTOR DE CONTROL MOBILE === -->
-<div id="fp-control-selector">
-    <div class="fp-ctrl-title">// ELIGE TU ARMA //</div>
-    <div class="fp-ctrl-subtitle">SELECCIONÁ EL MÉTODO DE CONTROL</div>
-
-    <div class="fp-ctrl-options">
-        <button class="fp-ctrl-btn" id="ctrl-swipe-btn">
-            <span class="ctrl-icon">👆</span>
-            SWIPE
-            <span style="font-size:9px;opacity:0.6;">Deslizá el dedo</span>
-        </button>
-        <button class="fp-ctrl-btn dpad-btn" id="ctrl-dpad-btn">
-            <span class="ctrl-icon">🕹️</span>
-            D-PAD
-            <span style="font-size:9px;opacity:0.6;">Botones virtuales</span>
-        </button>
-    </div>
-
-    <div class="fp-ctrl-disclaimer">
-        * Los zurdos también pueden jugar. Nadie dijo que sería fácil.
-    </div>
-</div>
-
-<div i
-
-
-
 <!-- ── COUNTDOWN — body level, nada lo contiene ── -->
 <!-- === MODAL TIPS — INFO DEL CIRCUITO === -->
 <div id="fp-tips-modal">
