@@ -779,7 +779,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const fpDurSelect  = document.getElementById('fp-duration-select');
     const playPacmanBtn= document.getElementById('play-pacman-demo');
 
-    let fpState = { timeLeft:600, totalTime:600, running:false, ended:false, interval:null, score:0, chaosLevel:0 };
+    let fpState = { timeLeft:600, totalTime:600, running:false, ended:false, interval:null, score:0, chaosLevel:0, betId:null, betMode:false };
 
     const fpControlSelector = document.getElementById('fp-control-selector');
     const ctrlSwipeBtn      = document.getElementById('ctrl-swipe-btn');
@@ -809,9 +809,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (ctrlSwipeBtn) ctrlSwipeBtn.addEventListener('click', () => fpStartWithControl('swipe'));
     if (ctrlDpadBtn)  ctrlDpadBtn.addEventListener('click',  () => fpStartWithControl('dpad'));
 
-    function fpOpenArena() {
+    function fpOpenArena(betId) {
         const dur = parseInt(fpDurSelect ? fpDurSelect.value : 600);
-        fpState = { timeLeft:dur, totalTime:dur, running:false, ended:false, interval:null, score:0 };
+        fpState = { timeLeft:dur, totalTime:dur, running:false, ended:false, interval:null, score:0, chaosLevel:0,
+                    betId: betId || null, betMode: !!betId };
         // Mutear el zorzal mientras el juego está activo
         const tangoAudioFP = document.getElementById('tango-audio');
         if (tangoAudioFP && !tangoAudioFP.paused) { tangoAudioFP.muted = true; }
@@ -961,6 +962,25 @@ document.addEventListener('DOMContentLoaded', function() {
         const scoreEl  = document.getElementById('vrd-score');
         const phraseEl = document.getElementById('vrd-phrase');
 
+        // Mostrar resultado de apuesta si hay una activa
+        const betResult = window._fpLastBetResult;
+        const betResultEl = document.getElementById('vrd-bet-result');
+        if (betResultEl) {
+            if (betResult) {
+                const wonStr  = betResult.won ? '🏆 GANASTE' : '💀 PERDISTE';
+                const color   = betResult.won ? 'var(--color-caos-verde)' : 'var(--color-caos-rosa)';
+                const prizeStr = betResult.won ? `+${betResult.amount} $RPPI` : `-${betResult.amount} $RPPI`;
+                betResultEl.style.display = 'block';
+                betResultEl.innerHTML = `
+                    <div style="font-size:1.4em;color:${color};text-shadow:0 0 15px ${color};font-weight:bold;margin-bottom:6px;">${wonStr}</div>
+                    <div style="font-size:0.9em;color:#ccc;margin-bottom:4px;">TU SCORE: <strong style="color:var(--color-caos-amarillo);">${betResult.playerScore}</strong> vs RIVAL: <strong style="color:#aaa;">${betResult.rivalScore}</strong></div>
+                    <div style="font-size:1.1em;color:${color};">${prizeStr}</div>
+                `;
+            } else {
+                betResultEl.style.display = 'none';
+            }
+        }
+
         if (iconEl)   iconEl.textContent   = verdict.icon;
         if (rankEl)   rankEl.textContent   = verdict.rank;
         if (scoreEl)  scoreEl.textContent  = String(score).padStart(4,'0');
@@ -1003,13 +1023,46 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpIframe && fpIframe.contentWindow) {
             fpIframe.contentWindow.postMessage({ type:'MATCH_ENDED' }, '*');
         }
-        // Timer gris al llegar a 00:00 — sin texto "FIN"
         if (fpTimerEl) { fpTimerEl.style.color = 'rgba(255,255,255,0.2)'; }
 
-        // Mostrar veredicto después de 1.5s — deja ver el GAME OVER del juego
+        // Si hay apuesta activa, resolver en modo demo antes del veredicto
+        if (fpState.betMode && fpState.betId && window.T2EIntegration) {
+            _fpResolveDemo(fpState.betId, fpState.score);
+        }
+
         setTimeout(function() {
             fpShowVerdict(fpState.score);
         }, 1500);
+    }
+
+    function _fpResolveDemo(betId, playerScore) {
+        try {
+            const engine = window.T2EIntegration && window.T2EIntegration.bettingEngine;
+            if (!engine) return;
+            const bet = engine.activeBets.get(betId) || engine.userBets.get(betId);
+            if (!bet) return;
+
+            // Simular score del rival (rival tuvo entre 50% y 130% del score del jugador)
+            const rivalMult  = 0.5 + Math.random() * 0.8;
+            const rivalScore = Math.round(Math.max(200, playerScore * rivalMult));
+            const won = playerScore >= rivalScore;
+
+            // Marcar apuesta como completada en el engine demo
+            bet.status = window.T2EIntegration.web3Config.BET_STATUS.COMPLETED || 3;
+            engine.userBets.set(betId, bet);
+            engine.activeBets.delete(betId);
+
+            // Mostrar resultado en el veredicto (inyectar info de apuesta)
+            window._fpLastBetResult = {
+                won,
+                playerScore,
+                rivalScore,
+                amount:   bet.amount,
+                betId
+            };
+        } catch(e) {
+            console.warn('_fpResolveDemo error:', e);
+        }
     }
 
     function fpCloseArena() {
@@ -5700,6 +5753,12 @@ btn.addEventListener('click', toggleMutePlay);
     <div class="vrd-score-label">// PUNTOS ACUMULADOS //</div>
     <div class="vrd-phrase" id="vrd-phrase">"El PAC-HACK: DEATH te teme a vos"</div>
     <div class="vrd-divider"></div>
+
+    <!-- Resultado de apuesta demo (visible solo cuando hay bet activa) -->
+    <div id="vrd-bet-result" style="display:none;width:100%;max-width:500px;
+         background:rgba(0,0,0,0.6);border:2px solid var(--color-caos-verde);
+         padding:16px 20px;margin-bottom:16px;text-align:center;
+         font-family:'Orbitron',monospace;position:relative;z-index:1;"></div>
 
     <!-- Chaos Level alcanzado -->
     <div style="width:100%;max-width:500px;position:relative;z-index:1;">

@@ -364,15 +364,17 @@ class T2EIntegration {
             // Recargar apuestas activas
             await this.bettingEngine.loadActiveBets();
 
-            // ACTIVAR EL GAME OVERLAY CON HUD AUTOMÁTICAMENTE
+            // Lanzar Pac-Hack directamente con el betId
             setTimeout(() => {
-                console.log('🎮 Activando game overlay después de apuesta creada...');
-                // Simular clic en "COMENZAR" para activar el game overlay
-                const startBetaBtn = document.getElementById('start-beta-button');
-                if (startBetaBtn) {
-                    startBetaBtn.click();
+                console.log('🎮 Lanzando Pac-Hack con betId:', betId);
+                if (typeof fpOpenArena === 'function') {
+                    fpOpenArena(betId);
+                } else {
+                    // fallback: abrir el game overlay genérico
+                    const startBetaBtn = document.getElementById('start-beta-button');
+                    if (startBetaBtn) startBetaBtn.click();
                 }
-            }, 1500); // Dar tiempo para que se note la transición
+            }, 1200);
 
         } catch (error) {
             this.hideLoading();
@@ -400,15 +402,17 @@ class T2EIntegration {
             // Mostrar éxito
             this.showNotification('¡Apuesta aceptada exitosamente!', 'success');
 
-            // ACTIVAR EL GAME OVERLAY CON HUD AUTOMÁTICAMENTE
+            // Lanzar Pac-Hack directamente con el betId aceptado
+            const acceptedBetId = betData.id;
             setTimeout(() => {
-                console.log('🎮 Activando game overlay después de apuesta aceptada...');
-                // Simular clic en "COMENZAR" para activar el game overlay
-                const startBetaBtn = document.getElementById('start-beta-button');
-                if (startBetaBtn) {
-                    startBetaBtn.click();
+                console.log('🎮 Lanzando Pac-Hack (aceptar apuesta) con betId:', acceptedBetId);
+                if (typeof fpOpenArena === 'function') {
+                    fpOpenArena(acceptedBetId);
+                } else {
+                    const startBetaBtn = document.getElementById('start-beta-button');
+                    if (startBetaBtn) startBetaBtn.click();
                 }
-            }, 1500); // Dar tiempo para que se note la transición
+            }, 1200);
 
         } catch (error) {
             this.hideLoading();
