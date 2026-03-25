@@ -47,6 +47,9 @@ class T2EIntegration {
         // Configurar listeners de blockchain
         this.setupBlockchainListeners();
 
+        // Escuchar Firebase DESPUÉS de registrar los listeners (evita race condition)
+        this.bettingEngine.listenFirebaseBets();
+
         // Configurar ventana flotante de apuestas del usuario
         this.setupUserBetsWindow();
 

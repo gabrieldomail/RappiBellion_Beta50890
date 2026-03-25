@@ -72,9 +72,6 @@ class BettingEngine {
                 await this.generateDemoBets();
             }
 
-            // Escuchar apuestas reales en Firebase (cross-device sync)
-            this.listenFirebaseBets();
-
             this.isInitialized = true;
             console.log('✅ Motor de apuestas T2E inicializado');
 
