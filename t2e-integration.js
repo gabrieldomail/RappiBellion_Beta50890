@@ -363,25 +363,13 @@ class T2EIntegration {
             this.hideLoading();
 
             // Mostrar éxito
-            this.showNotification(`¡Apuesta creada exitosamente! ID: ${betId}`, 'success');
+            this.showNotification(`¡Desafío lanzado! ID: ${betId} — Esperando oponente...`, 'success');
 
             // Cerrar modal
             this.closeBetModal();
 
-            // Recargar apuestas activas
-            await this.bettingEngine.loadActiveBets();
-
-            // Lanzar Pac-Hack directamente con el betId
-            setTimeout(() => {
-                console.log('🎮 Lanzando Pac-Hack con betId:', betId);
-                if (typeof fpOpenArena === 'function') {
-                    fpOpenArena(betId);
-                } else {
-                    // fallback: abrir el game overlay genérico
-                    const startBetaBtn = document.getElementById('start-beta-button');
-                    if (startBetaBtn) startBetaBtn.click();
-                }
-            }, 1200);
+            // NO abrimos la arena todavía: el creador espera que alguien acepte.
+            // La arena se abrirá cuando Firebase dispare 'betAccepted' en ambos devices.
 
         } catch (error) {
             this.hideLoading();

@@ -1357,23 +1357,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!betAmount || betAmount <= 0) { alert('Ingresa un monto de apuesta valido en $RPPI.'); return; }
             if (!timeBtn)  { alert('Selecciona el limite de tiempo.'); return; }
             if (!boostBtn) { alert('Selecciona el limite de boosts.'); return; }
-            makeBetModal.classList.add('game-menu-hidden');
-            if (cyberpunkHUD) {
-                cyberpunkHUD.boostSystem.maxBoosts = parseInt(boostBtn.getAttribute('data-value')) || 5;
-                cyberpunkHUD.boostSystem.available = cyberpunkHUD.boostSystem.maxBoosts;
-                cyberpunkHUD.boostSystem.used      = 0;
-                const boostCountEl = document.getElementById('hud-boost-count');
-                if (boostCountEl) boostCountEl.textContent = cyberpunkHUD.boostSystem.available;
-                const rppiEl = document.getElementById('hud-rppi');
-                if (rppiEl) rppiEl.textContent = betAmount + ' $RPPI';
-                const gameEl = document.getElementById('hud-game-title');
-                if (gameEl) gameEl.textContent = selectedGame || 'PAC-HACK: DEATH';
-                const sessionEl = document.getElementById('hud-session-id');
-                if (sessionEl) sessionEl.textContent = Math.random().toString(16).slice(2,8).toUpperCase();
-                cyberpunkHUD.showHUD();
-                cyberpunkHUD.showNotification('BET CONFIRMED: ' + betAmount + ' $RPPI - LAUNCHING ' + (selectedGame || 'PAC-HACK: DEATH'));
+            // Delegar a T2EIntegration.launchBet() que crea la apuesta en Firebase
+            // y abre la arena con el betId real via el listener 'betAccepted'
+            if (window.T2EIntegration && typeof window.T2EIntegration.launchBet === 'function') {
+                window.T2EIntegration.selectedBetOptions = {
+                    amount: betAmount.toString(),
+                    timeLimit: timeBtn.getAttribute('data-value'),
+                    boostLimit: boostBtn.getAttribute('data-value')
+                };
+                window.T2EIntegration.launchBet();
             }
-            setTimeout(() => fpOpenArena(), 600);
         });
     }
 
