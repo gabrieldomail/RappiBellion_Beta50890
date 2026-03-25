@@ -143,12 +143,6 @@ class T2EIntegration {
             });
         });
 
-        // Botón de lanzar apuesta
-        const launchBetButton = document.getElementById('launch-bet-button');
-        if (launchBetButton) {
-            launchBetButton.addEventListener('click', () => this.launchBet());
-        }
-
         // Botones de aceptar apuesta en el lobby
         this.setupBetAcceptanceListeners();
 
