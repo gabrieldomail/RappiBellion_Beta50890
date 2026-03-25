@@ -250,57 +250,6 @@
         <img id="bird-icon" src="images/zorzal.PNG" alt="Zorzal" width="48" height="48" style="display:block;" />
     </button>
 
-<!-- === CYBERPUNK HUD — TERMINAL T2E === -->
-<div id="cyberpunk-hud" class="hud-hidden">
-
-    <!-- Header tipo terminal-header-caos -->
-    <div class="hud-terminal-header">
-        <span>[T2E_CIRCUIT // EL CIRCUITO // RAPPIBELLION]</span>
-        <span class="hud-session-id">SESSION #<span id="hud-session-id">------</span></span>
-    </div>
-
-    <!-- Cuerpo con stats en grid -->
-    <div class="hud-body">
-
-        <!-- HACKER / SCORE -->
-        <div class="hud-stat-block">
-            <span class="stat-label">// HACKER</span>
-            <div class="stat-value" id="hud-player-name">PLAYER_01</div>
-            <span class="stat-label" style="margin-top:6px;">SCORE</span>
-            <div class="stat-value" id="hud-score">0000</div>
-        </div>
-
-        <!-- TIMER / JUEGO -->
-        <div class="hud-stat-block" style="text-align:center;">
-            <span class="stat-label">// TIEMPO</span>
-            <div class="stat-value timer-val" id="hud-timer">00:00</div>
-            <span class="stat-label" style="margin-top:6px;">GAME</span>
-            <div class="stat-value" id="hud-game-title" style="font-size:11px;letter-spacing:2px;">T2E_CIRCUIT</div>
-        </div>
-
-        <!-- RIVAL / APUESTA -->
-        <div class="hud-stat-block">
-            <span class="stat-label">// RIVAL</span>
-            <div class="stat-value rival-val" id="hud-rival-name">SEARCHING...</div>
-            <span class="stat-label" style="margin-top:6px;">APUESTA</span>
-            <div class="stat-value" id="hud-rppi" style="font-size:14px;">0 $RPPI</div>
-        </div>
-
-        <!-- CONTROLES -->
-        <div class="hud-controls-block">
-            <button id="hud-boost-btn" class="hud-ctrl-btn boost-btn">
-                ⚡ BOOST [<span id="hud-boost-count">5</span>]
-            </button>
-            <button id="hud-pause-btn" class="hud-ctrl-btn">⏸ PAUSE</button>
-            <button id="hud-exit-btn" class="hud-ctrl-btn exit-btn">✕ EXIT</button>
-        </div>
-
-    </div>
-
-</div>
-
-<!-- Notificaciones fuera del HUD para no afectar layout -->
-<div id="hud-notifications" class="hud-notifications"></div>
 
 <!-- === GAME OVERLAY (contenido del circuito) === -->
 <div id="game-overlay" class="game-menu-hidden">
@@ -511,30 +460,8 @@
     </div>
 </div>
 
-<!-- === VENTANA PAC-HACK: DEATH (PvP Arena) === -->
-<div id="pacman-game-window" class="pacman-window-hidden">
-    <div class="pacman-terminal caos-terminal">
-        <div class="terminal-header-caos" style="background-color: var(--color-caos-rosa); display: flex; justify-content: space-between; align-items: center;">
-            <span>[PAC-HACK: DEATH // EL LABERINTO]</span>
-            <button id="close-pacman-window" class="terminal-close-btn">✕</button>
-        </div>
-        <div class="terminal-body-caos" style="padding: 0; height: 600px; overflow: hidden;">
-            <iframe
-                id="pacman-iframe"
-                src="pac-hack/game.html"
-                width="100%"
-                height="100%"
-                frameborder="0"
-                allowfullscreen
-                style="border: none; background: #000;"
-                sandbox="allow-scripts allow-same-origin"
-            ></iframe>
-        </div>
-    </div>
-</div>
-
 <!-- === FREE PLAY ARENA — 3 COLUMNAS === -->
-<div id="freeplay-arena">
+<div id="t2eplay-arena">
 
     <!-- COLUMNA IZQUIERDA: TIMER + SCORE -->
     <div class="fp-col-left">
@@ -601,39 +528,133 @@
         </div>
     </div>
 
-    <!-- COLUMNA DERECHA: MODO + CONTROLES + EXIT -->
+    <!-- COLUMNA DERECHA: RIVAL DATA (bet mode) / CONTROLES (free play) -->
     <div class="fp-col-right">
         <div class="fp-hover-glow-right"></div>
-        <div>
-            <div class="fp-mode-label">MODO //</div>
-            <div class="fp-mode-val">FREE_PLAY</div>
-            <div class="fp-mode-sub">Practicá antes de apostar</div>
-            <button class="cta-button" id="fp-tips-btn"
-                    style="margin-top:16px;width:100%;
-                           background-color:transparent;
-                           border-color:var(--color-caos-amarillo);
-                           color:var(--color-caos-amarillo);
-                           font-size:0.85em;letter-spacing:3px;
-                           transition:all 0.2s;"
-                    onmouseover="this.style.backgroundColor='#000';this.style.boxShadow='0 0 16px rgba(248,255,43,0.4)'"
-                    onmouseout="this.style.backgroundColor='transparent';this.style.boxShadow='none'">
-                INFO DEL CIRCUITO
+
+        <!-- ── PANEL FREE PLAY (visible por defecto) ── -->
+        <div id="fp-controls-freeplay">
+            <div>
+                <div class="fp-mode-label">MODO //</div>
+                <div class="fp-mode-val">FREE_PLAY</div>
+                <div class="fp-mode-sub">Practicá antes de apostar</div>
+                <button class="cta-button" id="fp-tips-btn"
+                        style="margin-top:16px;width:100%;
+                               background-color:transparent;
+                               border-color:var(--color-caos-amarillo);
+                               color:var(--color-caos-amarillo);
+                               font-size:0.85em;letter-spacing:3px;
+                               transition:all 0.2s;"
+                        onmouseover="this.style.backgroundColor='#000';this.style.boxShadow='0 0 16px rgba(248,255,43,0.4)'"
+                        onmouseout="this.style.backgroundColor='transparent';this.style.boxShadow='none'">
+                    INFO DEL CIRCUITO
+                </button>
+            </div>
+            <div>
+                <div style="font-size:13px;letter-spacing:3px;color:#ffffff;
+                            font-family:'Courier New',monospace;margin-bottom:12px;">// CONTROLES //</div>
+                <select id="fp-duration-select"
+                    style="width:100%;background:#0a0a0a;border:1px solid rgba(255,0,255,0.3);
+                           color:var(--color-caos-rosa);padding:8px 12px;
+                           font-family:'Orbitron',monospace;font-size:14px;
+                           letter-spacing:2px;margin-bottom:10px;">
+                    <option value="300" selected>5 MIN</option>
+                    <option value="600">10 MIN</option>
+                </select>
+                <button class="fp-btn" id="fp-restart-btn">↺ RESTART</button>
+            </div>
+            <button class="fp-exit-cta" id="fp-exit-btn">EXIT FREE PLAY</button>
+        </div>
+
+        <!-- ── PANEL RIVAL DATA (visible en bet mode) ── -->
+        <div id="fp-rival-panel" style="display:none; width:100%; height:100%;
+             display:none; flex-direction:column; gap:14px;">
+
+            <!-- Header rival -->
+            <div style="font-family:'Courier New',monospace; font-size:0.7em;
+                        letter-spacing:3px; color:#ff4444; border-bottom:1px solid #ff4444;
+                        padding-bottom:6px;">
+                ⚔ RIVAL_DATA //
+            </div>
+
+            <!-- Nickname rival -->
+            <div>
+                <div style="font-size:10px;letter-spacing:2px;color:#888;
+                            font-family:'Courier New',monospace;">OPONENTE</div>
+                <div id="rival-nick" style="font-family:'Orbitron',monospace;
+                     font-size:0.85em; color:#ff6666; word-break:break-all;
+                     margin-top:4px;">---</div>
+            </div>
+
+            <!-- Score rival -->
+            <div style="background:rgba(255,68,68,0.08); border:1px solid rgba(255,68,68,0.3);
+                        padding:10px 12px;">
+                <div style="font-size:10px;letter-spacing:2px;color:#888;
+                            font-family:'Courier New',monospace;">SCORE RIVAL</div>
+                <div id="rival-score" style="font-family:'Orbitron',monospace;
+                     font-size:2em; color:#ff4444; letter-spacing:4px;
+                     margin-top:4px;">????</div>
+                <div id="rival-status" style="font-size:10px;letter-spacing:2px;
+                     color:#ff6666; font-family:'Courier New',monospace;
+                     margin-top:6px;">[ JUGANDO... ]</div>
+            </div>
+
+            <!-- Timer rival espejado -->
+            <div>
+                <div style="font-size:10px;letter-spacing:2px;color:#888;
+                            font-family:'Courier New',monospace; margin-bottom:4px;">
+                    TIEMPO RESTANTE RIVAL
+                </div>
+                <div id="rival-timer" style="font-family:'Orbitron',monospace;
+                     font-size:1.4em; color:#ff4444; letter-spacing:3px;">--:--</div>
+                <div style="height:4px; background:rgba(255,68,68,0.15);
+                            border-radius:2px; margin-top:6px; overflow:hidden;">
+                    <div id="rival-timer-bar" style="height:100%; width:100%;
+                         background:#ff4444; transition:width 1s linear;"></div>
+                </div>
+            </div>
+
+            <!-- Terminal INCOMING_SIGNAL — mensajes del rival -->
+            <div class="caos-terminal" style="width:100%; margin:0; border-radius:0;
+                         border-color:rgba(255,68,68,0.5); flex-shrink:0;">
+                <div class="terminal-header-caos" style="
+                    background-color: #ff4444;
+                    display:flex; justify-content:space-between; align-items:center;
+                    padding: 5px 10px;">
+                    <span style="font-size:0.7em; letter-spacing:2px;">[INCOMING_SIGNAL // RIVAL_COMM]</span>
+                    <span id="rival-signal-dot" style="width:7px;height:7px;border-radius:50%;
+                          background:#fff; display:inline-block;
+                          animation: rivalBlink 1.2s step-start infinite;"></span>
+                </div>
+                <div class="terminal-body-caos" id="rival-comm-log"
+                     style="min-height:80px; max-height:120px; overflow-y:auto;
+                            padding:8px 10px; font-size:0.78em;
+                            font-family:'Courier New',monospace; color:#ff8888;
+                            scrollbar-width:thin; scrollbar-color:#ff4444 #111;">
+                    <p style="color:#555; margin:0;">[ SIN SEÑAL ]</p>
+                </div>
+            </div>
+
+            <!-- Apuesta -->
+            <div style="background:rgba(255,220,0,0.06); border:1px solid rgba(255,220,0,0.3);
+                        padding:10px 12px; margin-top:auto;">
+                <div style="font-size:10px;letter-spacing:2px;color:#888;
+                            font-family:'Courier New',monospace;">APUESTA</div>
+                <div id="rival-bet-amount" style="font-family:'Orbitron',monospace;
+                     font-size:1em; color:#ffdc00; letter-spacing:2px;
+                     margin-top:4px;">--- $RPPI</div>
+                <div id="rival-bet-id" style="font-size:9px; color:#555;
+                     font-family:'Courier New',monospace; margin-top:4px;">ID: ---</div>
+            </div>
+
+            <!-- Botón cancelar -->
+            <button class="fp-exit-cta" id="fp-exit-btn-bet"
+                    style="border-color:#ff4444; color:#ff4444;
+                           background:transparent; margin-top:8px;">
+                ABANDON MATCH
             </button>
         </div>
-        <div>
-            <div style="font-size:13px;letter-spacing:3px;color:#ffffff;
-                        font-family:'Courier New',monospace;margin-bottom:12px;">// CONTROLES //</div>
-            <select id="fp-duration-select"
-                style="width:100%;background:#0a0a0a;border:1px solid rgba(255,0,255,0.3);
-                       color:var(--color-caos-rosa);padding:8px 12px;
-                       font-family:'Orbitron',monospace;font-size:14px;
-                       letter-spacing:2px;margin-bottom:10px;">
-                <option value="300" selected>5 MIN</option>
-                <option value="600">10 MIN</option>
-            </select>
-            <button class="fp-btn" id="fp-restart-btn">↺ RESTART</button>
-        </div>
-        <button class="fp-exit-cta" id="fp-exit-btn">EXIT FREE PLAY</button>
+
     </div>
 
 </div>
@@ -786,7 +807,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ── FREE PLAY ARENA ──
-    const fpArena      = document.getElementById('freeplay-arena');
+    const fpArena      = document.getElementById('t2eplay-arena');
     const fpIframe     = document.getElementById('fp-iframe');
     const fpTimerEl    = document.getElementById('fp-timer');
     const fpTimerBar   = document.getElementById('fp-timer-bar');
@@ -878,7 +899,87 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpScoreEl)  fpScoreEl.textContent = '0000';
         if (fpTimerEl)  fpTimerEl.style.color = '';
         if (fpArena)    fpArena.classList.add('show');
+
+        // Activar/desactivar panel rival según betMode
+        _fpToggleRivalPanel(fpState.betMode, betId);
+
         setTimeout(fpStartCountdown, 1200);
+    }
+
+    // ── RIVAL PANEL ──────────────────────────────────────────────
+    function _fpToggleRivalPanel(active, betId) {
+        const freePanel  = document.getElementById('fp-controls-freeplay');
+        const rivalPanel = document.getElementById('fp-rival-panel');
+        if (!freePanel || !rivalPanel) return;
+
+        if (active) {
+            freePanel.style.display  = 'none';
+            rivalPanel.style.display = 'flex';
+
+            // Datos de la apuesta
+            const bet = window.BettingEngine
+                ? window.BettingEngine.activeBets.get(betId)
+                : null;
+
+            const nickEl   = document.getElementById('rival-nick');
+            const amountEl = document.getElementById('rival-bet-amount');
+            const idEl     = document.getElementById('rival-bet-id');
+            const scoreEl  = document.getElementById('rival-score');
+            const statusEl = document.getElementById('rival-status');
+
+            if (bet) {
+                if (nickEl)   nickEl.textContent   = bet.creator.slice(0,6) + '...' + bet.creator.slice(-4);
+                if (amountEl) amountEl.textContent = bet.amount + ' $RPPI';
+                if (idEl)     idEl.textContent     = 'ID: ' + betId;
+            }
+            if (scoreEl)  scoreEl.textContent  = '????';
+            if (statusEl) statusEl.textContent = '[ JUGANDO... ]';
+
+            // Exit bet button
+            const exitBetBtn = document.getElementById('fp-exit-btn-bet');
+            if (exitBetBtn) {
+                exitBetBtn.onclick = function() { fpEndPractice(); };
+            }
+
+            // Arrancar ticker del timer rival (espejado con fpState)
+            _fpStartRivalTimer();
+        } else {
+            freePanel.style.display  = '';
+            rivalPanel.style.display = 'none';
+            _fpStopRivalTimer();
+        }
+    }
+
+    let _rivalTimerInterval = null;
+    let _rivalCommInterval  = null;
+
+    function _fpStartRivalTimer() {
+        _fpStopRivalTimer();
+
+        // Limpiar log y mostrar estado de conexión real
+        const log = document.getElementById('rival-comm-log');
+        if (log) log.innerHTML = '<p style="color:#ff4444;margin:0;">> RIVAL CONECTADO. EN PARTIDA.</p>';
+
+        // Timer espejado
+        _rivalTimerInterval = setInterval(function() {
+            if (!fpState || !fpState.running) return;
+            const timerEl = document.getElementById('rival-timer');
+            const barEl   = document.getElementById('rival-timer-bar');
+            if (timerEl) timerEl.textContent = fpRenderTimerStr(fpState.timeLeft);
+            if (barEl)   barEl.style.width   = ((fpState.timeLeft / fpState.totalTime) * 100) + '%';
+        }, 1000);
+    }
+
+    function _fpStopRivalTimer() {
+        if (_rivalTimerInterval) { clearInterval(_rivalTimerInterval); _rivalTimerInterval = null; }
+        if (_rivalCommInterval)  { clearInterval(_rivalCommInterval);  _rivalCommInterval  = null; }
+    }
+
+    // Devuelve string MM:SS sin modificar el DOM
+    function fpRenderTimerStr(secs) {
+        const m = Math.floor(secs / 60);
+        const s = secs % 60;
+        return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
     }
 
     function fpStartCountdown() {
@@ -1045,10 +1146,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (fpTimerEl) { fpTimerEl.style.color = 'rgba(255,255,255,0.2)'; }
 
+        // Apagar ticker y panel rival
+        _fpStopRivalTimer();
+        const statusEl = document.getElementById('rival-status');
+        if (statusEl) statusEl.textContent = '[ PARTIDA FINALIZADA ]';
+
         // Si hay apuesta activa, resolver en modo demo antes del veredicto
         if (fpState.betMode && fpState.betId && window.T2EIntegration) {
             _fpResolveDemo(fpState.betId, fpState.score);
+            // Mostrar score final del rival en el panel
+            const result = window._fpLastBetResult;
+            const rivalScoreEl = document.getElementById('rival-score');
+            if (result && rivalScoreEl) {
+                rivalScoreEl.textContent = String(result.rivalScore).padStart(4, '0');
+                rivalScoreEl.style.color = result.won ? '#888' : '#ff4444';
+            }
         }
+
+        // Volver a panel free play después de mostrar el veredicto
+        setTimeout(function() {
+            _fpToggleRivalPanel(false);
+        }, 4000);
 
         setTimeout(function() {
             fpShowVerdict(fpState.score);
@@ -1195,23 +1313,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === 'Escape' && fpArena && fpArena.classList.contains('show')) fpCloseArena();
     });
 
-    // ── VENTANA PAC-MAN (modo T2E) ──
-    function openPacmanWindow() {
-        const w = document.getElementById('pacman-game-window');
-        if (w) { w.classList.remove('pacman-window-hidden'); w.style.opacity='1'; w.style.pointerEvents='auto'; }
-    }
-    function closePacmanWindow() {
-        const w = document.getElementById('pacman-game-window');
-        if (w) {
-            w.style.opacity='0'; w.style.pointerEvents='none';
-            setTimeout(() => w.classList.add('pacman-window-hidden'), 300);
-            const iframe = document.getElementById('pacman-iframe');
-            if (iframe) { const src=iframe.src; iframe.src=''; iframe.src=src; }
-        }
-    }
-    const closePacmanBtn = document.getElementById('close-pacman-window');
-    if (closePacmanBtn) closePacmanBtn.addEventListener('click', closePacmanWindow);
-
     // ── BET BUTTONS ──
     const makeBetModal     = document.getElementById('make-bet-modal');
     const betModalTitle    = document.getElementById('bet-modal-title');
@@ -1256,23 +1357,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!betAmount || betAmount <= 0) { alert('Ingresa un monto de apuesta valido en $RPPI.'); return; }
             if (!timeBtn)  { alert('Selecciona el limite de tiempo.'); return; }
             if (!boostBtn) { alert('Selecciona el limite de boosts.'); return; }
-            makeBetModal.classList.add('game-menu-hidden');
-            if (cyberpunkHUD) {
-                cyberpunkHUD.boostSystem.maxBoosts = parseInt(boostBtn.getAttribute('data-value')) || 5;
-                cyberpunkHUD.boostSystem.available = cyberpunkHUD.boostSystem.maxBoosts;
-                cyberpunkHUD.boostSystem.used      = 0;
-                const boostCountEl = document.getElementById('hud-boost-count');
-                if (boostCountEl) boostCountEl.textContent = cyberpunkHUD.boostSystem.available;
-                const rppiEl = document.getElementById('hud-rppi');
-                if (rppiEl) rppiEl.textContent = betAmount + ' $RPPI';
-                const gameEl = document.getElementById('hud-game-title');
-                if (gameEl) gameEl.textContent = selectedGame || 'PAC-HACK: DEATH';
-                const sessionEl = document.getElementById('hud-session-id');
-                if (sessionEl) sessionEl.textContent = Math.random().toString(16).slice(2,8).toUpperCase();
-                cyberpunkHUD.showHUD();
-                cyberpunkHUD.showNotification('BET CONFIRMED: ' + betAmount + ' $RPPI - LAUNCHING ' + (selectedGame || 'PAC-HACK: DEATH'));
+            // Delegar a T2EIntegration.launchBet() que crea la apuesta en Firebase
+            // y abre la arena con el betId real via el listener 'betAccepted'
+            if (window.T2EIntegration && typeof window.T2EIntegration.launchBet === 'function') {
+                window.T2EIntegration.selectedBetOptions = {
+                    amount: betAmount.toString(),
+                    timeLimit: timeBtn.getAttribute('data-value'),
+                    boostLimit: boostBtn.getAttribute('data-value')
+                };
+                window.T2EIntegration.launchBet();
             }
-            setTimeout(() => openPacmanWindow(), 600);
         });
     }
 
@@ -2291,28 +2385,6 @@ btn.addEventListener('click', toggleMutePlay);
         </div>
     </div>
 
-    <!-- === "SATAN IMPERIAL" - LA NUEVA VENTANA PAC-MAN === -->
-    <div id="pacman-game-window" class="pacman-window-hidden">
-        <div class="pacman-terminal caos-terminal">
-            <div class="terminal-header-caos" style="background-color: var(--color-caos-rosa); display: flex; justify-content: space-between; align-items: center;">
-                <span>[PAC-HACK: EL LABERINTO]</span>
-                <button id="close-pacman-window" class="terminal-close-btn">✕</button>
-            </div>
-            <div class="terminal-body-caos" style="padding: 0; height: 600px; overflow: hidden;">
-                <!-- ¡EL PORTAL HACKEADO! ¡EL IFRAME! -->
-                <iframe
-                    id="pacman-iframe"
-                    src="pacman/game.html"
-                    width="100%"
-                    height="100%"
-                    frameborder="0"
-                    allowfullscreen
-                    style="border: none; background: #000000;"
-                ></iframe>
-            </div>
-        </div>
-    </div>
-
     <!-- === PAC-HACK PvP ARENA HUD === -->
     <div id="pachack-pvp-arena" class="pacman-window-hidden" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 9998; display: flex; flex-direction: column;">
         <div style="flex: 1; display: flex; gap: 20px; padding: 20px; overflow: hidden;">
@@ -3206,6 +3278,7 @@ btn.addEventListener('click', toggleMutePlay);
         // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        window._fbDB = database; // Exponer para betting-engine (cross-device sync)
         const commentsRef = database.ref('rebellion-comments');
         
         // Elementos del DOM
@@ -3886,72 +3959,7 @@ btn.addEventListener('click', toggleMutePlay);
             buyRppiOverlay.classList.add('terminal-overlay-hidden');
         }
 
-        // ========================================
-        // PAC-MAN GAME WINDOW CONTROLLER
-        // ========================================
-
-        // Elementos del DOM para Pac-Man
-        const playPacmanBtn = document.getElementById('play-pacman-demo');
-        const pacmanWindow = document.getElementById('pacman-game-window');
-        const closePacmanBtn = document.getElementById('close-pacman-window');
-
-        // Función para abrir la ventana del Pac-Man
-        function openPacmanWindow() {
-            console.log('🎮 Abriendo ventana del Pac-Man...');
-            if (pacmanWindow) {
-                pacmanWindow.classList.remove('pacman-window-hidden');
-                pacmanWindow.style.opacity = '1';
-                pacmanWindow.style.pointerEvents = 'auto';
-
-                // Notificación en el HUD si está activo
-                if (cyberpunkHUD && cyberpunkHUD.isActive) {
-                    cyberpunkHUD.showNotification('PAC-HACK INITIALIZED');
-                }
-            }
-        }
-
-        // Función para cerrar la ventana del Pac-Man
-        function closePacmanWindow() {
-            console.log('🎮 Cerrando ventana del Pac-Man...');
-            if (pacmanWindow) {
-                pacmanWindow.style.opacity = '0';
-                pacmanWindow.style.pointerEvents = 'none';
-                setTimeout(() => {
-                    pacmanWindow.classList.add('pacman-window-hidden');
-                }, 300);
-
-                // Notificación en el HUD si está activo
-                if (cyberpunkHUD && cyberpunkHUD.isActive) {
-                    cyberpunkHUD.showNotification('PAC-HACK TERMINATED');
-                }
-            }
-        }
-
-        // Event listeners
-        if (closePacmanBtn) {
-            closePacmanBtn.addEventListener('click', closePacmanWindow);
-        }
-
-        // Cerrar al hacer click fuera de la ventana
-        if (pacmanWindow) {
-            pacmanWindow.addEventListener('click', function(e) {
-                if (e.target === pacmanWindow) {
-                    closePacmanWindow();
-                }
-            });
-        }
-
-        // Cerrar con tecla Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && pacmanWindow && !pacmanWindow.classList.contains('pacman-window-hidden')) {
-                closePacmanWindow();
-            }
-        });
-        
-    // (DOMContentLoaded original merged)
-
         // === SCRIPT 5: CONTROLADOR DIRECTO DE APUESTAS - ARENA PAC-HACK PvP ===
-        // Botones que abren directamente el juego Pac-Man (único disponible)
         const betArkaButton = document.getElementById('make-bet-arkahack');
         const betSpaceButton = document.getElementById('make-bet-spacebreaker');
         const betPacHackButton = document.getElementById('make-bet-pachack');
@@ -4162,6 +4170,10 @@ btn.addEventListener('click', toggleMutePlay);
 
     <!-- Gemini Chat Widget (icono flotante personalizado) -->
     <style>
+        @keyframes rivalBlink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
         #gemini-chat-widget { display: none; }
         #gemini-chat-fab {
             position: fixed;
@@ -4826,7 +4838,7 @@ btn.addEventListener('click', toggleMutePlay);
            FREE PLAY ARENA — Overlay fullscreen
         ══════════════════════════════════════ */
         /* ══ FREE PLAY ARENA — 3 columnas ══ */
-        #freeplay-arena {
+        #t2eplay-arena {
             display: none;
             position: fixed;
             inset: 0;
@@ -4834,7 +4846,7 @@ btn.addEventListener('click', toggleMutePlay);
             flex-direction: row;  /* 3 columnas — por encima de topbar y HUD */
             background: #030a06;
         }
-        #freeplay-arena.show { display: flex; }
+        #t2eplay-arena.show { display: flex; }
 
         /* Columna izquierda — TIMER + SCORE */
         .fp-col-left {
@@ -5145,7 +5157,7 @@ btn.addEventListener('click', toggleMutePlay);
         @media (max-width: 768px) {
 
             /* Arena: columna única con scroll */
-            #freeplay-arena {
+            #t2eplay-arena {
                 flex-direction: column !important;
                 overflow-y: auto !important;
             }
