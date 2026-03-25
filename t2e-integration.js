@@ -159,21 +159,24 @@ class T2EIntegration {
      * Configura listeners para aceptar apuestas del lobby
      */
     setupBetAcceptanceListeners() {
-        // Usar event delegation para botones dinámicos
-        const betsOffersList = document.querySelector('.bets-offers-list');
-        if (betsOffersList) {
-            betsOffersList.addEventListener('click', (e) => {
+        // Usar event delegation para botones din\u00e1micos (modal + lobby flotante)
+        const containers = [
+            document.querySelector('.bets-offers-list'),
+            document.getElementById('lobby-float-list')
+        ];
+        containers.forEach(container => {
+            if (!container) return;
+            container.addEventListener('click', (e) => {
                 if (e.target.classList.contains('bet-accept-button')) {
                     e.preventDefault();
                     const betItem = e.target.closest('.bet-offer-item');
                     if (betItem) {
-                        // Extraer información de la apuesta del DOM
                         const betData = this.extractBetDataFromDOM(betItem);
                         this.acceptBetFromLobby(betData);
                     }
                 }
             });
-        }
+        });
     }
 
     /**
@@ -196,7 +199,11 @@ class T2EIntegration {
         // Listener para apuestas aceptadas
         this.bettingEngine.addBetListener('betAccepted', (bet) => {
             this.removeBetFromLobby(bet.id);
-            this.showNotification('Apuesta aceptada exitosamente!', 'success');
+            this.showNotification('\u00a1Apuesta aceptada! Iniciando partida...', 'success');
+            // Abrir arena en AMBOS dispositivos (creador y aceptador)
+            if (typeof fpOpenArena === 'function') {
+                setTimeout(() => fpOpenArena(bet.id), 800);
+            }
         });
 
         // Listener para apuestas completadas
@@ -396,23 +403,8 @@ class T2EIntegration {
             // Aceptar apuesta
             await this.bettingEngine.acceptBet(betData.id);
 
-            // Ocultar loading
+            // Ocultar loading — la apertura de arena la dispara el listener 'betAccepted'
             this.hideLoading();
-
-            // Mostrar éxito
-            this.showNotification('¡Apuesta aceptada exitosamente!', 'success');
-
-            // Lanzar Pac-Hack directamente con el betId aceptado
-            const acceptedBetId = betData.id;
-            setTimeout(() => {
-                console.log('🎮 Lanzando Pac-Hack (aceptar apuesta) con betId:', acceptedBetId);
-                if (typeof fpOpenArena === 'function') {
-                    fpOpenArena(acceptedBetId);
-                } else {
-                    const startBetaBtn = document.getElementById('start-beta-button');
-                    if (startBetaBtn) startBetaBtn.click();
-                }
-            }, 1200);
 
         } catch (error) {
             this.hideLoading();
