@@ -38,9 +38,9 @@
     </script>
 
     <!-- T2E Web3 System -->
-    <script src="web3-config.js?v=20260325l"></script>
-    <script src="betting-engine.js?v=20260325l"></script>
-    <script src="t2e-integration.js?v=20260325l"></script>
+    <script src="web3-config.js?v=20260325m"></script>
+    <script src="betting-engine.js?v=20260325m"></script>
+    <script src="t2e-integration.js?v=20260325m"></script>
 </head>
 <body>
 
@@ -1354,6 +1354,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (vrdEl) vrdEl.classList.add('show');
+
+        // Hide REVANCHA in bet mode — retry is free play only
+        var retryBtn = document.getElementById('vrd-retry');
+        if (retryBtn) retryBtn.style.display = fpState.betMode ? 'none' : '';
 
         // Animar la barra de caos con el nivel REAL guardado en fpState
         setTimeout(function() {
@@ -5725,15 +5729,19 @@ btn.addEventListener('click', toggleMutePlay);
             display: none;
             position: fixed; inset: 0; z-index: 9997;
             background: rgba(3,5,10,0.96);
-            align-items: flex-start; justify-content: flex-start;
+            /* Desktop: centre all content */
+            align-items: center; justify-content: center;
             flex-direction: column; gap: 20px;
             text-align: center; padding: 30px 20px;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
-        /* Centre verdict content when space allows */
-        #fp-verdict > * { width: 100%; }
-        #fp-verdict > .vrd-buttons { margin: auto 0 0; }
+        /* Centre verdict content */
+        #fp-verdict > * { width: 100%; max-width: 560px; }
+        /* On mobile where content may overflow, push to top so scroll works */
+        @media (max-height: 680px) {
+            #fp-verdict { align-items: flex-start; justify-content: flex-start; }
+        }
         #fp-verdict.show { display: flex; }
 
         /* Scanlines sobre el veredicto */
@@ -6312,17 +6320,5 @@ btn.addEventListener('click', toggleMutePlay);
 })();
 </script>
 
-<!-- Controlador del botón flotante de zorzal para música -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const musicFloatBtn = document.getElementById('music-float-btn');
-    const tangoAudio = document.getElementById('tango-audio');
-    if (musicFloatBtn && tangoAudio) {
-        function updateMusicBtn() {
-            if (tangoAudio.paused) {
-                musicFloatBtn.classList.remove('playing');
-                musicFloatBtn.classList.add('paused');
-            } else {
-                musicFloatBtn.classList.remove('paused');
 </body>
 </html>
