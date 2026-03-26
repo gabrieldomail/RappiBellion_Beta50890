@@ -38,9 +38,9 @@
     </script>
 
     <!-- T2E Web3 System -->
-    <script src="web3-config.js?v=20260325r"></script>
-    <script src="betting-engine.js?v=20260325r"></script>
-    <script src="t2e-integration.js?v=20260325r"></script>
+    <script src="web3-config.js?v=20260325s"></script>
+    <script src="betting-engine.js?v=20260325s"></script>
+    <script src="t2e-integration.js?v=20260325s"></script>
 </head>
 <body>
 
@@ -1068,6 +1068,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const _chatWidget = document.getElementById('gemini-chat-widget');
         if (_chatFab)    _chatFab.style.display = 'none';
         if (_chatWidget) _chatWidget.style.display = 'none';
+        // Ocultar lobby float mientras la arena está activa
+        if (typeof window.setArenaActive === 'function') window.setArenaActive(true);
         // Bloquear scroll de la página mientras el juego está activo
         document.body.style.overflow = 'hidden';
         document.body.style.touchAction = 'none';
@@ -1474,6 +1476,8 @@ function fpCloseArena() {
         // Restaurar scroll al salir del juego
         document.body.style.overflow = '';
         document.body.style.touchAction = '';
+        // Restaurar visibilidad del lobby float
+        if (typeof window.setArenaActive === 'function') window.setArenaActive(false);
         // Liberar WakeLock
         if (window._fpWakeLock) { window._fpWakeLock.release(); window._fpWakeLock = null; }
         // Restaurar chatbot
@@ -4565,6 +4569,76 @@ btn.addEventListener('click', toggleMutePlay);
         #gemini-chat-fab:hover {
             transform: scale(1.1);
         }
+        /* ══ LOBBY FLOAT WINDOW ═══════════════════════════════════════════════ */
+        #lobby-float-window {
+            position: fixed;
+            bottom: 120px;
+            right: 24px;
+            z-index: 9990;
+            width: 300px;
+            font-family: 'Courier New', monospace;
+            border: 1px solid var(--color-primario, #ff00ff);
+            border-radius: 6px;
+            background: rgba(3,5,10,0.97);
+            box-shadow: 0 0 18px rgba(255,0,255,0.25);
+        }
+        #lobby-float-window.lobby-float-hidden { display: none !important; }
+
+        .lobby-float-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            background: var(--color-primario, #ff00ff);
+            color: #000;
+            font-size: 0.68em;
+            letter-spacing: 1px;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 5px 5px 0 0;
+        }
+        .lobby-float-header:hover { filter: brightness(1.15); }
+
+        .lobby-float-controls { display: flex; gap: 4px; }
+        .lobby-float-btn {
+            background: rgba(0,0,0,0.3);
+            border: none;
+            color: #000;
+            font-size: 0.9em;
+            width: 20px; height: 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .lobby-float-btn:hover { background: rgba(0,0,0,0.5); }
+
+        .lobby-float-body {
+            max-height: 260px;
+            overflow-y: auto;
+            padding: 10px;
+            color: var(--color-texto, #e0e0e0);
+            font-size: 0.75em;
+        }
+        /* Minimised: body hidden */
+        #lobby-float-window.minimized .lobby-float-body { display: none !important; }
+        #lobby-float-window.minimized { border-radius: 6px; }
+        #lobby-float-window.minimized .lobby-float-header { border-radius: 5px; }
+
+        /* Hide lobby float while arena is active */
+        body.arena-active #lobby-float-window { display: none !important; }
+
+        /* Bet items inside float */
+        #lobby-float-list .bet-offer-item {
+            border-bottom: 1px solid rgba(255,0,255,0.15);
+            padding: 6px 0;
+            display: flex; flex-direction: column; gap: 2px;
+        }
+        #lobby-float-list .bet-offer-item:last-child { border-bottom: none; }
+        #lobby-float-list .bet-offer-item button {
+            margin-top: 4px; padding: 4px 8px;
+            font-size: 0.85em; cursor: pointer;
+        }
+
 
         /* Emoji */
         #gemini-chat-fab::before {
@@ -6302,38 +6376,53 @@ btn.addEventListener('click', toggleMutePlay);
 <script>
 (function() {
     document.addEventListener('DOMContentLoaded', function() {
-        var win = document.getElementById('lobby-float-window');
-        var minBtn = document.getElementById('lobby-float-minimize');
+        var win      = document.getElementById('lobby-float-window');
+        var minBtn   = document.getElementById('lobby-float-minimize');
         var closeBtn = document.getElementById('lobby-float-close');
-        var header = document.getElementById('lobby-float-drag');
+        var header   = document.getElementById('lobby-float-drag');
 
-        function toggleMinimize() {
+        function expand() {
             if (!win) return;
-            var minimized = win.classList.toggle('minimized');
-            if (minBtn) minBtn.textContent = minimized ? '■' : '─';
+            win.classList.remove('minimized');
+            if (minBtn) minBtn.textContent = '─';
+        }
+        function collapse() {
+            if (!win) return;
+            win.classList.add('minimized');
+            if (minBtn) minBtn.textContent = '■';
+        }
+        function toggleMinimize() {
+            if (win && win.classList.contains('minimized')) expand();
+            else collapse();
         }
 
-        if (header) {
-            header.addEventListener('click', toggleMinimize);
-        }
-        if (minBtn) {
-            minBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                toggleMinimize();
-            });
-        }
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                if (win) win.classList.add('lobby-float-hidden');
-            });
-        }
+        if (header)  header.addEventListener('click', toggleMinimize);
+        if (minBtn)  minBtn.addEventListener('click', function(e) { e.stopPropagation(); collapse(); });
+        if (closeBtn) closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (win) win.classList.add('lobby-float-hidden');
+        });
 
+        // showLobbyFloat: appear MINIMISED (header only).
+        // User clicks header to reveal bet list.
         window.showLobbyFloat = function() {
-            if (win) win.classList.remove('lobby-float-hidden');
+            if (!win) return;
+            if (document.body.classList.contains('arena-active')) return;
+            win.classList.remove('lobby-float-hidden');
+            win.classList.add('minimized');
+            if (minBtn) minBtn.textContent = '■';
         };
         window.hideLobbyFloat = function() {
             if (win) win.classList.add('lobby-float-hidden');
+        };
+        // Called by arena open/close to suppress the lobby during gameplay
+        window.setArenaActive = function(active) {
+            if (active) {
+                document.body.classList.add('arena-active');
+                if (win) win.classList.add('lobby-float-hidden');
+            } else {
+                document.body.classList.remove('arena-active');
+            }
         };
     });
 })();
