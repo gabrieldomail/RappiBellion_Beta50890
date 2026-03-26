@@ -159,12 +159,10 @@
             const _progress   = Math.min((_elapsed + _offsetSecs) / _rampSecs, 1);
             const _curve      = Math.pow(_progress, 2.5);
             const _divisor    = _maxDiv - (_curve * (_maxDiv - _minDiv));
-            let   speed       = time / _divisor;
-            const _speedCap   = 5 + (_curve * 6);
-
-            if (speed > _speedCap) {
-                return requestAnimation();
-            }
+            // Clamp speed instead of recursing — recursive calls at high chaos
+            // caused call-stack growth that made Pacman disappear and freeze the loop.
+            const _speedCap = 4 + (_curve * 4); // progressive cap: 4 at 0% chaos → 8 at 100%
+            let speed = Math.min(time / _divisor, _speedCap);
 
             // Notificar nivel de caos al HUD padre
             // Actualizar chaos level cada ~2 segundos (no en cada frame)
@@ -528,6 +526,14 @@
                 }
             });
         }
+
+        // PvP BOOST: frighten ghosts when HACK IT button is used
+        // pvp-bridge.js dispatches this event via document.dispatchEvent(new CustomEvent("pvpBoost"))
+        document.addEventListener('pvpBoost', function() {
+            if (display.isPlaying() && ghosts && blob) {
+                ghosts.frighten(blob);
+            }
+        });
     }
     
     /**

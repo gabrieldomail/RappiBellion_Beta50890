@@ -38,9 +38,9 @@
     </script>
 
     <!-- T2E Web3 System -->
-    <script src="web3-config.js?v=20260325k"></script>
-    <script src="betting-engine.js?v=20260325k"></script>
-    <script src="t2e-integration.js?v=20260325k"></script>
+    <script src="web3-config.js?v=20260325l"></script>
+    <script src="betting-engine.js?v=20260325l"></script>
+    <script src="t2e-integration.js?v=20260325l"></script>
 </head>
 <body>
 
@@ -1443,6 +1443,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (bUsed >= bLimit) return;
     var btn = document.getElementById('fp-boost-btn');
     if (btn && btn.disabled) return;
+    // BUG FIX: disable immediately to prevent rapid-click race condition.
+    // The BOOST_USED echo from the iframe will re-enable if boosts remain.
+    if (btn) btn.disabled = true;
     // Trigger in iframe
     if (fpIframe && fpIframe.contentWindow) {
         fpIframe.contentWindow.postMessage({ type: 'TRIGGER_BOOST' }, '*');
@@ -1450,7 +1453,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Visual flash feedback
     if (btn) {
         btn.classList.add('fp-boost-firing');
-        setTimeout(function() { btn.classList.remove('fp-boost-firing'); }, 200);
+        setTimeout(function() { btn.classList.remove('fp-boost-firing'); }, 300);
     }
 }
 
@@ -1540,7 +1543,7 @@ function fpCloseArena() {
                 myBEl.textContent = bRemain + '/' + bLimit;
                 myBEl.style.color = bRemain === 0 ? '#ff4444' : 'var(--color-caos-amarillo)';
             }
-            // Disable button if no boosts left
+            // Re-enable/disable button based on real remaining count
             var boostBtn = document.getElementById('fp-boost-btn');
             if (boostBtn) {
                 boostBtn.disabled = bRemain <= 0;
@@ -1549,13 +1552,9 @@ function fpCloseArena() {
                 window._fbDB.ref('t2e_bets/' + fpState.betId + '/boosts/' + fpState.myRole)
                     .set(fpState.boostsUsed);
             }
-            // Notify rival iframe about boost
-            if (fpIframe && fpIframe.contentWindow) {
-                fpIframe.contentWindow.postMessage({
-                    type: 'RIVAL_BOOST',
-                    boostsRemaining: Math.max(0, (fpState.boostLimit||0) - fpState.boostsUsed)
-                }, '*');
-            }
+            // NOTE: RIVAL_BOOST postMessage removed — the rival's device gets the boost
+            // count update via Firebase (rivalBoostsRef listener). Sending RIVAL_BOOST to
+            // our own iframe (fpIframe) was incorrect and showed the warning on the wrong side.
         }
     });
 

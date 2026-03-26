@@ -162,10 +162,19 @@
   // O conectarla manualmente en Food.js / Fruit.js
   window.PvPBridge = {
 
-    // Llamar cuando se come un power pellet
+    // Llamar cuando se usa un boost (HACK IT button or ate a power pellet).
+    // Also triggers fright mode in the pac-hack engine so it has a real game effect.
     onPowerPellet: function() {
       if (matchEnded) return;
       boostsUsed++;
+      // === REAL GAME EFFECT: frighten all ghosts ====
+      // Access the Ghosts singleton that Init.js creates and call frighten()
+      try {
+        // The ghosts variable is local to Init.js IIFE; we trigger via a custom event
+        // that Init.js listens for, OR we simulate eating an energizer food tile.
+        // Simplest reliable approach: dispatch a custom "pvpBoost" event on document.
+        document.dispatchEvent(new CustomEvent('pvpBoost', { detail: { boostsUsed: boostsUsed } }));
+      } catch(e) {}
       sendToParent({
         type: 'BOOST_USED',
         player: PLAYER,
