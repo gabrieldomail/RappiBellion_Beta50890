@@ -14,6 +14,11 @@ class BettingEngine {
         this.userBets = new Map(); // Apuestas del usuario actual
         this.betListeners = new Map(); // Event listeners para actualizaciones
         this.isInitialized = false;
+        // REGRESSION FIX: track betIds already fired as 'betAccepted' to prevent re-fire
+        this._processedMatchedBets = new Set();
+        // REGRESSION FIX: timestamp when listenFirebaseBets() is called — used to ignore
+        // historical 'open' bets that predate this session (orphaned from previous visits)
+        this._listenStartedAt = null;
 
         // Configuración de juegos
         this.GAME_CONFIG = {
@@ -833,10 +838,17 @@ class BettingEngine {
             this.activeBets.delete(betId);
             this.userBets.set(betId, bet);
 
-            // Notificar actualización
+            // REGRESSION FIX: mark as processed BEFORE writing to Firebase so the
+            // child_changed listener triggered by the Firebase .update() below
+            // does NOT re-fire betAccepted a second time on the acceptor device.
+            this._processedMatchedBets.add(betId);
+
+            // Notificar actualización — fires fpOpenArena on THIS device
             this.notifyBetUpdate('betAccepted', bet);
 
             // Actualizar Firebase para sincronización cross-device
+            // This write will trigger child_changed on the CREATOR device (P1),
+            // which will fire betAccepted there exactly once (guarded by _processedMatchedBets).
             const fbDB = window._fbDB;
             if (fbDB) {
                 fbDB.ref('t2e_bets/' + betId).update({
@@ -901,12 +913,23 @@ class BettingEngine {
         const fbDB = window._fbDB;
         if (!fbDB) return;
 
+        // REGRESSION FIX: record when we start listening so we can ignore stale bets
+        this._listenStartedAt = Date.now();
+        const STALE_THRESHOLD_MS = 30 * 60 * 1000; // 30 minutes
+
         // Apuesta nueva aparece en Firebase
         fbDB.ref('t2e_bets').on('child_added', snapshot => {
             const b = snapshot.val();
             if (!b || b.status !== 'open') return;
             // No duplicar apuestas propias que ya están en activeBets
             if (this.activeBets.has(b.id)) return;
+            // REGRESSION FIX: skip stale 'open' bets from previous sessions
+            // (Firebase delivers ALL existing 'open' nodes on first attach)
+            const betAge = Date.now() - (b.createdAt || 0);
+            if (betAge > STALE_THRESHOLD_MS) {
+                console.log('[Firebase] Ignorando apuesta open huerfana (>30min):', b.id);
+                return;
+            }
             const bet = {
                 id: b.id,
                 creator: b.creator,
@@ -931,6 +954,14 @@ class BettingEngine {
             const existing = this.activeBets.get(b.id);
             if (b.status === 'matched') {
                 this.activeBets.delete(b.id);
+
+                // REGRESSION FIX: deduplicate — only fire betAccepted ONCE per betId per session.
+                // Without this guard, every Firebase write to the bet node (e.g. ready/p1=true,
+                // ready/p2=true, scores/p1, scores/p2 …) triggers another child_changed with
+                // status='matched', causing an infinite fpOpenArena loop.
+                if (this._processedMatchedBets.has(b.id)) return;
+                this._processedMatchedBets.add(b.id);
+
                 // FIX Bug 4: si existing ya fue removido de activeBets (e.g. el propio aceptador),
                 // reconstruir el objeto bet desde el snapshot para notificar igual.
                 const bet = existing || {

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -38,9 +38,9 @@
     </script>
 
     <!-- T2E Web3 System -->
-    <script src="web3-config.js?v=20260325f"></script>
-    <script src="betting-engine.js?v=20260325f"></script>
-    <script src="t2e-integration.js?v=20260325f"></script>
+    <script src="web3-config.js?v=20260325g"></script>
+    <script src="betting-engine.js?v=20260325g"></script>
+    <script src="t2e-integration.js?v=20260325g"></script>
 </head>
 <body>
 
@@ -841,6 +841,9 @@ document.addEventListener('DOMContentLoaded', function() {
         _fpSyncRefs = [];
     }
 
+    // REGRESSION FIX: tracks betIds already initialized this session
+    var _fpSyncInitiatedBets = new Set();
+
     async function _fpSetupBetSync(betId) {
         const fbDB = window._fbDB;
         if (!fbDB || !betId) {
@@ -848,6 +851,15 @@ document.addEventListener('DOMContentLoaded', function() {
             fpStartCountdown();
             return;
         }
+
+        // REGRESSION FIX: only run once per betId. Firebase writes inside this function
+        // (betRef.child('ready/X').set(true)) trigger child_changed -> betAccepted ->
+        // fpOpenArena -> _fpSetupBetSync again = infinite loop without this guard.
+        if (_fpSyncInitiatedBets.has(betId)) {
+            console.log('[T2E Sync] _fpSetupBetSync ya ejecutado para betId:', betId);
+            return;
+        }
+        _fpSyncInitiatedBets.add(betId);
 
         const statusEl_pre = document.getElementById('rival-status');
         if (statusEl_pre) statusEl_pre.textContent = '[ RESOLVIENDO ROL... ]';
@@ -984,7 +996,19 @@ document.addEventListener('DOMContentLoaded', function() {
     if (ctrlSwipeBtn) ctrlSwipeBtn.addEventListener('click', () => fpStartWithControl('swipe'));
     if (ctrlDpadBtn)  ctrlDpadBtn.addEventListener('click',  () => fpStartWithControl('dpad'));
 
+    // REGRESSION FIX: tracks which betId the arena was last opened for
+    var _fpArenaOpenedForBet = null;
+
     function fpOpenArena(betId) {
+        // REGRESSION FIX: re-entrancy guard - if arena already open for this betId, bail out.
+        // Prevents infinite loop: betAccepted -> fpOpenArena -> _fpSetupBetSync -> Firebase write
+        // -> child_changed -> betAccepted -> fpOpenArena -> ..._
+        if (betId && betId === _fpArenaOpenedForBet && fpArena && fpArena.classList.contains('show')) {
+            console.log('[fpOpenArena] Arena ya abierta para betId:', betId, '- ignorando duplicado.');
+            return;
+        }
+        if (betId) _fpArenaOpenedForBet = betId;
+
         const dur = parseInt(fpDurSelect ? fpDurSelect.value : 600);
         fpState = { timeLeft:dur, totalTime:dur, running:false, ended:false, interval:null, score:0, chaosLevel:0,
                     betId: betId || null, betMode: !!betId };
@@ -1385,6 +1409,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (tangoAudioFP && !isMuted) { tangoAudioFP.muted = false; }
         // Limpiar listeners Firebase de sync
         _fpCleanSyncRefs();
+        // REGRESSION FIX: reset guards so next match can open fresh
+        _fpArenaOpenedForBet = null;
+        if (typeof _fpSyncInitiatedBets !== 'undefined') _fpSyncInitiatedBets.clear();
     }
 
     function fpRestart() { clearInterval(fpState.interval); if (fpCdOverlay) fpCdOverlay.classList.remove('show'); fpOpenArena(); }
