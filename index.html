@@ -38,9 +38,9 @@
     </script>
 
     <!-- T2E Web3 System -->
-    <script src="web3-config.js?v=20260325g"></script>
-    <script src="betting-engine.js?v=20260325g"></script>
-    <script src="t2e-integration.js?v=20260325g"></script>
+    <script src="web3-config.js?v=20260325h"></script>
+    <script src="betting-engine.js?v=20260325h"></script>
+    <script src="t2e-integration.js?v=20260325h"></script>
 </head>
 <body>
 
@@ -505,6 +505,15 @@
             </div>
         </div>
 
+        <!-- BOOSTS COUNTER (bet mode only) -->
+        <div id="fp-boost-wrap" style="display:none; width:100%; margin-top:12px;">
+            <div style="font-size:10px; letter-spacing:3px; color:#888;
+                        font-family:'Courier New',monospace; margin-bottom:4px;">// BOOSTS</div>
+            <div id="fp-boost-val"
+                 style="font-family:'Orbitron',monospace; font-size:1.5em;
+                         color:var(--color-caos-amarillo); letter-spacing:4px;">-/-</div>
+        </div>
+
     </div>
 
     <!-- COLUMNA CENTRAL: JUEGO en terminal caos -->
@@ -606,6 +615,16 @@
                 <div id="rival-status" style="font-size:10px;letter-spacing:2px;
                      color:#ff6666; font-family:'Courier New',monospace;
                      margin-top:6px;">[ JUGANDO... ]</div>
+            </div>
+
+            <!-- Boosts rival -->
+            <div style="background:rgba(255,68,68,0.08); border:1px solid rgba(255,68,68,0.3);
+                        padding:10px 12px;">
+                <div style="font-size:10px;letter-spacing:2px;color:#888;
+                            font-family:'Courier New',monospace;">BOOSTS RIVAL</div>
+                <div id="rival-boost-val"
+                     style="font-family:'Orbitron',monospace; font-size:1.5em;
+                             color:#ff4444; letter-spacing:4px; margin-top:4px;">-/-</div>
             </div>
 
             <!-- Timer rival espejado -->
@@ -910,6 +929,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        // BOOSTS: initialize display from bet.boostLimit
+        var betBoostLimit = (bet && bet.boostLimit) ? parseInt(bet.boostLimit) : null;
+        if (betBoostLimit !== null) {
+            fpState.boostLimit = betBoostLimit;
+            fpState.boostsUsed = 0;
+            var myBoostEl    = document.getElementById('fp-boost-val');
+            var boostWrapEl  = document.getElementById('fp-boost-wrap');
+            if (myBoostEl)   myBoostEl.textContent = betBoostLimit + '/' + betBoostLimit;
+            if (boostWrapEl) boostWrapEl.style.display = 'block';
+            var rivalBoostEl = document.getElementById('rival-boost-val');
+            if (rivalBoostEl) rivalBoostEl.textContent = betBoostLimit + '/' + betBoostLimit;
+        }
+
         // BUG5 FIX: actualizar iframe con rol real (inicialmente cargado con ?player=p1)
         const fpIframeSync = document.getElementById('fp-iframe');
         if (fpIframeSync && fpIframeSync.src && fpIframeSync.src.includes('pac-hack/game.html')) {
@@ -964,6 +996,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 rivalScoreEl.style.color = score > fpState.score ? '#ff4444' : '#00ff41';
             }
         });
+
+        // Subscribe to rival boost usage in Firebase
+        if (typeof betBoostLimit !== 'undefined' && betBoostLimit !== null) {
+            var rivalBoostsRef = betRef.child('boosts/' + fpState.rivalRole);
+            _fpSyncRefs.push(rivalBoostsRef);
+            rivalBoostsRef.on('value', function(snap) {
+                var used = snap.val();
+                if (used === null || used === undefined) return;
+                var remaining = Math.max(0, betBoostLimit - used);
+                var rBEl = document.getElementById('rival-boost-val');
+                if (rBEl) rBEl.textContent = remaining + '/' + betBoostLimit;
+            });
+        }
     }
 
     const fpControlSelector = document.getElementById('fp-control-selector');
@@ -1461,6 +1506,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 else if (level < 60) label.style.color = 'var(--color-caos-amarillo)';
                 else if (level < 80) label.style.color = 'var(--color-caos-rosa)';
                 else                 label.style.color = 'var(--color-primario)';
+            }
+        }
+        // BOOST_USED: boost used by this player — update display and publish to Firebase
+        if (d.type === 'BOOST_USED') {
+            fpState.boostsUsed = (fpState.boostsUsed || 0) + 1;
+            var bLimit  = fpState.boostLimit || 0;
+            var bRemain = Math.max(0, bLimit - fpState.boostsUsed);
+            var myBEl = document.getElementById('fp-boost-val');
+            if (myBEl && bLimit > 0) {
+                myBEl.textContent = bRemain + '/' + bLimit;
+                myBEl.style.color = bRemain === 0 ? '#ff4444' : 'var(--color-caos-amarillo)';
+            }
+            if (fpState.betMode && fpState.betId && fpState.myRole && window._fbDB) {
+                window._fbDB.ref('t2e_bets/' + fpState.betId + '/boosts/' + fpState.myRole)
+                    .set(fpState.boostsUsed);
             }
         }
     });
