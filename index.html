@@ -38,9 +38,9 @@
     </script>
 
     <!-- T2E Web3 System -->
-    <script src="web3-config.js?v=20260325h"></script>
-    <script src="betting-engine.js?v=20260325h"></script>
-    <script src="t2e-integration.js?v=20260325h"></script>
+    <script src="web3-config.js?v=20260325i"></script>
+    <script src="betting-engine.js?v=20260325i"></script>
+    <script src="t2e-integration.js?v=20260325i"></script>
 </head>
 <body>
 
@@ -512,6 +512,18 @@
             <div id="fp-boost-val"
                  style="font-family:'Orbitron',monospace; font-size:1.5em;
                          color:var(--color-caos-amarillo); letter-spacing:4px;">-/-</div>
+            <button id="fp-boost-btn"
+                    onclick="fpFireBoost()"
+                    style="margin-top:10px; width:100%; padding:8px 0;
+                            font-family:'Orbitron',monospace; font-size:0.78em;
+                            letter-spacing:3px; font-weight:700;
+                            background:transparent;
+                            border:2px solid var(--color-caos-amarillo);
+                            color:var(--color-caos-amarillo);
+                            cursor:pointer; transition:all .15s;
+                            text-shadow:0 0 8px var(--color-caos-amarillo);">
+                ⚡ HACK IT
+            </button>
         </div>
 
     </div>
@@ -1432,7 +1444,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function fpCloseArena() {
+    function fpFireBoost() {
+    if (!fpState.betMode) return;
+    var bLimit  = fpState.boostLimit || 0;
+    var bUsed   = fpState.boostsUsed || 0;
+    if (bUsed >= bLimit) return;
+    var btn = document.getElementById('fp-boost-btn');
+    if (btn && btn.disabled) return;
+    // Trigger in iframe
+    if (fpIframe && fpIframe.contentWindow) {
+        fpIframe.contentWindow.postMessage({ type: 'TRIGGER_BOOST' }, '*');
+    }
+    // Visual flash feedback
+    if (btn) {
+        btn.style.background = 'var(--color-caos-amarillo)';
+        btn.style.color = '#000';
+        setTimeout(function() {
+            btn.style.background = 'transparent';
+            btn.style.color = 'var(--color-caos-amarillo)';
+        }, 200);
+    }
+}
+
+function fpCloseArena() {
         clearInterval(fpState.interval);
         if (fpArena)  fpArena.classList.remove('show');
         if (fpIframe) fpIframe.src = '';
@@ -1518,9 +1552,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 myBEl.textContent = bRemain + '/' + bLimit;
                 myBEl.style.color = bRemain === 0 ? '#ff4444' : 'var(--color-caos-amarillo)';
             }
+            // Disable button if no boosts left
+            var boostBtn = document.getElementById('fp-boost-btn');
+            if (boostBtn) {
+                boostBtn.disabled = bRemain <= 0;
+                boostBtn.style.opacity = bRemain <= 0 ? '0.35' : '1';
+                boostBtn.style.cursor = bRemain <= 0 ? 'not-allowed' : 'pointer';
+            }
             if (fpState.betMode && fpState.betId && fpState.myRole && window._fbDB) {
                 window._fbDB.ref('t2e_bets/' + fpState.betId + '/boosts/' + fpState.myRole)
                     .set(fpState.boostsUsed);
+            }
+            // Notify rival iframe about boost
+            if (fpIframe && fpIframe.contentWindow) {
+                fpIframe.contentWindow.postMessage({
+                    type: 'RIVAL_BOOST',
+                    boostsRemaining: Math.max(0, (fpState.boostLimit||0) - fpState.boostsUsed)
+                }, '*');
             }
         }
     });

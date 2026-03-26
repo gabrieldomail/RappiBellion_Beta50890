@@ -218,6 +218,11 @@
         showRivalBoostWarning(data.boostsRemaining);
         break;
 
+      // El HUD activó el boost manualmente (botón HACK IT)
+      case 'TRIGGER_BOOST':
+        if (!matchEnded) window.PvPBridge.onPowerPellet();
+        break;
+
       // El rival cambió su score (referencia visual)
       case 'RIVAL_SCORE':
         // Opcional: mostrar el score rival en algún lugar del canvas
