@@ -38,9 +38,9 @@
     </script>
 
     <!-- T2E Web3 System -->
-    <script src="web3-config.js?v=20260325n"></script>
-    <script src="betting-engine.js?v=20260325n"></script>
-    <script src="t2e-integration.js?v=20260325n"></script>
+    <script src="web3-config.js?v=20260325o"></script>
+    <script src="betting-engine.js?v=20260325o"></script>
+    <script src="t2e-integration.js?v=20260325o"></script>
 </head>
 <body>
 
@@ -4156,18 +4156,11 @@ btn.addEventListener('click', toggleMutePlay);
             }
         }
 
-        // Add click event to button with toggle functionality
-        if (connectWalletButton) {
-            connectWalletButton.addEventListener('click', function() {
-                console.log('🖱️ Botón clickeado, estado actual:', isConnected);
-                if (isConnected) {
-                    disconnectWallet();
-                } else {
-                    connectWallet();
-                }
-            });
-            console.log('✅ Event listener del botón configurado');
-        } else {
+        // NOTE: click handler managed by disclaimer block — see connectWalletBtn listener above.
+        // Calling connectWallet() here directly would bypass the disclaimer gate.
+        // disconnectWallet is exposed so the disclaimer block can call it on logout.
+        window._web3DisconnectWallet = disconnectWallet;
+        if (!connectWalletButton) {
             console.error('❌ Botón connectWalletButton no encontrado');
         }
 
