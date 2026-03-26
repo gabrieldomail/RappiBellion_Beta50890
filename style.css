@@ -4998,3 +4998,39 @@ footer a {
     }
     #lobby-float-window.minimized { width: calc(100vw - 20px); }
 }
+
+/* ── BOOST BUTTON (Arena) ── */
+#fp-boost-btn {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px 0;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.78em;
+    letter-spacing: 4px;
+    font-weight: 700;
+    background: transparent;
+    border: 2px solid var(--color-caos-amarillo);
+    color: var(--color-caos-amarillo);
+    cursor: pointer;
+    text-shadow: 0 0 10px var(--color-caos-amarillo);
+    box-shadow: 0 0 8px rgba(255, 220, 0, 0.3);
+    transition: background 0.15s, color 0.15s, opacity 0.15s;
+    animation: pulse 2s ease-in-out infinite;
+}
+#fp-boost-btn:hover:not(:disabled) {
+    background: var(--color-caos-amarillo);
+    color: #000;
+    box-shadow: 0 0 18px rgba(255, 220, 0, 0.7);
+}
+#fp-boost-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    animation: none;
+    text-shadow: none;
+    box-shadow: none;
+}
+#fp-boost-btn.fp-boost-firing {
+    background: var(--color-caos-amarillo) !important;
+    color: #000 !important;
+    animation: none;
+}
