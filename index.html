@@ -38,9 +38,9 @@
     </script>
 
     <!-- T2E Web3 System -->
-    <script src="web3-config.js?v=20260325e"></script>
-    <script src="betting-engine.js?v=20260325e"></script>
-    <script src="t2e-integration.js?v=20260325e"></script>
+    <script src="web3-config.js?v=20260325f"></script>
+    <script src="betting-engine.js?v=20260325f"></script>
+    <script src="t2e-integration.js?v=20260325f"></script>
 </head>
 <body>
 
@@ -849,39 +849,60 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Determinar rol SINCRONICAMENTE desde el DOM (ya conectado) sin await que retrase
+        const statusEl_pre = document.getElementById('rival-status');
+        if (statusEl_pre) statusEl_pre.textContent = '[ RESOLVIENDO ROL... ]';
+        // BUG3 FIX: resolver rol con await completo antes de suscribir nada
         const engine = window.BettingEngine;
-        const bet = engine ? engine.activeBets.get(betId) : null;
+        // BUG2 FIX: buscar en activeBets Y userBets (P2 ya movio la apuesta a userBets tras aceptar)
+        const bet = (engine ? engine.activeBets.get(betId) : null)
+                 || (engine ? engine.userBets.get(betId)   : null);
         let myRole = 'p1';
         try {
-            const walletEl = document.getElementById('wallet-address');
-            const cachedAddr = walletEl ? walletEl.textContent.trim() : '';
-            if (bet && bet.creator && cachedAddr) {
-                const creatorShort = bet.creator.slice(0,6).toLowerCase();
-                const cachedShort  = cachedAddr.slice(0,6).toLowerCase();
-                myRole = creatorShort === cachedShort ? 'p1' : 'p2';
-            }
-        } catch(e) {}
-
-        // Refinar con direccion completa en background (no bloquea)
-        (async function() {
-            try {
-                const userAddr = await window.Web3Config.getUserAddress();
-                if (bet && bet.creator) {
-                    fpState.myRole    = bet.creator.toLowerCase() === userAddr.toLowerCase() ? 'p1' : 'p2';
-                    fpState.rivalRole = fpState.myRole === 'p1' ? 'p2' : 'p1';
-                    const rivalAddr = fpState.myRole === 'p1' ? bet.acceptor : bet.creator;
-                    if (rivalAddr) {
-                        const nickEl = document.getElementById('rival-nick');
-                        if (nickEl) nickEl.textContent = rivalAddr.slice(0,6) + '...' + rivalAddr.slice(-4);
-                    }
+            const userAddr = await window.Web3Config.getUserAddress();
+            if (bet && bet.creator) {
+                myRole = bet.creator.toLowerCase() === userAddr.toLowerCase() ? 'p1' : 'p2';
+            } else {
+                const walletEl = document.getElementById('wallet-address');
+                const cachedAddr = walletEl ? walletEl.textContent.trim() : '';
+                if (bet && bet.creator && cachedAddr) {
+                    const creatorShort = bet.creator.slice(0,6).toLowerCase();
+                    const cachedShort  = cachedAddr.replace('Direccion: ','').slice(0,6).toLowerCase();
+                    myRole = creatorShort === cachedShort ? 'p1' : 'p2';
                 }
-            } catch(e) {}
-        })();
+            }
+        } catch(eRole) {
+            console.warn('[T2E Sync] No se pudo resolver rol via Web3, usando fallback DOM');
+            try {
+                const walletEl = document.getElementById('wallet-address');
+                const cachedAddr = walletEl ? walletEl.textContent.trim() : '';
+                if (bet && bet.creator && cachedAddr) {
+                    const creatorShort = bet.creator.slice(0,6).toLowerCase();
+                    const cachedShort  = cachedAddr.replace('Direccion: ','').slice(0,6).toLowerCase();
+                    myRole = creatorShort === cachedShort ? 'p1' : 'p2';
+                }
+            } catch(e2) {}
+        }
+
+        // BUG2 FIX: buscar en activeBets Y userBets (P2 ya movio la apuesta a userBets tras aceptar)
 
         fpState.myRole    = myRole;
         fpState.rivalRole = myRole === 'p1' ? 'p2' : 'p1';
         console.log('[T2E Sync] Rol asignado:', myRole, '| Rival:', fpState.rivalRole);
+
+        // Actualizar nick del rival despues de resolver rol
+        if (bet) {
+            const rivalAddr = myRole === 'p1' ? bet.acceptor : bet.creator;
+            if (rivalAddr) {
+                const nickEl = document.getElementById('rival-nick');
+                if (nickEl) nickEl.textContent = rivalAddr.slice(0,6) + '...' + rivalAddr.slice(-4);
+            }
+        }
+
+        // BUG5 FIX: actualizar iframe con rol real (inicialmente cargado con ?player=p1)
+        const fpIframeSync = document.getElementById('fp-iframe');
+        if (fpIframeSync && fpIframeSync.src && fpIframeSync.src.includes('pac-hack/game.html')) {
+            fpIframeSync.src = 'pac-hack/game.html?player=' + myRole;
+        }
         const statusEl = document.getElementById('rival-status');
         if (statusEl) statusEl.textContent = '[ ESPERANDO RIVAL... ]';
 
@@ -1375,7 +1396,8 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('message', function(e) {
         const d = e.data;
         if (!d || !d.type) return;
-        if (d.type === 'SCORE_UPDATE' && d.player === 'p1') {
+        // BUG1 FIX: no filtrar por d.player==='p1': el iframe siempre emite 'p1'. Usar fpState.myRole para publicar.
+        if (d.type === 'SCORE_UPDATE') {
             fpState.score = d.score;
             if (fpScoreEl) fpScoreEl.textContent = String(d.score).padStart(4,'0');
             // Publicar mi score en Firebase para que el rival lo vea en tiempo real

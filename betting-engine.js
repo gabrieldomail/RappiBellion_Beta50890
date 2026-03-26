@@ -931,12 +931,25 @@ class BettingEngine {
             const existing = this.activeBets.get(b.id);
             if (b.status === 'matched') {
                 this.activeBets.delete(b.id);
-                if (existing) {
-                    existing.status = this.web3Config.BET_STATUS.ACTIVE;
-                    existing.acceptor = b.acceptor;
-                    existing.acceptedAt = new Date(b.acceptedAt);
-                    this.notifyBetUpdate('betAccepted', existing);
-                }
+                // FIX Bug 4: si existing ya fue removido de activeBets (e.g. el propio aceptador),
+                // reconstruir el objeto bet desde el snapshot para notificar igual.
+                const bet = existing || {
+                    id: b.id,
+                    creator: b.creator,
+                    acceptor: b.acceptor,
+                    amount: b.amount,
+                    timeLimit: b.timeLimit,
+                    boostLimit: b.boostLimit,
+                    gameType: b.gameType,
+                    status: this.web3Config.BET_STATUS.ACTIVE,
+                    createdAt: new Date(b.createdAt),
+                    acceptedAt: new Date(b.acceptedAt),
+                    _fromFirebase: true
+                };
+                bet.status = this.web3Config.BET_STATUS.ACTIVE;
+                bet.acceptor = b.acceptor;
+                bet.acceptedAt = new Date(b.acceptedAt);
+                this.notifyBetUpdate('betAccepted', bet);
             } else if (b.status === 'cancelled') {
                 this.activeBets.delete(b.id);
                 this.notifyBetUpdate('betCancelled', { id: b.id });
