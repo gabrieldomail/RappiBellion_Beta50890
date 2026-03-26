@@ -38,9 +38,9 @@
     </script>
 
     <!-- T2E Web3 System -->
-    <script src="web3-config.js?v=20260325p"></script>
-    <script src="betting-engine.js?v=20260325p"></script>
-    <script src="t2e-integration.js?v=20260325p"></script>
+    <script src="web3-config.js?v=20260325q"></script>
+    <script src="betting-engine.js?v=20260325q"></script>
+    <script src="t2e-integration.js?v=20260325q"></script>
 </head>
 <body>
 
@@ -1459,6 +1459,10 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.classList.add('fp-boost-firing');
         setTimeout(function() { btn.classList.remove('fp-boost-firing'); }, 300);
     }
+    // Return focus to iframe so keyboard controls keep working
+    setTimeout(function() {
+        if (fpIframe && fpIframe.contentWindow) fpIframe.contentWindow.focus();
+    }, 0);
 }
 
 function fpCloseArena() {
@@ -1575,12 +1579,34 @@ function fpCloseArena() {
     if (fpTipsClose) {
         fpTipsClose.addEventListener('click', function() {
             if (fpTipsModal) fpTipsModal.classList.remove('show');
+            setTimeout(function() { if (fpIframe && fpIframe.contentWindow) fpIframe.contentWindow.focus(); }, 0);
         });
     }
     if (fpTipsModal) {
         fpTipsModal.addEventListener('click', function(e) {
-            if (e.target === fpTipsModal) fpTipsModal.classList.remove('show');
+            if (e.target === fpTipsModal) {
+                fpTipsModal.classList.remove('show');
+                setTimeout(function() { if (fpIframe && fpIframe.contentWindow) fpIframe.contentWindow.focus(); }, 0);
+            }
         });
+    }
+
+    // ── FOCUS KEEPER ────────────────────────────────────────────
+    // The 3-column arena has clickable UI in the left/right panels.
+    // Any click outside the iframe steals DOM focus, breaking
+    // keyboard controls (arrow keys / WASD) in pac-hack.
+    // Capture mousedown on the whole arena; after event bubbles,
+    // return focus to the iframe contentWindow.
+    if (fpArena) {
+        fpArena.addEventListener('mousedown', function(e) {
+            // Only act when the game is actually running
+            if (!fpState || !fpState.running) return;
+            // If the click is already inside the iframe element, skip
+            if (fpIframe && fpIframe.contains(e.target)) return;
+            setTimeout(function() {
+                if (fpIframe && fpIframe.contentWindow) fpIframe.contentWindow.focus();
+            }, 0);
+        }, true); // capture phase so it fires before button handlers
     }
 
     // Botones del veredicto
