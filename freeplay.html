@@ -2478,5 +2478,14 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="countdown-sub" id="fp-cd-sub">PREPÁRATE PARA HACKEAR</div>
 </div>
 
+<script>
+// Auto-abrir la arena al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof fpOpenArena === 'function') {
+        fpOpenArena();
+    }
+});
+</script>
+
 </body>
 </html>
