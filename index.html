@@ -947,8 +947,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // BUG5 FIX: actualizar iframe con rol real (inicialmente cargado con ?player=p1)
         const fpIframeSync = document.getElementById('fp-iframe');
-        if (fpIframeSync && fpIframeSync.src && fpIframeSync.src.includes('pac-hack-t2e/game.html')) {
-            fpIframeSync.src = 'pac-hack-t2e/game.html?player=' + myRole;
+        if (fpIframeSync && fpIframeSync.src && fpIframeSync.src.includes('pac-hack/game.html')) {
+            fpIframeSync.src = 'pac-hack/game.html?player=' + myRole;
         }
         const statusEl = document.getElementById('rival-status');
         if (statusEl) statusEl.textContent = '[ ESPERANDO RIVAL... ]';
@@ -1093,8 +1093,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Mostrar topbar + activar header de free play
         const topbar = document.querySelector('.casino-topbar');
         if (topbar) topbar.classList.add('visible');
-        // Free play usa pac-hack-freeplay; modo apuesta usa pac-hack-t2e
-        if (fpIframe) fpIframe.src = (fpState.betMode ? 'pac-hack-t2e' : 'pac-hack-freeplay') + '/game.html?player=p1';
+        // Free play usa pac-hack-freeplay; modo apuesta usa pac-hack original (sin cambios)
+        if (fpIframe) fpIframe.src = (fpState.betMode ? 'pac-hack' : 'pac-hack-freeplay') + '/game.html?player=p1';
 
         // En mobile mostrar selector de control, en desktop ir directo
         if (window.innerWidth <= 768) {
