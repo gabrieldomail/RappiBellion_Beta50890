@@ -196,8 +196,8 @@ class T2EIntegration {
         // Listener para apuestas aceptadas
         this.bettingEngine.addBetListener('betAccepted', (bet) => {
             this.removeBetFromLobby(bet.id);
-            this.showNotification('\u00a1Apuesta aceptada! Iniciando partida...', 'success');
-            // Abrir arena en AMBOS dispositivos (creador y aceptador)
+            this.showNotification('\u00a1Apuesta aceptada! Iniciando partida...', 'success');            // Ocultar lobby mientras dura la partida
+            if (typeof hideLobbyFloat === 'function') hideLobbyFloat();            // Abrir arena en AMBOS dispositivos (creador y aceptador)
             if (typeof fpOpenArena === 'function') {
                 setTimeout(() => fpOpenArena(bet.id), 800);
             }
