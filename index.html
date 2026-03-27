@@ -554,7 +554,7 @@
         <div class="fp-hover-glow-right"></div>
 
         <!-- ── PANEL FREE PLAY (visible por defecto) ── -->
-        <div id="fp-controls-freeplay" style="display:flex; flex-direction:column; justify-content:space-between; width:100%; height:100%;">
+        <div id="fp-controls-freeplay">
             <div>
                 <div class="fp-mode-label">MODO //</div>
                 <div class="fp-mode-val">FREE_PLAY</div>
@@ -1180,7 +1180,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Arrancar ticker del timer rival (espejado con fpState)
             _fpStartRivalTimer();
         } else {
-            freePanel.style.display  = '';
+            freePanel.style.display  = 'flex';
             rivalPanel.style.display = 'none';
             _fpStopRivalTimer();
         }
@@ -5333,6 +5333,15 @@ btn.addEventListener('click', toggleMutePlay);
             border: none;
             display: block;
             overflow: hidden;
+        }
+
+        /* Panel freeplay — ocupa toda la columna derecha como flex */
+        #fp-controls-freeplay {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
         }
 
         /* Columna derecha — MODO + EXIT */
