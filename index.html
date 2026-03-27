@@ -1630,7 +1630,7 @@ function fpCloseArena() {
         });
     }
 
-    if (playPacmanBtn) playPacmanBtn.addEventListener('click', fpOpenArena);
+    if (playPacmanBtn) playPacmanBtn.addEventListener('click', function() { window.open('freeplay.html', '_blank'); });
     if (fpExitBtn)     fpExitBtn.addEventListener('click',    fpCloseArena);
     if (fpRestartBtn)  fpRestartBtn.addEventListener('click',  fpRestart);
     document.addEventListener('keydown', (e) => {
