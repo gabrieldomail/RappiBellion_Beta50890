@@ -2031,17 +2031,18 @@ footer a {
 
 .beta-container {
     display: grid;
-    grid-template-columns: 1fr; /* Una columna en móvil */
-    gap: 40px;
+    grid-template-columns: 1fr 1fr; /* Siempre 2 columnas */
+    gap: 12px;
     margin-top: 30px;
+    align-items: start;
 }
 
-/* En pantallas grandes, 2 columnas */
 @media (min-width: 768px) {
     .beta-container {
-        grid-template-columns: 1fr 1fr; 
+        gap: 40px;
     }
 }
+
 .beta-column {
     background-color: #111;
     padding: 25px;
@@ -2050,6 +2051,25 @@ footer a {
     
     /* === LÍNEA AÑADIDA: Para que la animación sea suave === */
     transition: all 0.3s ease-in-out; 
+}
+
+@media (max-width: 767px) {
+    .beta-column {
+        padding: 12px 8px;
+    }
+    .beta-column h3 {
+        font-size: 0.9em;
+    }
+    .beta-column p {
+        font-size: 0.8em;
+    }
+    .game-placeholder {
+        padding: 10px 6px;
+        margin-bottom: 10px;
+    }
+    .game-placeholder p {
+        font-size: 0.75em;
+    }
 }
 
 
