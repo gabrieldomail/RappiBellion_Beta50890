@@ -1169,9 +1169,9 @@ document.addEventListener('DOMContentLoaded', function() {
             rivalPanel.style.display = 'flex';
 
             // Datos de la apuesta
-            const bet = window.BettingEngine
-                ? window.BettingEngine.activeBets.get(betId)
-                : null;
+            const bet = (window.BettingEngine && window.BettingEngine.activeBets.get(betId))
+                || window._currentAcceptedBet
+                || null;
 
             const nickEl   = document.getElementById('rival-nick');
             const amountEl = document.getElementById('rival-bet-amount');
