@@ -65,12 +65,22 @@ a {
     margin-left: -16em;
 	width: 30em;
 	height: 35em;
-	background-color: #000;
+	background-color: #000000;
+	border: 1em solid rgba(0, 0, 0, 0.4);
+	overflow: hidden;
+}
+
+#container::before {
+	content: '';
+	position: absolute;
+	inset: 0;
 	background-image: url('../background.png');
 	background-repeat: no-repeat;
-	background-position: center center;
+	background-position: center;
 	background-size: contain;
-	border: 1em solid rgba(0, 0, 0, 0.4);
+	opacity: 0.95;
+	z-index: 0;
+	pointer-events: none;
 }
 
 
