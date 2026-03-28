@@ -558,18 +558,18 @@
         <div id="fp-chaos-bar-wrap">
             <div class="fp-chaos-label">
                 <span>// CHAOS LEVEL</span>
-                <span style="display:flex;align-items:center;gap:5px;">
-                    <span id="fp-chaos-pct">0%</span>
-                    <button id="fp-chaos-unlock-btn"
-                        onclick="fpChaosUnlockPrompt()"
-                        title="UNLOCK FULL CHAOS ⚠️"
-                        style="display:none;"
-                        class="fp-chaos-dynabtn"
-                    >💣</button>
-                </span>
+                <span id="fp-chaos-pct">0%</span>
             </div>
             <div class="fp-chaos-bar-outer">
                 <div class="fp-chaos-bar-inner" id="fp-chaos-bar"></div>
+            </div>
+            <!-- 💣 Bomba — aparece debajo de la barra cuando chaos >= 70% -->
+            <div id="fp-chaos-dynabtn-wrap" style="display:none; text-align:center; margin-top:10px; position:relative;">
+                <button id="fp-chaos-unlock-btn"
+                    onclick="fpChaosUnlockPrompt()"
+                    title="UNLOCK FULL CHAOS ⚠️"
+                    class="fp-chaos-dynabtn fp-chaos-dynabtn--big"
+                >💣</button>
             </div>
         </div>
 
@@ -664,24 +664,35 @@
                 <!-- ── 💣 CHAOS UNLOCK WARNING OVERLAY ── -->
                 <div id="fp-chaos-warning-overlay" style="display:none;
                     position:absolute; inset:0; z-index:60;
-                    background:rgba(0,0,0,0.93);
+                    background:rgba(0,0,0,0.35);
+                    backdrop-filter:blur(1px);
                     flex-direction:column; align-items:center; justify-content:center;
-                    gap:18px; padding:24px; box-sizing:border-box;
                     font-family:'Courier New',monospace;">
 
-                    <div style="font-size:28px;">💣</div>
-                    <div class="fp-chaos-warn-title">⚠ WARNING !!!</div>
-                    <div class="fp-chaos-warn-body">
-                        Presionar este botón elimina el límite de caos al 70%.<br><br>
-                        El sistema puede <span style="color:var(--color-primario);font-weight:700;">INESTABILIZARSE</span>:
-                        Pacman puede desaparecer, el loop puede romperse.<br><br>
-                        <span style="color:var(--color-caos-amarillo);">Protegé tu apuesta.</span><br>
-                        Si vas a full caos y ganás, ganás más puntos...<br>
-                        <span style="color:var(--color-caos-rosa);">...pero te la podés poner de sombrero.</span> 🎩
-                    </div>
-                    <div style="display:flex; gap:16px; margin-top:8px;">
-                        <button class="fp-chaos-warn-cancel" onclick="fpChaosUnlockCancel()">✕ CANCELAR</button>
-                        <button class="fp-chaos-warn-confirm" onclick="fpChaosUnlockConfirm()">💣 PRESS — UNLOCK CHAOS</button>
+                    <!-- caja de contenido: fondo propio, no el overlay entero -->
+                    <div style="
+                        background:rgba(2,10,5,0.82);
+                        border:1px solid rgba(255,50,0,0.5);
+                        border-radius:4px;
+                        padding:22px 24px;
+                        display:flex; flex-direction:column; align-items:center; gap:14px;
+                        max-width:320px; box-sizing:border-box;
+                        box-shadow:0 0 30px rgba(255,30,0,0.25), inset 0 0 20px rgba(0,0,0,0.4);
+                    ">
+                        <div style="font-size:28px;">💣</div>
+                        <div class="fp-chaos-warn-title">⚠ WARNING !!!</div>
+                        <div class="fp-chaos-warn-body">
+                            Presionar este botón elimina el límite de caos al 70%.<br><br>
+                            El sistema puede <span style="color:var(--color-primario);font-weight:700;">INESTABILIZARSE</span>:
+                            Pacman puede desaparecer, el loop puede romperse.<br><br>
+                            <span style="color:var(--color-caos-amarillo);">Protegé tu apuesta.</span><br>
+                            Si vas a full caos y ganás, ganás más puntos...<br>
+                            <span style="color:var(--color-caos-rosa);">...pero te la podés poner de sombrero.</span> 🎩
+                        </div>
+                        <div style="display:flex; gap:14px; margin-top:4px;">
+                            <button class="fp-chaos-warn-cancel" onclick="fpChaosUnlockCancel()">✕ CANCELAR</button>
+                            <button class="fp-chaos-warn-confirm" onclick="fpChaosUnlockConfirm()">💣 PRESS — UNLOCK CHAOS</button>
+                        </div>
                     </div>
                 </div>
 
@@ -1371,8 +1382,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     betId: betId || null, betMode: !!betId, chaosUnlocked: false };
         window.fpState = fpState; // exponer para funciones globales (taunt chat, etc.)
         // Resetear botón dinamita y bar al abrir arena
-        var _dynaBtn = document.getElementById('fp-chaos-unlock-btn');
-        if (_dynaBtn) _dynaBtn.style.display = 'none';
+        var _dynaWrap = document.getElementById('fp-chaos-dynabtn-wrap');
+        if (_dynaWrap) _dynaWrap.style.display = 'none';
         var _chaosBar = document.getElementById('fp-chaos-bar');
         if (_chaosBar) { _chaosBar.classList.remove('apocalypse'); _chaosBar.style.boxShadow = ''; }
         var _chaosPct = document.getElementById('fp-chaos-pct');
@@ -1846,6 +1857,12 @@ function fpCloseArena() {
         document.body.style.touchAction = '';
         // Liberar WakeLock
         if (window._fpWakeLock) { window._fpWakeLock.release(); window._fpWakeLock = null; }
+        // 🌟 Parar Mario Star si estaba sonando
+        if (window._fpMarioStarTimer) { clearTimeout(window._fpMarioStarTimer); window._fpMarioStarTimer = null; }
+        if (window._fpMarioAudio && !window._fpMarioAudio.paused) {
+            window._fpMarioAudio.pause();
+            window._fpMarioAudio.currentTime = 0;
+        }
         // Unlock orientación y ocultar overlay rotate
         if (screen.orientation && screen.orientation.unlock) { try { screen.orientation.unlock(); } catch(e){} }
         const rotOverlay = document.getElementById('fp-rotate-overlay');
@@ -1909,13 +1926,13 @@ function fpCloseArena() {
             const capped   = fpState.chaosUnlocked !== true; // capear si no está desbloqueado
             const displayLvl = capped ? Math.min(level, 70) : level;
 
-            // 💣 Mostrar botón dinamita cuando el nivel real llega a 70%+ (game corriendo)
-            if (dynaBtn) {
+            // 💣 Mostrar wrapper bomba cuando el nivel real llega a 70%+ (game corriendo)
+            var dynaWrap = document.getElementById('fp-chaos-dynabtn-wrap');
+            if (dynaWrap) {
                 if (level >= 70 && fpState.running && !fpState.chaosUnlocked) {
-                    dynaBtn.style.display = 'inline-flex';
+                    dynaWrap.style.display = 'block';
                 } else if (fpState.chaosUnlocked) {
-                    // una vez desbloqueado, ocultar el botón (ya no hay marcha atrás)
-                    dynaBtn.style.display = 'none';
+                    dynaWrap.style.display = 'none';
                 }
             }
 
@@ -1986,6 +2003,23 @@ function fpCloseArena() {
             // NOTE: RIVAL_BOOST postMessage removed — the rival's device gets the boost
             // count update via Firebase (rivalBoostsRef listener). Sending RIVAL_BOOST to
             // our own iframe (fpIframe) was incorrect and showed the warning on the wrong side.
+
+            // 🌟 Mario Star — pista clásica durante la inmunidad del boost (~6s)
+            if (!window._fpMarioAudio) {
+                window._fpMarioAudio = new Audio('sounds/mario-star.mp3');
+                window._fpMarioAudio.loop  = false;
+                window._fpMarioAudio.volume = 0.65;
+            }
+            if (window._fpMarioStarTimer) clearTimeout(window._fpMarioStarTimer);
+            window._fpMarioAudio.currentTime = 0;
+            window._fpMarioAudio.play().catch(function(){});
+            // parar cuando termina la inmunidad (frightTime = 6s + margen)
+            window._fpMarioStarTimer = setTimeout(function() {
+                if (window._fpMarioAudio && !window._fpMarioAudio.paused) {
+                    window._fpMarioAudio.pause();
+                    window._fpMarioAudio.currentTime = 0;
+                }
+            }, 9500);
         }
     });
 
@@ -6670,22 +6704,82 @@ btn.addEventListener('click', toggleMutePlay);
             animation: borderGlitch 0.3s linear infinite;
         }
 
-        /* ── 💣 DINAMITA BUTTON — junto al % del chaos ── */
+        /* ── 💣 DINAMITA BUTTON ── */
         .fp-chaos-dynabtn {
             background: transparent;
             border: 1px solid rgba(255,80,0,0.5);
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
             line-height: 1;
-            padding: 1px 4px;
+            padding: 2px 5px;
             animation: dynaPulse 1.2s ease-in-out infinite;
             vertical-align: middle;
         }
-        .fp-chaos-dynabtn:hover {
-            background: rgba(255,80,0,0.15);
-            border-color: rgba(255,80,0,0.9);
-            transform: scale(1.15);
+        /* Bomba grande con TODO el caos del panel pac-hack */
+        .fp-chaos-dynabtn--big {
+            position: relative;
+            font-size: 40px;
+            padding: 10px 18px;
+            border-radius: 12px;
+            border: 2px solid #ff2d00;
+            display: inline-block;
+            background: #050a0f;
+            overflow: hidden;
+            z-index: 0;
+            animation: dynaBombGlitch 2.8s ease-in-out infinite;
+            transition: transform 0.1s;
+        }
+        /* Grid pulsante - mismo que fp-fab-drawer::before pero rojo */
+        .fp-chaos-dynabtn--big::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,60,0,0.18) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,60,0,0.18) 1px, transparent 1px);
+            background-size: 10px 10px;
+            animation: gridPulseAggressive 1.8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        /* Scanlines */
+        .fp-chaos-dynabtn--big::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,0,0,0.45),
+                rgba(0,0,0,0.45) 2px,
+                transparent 2px,
+                transparent 4px
+            );
+            pointer-events: none;
+            animation: scanlineAggressive 2s linear infinite;
+            z-index: 2;
+        }
+        /* El emoji queda por encima de los FX */
+        .fp-chaos-dynabtn--big > span, .fp-chaos-dynabtn--big {
+            text-shadow: 0 0 8px rgba(255,80,0,0.9), 0 0 2px #fff;
+        }
+        .fp-chaos-dynabtn--big:hover {
+            transform: scale(1.12) skewX(-2deg);
+            box-shadow: 0 0 28px rgba(255,30,0,0.9);
+        }
+        @keyframes dynaBombGlitch {
+            0%       { border-color: #ff2d00; box-shadow: 0 0 12px rgba(255,45,0,0.6);  transform: translateX(0)    skewX(0deg); }
+            7%       { border-color: #0ff;    box-shadow: 0 0 28px rgba(0,255,255,0.5); transform: translateX(-3px) skewX(-1.5deg); }
+            8%       { border-color: #ff2d00; box-shadow: 0 0 40px rgba(255,45,0,0.9);  transform: translateX(3px)  skewX(1deg); }
+            9%       { border-color: #ff2d00; transform: translateX(0) skewX(0deg); }
+            38%      { border-color: #ff2d00; box-shadow: 0 0 12px rgba(255,45,0,0.5);  transform: translateX(0); }
+            39%      { border-color: #f8ff2b; box-shadow: 0 0 30px rgba(248,255,43,0.7); transform: translateX(2px) skewX(0.8deg); }
+            40%      { border-color: #ff2d00; transform: translateX(-2px); }
+            41%      { border-color: #ff2d00; transform: translateX(0); }
+            70%      { border-color: #ff2d00; transform: translateX(0); }
+            71%      { border-color: #0ff;    transform: translateX(-2px) skewX(-1deg); }
+            72%      { border-color: #ff2d00; transform: translateX(2px); }
+            73%,100% { border-color: #ff2d00; box-shadow: 0 0 14px rgba(255,45,0,0.6); transform: translateX(0) skewX(0deg); }
         }
         @keyframes dynaPulse {
             0%, 100% { box-shadow: 0 0 4px rgba(255,80,0,0.4); }
@@ -7844,8 +7938,8 @@ function fpChaosUnlockConfirm() {
     }
 
     // Ocultar el botón dinamita (no hay vuelta atrás)
-    var btn = document.getElementById('fp-chaos-unlock-btn');
-    if (btn) btn.style.display = 'none';
+    var wrapBtn = document.getElementById('fp-chaos-dynabtn-wrap');
+    if (wrapBtn) wrapBtn.style.display = 'none';
 
     // Flashing rojo en la barra para avisar que el caos está libre
     var bar = document.getElementById('fp-chaos-bar');
