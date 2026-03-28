@@ -6432,9 +6432,8 @@ btn.addEventListener('click', toggleMutePlay);
     // GEMINI CHAT — Rappibellion AI
     // ══════════════════════════════════════════════════
     (function() {
-        const _k = ['AIza','SyAHbG50A','-N87B4d6K','H5hsSejdL','DrY8YJSo'];
-        const GEMINI_KEY = _k.join('');
-        const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_KEY;
+        // Proxy Cloudflare Worker — la API key vive en Cloudflare, nunca aquí
+        const GEMINI_URL = 'https://gemini-proxy.rappibellion.workers.dev';
 
         const SYSTEM_PROMPT = `Sos el asistente oficial de Rappibellion — una plataforma de casino punk/cyberpunk Think-to-Earn (T2E) basada en $RPPI tokens.
 Tu personalidad: rebelde, directa, irónica, con mucha actitud. Hablás en español rioplatense (vos, dale, joya, etc). 
