@@ -1806,7 +1806,7 @@ function fpCloseArena() {
 
     // Regla general: si no hay billetera conectada, redirige a conectar
     function requireWalletThenBet(gameId) {
-        if (!walletConnected) {
+        if (!walletConnected && !window._walletConnected) {
             // Scroll hasta la sección de billetera y simula click en conectar
             var cwBtn = document.getElementById('connect-wallet-button');
             if (cwBtn) {
@@ -1921,6 +1921,7 @@ function fpCloseArena() {
                 const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                 if (accounts.length > 0) {
                     walletConnected = true;
+                    window._walletConnected = true;
                     const short = accounts[0].substring(0,6)+'...'+accounts[0].substring(accounts[0].length-4);
                     if (connectWalletBtn) { connectWalletBtn.textContent='BILLETERA CONECTADA (clic para desconectar)'; connectWalletBtn.style.backgroundColor='var(--color-caos-verde)'; connectWalletBtn.style.color='#000'; }
                     if (walletStatus)  walletStatus.textContent = 'Conectado a Optimism';
@@ -1950,6 +1951,7 @@ function fpCloseArena() {
         connectWalletBtn.addEventListener('click', function() {
             if (walletConnected) {
                 walletConnected=false;
+                window._walletConnected = false;
                 connectWalletBtn.textContent='CONECTA TU BILLETERA PARA ENTRAR AL CIRCUITO';
                 connectWalletBtn.style.backgroundColor=''; connectWalletBtn.style.color='';
                 if (walletStatus)  walletStatus.textContent='Billetera desconectada';
@@ -4123,6 +4125,7 @@ btn.addEventListener('click', toggleMutePlay);
                         console.log('✅ Cuenta encontrada:', accounts[0]);
                         currentAccount = accounts[0];
                         isConnected = true;
+                        window._walletConnected = true;
                         updateWalletUI(accounts[0]);
                         await checkNetwork();
                     } else {
@@ -4150,6 +4153,7 @@ btn.addEventListener('click', toggleMutePlay);
         function disconnectWallet() {
             console.log('🔌 Desconectando billetera...');
             isConnected = false;
+            window._walletConnected = false;
             currentAccount = null;
             if (connectWalletButton) {
                 connectWalletButton.textContent = 'CONECTA TU BILLETERA PARA ENTRAR AL CIRCUITO';
@@ -4215,6 +4219,7 @@ btn.addEventListener('click', toggleMutePlay);
                 if (accounts.length > 0) {
                     currentAccount = accounts[0];
                     isConnected = true;
+                    window._walletConnected = true;
                     updateWalletUI(accounts[0]);
                     await checkNetwork();
                     console.log('🎉 Conexión exitosa!');
@@ -4336,6 +4341,7 @@ btn.addEventListener('click', toggleMutePlay);
                     if (accounts.length > 0) {
                         currentAccount = accounts[0];
                         isConnected = true;
+                        window._walletConnected = true;
                         updateWalletUI(accounts[0]);
                         if (walletStatus) {
                             walletStatus.textContent = '✅ Cuenta cambiada';
