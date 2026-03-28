@@ -6419,6 +6419,110 @@ btn.addEventListener('click', toggleMutePlay);
             <button class="gemini-chat-submit" type="submit">Enviar</button>
         </form>
     </div>
+
+    <script>
+    // ══════════════════════════════════════════════════
+    // GEMINI CHAT — Rappibellion AI
+    // ══════════════════════════════════════════════════
+    (function() {
+        const GEMINI_KEY = 'AIzaSyAni38kcQ1EYBK1ZXGDZhZgilAKdxB6AKY';
+        const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_KEY;
+
+        const SYSTEM_PROMPT = `Sos el asistente oficial de Rappibellion — una plataforma de casino punk/cyberpunk Think-to-Earn (T2E) basada en $RPPI tokens.
+Tu personalidad: rebelde, directa, irónica, con mucha actitud. Hablás en español rioplatense (vos, dale, joya, etc). 
+Sos experto en: el juego PAC-HACK: DEATH, el sistema de apuestas T2E, el token $RPPI, el contrato en BSC, y todo lo relacionado con la plataforma.
+El juego: dos jugadores apuestan $RPPI y juegan Pac-Man simultáneamente. El que más puntaje tenga al terminar el tiempo se lleva el bote. Hay un BOOST que convierte todos los fantasmas en comestibles por 8 segundos — cuesta 10% de la apuesta y solo se puede usar una vez.
+Contratos: el contrato de $RPPI está en Binance Smart Chain. La plataforma usa Firebase para sincronización en tiempo real.
+Si no sabés algo, decilo con actitud pero sin inventar datos.
+Respondé siempre corto y con punch, como un chat de arcade, no como un manual. Máximo 3-4 líneas por respuesta.`;
+
+        const fab     = document.getElementById('gemini-chat-fab');
+        const widget  = document.getElementById('gemini-chat-widget');
+        const messages= document.getElementById('gemini-chat-messages');
+        const form    = widget ? widget.querySelector('.gemini-chat-form') : null;
+        const input   = widget ? widget.querySelector('.gemini-chat-input') : null;
+        const closeBtn= widget ? widget.querySelector('.gemini-chat-close') : null;
+
+        if (!fab || !widget || !form || !input) return;
+
+        // Historial de conversación para contexto
+        const history = [];
+
+        // Toggle widget
+        fab.addEventListener('click', function() {
+            const isOpen = widget.style.display === 'flex';
+            widget.style.display = isOpen ? 'none' : 'flex';
+            if (!isOpen && messages.children.length === 0) {
+                appendMessage('bot', '// RAPPIBELLION_AI activada //<br>¿Qué necesitás saber, rebelde?');
+            }
+            if (!isOpen) input.focus();
+        });
+
+        closeBtn.addEventListener('click', function() {
+            widget.style.display = 'none';
+        });
+
+        // Enviar mensaje
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const text = input.value.trim();
+            if (!text) return;
+            input.value = '';
+            input.disabled = true;
+
+            appendMessage('user', escapeHtml(text));
+            const typingId = appendMessage('bot', '<span class="gemini-typing">▌</span>', true);
+
+            history.push({ role: 'user', parts: [{ text }] });
+
+            try {
+                const body = {
+                    system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+                    contents: history
+                };
+                const res  = await fetch(GEMINI_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || '// ERROR_CONEXION — intentá de nuevo //';
+                history.push({ role: 'model', parts: [{ text: reply }] });
+                updateMessage(typingId, escapeHtml(reply).replace(/\n/g, '<br>'));
+            } catch(err) {
+                updateMessage(typingId, '// SIGNAL_LOST — no hay conexión con la IA //');
+            }
+
+            input.disabled = false;
+            input.focus();
+        });
+
+        function appendMessage(role, html, isTemp) {
+            const id = 'gm-' + Date.now();
+            const div = document.createElement('div');
+            div.className = 'gemini-message ' + role;
+            div.id = id;
+            div.innerHTML = '<div class="gemini-bubble">' + html + '</div>';
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+            return isTemp ? id : null;
+        }
+
+        function updateMessage(id, html) {
+            if (!id) return;
+            const el = document.getElementById(id);
+            if (el) {
+                el.querySelector('.gemini-bubble').innerHTML = html;
+                messages.scrollTop = messages.scrollHeight;
+            }
+        }
+
+        function escapeHtml(s) {
+            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+    })();
+    </script>
+
 <!-- ── COUNTDOWN — body level, nada lo contiene ── -->
 <!-- === MODAL TIPS — INFO DEL CIRCUITO === -->
 <div id="fp-tips-modal">
