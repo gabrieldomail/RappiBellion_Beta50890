@@ -543,6 +543,32 @@
                     allow="autoplay"
                     style="width:100%;height:100%;border:none;display:block;">
                 </iframe>
+
+                <!-- BOOST OVERLAY — flotante sin fondo sobre el juego -->
+                <button id="fp-boost-overlay-btn"
+                    onclick="fpFireBoost()"
+                    style="
+                        display: none;
+                        position: absolute;
+                        bottom: 16px;
+                        right: 16px;
+                        z-index: 10;
+                        background: transparent;
+                        border: none;
+                        padding: 0;
+                        cursor: pointer;
+                        width: 64px;
+                        height: 64px;
+                        border-radius: 50%;
+                        animation: boostHeartbeat 2s ease-in-out infinite;
+                        transition: opacity 0.2s ease;
+                        pointer-events: auto;
+                    "
+                ><img src="images/rappia-boost-btn.png"
+                    style="width:100%;height:100%;border-radius:50%;display:block;"
+                    alt="BOOST"
+                ></button>
+
                 <!-- countdown moved to body level -->
             </div>
 
@@ -957,6 +983,8 @@ document.addEventListener('DOMContentLoaded', function() {
             var boostWrapEl  = document.getElementById('fp-boost-wrap');
             if (myBoostEl)   myBoostEl.textContent = betBoostLimit + '/' + betBoostLimit;
             if (boostWrapEl) boostWrapEl.style.display = 'block';
+            var overlayBoostBtn = document.getElementById('fp-boost-overlay-btn');
+            if (overlayBoostBtn) overlayBoostBtn.style.display = 'block';
             var rivalBoostEl = document.getElementById('rival-boost-val');
             if (rivalBoostEl) rivalBoostEl.textContent = betBoostLimit + '/' + betBoostLimit;
         }
@@ -1462,19 +1490,31 @@ document.addEventListener('DOMContentLoaded', function() {
     var bLimit  = fpState.boostLimit || 0;
     var bUsed   = fpState.boostsUsed || 0;
     if (bUsed >= bLimit) return;
-    var btn = document.getElementById('fp-boost-btn');
+    var btn        = document.getElementById('fp-boost-btn');
+    var overlayBtn = document.getElementById('fp-boost-overlay-btn');
     if (btn && btn.disabled) return;
     // BUG FIX: disable immediately to prevent rapid-click race condition.
     // The BOOST_USED echo from the iframe will re-enable if boosts remain.
     if (btn) btn.disabled = true;
+    if (overlayBtn) overlayBtn.disabled = true;
     // Trigger in iframe
     if (fpIframe && fpIframe.contentWindow) {
         fpIframe.contentWindow.postMessage({ type: 'TRIGGER_BOOST' }, '*');
     }
-    // Visual flash feedback
+    // Visual flash feedback — ambos botones
     if (btn) {
         btn.classList.add('fp-boost-firing');
         setTimeout(function() { btn.classList.remove('fp-boost-firing'); }, 300);
+    }
+    if (overlayBtn) {
+        overlayBtn.style.animationPlayState = 'paused';
+        overlayBtn.style.transform = 'scale(0.85)';
+        overlayBtn.style.filter = 'brightness(2) drop-shadow(0 0 14px cyan)';
+        setTimeout(function() {
+            overlayBtn.style.transform = '';
+            overlayBtn.style.filter = '';
+            overlayBtn.style.animationPlayState = '';
+        }, 300);
     }
     // Return focus to iframe so keyboard controls keep working
     setTimeout(function() {
@@ -1574,6 +1614,11 @@ function fpCloseArena() {
             var boostBtn = document.getElementById('fp-boost-btn');
             if (boostBtn) {
                 boostBtn.disabled = bRemain <= 0;
+            }
+            var overlayBoostBtn = document.getElementById('fp-boost-overlay-btn');
+            if (overlayBoostBtn) {
+                overlayBoostBtn.disabled = bRemain <= 0;
+                overlayBoostBtn.style.opacity = bRemain <= 0 ? '0.3' : '1';
             }
             if (fpState.betMode && fpState.betId && fpState.myRole && window._fbDB) {
                 window._fbDB.ref('t2e_bets/' + fpState.betId + '/boosts/' + fpState.myRole)
