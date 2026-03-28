@@ -78,7 +78,7 @@ a {
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: contain;
-	opacity: 0.95;
+	opacity: 0.45;
 	z-index: 0;
 	pointer-events: none;
 }
