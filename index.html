@@ -5595,15 +5595,23 @@ btn.addEventListener('click', toggleMutePlay);
 
         /* ══════════════════════════════════════
            RESPONSIVE MOBILE — pantalla chica
-           3 columnas → 1 columna vertical
+           Grid 2+1: paneles arriba | juego abajo
         ══════════════════════════════════════ */
         @media (max-width: 768px) {
 
-            /* Arena: columna única con scroll */
+            /* Arena: grid 2 cols arriba + juego que llena el resto */
             #t2eplay-arena {
-                flex-direction: column !important;
-                overflow-y: auto !important;
+                display: grid !important;
+                grid-template-areas:
+                    "left right"
+                    "game game" !important;
+                grid-template-columns: 1fr 1fr !important;
+                grid-template-rows: auto 1fr !important;
+                overflow: hidden !important;
             }
+            .fp-col-left  { grid-area: left !important; }
+            .fp-game-wrap { grid-area: game !important; }
+            .fp-col-right { grid-area: right !important; }
 
             /* ── PERFORMANCE MOBILE ──
                Desactivar animaciones pesadas que roban GPU al juego */
@@ -5611,6 +5619,7 @@ btn.addEventListener('click', toggleMutePlay);
             .fp-col-right {
                 animation: none !important;
                 transition: none !important;
+                transform: none !important;
             }
             .fp-col-left::before,
             .fp-col-left::after,
@@ -5619,71 +5628,81 @@ btn.addEventListener('click', toggleMutePlay);
                 animation: none !important;
                 display: none !important;
             }
-            .fp-logo-glitch {
-                animation: none !important;
-                filter: drop-shadow(0 0 8px rgba(255,60,94,0.4)) !important;
-            }
+            .fp-logo-glitch { display: none !important; }
             .fp-timer-val,
             .fp-stat-val,
             .fp-mode-val,
-            .fp-mode-label {
-                animation: none !important;
-            }
-            .fp-exit-cta {
-                animation: fp-exit-pulse 2s infinite !important;
-            }
-            /* Mantener solo el juego con GPU */
-            .fp-game-wrap {
-                will-change: contents;
-                transform: translateZ(0);
-            }
-            .fp-game-wrap iframe {
-                will-change: contents;
-                transform: translateZ(0);
-            }
+            .fp-mode-label { animation: none !important; }
+            .fp-exit-cta   { animation: fp-exit-pulse 2s infinite !important; }
 
-            /* Columna izquierda: horizontal compacta */
+            /* Mantener solo el juego con GPU */
+            .fp-game-wrap        { will-change: contents; transform: translateZ(0); }
+            .fp-game-wrap iframe { will-change: contents; transform: translateZ(0); }
+
+            /* ──────────────────────────────────────
+               COLUMNA IZQUIERDA — franja compacta
+            ────────────────────────────────────── */
             .fp-col-left {
                 width: 100% !important;
-                flex-direction: row !important;
-                flex-wrap: wrap;
-                align-items: center;
-                justify-content: space-between;
-                padding: 12px 16px !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                justify-content: flex-start !important;
+                padding: 8px 10px !important;
                 min-height: auto !important;
-                border-right: none !important;
-                border-bottom: 2px solid var(--color-caos-rosa);
+                max-height: 130px;
+                overflow: hidden;
+                border-right: 1px solid rgba(255,0,255,0.4) !important;
+                border-bottom: 2px solid var(--color-caos-rosa) !important;
             }
 
-            /* Logo — ocultar en mobile para ahorrar espacio */
-            .fp-logo-glitch { display: none !important; }
-
-            /* Timer y score en fila */
+            /* Timer: etiqueta chica + número grande en columna */
             .fp-timer-block {
+                flex-direction: column !important;
+                gap: 0 !important;
+            }
+            .fp-timer-lbl     { font-size: 8px !important; white-space: nowrap; }
+            .fp-timer-val     { font-size: 26px !important; line-height: 1.1; }
+            .fp-timer-bar-wrap{ display: none !important; }
+            .fp-practice-lbl  { display: none !important; }
+
+            /* Score */
+            .fp-stat         { margin: 4px 0 0 !important; }
+            .fp-stat-lbl     { font-size: 8px !important; }
+            .fp-stat-val     { font-size: 22px !important; }
+
+            /* Chaos bar — solo la barra, sin label */
+            #fp-chaos-bar-wrap  { display: block !important; margin-top: 4px; }
+            .fp-chaos-label     { display: none !important; }
+            .fp-chaos-bar-outer { height: 4px !important; }
+
+            /* Boost wrap — fila mini */
+            #fp-boost-wrap {
+                display: flex !important;
                 flex-direction: row !important;
                 align-items: center;
-                gap: 12px !important;
-                flex-wrap: wrap;
+                gap: 6px;
+                margin-top: 4px !important;
             }
-            .fp-timer-val { font-size: 48px !important; }
-            .fp-timer-lbl { font-size: 10px !important; white-space: nowrap; }
-            .fp-timer-bar-wrap { width: 120px !important; }
-            .fp-practice-lbl { font-size: 10px !important; }
+            #fp-boost-wrap > div:first-child {
+                font-size: 8px !important;
+                white-space: nowrap;
+            }
+            #fp-boost-val { font-size: 0.9em !important; letter-spacing: 1px !important; }
+            #fp-boost-btn {
+                margin-top: 0 !important;
+                width: auto !important;
+                font-size: 8px !important;
+                padding: 3px 6px !important;
+                flex-shrink: 0;
+            }
 
-            .fp-stat { margin-top: 0 !important; }
-            .fp-stat-val { font-size: 36px !important; }
-            .fp-stat-lbl { font-size: 11px !important; }
-
-            /* Chaos bar — compacta en mobile */
-            #fp-chaos-bar-wrap { display: block !important; margin-top: 6px; }
-            .fp-chaos-label { font-size: 10px !important; }
-            .fp-chaos-bar-outer { height: 6px !important; }
-
-            /* Juego — altura calculada para dejar espacio a las barras */
+            /* ──────────────────────────────────────
+               JUEGO — llena la fila inferior del grid
+            ────────────────────────────────────── */
             .fp-game-wrap {
-                flex: none !important;
                 width: 100% !important;
-                height: 60vh !important;
+                height: auto !important;
+                min-height: 0 !important;
             }
             .fp-game-wrap > .caos-terminal {
                 width: 100% !important;
@@ -5691,81 +5710,85 @@ btn.addEventListener('click', toggleMutePlay);
                 height: 100% !important;
                 border-radius: 0 !important;
             }
-            .fp-game-wrap iframe {
-                height: 100% !important;
-            }
+            .fp-game-wrap iframe { height: 100% !important; }
 
-            /* Columna derecha: horizontal compacta abajo (free play) */
+            /* ──────────────────────────────────────
+               COLUMNA DERECHA — franja compacta
+            ────────────────────────────────────── */
             .fp-col-right {
                 width: 100% !important;
-                flex-direction: row !important;
-                flex-wrap: wrap;
-                align-items: center;
-                justify-content: space-between;
-                padding: 10px 16px !important;
-                border-left: none !important;
-                border-top: 2px solid var(--color-primario);
-                min-height: auto !important;
-            }
-            /* Rival panel (bet mode): always vertical, scrollable on mobile */
-            #fp-rival-panel {
                 flex-direction: column !important;
-                width: 100% !important;
-                gap: 8px !important;
-                padding: 10px 16px !important;
-                overflow-y: auto !important;
-                max-height: 55vw;
+                align-items: flex-start !important;
+                justify-content: flex-start !important;
+                padding: 8px 10px !important;
+                min-height: auto !important;
+                max-height: 130px;
+                overflow: hidden;
+                border-left: none !important;
+                border-bottom: 2px solid var(--color-primario) !important;
+                border-top: none !important;
             }
-            #fp-rival-panel > div { width: 100% !important; }
-            #rival-comm-log { max-height: 60px !important; }
-            /* Boost wrap: compact row on mobile */
-            #fp-boost-wrap {
+
+            /* Free play — modo + controles compactos */
+            #fp-controls-freeplay  { gap: 0 !important; justify-content: flex-start !important; }
+            .fp-mode-label         { font-size: 8px !important; margin-bottom: 1px !important; }
+            .fp-mode-val           { font-size: 13px !important; margin-bottom: 2px !important; }
+            .fp-mode-sub           { display: none !important; }
+
+            /* Ocultar botón INFO en mobile — no hay espacio */
+            #fp-tips-btn           { display: none !important; }
+
+            /* Fila controles: select + restart lado a lado */
+            #fp-controls-freeplay > div:nth-child(2) {
                 display: flex !important;
                 flex-direction: row !important;
+                gap: 6px;
                 align-items: center;
-                gap: 10px;
-                margin-top: 6px !important;
-            }
-            #fp-boost-wrap > div:first-child { white-space: nowrap; }
-            #fp-boost-btn { margin-top: 0 !important; width: auto !important; flex-shrink: 0; }
-
-            .fp-mode-label { font-size: 11px !important; }
-            .fp-mode-val   { font-size: 18px !important; }
-            .fp-mode-sub   { font-size: 11px !important; display: none; }
-
-            /* Controles en fila */
-            .fp-col-right > div:nth-child(3) {
-                display: flex !important;
-                flex-direction: row !important;
-                gap: 8px;
-                align-items: center;
+                margin-top: 4px !important;
             }
             #fp-duration-select {
                 width: auto !important;
-                font-size: 11px !important;
-                padding: 4px 8px !important;
+                font-size: 9px !important;
+                padding: 3px 6px !important;
                 margin-bottom: 0 !important;
             }
             .fp-btn {
                 width: auto !important;
-                font-size: 11px !important;
-                padding: 4px 10px !important;
+                font-size: 9px !important;
+                padding: 3px 8px !important;
                 margin-bottom: 0 !important;
             }
-
-            /* EXIT — compacto */
             .fp-exit-cta {
-                font-size: 13px !important;
-                padding: 8px 16px !important;
+                font-size: 10px !important;
+                padding: 5px 10px !important;
+                width: 100% !important;
+                margin-top: 4px !important;
                 animation: fp-exit-pulse 2s infinite !important;
-                width: auto !important;
             }
+
+            /* Rival panel (bet mode) — scroll vertical compacto */
+            #fp-rival-panel {
+                flex-direction: column !important;
+                width: 100% !important;
+                gap: 4px !important;
+                padding: 0 !important;
+                overflow-y: auto !important;
+                max-height: 122px;
+            }
+            #fp-rival-panel > div { width: 100% !important; }
+            #rival-comm-log        { max-height: 36px !important; font-size: 9px !important; }
+
+            /* Textos rival panel — reducidos */
+            #rival-nick   { font-size: 0.7em !important; }
+            #rival-score  { font-size: 1.4em !important; }
+            #fp-bet-amount-display { font-size: 9px !important; }
         }
 
         /* ── EXTRA SMALL (≤400px) ── */
         @media (max-width: 400px) {
-            .fp-timer-val { font-size: 36px !important; }
-            .fp-stat-val  { font-size: 28px !important; }
+            .fp-timer-val { font-size: 22px !important; }
+            .fp-stat-val  { font-size: 18px !important; }
+            .fp-col-left, .fp-col-right { max-height: 110px; }
         }
 
         /* Botón ctrl pequeño (restart) */
