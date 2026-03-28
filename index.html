@@ -5599,12 +5599,15 @@ btn.addEventListener('click', toggleMutePlay);
         ══════════════════════════════════════ */
         @media (max-width: 768px) {
 
-            /* Arena: grid 2 cols arriba + juego que llena el resto */
+            /* Arena: oculta por defecto, grid cuando tiene .show */
             #t2eplay-arena {
+                display: none !important;
+            }
+            #t2eplay-arena.show {
                 display: grid !important;
                 grid-template-areas:
                     "left right"
-                    "game game" !important;
+                    "game game";
                 grid-template-columns: 1fr 1fr !important;
                 grid-template-rows: auto 1fr !important;
                 overflow: hidden !important;
