@@ -469,6 +469,23 @@
     </div>
 </div>
 
+<!-- ROTATE DEVICE OVERLAY — solo mobile portrait -->
+<div id="fp-rotate-overlay" style="
+    display: none;
+    position: fixed; inset: 0; z-index: 9999;
+    background: #030a06;
+    flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 24px;
+    font-family: 'Orbitron', monospace;
+    color: var(--color-caos-amarillo);
+    text-align: center;
+    padding: 32px;
+">
+    <div style="font-size: 64px; animation: fp-exit-pulse 1.2s infinite;">↺</div>
+    <div style="font-size: 14px; letter-spacing: 4px; line-height: 1.8;">ROTÁ EL DISPOSITIVO<br><span style='font-size:10px;color:rgba(0,255,255,0.7);letter-spacing:2px;'>LANDSCAPE MODE REQUIRED</span></div>
+</div>
+
 <!-- === FREE PLAY ARENA — 3 COLUMNAS === -->
 <div id="t2eplay-arena">
 
@@ -1123,6 +1140,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(() => {});
         }
 
+        // En mobile — intentar lock landscape; si falla mostrar overlay
+        if (window.innerWidth <= 768 || window.innerHeight <= 768) {
+            const rotateOverlay = document.getElementById('fp-rotate-overlay');
+            const tryLockLandscape = () => {
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('landscape').catch(() => {
+                        // iOS / sin permiso — fallback overlay
+                        if (rotateOverlay && window.matchMedia('(orientation: portrait)').matches) {
+                            rotateOverlay.style.display = 'flex';
+                        }
+                    });
+                } else if (rotateOverlay && window.matchMedia('(orientation: portrait)').matches) {
+                    rotateOverlay.style.display = 'flex';
+                }
+            };
+            tryLockLandscape();
+            // Escuchar rotación para ocultar overlay cuando gira
+            const _onOrientationChange = () => {
+                if (rotateOverlay && window.matchMedia('(orientation: landscape)').matches) {
+                    rotateOverlay.style.display = 'none';
+                }
+            };
+            window.addEventListener('orientationchange', _onOrientationChange);
+            window.addEventListener('resize', _onOrientationChange);
+            window._fpOrientationListener = _onOrientationChange;
+        }
+
         // En mobile — promover iframe a capa GPU propia
         if (window.innerWidth <= 768) {
             const wrap = document.querySelector('.fp-game-wrap');
@@ -1534,6 +1578,15 @@ function fpCloseArena() {
         document.body.style.touchAction = '';
         // Liberar WakeLock
         if (window._fpWakeLock) { window._fpWakeLock.release(); window._fpWakeLock = null; }
+        // Unlock orientación y ocultar overlay rotate
+        if (screen.orientation && screen.orientation.unlock) { try { screen.orientation.unlock(); } catch(e){} }
+        const rotOverlay = document.getElementById('fp-rotate-overlay');
+        if (rotOverlay) rotOverlay.style.display = 'none';
+        if (window._fpOrientationListener) {
+            window.removeEventListener('orientationchange', window._fpOrientationListener);
+            window.removeEventListener('resize', window._fpOrientationListener);
+            window._fpOrientationListener = null;
+        }
         // Restaurar chatbot
         const _chatFabClose = document.getElementById('gemini-chat-fab');
         const _chatWidgetClose = document.getElementById('gemini-chat-widget');
