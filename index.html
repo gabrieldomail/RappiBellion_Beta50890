@@ -609,6 +609,61 @@
                 ">x0</div>
 
                 <!-- countdown moved to body level -->
+
+                <!-- ── TAUNT CHAT (bet mode only) ── -->
+                <div id="fp-taunt-chat" style="
+                    display: none;
+                    position: absolute;
+                    top: calc(50% + 140px);
+                    right: 12px;
+                    width: 140px;
+                    z-index: 12;
+                    font-family: 'Courier New', monospace;
+                ">
+                    <!-- Quick taunts -->
+                    <div style="display:flex; flex-direction:column; gap:3px; margin-bottom:5px;">
+                        <button class="fp-taunt-btn" onclick="fpSendTaunt('alcanzame gato 😈')">alcanzame gato 😈</button>
+                        <button class="fp-taunt-btn" onclick="fpSendTaunt('gg fácil 💀')">gg fácil 💀</button>
+                        <button class="fp-taunt-btn" onclick="fpSendTaunt('ya perdiste jaja')">ya perdiste jaja</button>
+                        <button class="fp-taunt-btn" onclick="fpSendTaunt('todavía vivo 👻')">todavía vivo 👻</button>
+                        <button class="fp-taunt-btn" onclick="fpSendTaunt('te tiemblan las manos?')">te tiemblan manos?</button>
+                    </div>
+                    <!-- Free text -->
+                    <div style="display:flex; gap:2px;">
+                        <input id="fp-taunt-input" type="text" maxlength="60" placeholder="mensaje..."
+                            onkeydown="if(event.key==='Enter')fpSendTauntFree()"
+                            style="
+                                flex:1; min-width:0;
+                                background: rgba(0,0,0,0.7);
+                                border: 1px solid rgba(255,0,255,0.4);
+                                color: #fff;
+                                font-family: 'Courier New', monospace;
+                                font-size: 9px;
+                                padding: 4px 5px;
+                                outline: none;
+                                letter-spacing: 1px;
+                            ">
+                        <button onclick="fpSendTauntFree()" style="
+                            background: rgba(255,0,255,0.15);
+                            border: 1px solid rgba(255,0,255,0.5);
+                            color: var(--color-caos-rosa);
+                            font-size: 10px;
+                            padding: 0 5px;
+                            cursor: pointer;
+                            flex-shrink: 0;
+                        ">➤</button>
+                    </div>
+                    <!-- Incoming messages log -->
+                    <div id="fp-taunt-log" style="
+                        margin-top:5px;
+                        max-height: 72px;
+                        overflow-y: auto;
+                        scrollbar-width: thin;
+                        scrollbar-color: var(--color-caos-rosa) #111;
+                        border-top: 1px solid rgba(255,0,255,0.15);
+                        padding-top: 4px;
+                    "></div>
+                </div>
             </div>
 
         </div>
@@ -942,6 +997,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function _fpCleanSyncRefs() {
         _fpSyncRefs.forEach(function(r) { try { r.off(); } catch(e) {} });
         _fpSyncRefs = [];
+        fpDestroyTauntChat();
     }
 
     // REGRESSION FIX: tracks betIds already initialized this session
@@ -1097,6 +1153,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (rBEl) rBEl.textContent = remaining + '/' + betBoostLimit;
             });
         }
+
+        // Init taunt chat Firebase listener
+        window.fpState = fpState; // exponer para funciones globales
+        fpInitTauntChat(betId);
     }
 
     const fpControlSelector = document.getElementById('fp-control-selector');
@@ -1145,6 +1205,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const dur = parseInt(fpDurSelect ? fpDurSelect.value : 600);
         fpState = { timeLeft:dur, totalTime:dur, running:false, ended:false, interval:null, score:0, chaosLevel:0,
                     betId: betId || null, betMode: !!betId };
+        window.fpState = fpState; // exponer para funciones globales (taunt chat, etc.)
         // Mutear el zorzal mientras el juego está activo
         const tangoAudioFP = document.getElementById('tango-audio');
         if (tangoAudioFP && !tangoAudioFP.paused) { tangoAudioFP.muted = true; }
@@ -1267,9 +1328,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const rivalPanel = document.getElementById('fp-rival-panel');
         if (!freePanel || !rivalPanel) return;
 
+        var tauntChat = document.getElementById('fp-taunt-chat');
         if (active) {
             freePanel.style.display  = 'none';
             rivalPanel.style.display = 'flex';
+            if (tauntChat) tauntChat.style.display = 'block';
 
             // Datos de la apuesta
             const bet = (window.BettingEngine && window.BettingEngine.activeBets.get(betId))
@@ -1301,6 +1364,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             freePanel.style.display  = 'flex';
             rivalPanel.style.display = 'none';
+            if (tauntChat) tauntChat.style.display = 'none';
             _fpStopRivalTimer();
         }
     }
@@ -7114,6 +7178,118 @@ function fpBoostGhostFlash() {
     void el.offsetWidth; // reflow para reiniciar animación
     el.classList.add('active');
     setTimeout(function() { el.classList.remove('active'); }, 820);
+}
+</script>
+
+<!-- ══════════════════════════════════════════════
+     TAUNT CHAT — CSS + JS
+══════════════════════════════════════════════ -->
+<style>
+.fp-taunt-btn {
+    width: 100%;
+    background: rgba(0,0,0,0.75);
+    border: 1px solid rgba(255,0,255,0.35);
+    color: var(--color-caos-rosa);
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 4px 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+    line-height: 1.3;
+}
+.fp-taunt-btn:hover {
+    background: rgba(255,0,255,0.12);
+    border-color: var(--color-caos-rosa);
+    box-shadow: 0 0 8px rgba(255,0,100,0.3);
+}
+.fp-taunt-btn:active {
+    background: rgba(255,0,255,0.25);
+    transform: scale(0.97);
+}
+.fp-taunt-msg-in {
+    font-size: 9px;
+    color: var(--color-caos-rosa);
+    font-family: 'Courier New', monospace;
+    padding: 2px 0;
+    border-bottom: 1px solid rgba(255,0,255,0.1);
+    word-break: break-word;
+}
+.fp-taunt-msg-out {
+    font-size: 9px;
+    color: rgba(248,255,43,0.75);
+    font-family: 'Courier New', monospace;
+    padding: 2px 0;
+    border-bottom: 1px solid rgba(248,255,43,0.08);
+    word-break: break-word;
+    text-align: right;
+}
+</style>
+
+<script>
+// ── TAUNT CHAT ────────────────────────────────────────────────────────────────
+var _fpTauntChatRef = null;
+
+function fpSendTaunt(msg) {
+    if (!window.fpState || !window.fpState.betId || !window._fbDB) return;
+    msg = String(msg).slice(0, 60);
+    window._fbDB.ref('t2e_bets/' + window.fpState.betId + '/chat').push({
+        from: window.fpState.myRole || 'p1',
+        msg: msg,
+        ts: Date.now()
+    });
+    // Mostrar propio mensaje en el log
+    _fpTauntLogMsg(msg, false);
+}
+
+function fpSendTauntFree() {
+    var input = document.getElementById('fp-taunt-input');
+    if (!input) return;
+    var msg = (input.value || '').trim().slice(0, 60);
+    if (!msg) return;
+    fpSendTaunt(msg);
+    input.value = '';
+}
+
+function fpInitTauntChat(betId) {
+    if (!window._fbDB || !betId) return;
+    // Limpiar listener anterior
+    fpDestroyTauntChat();
+    // Limpiar log
+    var log = document.getElementById('fp-taunt-log');
+    if (log) log.innerHTML = '';
+
+    _fpTauntChatRef = window._fbDB.ref('t2e_bets/' + betId + '/chat');
+    // Ignorar mensajes históricos — sólo escuchar nuevos
+    var loaded = false;
+    _fpTauntChatRef.once('value', function() { loaded = true; });
+    _fpTauntChatRef.on('child_added', function(snap) {
+        if (!loaded) return; // skip backfill
+        var data = snap.val();
+        if (!data || !data.msg) return;
+        var myRole = window.fpState ? window.fpState.myRole : null;
+        // Solo mostrar mensajes del rival
+        if (data.from === myRole) return;
+        _fpTauntLogMsg(data.msg, true);
+    });
+}
+
+function fpDestroyTauntChat() {
+    if (_fpTauntChatRef) {
+        try { _fpTauntChatRef.off(); } catch(e) {}
+        _fpTauntChatRef = null;
+    }
+}
+
+function _fpTauntLogMsg(msg, incoming) {
+    var log = document.getElementById('fp-taunt-log');
+    if (!log) return;
+    var div = document.createElement('div');
+    div.className = incoming ? 'fp-taunt-msg-in' : 'fp-taunt-msg-out';
+    div.textContent = (incoming ? '⚔ ' : '✦ ') + msg;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
 }
 </script>
 
