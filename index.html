@@ -6852,7 +6852,7 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
         <img src="juegos beta/pacman.jfif" alt="PAC-HACK: DEATH">
     </div>
     <div class="fp-fab-title">[PAC-HACK: DEATH]</div>
-    <div class="fp-fab-subtitle">// EL LABERINTO — 1 RPPI = 1 USDT //</div>
+    <div class="fp-fab-subtitle">PLAY NOW!!!<br><span style="font-size:0.85em;opacity:0.8;">(El "Laberinto")</span></div>
     <button id="fp-fab-bet-btn" class="fp-fab-action-btn">
         ¡MAKE YOUR BET!
     </button>
@@ -6871,7 +6871,7 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
     bottom: 80px;
     z-index: 9002;
     width: 190px;
-    background: #0d0d0d;
+    background: #050a0f;
     border: 1px solid var(--color-caos-rosa, #ff2d78);
     border-radius: 12px;
     box-shadow: 0 0 24px rgba(255,45,120,0.35);
@@ -6881,7 +6881,57 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
     align-items: center;
     gap: 9px;
     transition: opacity 0.2s ease, transform 0.2s ease;
+    overflow: hidden;
 }
+/* Grid cyan pulsante */
+#fp-fab-drawer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0,255,255,0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.12) 1px, transparent 1px);
+    background-size: 18px 18px;
+    animation: gridPulseAggressive 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+/* Scanlines clásicas */
+#fp-fab-drawer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.55),
+        rgba(0,0,0,0.55) 3px,
+        transparent 3px,
+        transparent 5px
+    );
+    pointer-events: none;
+    animation: scanlineAggressive 3s linear infinite;
+    z-index: 1;
+}
+/* Borde glitch animado — inestabilidad máxima */
+@keyframes fabBorderGlitch {
+    0%        { border-color: #ff2d78; box-shadow: 0 0 18px #ff2d78, inset 0 0 8px rgba(255,45,120,0.15); transform: translateX(0) skewX(0deg); }
+    8%        { border-color: #0ff;    box-shadow: 0 0 28px #0ff,    inset 0 0 12px rgba(0,255,255,0.2);  transform: translateX(-3px) skewX(-1deg); }
+    9%        { border-color: #ff2d78; box-shadow: 0 0 40px #ff2d78; transform: translateX(3px)  skewX(1deg); }
+    10%       { border-color: #ff2d78; transform: translateX(0) skewX(0deg); }
+    40%       { border-color: #ff2d78; box-shadow: 0 0 18px #ff2d78; transform: translateX(0); }
+    41%       { border-color: #f8ff2b; box-shadow: 0 0 35px #f8ff2b, inset 0 0 10px rgba(248,255,43,0.2); transform: translateX(2px) skewX(0.5deg); }
+    42%       { border-color: #ff2d78; transform: translateX(-2px); }
+    43%       { border-color: #ff2d78; transform: translateX(0); }
+    75%       { border-color: #ff2d78; box-shadow: 0 0 32px #ff2d78, inset 0 0 10px rgba(255,45,120,0.25); transform: translateX(0); }
+    76%       { border-color: #0ff;   transform: translateX(-2px) skewX(-0.8deg); }
+    77%       { border-color: #ff2d78; transform: translateX(2px); }
+    78%,100%  { border-color: #ff2d78; box-shadow: 0 0 20px #ff2d78; transform: translateX(0) skewX(0deg); }
+}
+#fp-fab-drawer {
+    animation: fabBorderGlitch 3.5s ease-in-out infinite;
+}
+/* Todo el contenido por encima de los efectos */
+#fp-fab-drawer > * { position: relative; z-index: 2; }
 #fp-fab-drawer.hidden {
     opacity: 0;
     pointer-events: none;
@@ -6897,6 +6947,7 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
     cursor: pointer;
     line-height: 1;
     padding: 2px 5px;
+    z-index: 3;
 }
 #fp-fab-close:hover { color: #fff; }
 .fp-fab-game-img img {
@@ -6906,6 +6957,7 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
     border-radius: 8px;
     border: 1px solid #333;
     display: block;
+    filter: saturate(1.4) contrast(1.1);
 }
 .fp-fab-title {
     font-family: 'Orbitron', monospace;
@@ -6913,13 +6965,24 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
     color: var(--color-caos-rosa, #ff2d78);
     letter-spacing: 2px;
     text-align: center;
+    animation: fabGlitch 1s linear infinite;
+}
+/* Glitch del título del panel — igual que .glitch-title pero +30% de intensidad */
+@keyframes fabGlitch {
+    0%   { text-shadow: .065em 0 0 rgba(255,0,0,.85), -.065em 0 0 rgba(0,255,0,.85), 0 0 .065em rgba(0,0,255,.85); }
+    14%  { text-shadow: .065em 0 0 rgba(255,0,0,.85), -.065em 0 0 rgba(0,255,0,.85), 0 0 .065em rgba(0,0,255,.85); }
+    15%  { text-shadow: -.065em 0 0 rgba(255,0,0,.85), .033em 0 0 rgba(0,255,0,.85), 0 0 .033em rgba(0,0,255,.85); transform: translateX(2px) skewX(-3deg); }
+    16%  { text-shadow: .033em 0 0 rgba(255,0,0,.85), .065em 0 0 rgba(0,255,0,.85), 0 0 .065em rgba(0,0,255,.85); transform: translateX(-2px) skewX(2deg); }
+    17%  { text-shadow: .065em 0 0 rgba(255,0,0,.85), -.065em 0 0 rgba(0,255,0,.85), 0 0 .065em rgba(0,0,255,.85); transform: translateX(0); }
+    100% { text-shadow: .065em 0 0 rgba(255,0,0,.85), -.065em 0 0 rgba(0,255,0,.85), 0 0 .065em rgba(0,0,255,.85); }
 }
 .fp-fab-subtitle {
-    font-family: 'Courier New', monospace;
-    font-size: 0.6em;
-    color: #888;
-    letter-spacing: 1px;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65em;
+    color: #0ff;
+    letter-spacing: 2px;
     text-align: center;
+    text-shadow: 0 0 6px rgba(0,255,255,0.6);
 }
 .fp-fab-action-btn {
     width: 100%;
@@ -6938,11 +7001,11 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
 }
 .fp-fab-action-btn:hover {
     background: #ff5599;
-    box-shadow: 0 0 14px rgba(255,45,120,0.7);
+    box-shadow: 0 0 20px rgba(255,45,120,0.9);
 }
 @keyframes fabPulse {
     0%,100% { box-shadow: 0 0 8px rgba(255,45,120,0.5); }
-    50%      { box-shadow: 0 0 20px rgba(255,45,120,1); }
+    50%      { box-shadow: 0 0 22px rgba(255,45,120,1); }
 }
 
 /* Botón re-abrir (mini) */
