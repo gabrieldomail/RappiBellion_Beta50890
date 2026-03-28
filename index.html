@@ -7080,16 +7080,18 @@ body.arena-open #fp-fab-reopen { display: none !important; }
     transition: opacity 0.1s ease;
 ">
     <img src="images/boost-ghost-no.png"
-         style="width: min(280px, 60vw); height: auto; filter: drop-shadow(0 0 30px #f8ff2b);"
+         style="width: min(85vw, 85vh); height: auto; filter: drop-shadow(0 0 60px #f8ff2b) drop-shadow(0 0 120px #ff2d78);"
          alt="">
 </div>
 
 <style>
 @keyframes boostGhostFlashAnim {
-    0%   { opacity: 0; transform: scale(0.6); }
-    20%  { opacity: 1; transform: scale(1.08); }
-    60%  { opacity: 1; transform: scale(1); }
-    100% { opacity: 0; transform: scale(1.3); }
+    0%   { opacity: 0; transform: scale(0.3); }
+    15%  { opacity: 1; transform: scale(1.12); }
+    35%  { opacity: 1; transform: scale(0.97); }
+    55%  { opacity: 1; transform: scale(1.04); }
+    80%  { opacity: 0.9; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.2); }
 }
 #fp-boost-ghost-flash.active {
     display: flex !important;
