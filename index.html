@@ -424,6 +424,49 @@
     </div>
 </div>
 
+<!-- ══════════════════════════════════════════
+     KILL MY OLD FRIEND — BUSCADOR DE APUESTAS
+     Flotante top-left, cyan
+     ══════════════════════════════════════════ -->
+<div id="finder-float-window" class="minimized">
+    <div class="finder-float-terminal">
+        <div class="finder-float-header" id="finder-float-drag">
+            <span>[KILL MY OLD FRIEND // BUSCADOR_APUESTAS]</span>
+            <div class="lobby-float-controls">
+                <button id="finder-float-minimize" class="finder-float-btn" title="Minimizar">■</button>
+                <button id="finder-float-close" class="finder-float-btn" title="Cerrar">✕</button>
+            </div>
+        </div>
+        <div class="finder-float-body" id="finder-float-body">
+            <div style="font-size:9px;letter-spacing:3px;color:rgba(0,255,255,0.5);
+                        font-family:'Courier New',monospace;margin-bottom:8px;">
+                // WALLET DEL ENEMIGO //
+            </div>
+            <div style="display:flex;gap:5px;margin-bottom:8px;">
+                <input id="bet-finder-input" type="text" placeholder="0x..." maxlength="42"
+                    onkeydown="if(event.key==='Enter')fpFindBetsByWallet()"
+                    style="flex:1;min-width:0;background:rgba(0,0,0,0.6);
+                           border:1px solid rgba(0,255,255,0.35);color:var(--color-azul-glitch);
+                           font-family:'Courier New',monospace;font-size:11px;
+                           padding:6px 8px;outline:none;letter-spacing:1px;">
+                <button onclick="fpFindBetsByWallet()"
+                    style="background:rgba(0,255,255,0.1);border:1px solid var(--color-azul-glitch);
+                           color:var(--color-azul-glitch);font-family:'Orbitron',monospace;
+                           font-size:9px;letter-spacing:2px;padding:6px 10px;cursor:pointer;
+                           white-space:nowrap;text-shadow:0 0 6px var(--color-azul-glitch);"
+                    onmouseover="this.style.background='rgba(0,255,255,0.2)'"
+                    onmouseout="this.style.background='rgba(0,255,255,0.1)'">HACK</button>
+            </div>
+            <div id="bet-finder-results"
+                style="min-height:36px;max-height:180px;overflow-y:auto;
+                       scrollbar-width:thin;scrollbar-color:var(--color-azul-glitch) #111;
+                       font-family:'Courier New',monospace;font-size:10px;">
+                <span style="color:rgba(0,255,255,0.3);">[ ESPERANDO OBJETIVO... ]</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- === MODAL DE APUESTAS T2E === -->
 <div id="make-bet-modal" class="game-menu-hidden">
     <div class="bet-modal-content caos-terminal">
@@ -610,6 +653,80 @@
 
                 <!-- countdown moved to body level -->
 
+                <!-- ── KILL MY OLD FRIEND — BUSCADOR DE APUESTAS (free play only) ── -->
+                <div id="fp-friend-finder" style="
+                    display: none;
+                    position: absolute;
+                    top: 12px;
+                    left: 12px;
+                    width: 220px;
+                    z-index: 12;
+                    background: rgba(0,10,15,0.82);
+                    border: 1px solid rgba(0,255,255,0.45);
+                    box-shadow: 0 0 18px rgba(0,255,255,0.18), inset 0 0 12px rgba(0,255,255,0.04);
+                    font-family: 'Courier New', monospace;
+                ">
+                    <!-- Header -->
+                    <div style="
+                        background: linear-gradient(90deg, rgba(0,255,255,0.18), rgba(0,255,255,0.04));
+                        border-bottom: 1px solid rgba(0,255,255,0.35);
+                        padding: 5px 10px;
+                        display: flex; justify-content: space-between; align-items: center;
+                    ">
+                        <span style="font-size:9px; letter-spacing:2px; color:var(--color-azul-glitch);
+                                     text-shadow: 0 0 6px var(--color-azul-glitch);">
+                            KILL MY OLD FRIEND // BUSCADOR
+                        </span>
+                        <button onclick="document.getElementById('fp-friend-finder').style.display='none'"
+                                style="background:none;border:none;color:rgba(0,255,255,0.5);
+                                       cursor:pointer;font-size:12px;padding:0;line-height:1;">✕</button>
+                    </div>
+
+                    <!-- Body -->
+                    <div style="padding: 8px 10px; display:flex; flex-direction:column; gap:7px;">
+
+                        <!-- Input dirección -->
+                        <div style="font-size:9px; letter-spacing:2px; color:rgba(0,255,255,0.5); margin-bottom:2px;">
+                            // WALLET DEL AMIGO //
+                        </div>
+                        <div style="display:flex; gap:4px;">
+                            <input id="fp-finder-input" type="text" maxlength="42"
+                                placeholder="0x..."
+                                onkeydown="if(event.key==='Enter')fpFindFriendBet()"
+                                style="
+                                    flex:1; min-width:0;
+                                    background: rgba(0,0,0,0.6);
+                                    border: 1px solid rgba(0,255,255,0.35);
+                                    color: var(--color-azul-glitch);
+                                    font-family: 'Courier New', monospace;
+                                    font-size: 11px;
+                                    padding: 5px 7px;
+                                    outline: none;
+                                    letter-spacing: 1px;
+                                ">
+                            <button onclick="fpFindFriendBet()" style="
+                                background: rgba(0,255,255,0.12);
+                                border: 1px solid rgba(0,255,255,0.45);
+                                color: var(--color-azul-glitch);
+                                font-size: 13px;
+                                padding: 0 8px;
+                                cursor: pointer;
+                                flex-shrink: 0;
+                                text-shadow: 0 0 6px var(--color-azul-glitch);
+                            ">⌕</button>
+                        </div>
+
+                        <!-- Resultado -->
+                        <div id="fp-finder-result" style="
+                            min-height: 40px;
+                            font-size: 11px;
+                            color: rgba(0,255,255,0.4);
+                            letter-spacing: 1px;
+                            line-height: 1.5;
+                        ">[ INGRESÁ LA WALLET DE TU RIVAL ]</div>
+                    </div>
+                </div>
+
                 <!-- ── TAUNT CHAT (bet mode only) ── -->
                 <div id="fp-taunt-chat" style="
                     display: none;
@@ -704,6 +821,21 @@
                 </select>
                 <button class="fp-btn" id="fp-restart-btn">↺ RESTART</button>
             </div>
+            <!-- Botón buscador de apuestas de amigos -->
+            <button onclick="window.fpShowFriendFinder && fpShowFriendFinder()"
+                    style="width:100%;
+                           background:transparent;
+                           border:1px solid rgba(0,255,255,0.4);
+                           color:var(--color-azul-glitch);
+                           font-family:'Courier New',monospace;
+                           font-size:0.78em; letter-spacing:2px;
+                           padding:7px 0; cursor:pointer;
+                           text-shadow:0 0 6px var(--color-azul-glitch);
+                           transition:background 0.2s, box-shadow 0.2s;"
+                    onmouseover="this.style.background='rgba(0,255,255,0.08)';this.style.boxShadow='0 0 12px rgba(0,255,255,0.25)'"
+                    onmouseout="this.style.background='transparent';this.style.boxShadow='none'">
+                ⌕ KILL MY OLD FRIEND
+            </button>
             <button class="fp-exit-cta" id="fp-exit-btn">EXIT FREE PLAY</button>
         </div>
 
@@ -1328,11 +1460,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const rivalPanel = document.getElementById('fp-rival-panel');
         if (!freePanel || !rivalPanel) return;
 
-        var tauntChat = document.getElementById('fp-taunt-chat');
+        var tauntChat    = document.getElementById('fp-taunt-chat');
+        var friendFinder = document.getElementById('fp-friend-finder');
         if (active) {
             freePanel.style.display  = 'none';
             rivalPanel.style.display = 'flex';
-            if (tauntChat) tauntChat.style.display = 'block';
+            if (tauntChat)    tauntChat.style.display    = 'block';
+            if (friendFinder) friendFinder.style.display = 'none'; // ocultar en bet mode
 
             // Datos de la apuesta
             const bet = (window.BettingEngine && window.BettingEngine.activeBets.get(betId))
@@ -1364,7 +1498,8 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             freePanel.style.display  = 'flex';
             rivalPanel.style.display = 'none';
-            if (tauntChat) tauntChat.style.display = 'none';
+            if (tauntChat)    tauntChat.style.display    = 'none';
+            if (friendFinder) friendFinder.style.display = 'none'; // ocultar hasta que el usuario lo abra
             _fpStopRivalTimer();
         }
     }
@@ -6944,6 +7079,63 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
 })();
 </script>
 
+<script>
+// ── FINDER FLOAT WINDOW logic ──────────────────────────────
+(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        var win     = document.getElementById('finder-float-window');
+        var minBtn  = document.getElementById('finder-float-minimize');
+        var closeBtn= document.getElementById('finder-float-close');
+        var header  = document.getElementById('finder-float-drag');
+        var autoMinTimer = null;
+
+        function startAutoMinTimer() {
+            clearTimeout(autoMinTimer);
+            autoMinTimer = setTimeout(function() {
+                if (win && !win.classList.contains('minimized')) {
+                    win.classList.add('minimized');
+                    if (minBtn) minBtn.textContent = '■';
+                }
+            }, 4000);
+        }
+
+        function toggleMinimize() {
+            if (!win) return;
+            if (win.classList.contains('minimized')) {
+                win.classList.remove('minimized');
+                if (minBtn) minBtn.textContent = '─';
+                startAutoMinTimer();
+            } else {
+                win.classList.add('minimized');
+                if (minBtn) minBtn.textContent = '■';
+                clearTimeout(autoMinTimer);
+            }
+        }
+
+        if (win) {
+            win.addEventListener('mousemove', function() {
+                if (!win.classList.contains('minimized')) startAutoMinTimer();
+            });
+        }
+        if (header)   header.addEventListener('click', toggleMinimize);
+        if (minBtn)   minBtn.addEventListener('click', function(e) { e.stopPropagation(); toggleMinimize(); });
+        if (closeBtn) closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            clearTimeout(autoMinTimer);
+            if (win) win.classList.add('finder-float-hidden');
+        });
+
+        window.showFinderFloat = function() {
+            if (win) {
+                win.classList.remove('finder-float-hidden');
+                win.classList.add('minimized');
+                if (minBtn) minBtn.textContent = '■';
+            }
+        };
+    });
+})();
+</script>
+
 <!-- ══════════════════════════════════════════
      FLOATING PAC-HACK SHORTCUT
      Panel siempre visible, izquierda
@@ -7205,6 +7397,184 @@ function fpBoostGhostFlash() {
     void el.offsetWidth; // reflow para reiniciar animación
     el.classList.add('active');
     setTimeout(function() { el.classList.remove('active'); }, 820);
+}
+</script>
+
+<!-- ══════════════════════════════════════════════
+     KILL MY OLD FRIEND — FRIEND BET FINDER
+══════════════════════════════════════════════ -->
+<script>
+function fpFindFriendBet() {
+    var input  = document.getElementById('fp-finder-input');
+    var result = document.getElementById('fp-finder-result');
+    if (!input || !result) return;
+
+    var addr = (input.value || '').trim().toLowerCase();
+    if (!addr || addr.length < 10) {
+        result.innerHTML = '<span style="color:#ff4444;">[ WALLET INVÁLIDA ]</span>';
+        return;
+    }
+
+    result.innerHTML = '<span style="color:rgba(0,255,255,0.5);animation:rivalBlink 0.8s step-start infinite;">[ BUSCANDO... ]</span>';
+
+    var fbDB = window._fbDB;
+    if (!fbDB) {
+        result.innerHTML = '<span style="color:#ff4444;">[ SIN CONEXIÓN FIREBASE ]</span>';
+        return;
+    }
+
+    // Buscar en t2e_bets todas las apuestas con creator = addr y status = open
+    fbDB.ref('t2e_bets').orderByChild('creator').equalTo(addr).limitToLast(5).once('value', function(snap) {
+        var bets = [];
+        snap.forEach(function(child) {
+            var b = child.val();
+            b._id = child.key;
+            if (b.status === 'open') bets.push(b);
+        });
+
+        if (bets.length === 0) {
+            result.innerHTML = '<span style="color:rgba(0,255,255,0.35);">[ SIN APUESTAS ABIERTAS ]</span>';
+            return;
+        }
+
+        // Mostrar cada apuesta encontrada
+        result.innerHTML = '';
+        bets.forEach(function(bet) {
+            var short = addr.slice(0,6) + '...' + addr.slice(-4);
+            var div = document.createElement('div');
+            div.style.cssText = 'border:1px solid rgba(0,255,255,0.25);padding:6px 8px;margin-bottom:5px;background:rgba(0,255,255,0.04);';
+            div.innerHTML =
+                '<div style="font-size:10px;color:rgba(0,255,255,0.7);margin-bottom:4px;letter-spacing:1px;">' +
+                    '⚔ ' + short + '</div>' +
+                '<div style="font-size:11px;color:#fff;letter-spacing:1px;margin-bottom:6px;">' +
+                    (bet.amount || '?') + ' $RPPI &nbsp;·&nbsp; ' +
+                    (bet.boostLimit || '?') + ' boosts &nbsp;·&nbsp; ' +
+                    (bet.timeLimit || '?') + ' min' +
+                '</div>' +
+                '<button onclick="fpAcceptFoundBet(\'' + bet._id + '\')" style="' +
+                    'width:100%;background:rgba(0,255,255,0.14);border:1px solid rgba(0,255,255,0.5);' +
+                    'color:var(--color-azul-glitch);font-family:\'Courier New\',monospace;font-size:11px;' +
+                    'letter-spacing:2px;padding:5px;cursor:pointer;' +
+                    'text-shadow:0 0 6px var(--color-azul-glitch);">' +
+                    '[ ACEPTAR HACK ]' +
+                '</button>';
+            result.appendChild(div);
+        });
+    }, function(err) {
+        result.innerHTML = '<span style="color:#ff4444;">[ ERROR: ' + err.message + ' ]</span>';
+    });
+}
+
+function fpAcceptFoundBet(betId) {
+    if (!window._walletConnected && !window.walletConnected) {
+        var cw = document.getElementById('connect-wallet-button');
+        if (cw) { window._pendingBetGame = null; cw.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(function(){cw.click();},400); }
+        return;
+    }
+    if (window.T2EIntegration && typeof window.T2EIntegration.acceptBetFromLobby === 'function') {
+        window.T2EIntegration.acceptBetFromLobby({ id: betId });
+        document.getElementById('fp-friend-finder').style.display = 'none';
+    }
+}
+
+window.fpShowFriendFinder = function() {
+    var el = document.getElementById('fp-friend-finder');
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+};
+
+// Alias para el nuevo panel del hero (IDs: bet-finder-input / bet-finder-results)
+function fpFindBetsByWallet() {
+    var input  = document.getElementById('bet-finder-input');
+    var result = document.getElementById('bet-finder-results');
+    if (!input || !result) return;
+
+    var raw = (input.value || '').trim();
+    if (!raw || raw.length < 10) {
+        result.innerHTML = '<span style="color:#ff4444;">[ WALLET INVÁLIDA ]</span>';
+        return;
+    }
+
+    result.innerHTML = '<span style="color:rgba(0,255,255,0.5);">[ BUSCANDO ENEMIGO... ]</span>';
+
+    var fbDB = window._fbDB;
+    if (!fbDB) {
+        result.innerHTML = '<span style="color:#ff4444;">[ SIN CONEXIÓN FIREBASE ]</span>';
+        return;
+    }
+
+    // Intentar con la dirección tal cual fue copiada, luego en lowercase,
+    // luego scan manual (por si el índice no coincide en case)
+    var variants = [raw, raw.toLowerCase(), raw.toLowerCase().replace(/^0x/, '0x')];
+    // dedup
+    variants = variants.filter(function(v, i, a) { return a.indexOf(v) === i; });
+
+    function tryVariant(idx) {
+        if (idx >= variants.length) {
+            // Fallback: scan completo buscando case-insensitive
+            fbDB.ref('t2e_bets').orderByChild('status').equalTo('open').limitToLast(50).once('value', function(snap) {
+                var bets = [];
+                var rawLo = raw.toLowerCase();
+                snap.forEach(function(child) {
+                    var b = child.val();
+                    b._id = child.key;
+                    if (b.status === 'open' &&
+                        ((b.creator  && b.creator.toLowerCase()  === rawLo) ||
+                         (b.acceptor && b.acceptor.toLowerCase() === rawLo))) {
+                        bets.push(b);
+                    }
+                });
+                _fpRenderFoundBets(bets, raw, result);
+            }, function(err) {
+                result.innerHTML = '<span style="color:#ff4444;">[ ERROR: ' + err.message + ' ]</span>';
+            });
+            return;
+        }
+
+        var addr = variants[idx];
+        fbDB.ref('t2e_bets').orderByChild('creator').equalTo(addr).limitToLast(10).once('value', function(snap) {
+            var bets = [];
+            snap.forEach(function(child) {
+                var b = child.val();
+                b._id = child.key;
+                if (b.status === 'open') bets.push(b);
+            });
+            if (bets.length > 0) {
+                _fpRenderFoundBets(bets, raw, result);
+            } else {
+                tryVariant(idx + 1);
+            }
+        });
+    }
+
+    tryVariant(0);
+}
+
+function _fpRenderFoundBets(bets, addr, result) {
+    if (bets.length === 0) {
+        result.innerHTML = '<span style="color:rgba(0,255,255,0.35);">[ SIN APUESTAS ABIERTAS ]</span>';
+        return;
+    }
+    result.innerHTML = '';
+    bets.forEach(function(bet) {
+        var short = addr.slice(0,6) + '...' + addr.slice(-4);
+        var div = document.createElement('div');
+        div.style.cssText = 'border:1px solid rgba(0,255,255,0.25);padding:6px 8px;margin-bottom:5px;background:rgba(0,255,255,0.04);';
+        div.innerHTML =
+            '<div style="font-size:10px;color:rgba(0,255,255,0.7);margin-bottom:4px;letter-spacing:1px;">⚔ ' + short + '</div>' +
+            '<div style="font-size:11px;color:#fff;letter-spacing:1px;margin-bottom:6px;">' +
+                (bet.amount || '?') + ' $RPPI &nbsp;·&nbsp; ' +
+                (bet.boostLimit || '?') + ' boosts &nbsp;·&nbsp; ' +
+                (bet.timeLimit || '?') + ' min' +
+            '</div>' +
+            '<button onclick="fpAcceptFoundBet(\'' + bet._id + '\')" style="' +
+                'width:100%;background:rgba(0,255,255,0.14);border:1px solid rgba(0,255,255,0.5);' +
+                'color:var(--color-azul-glitch);font-family:\'Courier New\',monospace;font-size:11px;' +
+                'letter-spacing:2px;padding:5px;cursor:pointer;' +
+                'text-shadow:0 0 6px var(--color-azul-glitch);">' +
+                '[ ACEPTAR HACK ]' +
+            '</button>';
+        result.appendChild(div);
+    });
 }
 </script>
 

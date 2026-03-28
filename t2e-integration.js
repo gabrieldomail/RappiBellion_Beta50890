@@ -532,7 +532,7 @@ class T2EIntegration {
         const timeRemaining = this.bettingEngine.formatTimeRemaining(bet.createdAt, bet.timeLimit);
 
         betItem.innerHTML = `
-            <span><strong>Nick:</strong> ${bet.creator.substring(0, 6)}...${bet.creator.substring(bet.creator.length - 4)}</span>
+            <span><strong>Nick:</strong> ${bet.creator.substring(0, 6)}<button onclick="navigator.clipboard.writeText('${bet.creator}')" title="Copiar wallet completa" style="background:none;border:none;cursor:pointer;padding:0 2px;font-size:0.9em;vertical-align:middle;opacity:0.8;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">📋</button>${bet.creator.substring(bet.creator.length - 4)}</span>
             <span><strong>Monto:</strong> ${bet.amount} $RPPI</span>
             <span><strong>Tiempo:</strong> ${timeRemaining}</span>
             <span><strong>Boosts:</strong> ${bet.boostLimit}x</span>
