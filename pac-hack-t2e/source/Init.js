@@ -160,18 +160,21 @@
             const _rampSecs   = 480;  // 8 minutos de rampa total
             const _progress   = Math.min((_elapsed + _offsetSecs) / _rampSecs, 1);
             const _curve      = Math.pow(_progress, 2.5);
-            const _divisor    = _maxDiv - (_curve * (_maxDiv - _minDiv));
+            // CHAOS CAP: capped at 70% unless parent unlocked via 💣
+            const _curveEffective = window._chaosUnlocked ? _curve : Math.min(_curve, 0.70);
+            const _divisor    = _maxDiv - (_curveEffective * (_maxDiv - _minDiv));
 
             // Clamp speed instead of recursing — recursive calls at high chaos
             // caused call-stack growth that made Pacman disappear and freeze the loop.
-            const _speedCap = 4 + (_curve * 4); // progressive cap: 4 at 0% chaos → 8 at 100%
+            const _speedCap = 4 + (_curveEffective * 4); // progressive cap: 4 at 0% chaos → 8 at 100%
             let speed = Math.min(time / _divisor, _speedCap);
 
             // Notificar nivel de caos al HUD padre (~2% de frames)
             if (window._hackerStartTime && window.parent && window.parent !== window && Math.random() < 0.02) {
                 window.parent.postMessage({
                     type: 'CHAOS_LEVEL',
-                    level: Math.round(_curve * 100),
+                    level: Math.round(_curve * 100),      // nivel REAL (sin cap) para el HUD
+                    capped: !window._chaosUnlocked,
                     divisor: Math.round(_divisor * 10) / 10,
                     elapsed: Math.round(_elapsed)
                 }, '*');
@@ -525,6 +528,14 @@
         document.addEventListener('pvpBoost', function() {
             if (display.isPlaying() && ghosts && blob) {
                 ghosts.frighten(blob);
+            }
+        });
+
+        // 💣 CHAOS UNLOCK: parent sends UNLOCK_CHAOS to remove the 70% cap
+        window._chaosUnlocked = false;
+        window.addEventListener('message', function(e) {
+            if (e.data && e.data.type === 'UNLOCK_CHAOS') {
+                window._chaosUnlocked = true;
             }
         });
     }

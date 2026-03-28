@@ -558,7 +558,15 @@
         <div id="fp-chaos-bar-wrap">
             <div class="fp-chaos-label">
                 <span>// CHAOS LEVEL</span>
-                <span id="fp-chaos-pct">0%</span>
+                <span style="display:flex;align-items:center;gap:5px;">
+                    <span id="fp-chaos-pct">0%</span>
+                    <button id="fp-chaos-unlock-btn"
+                        onclick="fpChaosUnlockPrompt()"
+                        title="UNLOCK FULL CHAOS ⚠️"
+                        style="display:none;"
+                        class="fp-chaos-dynabtn"
+                    >💣</button>
+                </span>
             </div>
             <div class="fp-chaos-bar-outer">
                 <div class="fp-chaos-bar-inner" id="fp-chaos-bar"></div>
@@ -652,6 +660,30 @@
                 ">x0</div>
 
                 <!-- countdown moved to body level -->
+
+                <!-- ── 💣 CHAOS UNLOCK WARNING OVERLAY ── -->
+                <div id="fp-chaos-warning-overlay" style="display:none;
+                    position:absolute; inset:0; z-index:60;
+                    background:rgba(0,0,0,0.93);
+                    flex-direction:column; align-items:center; justify-content:center;
+                    gap:18px; padding:24px; box-sizing:border-box;
+                    font-family:'Courier New',monospace;">
+
+                    <div style="font-size:28px;">💣</div>
+                    <div class="fp-chaos-warn-title">⚠ WARNING !!!</div>
+                    <div class="fp-chaos-warn-body">
+                        Presionar este botón elimina el límite de caos al 70%.<br><br>
+                        El sistema puede <span style="color:var(--color-primario);font-weight:700;">INESTABILIZARSE</span>:
+                        Pacman puede desaparecer, el loop puede romperse.<br><br>
+                        <span style="color:var(--color-caos-amarillo);">Protegé tu apuesta.</span><br>
+                        Si vas a full caos y ganás, ganás más puntos...<br>
+                        <span style="color:var(--color-caos-rosa);">...pero te la podés poner de sombrero.</span> 🎩
+                    </div>
+                    <div style="display:flex; gap:16px; margin-top:8px;">
+                        <button class="fp-chaos-warn-cancel" onclick="fpChaosUnlockCancel()">✕ CANCELAR</button>
+                        <button class="fp-chaos-warn-confirm" onclick="fpChaosUnlockConfirm()">💣 PRESS — UNLOCK CHAOS</button>
+                    </div>
+                </div>
 
                 <!-- ── KILL MY OLD FRIEND — BUSCADOR DE APUESTAS (free play only) ── -->
                 <div id="fp-friend-finder" style="
@@ -1336,8 +1368,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const dur = parseInt(fpDurSelect ? fpDurSelect.value : 600);
         fpState = { timeLeft:dur, totalTime:dur, running:false, ended:false, interval:null, score:0, chaosLevel:0,
-                    betId: betId || null, betMode: !!betId };
+                    betId: betId || null, betMode: !!betId, chaosUnlocked: false };
         window.fpState = fpState; // exponer para funciones globales (taunt chat, etc.)
+        // Resetear botón dinamita y bar al abrir arena
+        var _dynaBtn = document.getElementById('fp-chaos-unlock-btn');
+        if (_dynaBtn) _dynaBtn.style.display = 'none';
+        var _chaosBar = document.getElementById('fp-chaos-bar');
+        if (_chaosBar) { _chaosBar.classList.remove('apocalypse'); _chaosBar.style.boxShadow = ''; }
+        var _chaosPct = document.getElementById('fp-chaos-pct');
+        if (_chaosPct) _chaosPct.textContent = '0%';
         // Mutear el zorzal mientras el juego está activo
         const tangoAudioFP = document.getElementById('tango-audio');
         if (tangoAudioFP && !tangoAudioFP.paused) { tangoAudioFP.muted = true; }
@@ -1863,24 +1902,45 @@ function fpCloseArena() {
             const level = parseInt(d.level);
             if (isNaN(level)) return; // ignorar valores inválidos
             fpState.chaosLevel = level; // guardar el nivel real
-            const bar   = document.getElementById('fp-chaos-bar');
-            const pct   = document.getElementById('fp-chaos-pct');
-            const label = document.querySelector('.fp-chaos-label');
+            const bar      = document.getElementById('fp-chaos-bar');
+            const pct      = document.getElementById('fp-chaos-pct');
+            const label    = document.querySelector('.fp-chaos-label');
+            const dynaBtn  = document.getElementById('fp-chaos-unlock-btn');
+            const capped   = fpState.chaosUnlocked !== true; // capear si no está desbloqueado
+            const displayLvl = capped ? Math.min(level, 70) : level;
+
+            // 💣 Mostrar botón dinamita cuando el nivel real llega a 70%+ (game corriendo)
+            if (dynaBtn) {
+                if (level >= 70 && fpState.running && !fpState.chaosUnlocked) {
+                    dynaBtn.style.display = 'inline-flex';
+                } else if (fpState.chaosUnlocked) {
+                    // una vez desbloqueado, ocultar el botón (ya no hay marcha atrás)
+                    dynaBtn.style.display = 'none';
+                }
+            }
+
             if (bar) {
-                bar.style.width = level + '%';
-                if (level >= 80) {
+                bar.style.width = displayLvl + '%';
+                if (displayLvl >= 80) {
                     bar.classList.add('apocalypse');
                 } else {
                     bar.classList.remove('apocalypse');
                 }
+                // Efecto visual extra: barra parpadea en naranja cuando está capeada al tope
+                if (capped && level >= 70) {
+                    bar.style.boxShadow = '0 0 8px rgba(255,80,0,0.7)';
+                } else {
+                    bar.style.boxShadow = '';
+                }
             }
-            if (pct) pct.textContent = level + '%';
+            // Label %: si está capeado y nivel real > 70, mostrar "70%🔒" para que sepa
+            if (pct) pct.textContent = (capped && level >= 70) ? '70%🔒' : displayLvl + '%';
             // Color del label según nivel de caos
             if (label) {
-                if (level < 30)      label.style.color = 'var(--color-caos-verde)';
-                else if (level < 60) label.style.color = 'var(--color-caos-amarillo)';
-                else if (level < 80) label.style.color = 'var(--color-caos-rosa)';
-                else                 label.style.color = 'var(--color-primario)';
+                if (displayLvl < 30)      label.style.color = 'var(--color-caos-verde)';
+                else if (displayLvl < 60) label.style.color = 'var(--color-caos-amarillo)';
+                else if (displayLvl < 80) label.style.color = 'var(--color-caos-rosa)';
+                else                      label.style.color = 'var(--color-primario)';
             }
         }
         // BOOST_USED: boost used by this player — update display and publish to Firebase
@@ -6610,6 +6670,74 @@ btn.addEventListener('click', toggleMutePlay);
             animation: borderGlitch 0.3s linear infinite;
         }
 
+        /* ── 💣 DINAMITA BUTTON — junto al % del chaos ── */
+        .fp-chaos-dynabtn {
+            background: transparent;
+            border: 1px solid rgba(255,80,0,0.5);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            line-height: 1;
+            padding: 1px 4px;
+            animation: dynaPulse 1.2s ease-in-out infinite;
+            vertical-align: middle;
+        }
+        .fp-chaos-dynabtn:hover {
+            background: rgba(255,80,0,0.15);
+            border-color: rgba(255,80,0,0.9);
+            transform: scale(1.15);
+        }
+        @keyframes dynaPulse {
+            0%, 100% { box-shadow: 0 0 4px rgba(255,80,0,0.4); }
+            50%       { box-shadow: 0 0 10px rgba(255,80,0,0.9); }
+        }
+
+        /* ── 💣 CHAOS UNLOCK WARNING OVERLAY ── */
+        .fp-chaos-warn-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 22px; font-weight: 900;
+            color: var(--color-primario);
+            letter-spacing: 4px;
+            text-align: center;
+            text-shadow: 0 0 18px rgba(255,0,0,0.8);
+            animation: borderGlitch 0.4s linear infinite;
+        }
+        .fp-chaos-warn-body {
+            font-family: 'Courier New', monospace;
+            font-size: 13px; line-height: 1.7;
+            color: rgba(255,255,255,0.85);
+            text-align: center;
+            max-width: 340px;
+        }
+        .fp-chaos-warn-cancel {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.5);
+            font-family: 'Orbitron', monospace;
+            font-size: 11px; letter-spacing: 2px;
+            padding: 8px 16px; cursor: pointer;
+            border-radius: 3px; transition: all 0.2s;
+        }
+        .fp-chaos-warn-cancel:hover {
+            border-color: rgba(255,255,255,0.7);
+            color: #fff;
+        }
+        .fp-chaos-warn-confirm {
+            background: rgba(255,30,0,0.15);
+            border: 2px solid var(--color-primario);
+            color: var(--color-primario);
+            font-family: 'Orbitron', monospace;
+            font-size: 11px; font-weight: 700; letter-spacing: 2px;
+            padding: 10px 20px; cursor: pointer;
+            border-radius: 3px; transition: all 0.2s;
+            animation: dynaPulse 1s ease-in-out infinite;
+        }
+        .fp-chaos-warn-confirm:hover {
+            background: rgba(255,30,0,0.35);
+            box-shadow: 0 0 20px rgba(255,0,0,0.6);
+            transform: scale(1.04);
+        }
+
         /* ── COUNTDOWN FREE PLAY — mismo que test-circuito ── */
         #fp-countdown {
             display: none; position: fixed; inset: 0; z-index: 9999;
@@ -7687,6 +7815,46 @@ function _fpTauntLogMsg(msg, incoming) {
     div.textContent = (incoming ? '⚔ ' : '✦ ') + msg;
     log.appendChild(div);
     log.scrollTop = log.scrollHeight;
+}
+
+// ── 💣 CHAOS UNLOCK ─────────────────────────────────────────────────────────
+function fpChaosUnlockPrompt() {
+    var overlay = document.getElementById('fp-chaos-warning-overlay');
+    if (!overlay) return;
+    overlay.style.display = 'flex';
+}
+
+function fpChaosUnlockCancel() {
+    var overlay = document.getElementById('fp-chaos-warning-overlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
+function fpChaosUnlockConfirm() {
+    // Ocultar overlay
+    var overlay = document.getElementById('fp-chaos-warning-overlay');
+    if (overlay) overlay.style.display = 'none';
+
+    // Marcar estado desbloqueado
+    if (typeof fpState !== 'undefined') fpState.chaosUnlocked = true;
+
+    // Enviar mensaje al iframe para levantar el cap
+    var iframe = document.getElementById('fp-iframe');
+    if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage({ type: 'UNLOCK_CHAOS' }, '*');
+    }
+
+    // Ocultar el botón dinamita (no hay vuelta atrás)
+    var btn = document.getElementById('fp-chaos-unlock-btn');
+    if (btn) btn.style.display = 'none';
+
+    // Flashing rojo en la barra para avisar que el caos está libre
+    var bar = document.getElementById('fp-chaos-bar');
+    if (bar) {
+        bar.classList.add('apocalypse');
+        bar.style.boxShadow = '0 0 14px rgba(255,0,0,0.9)';
+    }
+    var pct = document.getElementById('fp-chaos-pct');
+    if (pct) pct.textContent = '🔓 FREE';
 }
 </script>
 
