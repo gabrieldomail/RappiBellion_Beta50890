@@ -1878,7 +1878,8 @@ function fpCloseArena() {
     // Regla general: si no hay billetera conectada, redirige a conectar
     function requireWalletThenBet(gameId) {
         if (!walletConnected && !window._walletConnected) {
-            // Scroll hasta la sección de billetera y simula click en conectar
+            // Guardar juego pendiente para auto-abrir el modal cuando conecte la billetera
+            window._pendingBetGame = gameId;
             var cwBtn = document.getElementById('connect-wallet-button');
             if (cwBtn) {
                 cwBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1886,10 +1887,24 @@ function fpCloseArena() {
             }
             return;
         }
+        window._pendingBetGame = null; // limpiar flag pendiente
         selectedGame = gameId.replace('make-bet-','').toUpperCase();
         if (betModalTitle) betModalTitle.textContent = 'DESAFIO: ' + selectedGame + ' — CONFIGURA TU APUESTA';
         if (makeBetModal)  makeBetModal.classList.remove('game-menu-hidden');
         if (cyberpunkHUD)  cyberpunkHUD.showNotification(selectedGame + ' SELECTED - CONFIGURE YOUR BET');
+        // Sincronizar T2EIntegration para que el botón LANZAR se habilite correctamente
+        if (window.T2EIntegration) {
+            var _gameTypeMap = {
+                'make-bet-pachack':      'pac-hack',
+                'make-bet-spacebreaker': 'space-breaker',
+                'make-bet-memorybreach': 'memory-breach',
+                'make-bet-tetriscipher': 'tetris-cipher'
+            };
+            window.T2EIntegration.currentGameType = _gameTypeMap[gameId] || gameId.replace('make-bet-', '');
+            // Reset opciones para que el preview parta limpio
+            window.T2EIntegration.selectedBetOptions = { amount: '', timeLimit: '', boostLimit: '' };
+            window.T2EIntegration.updateBetPreview();
+        }
     }
     window.requireWalletThenBet = requireWalletThenBet;
 
@@ -1998,6 +2013,12 @@ function fpCloseArena() {
                     if (walletStatus)  walletStatus.textContent = 'Conectado a Optimism';
                     if (walletAddress) walletAddress.textContent = 'Dirección: ' + short;
                     if (cyberpunkHUD)  cyberpunkHUD.showNotification('WALLET CONNECTED: ' + short);
+                    // Auto-abrir modal de apuesta si el usuario vino del FAB/botón de juego
+                    if (window._pendingBetGame) {
+                        var _pg = window._pendingBetGame;
+                        window._pendingBetGame = null;
+                        setTimeout(function() { requireWalletThenBet(_pg); }, 350);
+                    }
                 }
             } catch(err) {
                 if (walletStatus) walletStatus.textContent = 'Error: ' + err.message;
@@ -4294,6 +4315,12 @@ btn.addEventListener('click', toggleMutePlay);
                     updateWalletUI(accounts[0]);
                     await checkNetwork();
                     console.log('🎉 Conexión exitosa!');
+                    // Auto-abrir modal si el usuario vino del FAB/botón de juego
+                    if (window._pendingBetGame && typeof window.requireWalletThenBet === 'function') {
+                        var _pg2 = window._pendingBetGame;
+                        window._pendingBetGame = null;
+                        setTimeout(function() { window.requireWalletThenBet(_pg2); }, 350);
+                    }
                 } else {
                     throw new Error('No accounts returned');
                 }
