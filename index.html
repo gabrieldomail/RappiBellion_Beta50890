@@ -1803,15 +1803,29 @@ function fpCloseArena() {
     document.head.appendChild(betOptStyle);
 
     const betButtons = ['make-bet-pachack','make-bet-spacebreaker','make-bet-tetriscipher','make-bet-memorybreach'];
+
+    // Regla general: si no hay billetera conectada, redirige a conectar
+    function requireWalletThenBet(gameId) {
+        if (!walletConnected) {
+            // Scroll hasta la sección de billetera y simula click en conectar
+            var cwBtn = document.getElementById('connect-wallet-button');
+            if (cwBtn) {
+                cwBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(function() { cwBtn.click(); }, 400);
+            }
+            return;
+        }
+        selectedGame = gameId.replace('make-bet-','').toUpperCase();
+        if (betModalTitle) betModalTitle.textContent = 'DESAFIO: ' + selectedGame + ' — CONFIGURA TU APUESTA';
+        if (makeBetModal)  makeBetModal.classList.remove('game-menu-hidden');
+        if (cyberpunkHUD)  cyberpunkHUD.showNotification(selectedGame + ' SELECTED - CONFIGURE YOUR BET');
+    }
+    window.requireWalletThenBet = requireWalletThenBet;
+
     betButtons.forEach(buttonId => {
         const btn = document.getElementById(buttonId);
         if (btn) {
-            btn.addEventListener('click', () => {
-                selectedGame = buttonId.replace('make-bet-','').toUpperCase();
-                if (betModalTitle) betModalTitle.textContent = 'DESAFIO: ' + selectedGame + ' — CONFIGURA TU APUESTA';
-                if (makeBetModal)  makeBetModal.classList.remove('game-menu-hidden');
-                if (cyberpunkHUD)  cyberpunkHUD.showNotification(selectedGame + ' SELECTED - CONFIGURE YOUR BET');
-            });
+            btn.addEventListener('click', () => requireWalletThenBet(buttonId));
         }
     });
 
@@ -6823,6 +6837,189 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
             }
         };
     });
+})();
+</script>
+
+<!-- ══════════════════════════════════════════
+     FLOATING PAC-HACK SHORTCUT
+     FAB izquierdo + drawer con botón de apuesta
+     ══════════════════════════════════════════ -->
+
+<!-- FAB trigger -->
+<button id="fp-fab-trigger" title="PAC-HACK — MAKE YOUR BET" aria-label="Abrir acceso rápido PAC-HACK">
+    <img src="images/pac-hack-column-izq.png" alt="PAC-HACK" onerror="this.style.display='none';this.parentNode.innerHTML+='⚡';">
+</button>
+
+<!-- Drawer flotante -->
+<div id="fp-fab-drawer" role="dialog" aria-label="Acceso rápido PAC-HACK" aria-hidden="true">
+    <button id="fp-fab-close" aria-label="Cerrar">✕</button>
+    <div class="fp-fab-game-img">
+        <img src="juegos beta/pacman.jfif" alt="PAC-HACK: DEATH">
+    </div>
+    <div class="fp-fab-title">[PAC-HACK: DEATH]</div>
+    <div class="fp-fab-subtitle">// EL LABERINTO —  1 RPPI = 1 USDT //</div>
+    <button id="fp-fab-bet-btn" class="fp-fab-action-btn">
+        ¡MAKE YOUR BET!
+    </button>
+</div>
+
+<!-- Backdrop -->
+<div id="fp-fab-backdrop"></div>
+
+<style>
+/* ── FAB trigger ── */
+#fp-fab-trigger {
+    position: fixed;
+    left: 16px;
+    bottom: 90px;
+    z-index: 9000;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--color-caos-rosa, #ff2d78);
+    border: 2px solid var(--color-caos-rosa, #ff2d78);
+    box-shadow: 0 0 18px rgba(255,45,120,0.6);
+    cursor: pointer;
+    padding: 0;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: fabPulse 3s ease-in-out infinite;
+}
+#fp-fab-trigger:hover { transform: scale(1.12); box-shadow: 0 0 28px rgba(255,45,120,0.9); }
+#fp-fab-trigger img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+@keyframes fabPulse {
+    0%,100% { box-shadow: 0 0 18px rgba(255,45,120,0.6); }
+    50%      { box-shadow: 0 0 32px rgba(255,45,120,1); }
+}
+
+/* ── Backdrop ── */
+#fp-fab-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9001;
+    background: rgba(0,0,0,0.55);
+}
+#fp-fab-backdrop.show { display: block; }
+
+/* ── Drawer ── */
+#fp-fab-drawer {
+    position: fixed;
+    left: 16px;
+    bottom: 160px;
+    z-index: 9002;
+    width: 200px;
+    background: #0d0d0d;
+    border: 1px solid var(--color-caos-rosa, #ff2d78);
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba(255,45,120,0.4);
+    padding: 16px 14px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    transform: scale(0.85) translateY(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.22s ease, opacity 0.22s ease;
+}
+#fp-fab-drawer.show {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+#fp-fab-close {
+    position: absolute;
+    top: 8px; right: 10px;
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 1em;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 4px;
+}
+#fp-fab-close:hover { color: #fff; }
+.fp-fab-game-img img {
+    width: 160px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #333;
+    display: block;
+}
+.fp-fab-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7em;
+    color: var(--color-caos-rosa, #ff2d78);
+    letter-spacing: 2px;
+    text-align: center;
+}
+.fp-fab-subtitle {
+    font-family: 'Courier New', monospace;
+    font-size: 0.62em;
+    color: #888;
+    letter-spacing: 1px;
+    text-align: center;
+}
+.fp-fab-action-btn {
+    width: 100%;
+    padding: 10px 0;
+    background: var(--color-caos-rosa, #ff2d78);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.72em;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+.fp-fab-action-btn:hover {
+    background: #ff5599;
+    box-shadow: 0 0 14px rgba(255,45,120,0.7);
+}
+
+/* Ocultar FAB cuando arena está abierta */
+#t2eplay-arena.show ~ #fp-fab-trigger,
+body.arena-open #fp-fab-trigger { display: none !important; }
+</style>
+
+<script>
+(function() {
+    var trigger  = document.getElementById('fp-fab-trigger');
+    var drawer   = document.getElementById('fp-fab-drawer');
+    var backdrop = document.getElementById('fp-fab-backdrop');
+    var closeBtn = document.getElementById('fp-fab-close');
+    var betBtn   = document.getElementById('fp-fab-bet-btn');
+
+    function openDrawer() {
+        drawer.classList.add('show');
+        backdrop.classList.add('show');
+        drawer.setAttribute('aria-hidden', 'false');
+    }
+    function closeDrawer() {
+        drawer.classList.remove('show');
+        backdrop.classList.remove('show');
+        drawer.setAttribute('aria-hidden', 'true');
+    }
+
+    if (trigger)  trigger.addEventListener('click', openDrawer);
+    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+    if (backdrop) backdrop.addEventListener('click', closeDrawer);
+
+    if (betBtn) {
+        betBtn.addEventListener('click', function() {
+            closeDrawer();
+            // Usa la regla general: requiere wallet, abre modal de apuesta de PAC-HACK
+            setTimeout(function() {
+                if (typeof window.requireWalletThenBet === 'function') {
+                    window.requireWalletThenBet('make-bet-pachack');
+                }
+            }, 200);
+        });
+    }
 })();
 </script>
 
