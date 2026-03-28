@@ -578,10 +578,10 @@
                     }
                 }
                 if (d.type === "MATCH_ENDED") {
-                    // Pausar cuando termina el tiempo
+                    // Congelar el juego sin mostrar ninguna pantalla intermedia
+                    // El veredicto lo maneja el padre (fp-verdict)
                     if (display.isPlaying()) {
-                        display.set("paused");
-                        animations.paused();
+                        animation = null; // detener el loop de animación
                     }
                 }
             });
