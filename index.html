@@ -6842,107 +6842,66 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
 
 <!-- ══════════════════════════════════════════
      FLOATING PAC-HACK SHORTCUT
-     FAB izquierdo + drawer con botón de apuesta
+     Panel siempre visible, izquierda
      ══════════════════════════════════════════ -->
 
-<!-- FAB trigger -->
-<button id="fp-fab-trigger" title="PAC-HACK — MAKE YOUR BET" aria-label="Abrir acceso rápido PAC-HACK">
-    <img src="images/pac-hack-column-izq.png" alt="PAC-HACK" onerror="this.style.display='none';this.parentNode.innerHTML+='⚡';">
-</button>
-
-<!-- Drawer flotante -->
-<div id="fp-fab-drawer" role="dialog" aria-label="Acceso rápido PAC-HACK" aria-hidden="true">
+<!-- Panel flotante -->
+<div id="fp-fab-drawer" role="complementary" aria-label="Acceso rápido PAC-HACK">
     <button id="fp-fab-close" aria-label="Cerrar">✕</button>
     <div class="fp-fab-game-img">
         <img src="juegos beta/pacman.jfif" alt="PAC-HACK: DEATH">
     </div>
     <div class="fp-fab-title">[PAC-HACK: DEATH]</div>
-    <div class="fp-fab-subtitle">// EL LABERINTO —  1 RPPI = 1 USDT //</div>
+    <div class="fp-fab-subtitle">// EL LABERINTO — 1 RPPI = 1 USDT //</div>
     <button id="fp-fab-bet-btn" class="fp-fab-action-btn">
         ¡MAKE YOUR BET!
     </button>
 </div>
 
-<!-- Backdrop -->
-<div id="fp-fab-backdrop"></div>
+<!-- Botón para re-abrir si se cierra -->
+<button id="fp-fab-reopen" title="PAC-HACK — MAKE YOUR BET" aria-label="Abrir acceso rápido PAC-HACK" style="display:none;">
+    ⚡
+</button>
 
 <style>
-/* ── FAB trigger ── */
-#fp-fab-trigger {
-    position: fixed;
-    left: 16px;
-    bottom: 90px;
-    z-index: 9000;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: var(--color-caos-rosa, #ff2d78);
-    border: 2px solid var(--color-caos-rosa, #ff2d78);
-    box-shadow: 0 0 18px rgba(255,45,120,0.6);
-    cursor: pointer;
-    padding: 0;
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
-    animation: fabPulse 3s ease-in-out infinite;
-}
-#fp-fab-trigger:hover { transform: scale(1.12); box-shadow: 0 0 28px rgba(255,45,120,0.9); }
-#fp-fab-trigger img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-@keyframes fabPulse {
-    0%,100% { box-shadow: 0 0 18px rgba(255,45,120,0.6); }
-    50%      { box-shadow: 0 0 32px rgba(255,45,120,1); }
-}
-
-/* ── Backdrop ── */
-#fp-fab-backdrop {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 9001;
-    background: rgba(0,0,0,0.55);
-}
-#fp-fab-backdrop.show { display: block; }
-
-/* ── Drawer ── */
+/* ── Panel flotante (siempre visible por defecto) ── */
 #fp-fab-drawer {
     position: fixed;
     left: 16px;
-    bottom: 160px;
+    bottom: 80px;
     z-index: 9002;
-    width: 200px;
+    width: 190px;
     background: #0d0d0d;
     border: 1px solid var(--color-caos-rosa, #ff2d78);
     border-radius: 12px;
-    box-shadow: 0 0 30px rgba(255,45,120,0.4);
-    padding: 16px 14px 18px;
+    box-shadow: 0 0 24px rgba(255,45,120,0.35);
+    padding: 14px 12px 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    transform: scale(0.85) translateY(20px);
+    gap: 9px;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+#fp-fab-drawer.hidden {
     opacity: 0;
     pointer-events: none;
-    transition: transform 0.22s ease, opacity 0.22s ease;
-}
-#fp-fab-drawer.show {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-    pointer-events: auto;
+    transform: translateY(10px);
 }
 #fp-fab-close {
     position: absolute;
-    top: 8px; right: 10px;
+    top: 7px; right: 9px;
     background: transparent;
     border: none;
-    color: #888;
-    font-size: 1em;
+    color: #666;
+    font-size: 0.9em;
     cursor: pointer;
     line-height: 1;
-    padding: 2px 4px;
+    padding: 2px 5px;
 }
 #fp-fab-close:hover { color: #fff; }
 .fp-fab-game-img img {
-    width: 160px;
-    height: 100px;
+    width: 158px;
+    height: 96px;
     object-fit: cover;
     border-radius: 8px;
     border: 1px solid #333;
@@ -6950,14 +6909,14 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
 }
 .fp-fab-title {
     font-family: 'Orbitron', monospace;
-    font-size: 0.7em;
+    font-size: 0.68em;
     color: var(--color-caos-rosa, #ff2d78);
     letter-spacing: 2px;
     text-align: center;
 }
 .fp-fab-subtitle {
     font-family: 'Courier New', monospace;
-    font-size: 0.62em;
+    font-size: 0.6em;
     color: #888;
     letter-spacing: 1px;
     text-align: center;
@@ -6970,54 +6929,69 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
     border-radius: 6px;
     color: #fff;
     font-family: 'Orbitron', monospace;
-    font-size: 0.72em;
+    font-size: 0.7em;
     font-weight: 700;
     letter-spacing: 2px;
     cursor: pointer;
     transition: background 0.15s, box-shadow 0.15s;
+    animation: fabPulse 3s ease-in-out infinite;
 }
 .fp-fab-action-btn:hover {
     background: #ff5599;
     box-shadow: 0 0 14px rgba(255,45,120,0.7);
 }
+@keyframes fabPulse {
+    0%,100% { box-shadow: 0 0 8px rgba(255,45,120,0.5); }
+    50%      { box-shadow: 0 0 20px rgba(255,45,120,1); }
+}
 
-/* Ocultar FAB cuando arena está abierta */
-#t2eplay-arena.show ~ #fp-fab-trigger,
-body.arena-open #fp-fab-trigger { display: none !important; }
+/* Botón re-abrir (mini) */
+#fp-fab-reopen {
+    position: fixed;
+    left: 16px;
+    bottom: 80px;
+    z-index: 9002;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--color-caos-rosa, #ff2d78);
+    border: none;
+    color: #fff;
+    font-size: 1.1em;
+    cursor: pointer;
+    box-shadow: 0 0 14px rgba(255,45,120,0.6);
+}
+
+/* Ocultar cuando la arena está abierta */
+#t2eplay-arena.show ~ #fp-fab-drawer,
+#t2eplay-arena.show ~ #fp-fab-reopen,
+body.arena-open #fp-fab-drawer,
+body.arena-open #fp-fab-reopen { display: none !important; }
 </style>
 
 <script>
 (function() {
-    var trigger  = document.getElementById('fp-fab-trigger');
-    var drawer   = document.getElementById('fp-fab-drawer');
-    var backdrop = document.getElementById('fp-fab-backdrop');
+    var drawer  = document.getElementById('fp-fab-drawer');
     var closeBtn = document.getElementById('fp-fab-close');
-    var betBtn   = document.getElementById('fp-fab-bet-btn');
+    var reopen  = document.getElementById('fp-fab-reopen');
+    var betBtn  = document.getElementById('fp-fab-bet-btn');
 
-    function openDrawer() {
-        drawer.classList.add('show');
-        backdrop.classList.add('show');
-        drawer.setAttribute('aria-hidden', 'false');
-    }
-    function closeDrawer() {
-        drawer.classList.remove('show');
-        backdrop.classList.remove('show');
-        drawer.setAttribute('aria-hidden', 'true');
-    }
-
-    if (trigger)  trigger.addEventListener('click', openDrawer);
-    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
-    if (backdrop) backdrop.addEventListener('click', closeDrawer);
+    if (closeBtn) closeBtn.addEventListener('click', function() {
+        drawer.classList.add('hidden');
+        if (reopen) reopen.style.display = 'block';
+    });
+    if (reopen) reopen.addEventListener('click', function() {
+        drawer.classList.remove('hidden');
+        reopen.style.display = 'none';
+    });
 
     if (betBtn) {
         betBtn.addEventListener('click', function() {
-            closeDrawer();
-            // Usa la regla general: requiere wallet, abre modal de apuesta de PAC-HACK
             setTimeout(function() {
                 if (typeof window.requireWalletThenBet === 'function') {
                     window.requireWalletThenBet('make-bet-pachack');
                 }
-            }, 200);
+            }, 100);
         });
     }
 })();
