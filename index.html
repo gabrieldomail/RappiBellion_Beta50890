@@ -4082,8 +4082,14 @@ btn.addEventListener('click', toggleMutePlay);
                 }
             } else {
                 console.log('⚠️ MetaMask no detectado');
-                walletStatus.textContent = '⚠️ MetaMask no detectado';
-                walletStatus.style.color = '#ffaa00';
+                // En mobile sin window.ethereum es normal — no mostrar error al cargar
+                // Solo mostrar mensaje si el usuario intentó conectar manualmente
+                if (!window._walletConnectRequested) {
+                    walletStatus.textContent = '';
+                } else {
+                    walletStatus.textContent = '⚠️ MetaMask no detectado';
+                    walletStatus.style.color = '#ffaa00';
+                }
             }
         }
 
@@ -4114,6 +4120,7 @@ btn.addEventListener('click', toggleMutePlay);
         // Connect wallet function
         async function connectWallet() {
             console.log('🔄 Iniciando conexión con MetaMask...');
+            window._walletConnectRequested = true;
 
             // Check if MetaMask is installed
             if (typeof window.ethereum === 'undefined') {
