@@ -6497,7 +6497,10 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
                 if (!res.ok) {
                     const errMsg = data?.error?.message || ('HTTP ' + res.status);
                     console.error('[Gemini]', errMsg, data);
-                    updateMessage(typingId, '// API_ERROR: ' + escapeHtml(errMsg) + ' //');
+                    const isQuota = errMsg.includes('quota') || errMsg.includes('Quota');
+                    updateMessage(typingId, isQuota
+                        ? '// IA_OFFLINE — volvé en un rato, rebelde //'
+                        : '// API_ERROR: ' + escapeHtml(errMsg.slice(0, 80)) + '... //');
                     input.disabled = false; input.focus(); return;
                 }
                 const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || '// RESPUESTA_VACIA //';
