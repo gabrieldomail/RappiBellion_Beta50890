@@ -6426,7 +6426,7 @@ btn.addEventListener('click', toggleMutePlay);
     // ══════════════════════════════════════════════════
     (function() {
         const GEMINI_KEY = 'AIzaSyAni38kcQ1EYBK1ZXGDZhZgilAKdxB6AKY';
-        const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_KEY;
+        const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_KEY;
 
         const SYSTEM_PROMPT = `Sos el asistente oficial de Rappibellion — una plataforma de casino punk/cyberpunk Think-to-Earn (T2E) basada en $RPPI tokens.
 Tu personalidad: rebelde, directa, irónica, con mucha actitud. Hablás en español rioplatense (vos, dale, joya, etc). 
@@ -6477,7 +6477,7 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
 
             try {
                 const body = {
-                    system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+                    systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
                     contents: history
                 };
                 const res  = await fetch(GEMINI_URL, {
@@ -6486,11 +6486,18 @@ Respondé siempre corto y con punch, como un chat de arcade, no como un manual. 
                     body: JSON.stringify(body)
                 });
                 const data = await res.json();
-                const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || '// ERROR_CONEXION — intentá de nuevo //';
+                if (!res.ok) {
+                    const errMsg = data?.error?.message || ('HTTP ' + res.status);
+                    console.error('[Gemini]', errMsg, data);
+                    updateMessage(typingId, '// API_ERROR: ' + escapeHtml(errMsg) + ' //');
+                    input.disabled = false; input.focus(); return;
+                }
+                const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || '// RESPUESTA_VACIA //';
                 history.push({ role: 'model', parts: [{ text: reply }] });
                 updateMessage(typingId, escapeHtml(reply).replace(/\n/g, '<br>'));
             } catch(err) {
-                updateMessage(typingId, '// SIGNAL_LOST — no hay conexión con la IA //');
+                console.error('[Gemini fetch error]', err);
+                updateMessage(typingId, '// SIGNAL_LOST: ' + escapeHtml(err.message) + ' //');
             }
 
             input.disabled = false;
