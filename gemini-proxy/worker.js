@@ -84,14 +84,8 @@ const SEED_BETS = [
   { creator: _W[4], acceptor: _W[3], amount: 5,  winner: _W[4] }, // W4 win #2
 ];
 
-const OPENROUTER_MODELS = [
-  'openai/gpt-oss-120b:free',
-  'openai/gpt-oss-20b:free',
-  'google/gemma-3-27b-it:free',
-  'qwen/qwen3-coder:free',
-  'meta-llama/llama-3.2-3b-instruct:free',
-];
-const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const GEMINI_MODEL        = 'gemini-2.0-flash';
+const GEMINI_API_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 export default {
   async fetch(request, env) {    const origin = request.headers.get('Origin') || '';
@@ -118,7 +112,7 @@ export default {
     if (url.pathname === '/refund') {
       return handleRefund(request, env, corsHeaders);
     }
-    // ── Gemini / OpenRouter proxy (ruta por defecto) ──────────────────────
+    // ── Gemini API proxy (passthrough — el frontend ya envía formato Gemini) ──
     const apiKey = env.GEMINI_API_KEY;
     if (!apiKey) {
       return new Response(JSON.stringify({ error: { message: 'Worker: API key no configurada' } }),
@@ -126,68 +120,17 @@ export default {
     }
 
     try {
-      // Recibe formato Gemini del frontend — convierte a OpenAI para OpenRouter
       const body = await request.json();
-
-      const messages = [];
-
-      // System instruction
-      const sysText = body?.systemInstruction?.parts?.[0]?.text;
-      if (sysText) messages.push({ role: 'system', content: sysText });
-
-      // Historial de conversación
-      for (const turn of (body.contents || [])) {
-        const text = turn?.parts?.[0]?.text || '';
-        const role = turn.role === 'model' ? 'assistant' : 'user';
-        messages.push({ role, content: text });
-      }
-
-      // Intenta cada modelo en orden hasta que uno funcione
-      let lastError = 'No models available';
-      for (const model of OPENROUTER_MODELS) {
-        const orRes = await fetch(OPENROUTER_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`,
-            'HTTP-Referer': 'https://rappibellion.com',
-            'X-Title': 'Rappibellion',
-          },
-          body: JSON.stringify({ model, messages }),
-        });
-
-        const data = await orRes.json();
-
-        if (!orRes.ok) {
-          lastError = data?.error?.message || 'OpenRouter error';
-          // Errores de modelo/proveedor → probar el siguiente
-          const retryable = orRes.status === 404 || orRes.status === 503 || orRes.status === 529 ||
-            lastError.includes('No endpoints') || lastError.includes('not found') ||
-            lastError.includes('Provider returned error') || lastError.includes('overloaded') ||
-            lastError.includes('unavailable') || lastError.includes('not a valid model') ||
-            lastError.includes('invalid model');
-          if (retryable) continue;
-          // Auth / rate limit global — no tiene sentido reintentar
-          return new Response(JSON.stringify({ error: { message: lastError } }),
-            { status: orRes.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-        }
-
-        // Convierte respuesta OpenAI → formato Gemini para el frontend
-        const replyText = data?.choices?.[0]?.message?.content || '';
-        const geminiResponse = {
-          candidates: [{ content: { parts: [{ text: replyText }] } }]
-        };
-
-        return new Response(JSON.stringify(geminiResponse), {
-          status: 200,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-
-      // Todos los modelos fallaron
-      return new Response(JSON.stringify({ error: { message: lastError } }),
-        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-
+      const res  = await fetch(`${GEMINI_API_ENDPOINT}?key=${apiKey}`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(body),
+      });
+      const data = await res.json();
+      return new Response(JSON.stringify(data), {
+        status:  res.status,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     } catch (err) {
       return new Response(JSON.stringify({ error: { message: 'Worker error: ' + err.message } }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
