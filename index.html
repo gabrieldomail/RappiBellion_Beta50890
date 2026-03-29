@@ -1430,6 +1430,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // REGRESSION FIX: tracks which betId the arena was last opened for
     var _fpArenaOpenedForBet = null;
 
+    // ── Fullscreen helpers — ocultan el chrome del navegador durante el duelo ────
+    function _fpEnterFullscreen() {
+        var el = document.documentElement;
+        try {
+            if      (el.requestFullscreen)       el.requestFullscreen({ navigationUI: 'hide' });
+            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        } catch(e) {}
+    }
+    function _fpExitFullscreen() {
+        try {
+            if      (document.exitFullscreen)       document.exitFullscreen();
+            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        } catch(e) {}
+    }
+
     function fpOpenArena(betId) {
         // REGRESSION FIX: re-entrancy guard - if arena already open for this betId, bail out.
         // Prevents infinite loop: betAccepted -> fpOpenArena -> _fpSetupBetSync -> Firebase write
@@ -1556,6 +1571,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpScoreEl)  fpScoreEl.textContent = '0000';
         if (fpTimerEl)  fpTimerEl.style.color = '';
         if (fpArena)    fpArena.classList.add('show');
+        _fpEnterFullscreen();
 
         // Activar/desactivar panel rival según betMode
         _fpToggleRivalPanel(fpState.betMode, betId);
@@ -1621,6 +1637,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpTimerBar) { fpTimerBar.style.transition = 'none'; fpTimerBar.style.width = '100%'; }
         if (fpScoreEl) fpScoreEl.textContent = '0000';
         if (fpArena) fpArena.classList.add('show');
+        _fpEnterFullscreen();
 
         // Activar panel rival con datos fake
         _fpToggleRivalPanel(true, 'PREVIEW_00');
@@ -2146,6 +2163,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function fpCloseArena() {
         clearInterval(fpState.interval);
         if (fpArena)  fpArena.classList.remove('show');
+        _fpExitFullscreen();
         if (fpIframe) fpIframe.src = '';
         if (fpTimerEl) { fpTimerEl.style.color = ''; fpTimerEl.textContent = '00:00'; }
         if (fpControlSelector) fpControlSelector.classList.remove('show');
