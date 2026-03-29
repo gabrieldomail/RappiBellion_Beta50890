@@ -249,7 +249,7 @@ async function seedStaffApplication(scheduledTime, env) {
 
   const application = {
     username:  entry.username,
-    statement: entry.statement,
+    message:   entry.statement,   // campo que espera el frontend
     timestamp,
     date,
     seeded:    true
@@ -257,7 +257,7 @@ async function seedStaffApplication(scheduledTime, env) {
 
   try {
     const fbToken = await getFirebaseToken(env.FIREBASE_SERVICE_ACCOUNT);
-    const res = await fetch(`${FB_COMMENTS_DB_URL}/staff-apps.json?auth=${fbToken}`, {
+    const res = await fetch(`${FB_COMMENTS_DB_URL}/rebellion-comments.json?auth=${fbToken}`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(application)
