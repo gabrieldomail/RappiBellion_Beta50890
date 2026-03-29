@@ -696,77 +696,57 @@
                     </div>
                 </div>
 
-                <!-- ── KILL MY OLD FRIEND — BUSCADOR DE APUESTAS (free play only) ── -->
-                <div id="fp-friend-finder" style="
-                    display: none;
+                <!-- ── FAQ BRIEFING (free play only) ── -->
+                <div id="fp-faq-panel" style="
+                    display: block;
                     position: absolute;
-                    top: 12px;
-                    left: 12px;
-                    width: 220px;
+                    top: calc(25% + 145px);
+                    right: 12px;
+                    width: 248px;
                     z-index: 12;
-                    background: rgba(0,10,15,0.82);
-                    border: 1px solid rgba(0,255,255,0.45);
-                    box-shadow: 0 0 18px rgba(0,255,255,0.18), inset 0 0 12px rgba(0,255,255,0.04);
+                    background: rgba(0,0,0,0.45);
                     font-family: 'Courier New', monospace;
+                    overflow: hidden;
                 ">
                     <!-- Header -->
                     <div style="
-                        background: linear-gradient(90deg, rgba(0,255,255,0.18), rgba(0,255,255,0.04));
-                        border-bottom: 1px solid rgba(0,255,255,0.35);
-                        padding: 5px 10px;
+                        padding: 6px 11px;
                         display: flex; justify-content: space-between; align-items: center;
+                        border-bottom: 1px solid rgba(248,255,43,0.18);
                     ">
-                        <span style="font-size:9px; letter-spacing:2px; color:var(--color-azul-glitch);
-                                     text-shadow: 0 0 6px var(--color-azul-glitch);">
-                            KILL MY OLD FRIEND // BUSCADOR
+                        <span style="font-size:12px; letter-spacing:3px; color:var(--color-caos-amarillo);
+                                     text-shadow: 0 0 6px var(--color-caos-amarillo);">
+                            ⚡ BRIEFING
                         </span>
-                        <button onclick="document.getElementById('fp-friend-finder').style.display='none'"
-                                style="background:none;border:none;color:rgba(0,255,255,0.5);
-                                       cursor:pointer;font-size:12px;padding:0;line-height:1;">✕</button>
+                        <span id="fp-faq-counter" style="font-size:12px; letter-spacing:1px;
+                              color:rgba(248,255,43,0.45);">[1/9]</span>
                     </div>
-
-                    <!-- Body -->
-                    <div style="padding: 8px 10px; display:flex; flex-direction:column; gap:7px;">
-
-                        <!-- Input dirección -->
-                        <div style="font-size:9px; letter-spacing:2px; color:rgba(0,255,255,0.5); margin-bottom:2px;">
-                            // WALLET DEL AMIGO //
+                    <!-- Cuerpo -->
+                    <div style="padding: 11px 12px; position:relative;">
+                        <!-- Scanline decorativo -->
+                        <div style="position:absolute;top:0;left:0;right:0;bottom:0;
+                                    background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(248,255,43,0.015) 3px,rgba(248,255,43,0.015) 4px);
+                                    pointer-events:none;"></div>
+                        <div id="fp-faq-label" style="
+                            font-size:12px; letter-spacing:2px;
+                            color:rgba(248,255,43,0.55); margin-bottom:6px;
+                            text-transform:uppercase;
+                        ">CARGANDO...</div>
+                        <div id="fp-faq-text" style="
+                            font-size:17px; line-height:1.55;
+                            color:rgba(255,255,255,0.85); letter-spacing:0.5px;
+                            transition: opacity 0.35s ease;
+                        ">...</div>
+                        <!-- Barra de progreso -->
+                        <div style="height:2px; background:rgba(248,255,43,0.08);
+                                    border-radius:1px; margin-top:9px; overflow:hidden;">
+                            <div id="fp-faq-bar" style="
+                                height:100%; width:0%;
+                                background:linear-gradient(90deg, var(--color-caos-amarillo), var(--color-caos-rosa));
+                                box-shadow: 0 0 5px var(--color-caos-amarillo);
+                                transition: width linear;
+                            "></div>
                         </div>
-                        <div style="display:flex; gap:4px;">
-                            <input id="fp-finder-input" type="text" maxlength="42"
-                                placeholder="0x..."
-                                onkeydown="if(event.key==='Enter')fpFindFriendBet()"
-                                style="
-                                    flex:1; min-width:0;
-                                    background: rgba(0,0,0,0.6);
-                                    border: 1px solid rgba(0,255,255,0.35);
-                                    color: var(--color-azul-glitch);
-                                    font-family: 'Courier New', monospace;
-                                    font-size: 11px;
-                                    padding: 5px 7px;
-                                    outline: none;
-                                    letter-spacing: 1px;
-                                ">
-                            <button onclick="fpFindFriendBet()" style="
-                                background: rgba(0,255,255,0.12);
-                                border: 1px solid rgba(0,255,255,0.45);
-                                color: var(--color-azul-glitch);
-                                font-size: 13px;
-                                padding: 0 8px;
-                                cursor: pointer;
-                                flex-shrink: 0;
-                                text-shadow: 0 0 6px var(--color-azul-glitch);
-                            ">⌕</button>
-                        </div>
-
-                        <!-- Resultado -->
-                        <div id="fp-finder-result" style="
-                            min-height: 40px;
-                            font-size: 11px;
-                            color: rgba(0,255,255,0.4);
-                            letter-spacing: 1px;
-                            line-height: 1.5;
-                        ">[ INGRESÁ LA WALLET DE TU RIVAL ]</div>
                     </div>
                 </div>
 
@@ -864,21 +844,7 @@
                 </select>
                 <button class="fp-btn" id="fp-restart-btn">↺ RESTART</button>
             </div>
-            <!-- Botón buscador de apuestas de amigos -->
-            <button onclick="window.fpShowFriendFinder && fpShowFriendFinder()"
-                    style="width:100%;
-                           background:transparent;
-                           border:1px solid rgba(0,255,255,0.4);
-                           color:var(--color-azul-glitch);
-                           font-family:'Courier New',monospace;
-                           font-size:0.78em; letter-spacing:2px;
-                           padding:7px 0; cursor:pointer;
-                           text-shadow:0 0 6px var(--color-azul-glitch);
-                           transition:background 0.2s, box-shadow 0.2s;"
-                    onmouseover="this.style.background='rgba(0,255,255,0.08)';this.style.boxShadow='0 0 12px rgba(0,255,255,0.25)'"
-                    onmouseout="this.style.background='transparent';this.style.boxShadow='none'">
-                ⌕ KILL MY OLD FRIEND
-            </button>
+
             <button class="fp-exit-cta" id="fp-exit-btn">EXIT FREE PLAY</button>
         </div>
 
@@ -1511,12 +1477,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!freePanel || !rivalPanel) return;
 
         var tauntChat    = document.getElementById('fp-taunt-chat');
+        var faqPanel     = document.getElementById('fp-faq-panel');
         var friendFinder = document.getElementById('fp-friend-finder');
         if (active) {
             freePanel.style.display  = 'none';
             rivalPanel.style.display = 'flex';
             if (tauntChat)    tauntChat.style.display    = 'block';
-            if (friendFinder) friendFinder.style.display = 'none'; // ocultar en bet mode
+            if (faqPanel)     faqPanel.style.display     = 'none';
+            if (friendFinder) friendFinder.style.display = 'none';
 
             // Datos de la apuesta
             const bet = (window.BettingEngine && window.BettingEngine.activeBets.get(betId))
@@ -1549,6 +1517,7 @@ document.addEventListener('DOMContentLoaded', function() {
             freePanel.style.display  = 'flex';
             rivalPanel.style.display = 'none';
             if (tauntChat)    tauntChat.style.display    = 'none';
+            if (faqPanel)     faqPanel.style.display     = 'block';
             if (friendFinder) friendFinder.style.display = 'none'; // ocultar hasta que el usuario lo abra
             _fpStopRivalTimer();
         }
@@ -7769,69 +7738,7 @@ function fpBoostGhostFlash() {
 <!-- ══════════════════════════════════════════════
      KILL MY OLD FRIEND — FRIEND BET FINDER
 ══════════════════════════════════════════════ -->
-<script>
-function fpFindFriendBet() {
-    var input  = document.getElementById('fp-finder-input');
-    var result = document.getElementById('fp-finder-result');
-    if (!input || !result) return;
-
-    var addr = (input.value || '').trim().toLowerCase();
-    if (!addr || addr.length < 10) {
-        result.innerHTML = '<span style="color:#ff4444;">[ WALLET INVÁLIDA ]</span>';
-        return;
-    }
-
-    result.innerHTML = '<span style="color:rgba(0,255,255,0.5);animation:rivalBlink 0.8s step-start infinite;">[ BUSCANDO... ]</span>';
-
-    var fbDB = window._fbDB;
-    if (!fbDB) {
-        result.innerHTML = '<span style="color:#ff4444;">[ SIN CONEXIÓN FIREBASE ]</span>';
-        return;
-    }
-
-    // Buscar en t2e_bets todas las apuestas con creator = addr y status = open
-    fbDB.ref('t2e_bets').orderByChild('creator').equalTo(addr).limitToLast(5).once('value', function(snap) {
-        var bets = [];
-        snap.forEach(function(child) {
-            var b = child.val();
-            b._id = child.key;
-            if (b.status === 'open') bets.push(b);
-        });
-
-        if (bets.length === 0) {
-            result.innerHTML = '<span style="color:rgba(0,255,255,0.35);">[ SIN APUESTAS ABIERTAS ]</span>';
-            return;
-        }
-
-        // Mostrar cada apuesta encontrada
-        result.innerHTML = '';
-        bets.forEach(function(bet) {
-            var short = addr.slice(0,6) + '...' + addr.slice(-4);
-            var div = document.createElement('div');
-            div.style.cssText = 'border:1px solid rgba(0,255,255,0.25);padding:6px 8px;margin-bottom:5px;background:rgba(0,255,255,0.04);';
-            div.innerHTML =
-                '<div style="font-size:10px;color:rgba(0,255,255,0.7);margin-bottom:4px;letter-spacing:1px;">' +
-                    '⚔ ' + short + '</div>' +
-                '<div style="font-size:11px;color:#fff;letter-spacing:1px;margin-bottom:6px;">' +
-                    (bet.amount || '?') + ' $RPPI &nbsp;·&nbsp; ' +
-                    (bet.boostLimit || '?') + ' boosts &nbsp;·&nbsp; ' +
-                    (bet.timeLimit || '?') + ' min' +
-                '</div>' +
-                '<button onclick="fpAcceptFoundBet(\'' + bet._id + '\')" style="' +
-                    'width:100%;background:rgba(0,255,255,0.14);border:1px solid rgba(0,255,255,0.5);' +
-                    'color:var(--color-azul-glitch);font-family:\'Courier New\',monospace;font-size:11px;' +
-                    'letter-spacing:2px;padding:5px;cursor:pointer;' +
-                    'text-shadow:0 0 6px var(--color-azul-glitch);">' +
-                    '[ ACEPTAR HACK ]' +
-                '</button>';
-            result.appendChild(div);
-        });
-    }, function(err) {
-        result.innerHTML = '<span style="color:#ff4444;">[ ERROR: ' + err.message + ' ]</span>';
-    });
-}
-
-function fpAcceptFoundBet(betId) {
+<script>function fpAcceptFoundBet(betId) {
     if (!window._walletConnected && !window.walletConnected) {
         var cw = document.getElementById('connect-wallet-button');
         if (cw) { window._pendingBetGame = null; cw.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(function(){cw.click();},400); }
@@ -7839,14 +7746,116 @@ function fpAcceptFoundBet(betId) {
     }
     if (window.T2EIntegration && typeof window.T2EIntegration.acceptBetFromLobby === 'function') {
         window.T2EIntegration.acceptBetFromLobby({ id: betId });
-        document.getElementById('fp-friend-finder').style.display = 'none';
+        // Cerrar ventana flotante del finder (fp-friend-finder fue removido; usar finder-float-window)
+        var fw = document.getElementById('finder-float-window');
+        if (fw) fw.classList.add('minimized');
     }
 }
 
-window.fpShowFriendFinder = function() {
-    var el = document.getElementById('fp-friend-finder');
-    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
-};
+// ── FAQ CÍCLICO FREE PLAY ─────────────────────────────────────────────────────
+(function() {
+    var FAQ_INTERVAL_MS = 7000; // 7 seg por item
+
+    var items = [
+        {
+            label: '¿CÓMO FUNCIONA?',
+            text:  'Depositás USDT en Optimism, desafiás a un rival. Quién gana más puntos se lleva el pozo. Sin intermediarios — la plata va directo a tu wallet.'
+        },
+        {
+            label: 'FEE DE LA CASA',
+            text:  'El 3% del pozo va a la casa. Si apostás 5 USDT cada uno, el pozo es 10 USDT y el ganador recibe 9.70 USDT (menos boosts si los usaron).'
+        },
+        {
+            label: 'BOOSTS',
+            text:  'Cada boost cuesta 1 USDT y se descuenta del premio final. Úsalos con cabeza — un boost mal gastado puede recortarte la ganancia.'
+        },
+        {
+            label: 'RED SOPORTADA',
+            text:  'Solo Optimism Mainnet. Asegurate de tener USDT en esa red y gas en ETH (Optimism). Transferencias en otras redes no son detectadas.'
+        },
+        {
+            label: 'CANCELAR APUESTA',
+            text:  'Solo el creador puede cancelar. Mínimo 30 minutos después de crearla y solo si el rival todavía no aceptó. Pasados los 30 min, click en REFUND.'
+        },
+        {
+            label: 'RESULTADO & PAGO',
+            text:  'Al terminar la partida el sistema detecta los scores. El payout es automático vía smart contract — no dependés de nosotros para cobrar.'
+        },
+        {
+            label: 'WALLET REQUERIDA',
+            text:  'Necesitás MetaMask u otra wallet compatible con EVM. El free play no lo requiere — acá practicás sin riesgo antes de meter plata.'
+        },
+        {
+            label: 'DISPUTAS',
+            text:  'Los scores se toman del juego en tiempo real. Si hay discrepancia entre clientes, gana el score registrado en el servidor al momento del cierre.'
+        },
+        {
+            label: 'FREE PLAY',
+            text:  'Acá practicás sin apostar nada. Cuando estés listo, salí del free play y creá o aceptá una apuesta desde el lobby de desafíos.'
+        }
+    ];
+
+    var current = 0;
+    var timer   = null;
+    var barTimer = null;
+
+    function show(idx) {
+        var labelEl = document.getElementById('fp-faq-label');
+        var textEl  = document.getElementById('fp-faq-text');
+        var counter = document.getElementById('fp-faq-counter');
+        var bar     = document.getElementById('fp-faq-bar');
+        if (!labelEl || !textEl) return;
+
+        // Fade out
+        textEl.style.opacity  = '0';
+        labelEl.style.opacity = '0';
+
+        setTimeout(function() {
+            var item = items[idx];
+            labelEl.textContent = '// ' + item.label + ' //';
+            textEl.textContent  = item.text;
+            if (counter) counter.textContent = '[' + (idx + 1) + '/' + items.length + ']';
+
+            // Fade in
+            textEl.style.opacity  = '1';
+            labelEl.style.opacity = '1';
+
+            // Reset + animate progress bar
+            if (bar) {
+                bar.style.transition = 'none';
+                bar.style.width = '0%';
+                // forzar reflow
+                bar.offsetWidth;
+                bar.style.transition = 'width ' + (FAQ_INTERVAL_MS / 1000 - 0.4) + 's linear';
+                bar.style.width = '100%';
+            }
+        }, 340);
+    }
+
+    function next() {
+        current = (current + 1) % items.length;
+        show(current);
+    }
+
+    function startFaqCycle() {
+        if (timer) return; // ya corriendo
+        show(current);
+        timer = setInterval(next, FAQ_INTERVAL_MS);
+    }
+
+    function stopFaqCycle() {
+        if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    // Arrancar cuando el panel sea visible (fp-controls-freeplay está activo por defecto)
+    document.addEventListener('DOMContentLoaded', function() {
+        // Pequeño delay para que el layout esté listo
+        setTimeout(startFaqCycle, 800);
+    });
+
+    // Exponer por si se quiere pausar/reiniciar desde otros scripts
+    window.faqCycle = { start: startFaqCycle, stop: stopFaqCycle };
+})();
 
 // Alias para el nuevo panel del hero (IDs: bet-finder-input / bet-finder-results)
 function fpFindBetsByWallet() {

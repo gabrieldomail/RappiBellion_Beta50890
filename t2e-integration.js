@@ -348,16 +348,16 @@ class T2EIntegration {
                 throw new Error('Completa todos los campos');
             }
 
-            // Mostrar loading con mensaje correcto
-            this.showLoading(`Esperando firma MetaMask para depositar ${betData.amount} USDT...`);
-
-            // Preparar datos de la apuesta
+            // Preparar datos de la apuesta (declarar ANTES de usar en showLoading)
             const betData = {
                 amount: amount,
                 timeLimit: timeLimit,
                 boostLimit: boostLimit,
                 gameType: this.currentGameType
             };
+
+            // Mostrar loading
+            this.showLoading(`Esperando firma MetaMask para depositar ${betData.amount} USDT...`);
 
             // Crear apuesta
             const betId = await this.bettingEngine.createBet(betData);
@@ -494,9 +494,9 @@ class T2EIntegration {
                 floatList.innerHTML = emptyMsg;
             } else {
                 bets.forEach(bet => floatList.appendChild(this.createBetItem(bet)));
-                if (typeof window.showLobbyFloat === 'function') {
-                    window.showLobbyFloat();
-                }
+            }
+            if (typeof window.showLobbyFloat === 'function') {
+                window.showLobbyFloat();
             }
         }
 
@@ -553,16 +553,15 @@ class T2EIntegration {
      * Remueve una apuesta del lobby
      */
     removeBetFromLobby(betId) {
-        const betItem = document.querySelector(`[data-bet-id="${betId}"]`);
-        if (betItem) {
-            betItem.remove();
-        }
+        // querySelectorAll elimina el item en TODOS los contenedores (modal + float)
+        document.querySelectorAll(`[data-bet-id="${betId}"]`).forEach(el => el.remove());
 
-        // Verificar si la lista está vacía
-        const betsList = document.querySelector('.bets-offers-list');
-        if (betsList && betsList.children.length === 0) {
-            betsList.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">No hay apuestas disponibles...</p>';
-        }
+        // Verificar si las listas quedaron vacías
+        const empty = '<p style="text-align:center;color:#888;padding:20px;font-family:\'Courier New\',monospace;">No hay apuestas disponibles...</p>';
+        const betsList  = document.querySelector('.bets-offers-list');
+        const floatList = document.getElementById('lobby-float-list');
+        if (betsList  && betsList.children.length  === 0) betsList.innerHTML  = empty;
+        if (floatList && floatList.children.length === 0) floatList.innerHTML = empty;
     }
 
     /**
