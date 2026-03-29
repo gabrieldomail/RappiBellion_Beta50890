@@ -85,10 +85,10 @@ const SEED_BETS = [
 ];
 
 const OPENROUTER_MODELS = [
-  'meta-llama/llama-3.1-8b-instruct:free',
-  'qwen/qwen-2.5-72b-instruct:free',
-  'mistralai/mistral-small-24b-instruct-2501:free',
-  'qwen/qwen2.5-7b-instruct:free',
+  'openai/gpt-oss-120b:free',
+  'openai/gpt-oss-20b:free',
+  'google/gemma-3-27b-it:free',
+  'qwen/qwen3-coder:free',
   'meta-llama/llama-3.2-3b-instruct:free',
 ];
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
