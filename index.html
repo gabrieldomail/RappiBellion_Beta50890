@@ -1567,6 +1567,93 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // ── PREVIEW MODE — puerta trasera para ver la UI del arena T2E sin apuesta ───────────
+    // Activar: añadir ?arena-preview a la URL, ej: index.html?arena-preview
+    function fpOpenArenaPreview() {
+        // Datos fake para poblar el rival panel sin Firebase
+        window._currentAcceptedBet = {
+            creator:  '0xPR3V1EW000000000000000000000000000D3MO',
+            acceptor: '0xV1S1TA000000000000000000000000000B3TA',
+            amount:   '10',
+            status:   'in_progress'
+        };
+        const dur = 300;
+        fpState = {
+            timeLeft: dur, totalTime: dur, running: false, ended: false,
+            interval: null, score: 0, chaosLevel: 0,
+            betId: 'PREVIEW_00', betMode: true, chaosUnlocked: false,
+            previewMode: true
+        };
+        window.fpState = fpState;
+
+        // Limpieza estándar (igual que fpOpenArena)
+        var _dynaWrap = document.getElementById('fp-chaos-dynabtn-wrap');
+        if (_dynaWrap) _dynaWrap.style.display = 'none';
+        var _chaosBar = document.getElementById('fp-chaos-bar');
+        if (_chaosBar) { _chaosBar.classList.remove('apocalypse'); _chaosBar.style.boxShadow = ''; }
+        var _chaosPct = document.getElementById('fp-chaos-pct');
+        if (_chaosPct) _chaosPct.textContent = '0%';
+        const tangoAudioPV = document.getElementById('tango-audio');
+        if (tangoAudioPV && !tangoAudioPV.paused) tangoAudioPV.muted = true;
+        const _chatFabPV = document.getElementById('gemini-chat-fab');
+        if (_chatFabPV) _chatFabPV.style.display = 'none';
+        document.body.style.overflow    = 'hidden';
+        document.body.style.touchAction = 'none';
+
+        // Intentar lock landscape igual que en duelo real
+        if (window.innerWidth <= 768 || window.innerHeight <= 768) {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(function(){});
+            }
+        }
+
+        // Cargar pac-hack REAL (no freeplay) para mostrar la UI completa del T2E
+        if (fpIframe) {
+            fpIframe.src = 'pac-hack/game.html?player=p1';
+            fpIframe.addEventListener('load', function onPVLoad() {
+                fpIframe.removeEventListener('load', onPVLoad);
+                setTimeout(function() { fpIframe.focus(); }, 300);
+            });
+        }
+
+        // Renderizar timer y mostrar arena
+        fpRenderTimer(dur);
+        if (fpTimerBar) { fpTimerBar.style.transition = 'none'; fpTimerBar.style.width = '100%'; }
+        if (fpScoreEl) fpScoreEl.textContent = '0000';
+        if (fpArena) fpArena.classList.add('show');
+
+        // Activar panel rival con datos fake
+        _fpToggleRivalPanel(true, 'PREVIEW_00');
+
+        // Marcar header de la terminal
+        var termHeader = fpArena ? fpArena.querySelector('.terminal-header-caos span:first-child') : null;
+        if (termHeader) termHeader.textContent = '[PAC-HACK: DEATH // ⚡ PREVIEW_MODE]';
+
+        // Mostrar boosts visualmente para ver la UI completa
+        var boostWrap = document.getElementById('fp-boost-wrap');
+        if (boostWrap) boostWrap.style.display = 'flex';
+        var boostVal = document.getElementById('fp-boost-val');
+        if (boostVal) boostVal.textContent = '3/3';
+        var boostOverlay = document.getElementById('fp-boost-overlay-btn');
+        var boostBadge   = document.getElementById('fp-boost-badge');
+        if (boostOverlay) boostOverlay.style.display = 'block';
+        if (boostBadge)   { boostBadge.style.display = 'block'; boostBadge.textContent = 'x3'; }
+
+        // Badge flotante de preview
+        var badge = document.getElementById('fp-preview-badge');
+        if (!badge) {
+            badge = document.createElement('div');
+            badge.id = 'fp-preview-badge';
+            badge.style.cssText = 'position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(248,255,43,0.92);color:#000;font-family:"Orbitron",monospace;font-size:10px;font-weight:700;letter-spacing:3px;padding:3px 14px;border-radius:3px;pointer-events:none;white-space:nowrap;';
+            badge.textContent = '// PREVIEW — SIN APUESTA //';
+            document.body.appendChild(badge);
+        }
+        badge.style.display = 'block';
+
+        // Arrancar countdown directamente — sin esperar Firebase
+        setTimeout(fpStartCountdown, 1200);
+    }
+
     // ── RIVAL PANEL ──────────────────────────────────────────────
     function _fpToggleRivalPanel(active, betId) {
         const freePanel  = document.getElementById('fp-controls-freeplay');
@@ -2096,6 +2183,9 @@ function fpCloseArena() {
         // REGRESSION FIX: reset guards so next match can open fresh
         _fpArenaOpenedForBet = null;
         if (typeof _fpSyncInitiatedBets !== 'undefined') _fpSyncInitiatedBets.clear();
+        // Limpiar badge de preview si estaba activo
+        var _previewBadge = document.getElementById('fp-preview-badge');
+        if (_previewBadge) _previewBadge.style.display = 'none';
         // Restaurar lobby de apuestas al cerrar arena
         if (typeof showLobbyFloat === 'function') showLobbyFloat();
     }
@@ -2103,8 +2193,16 @@ function fpCloseArena() {
     function fpRestart() { clearInterval(fpState.interval); if (fpCdOverlay) fpCdOverlay.classList.remove('show'); fpOpenArena(); }
 
     // Exponer globalmente para que t2e-integration.js pueda llamarlas desde fuera del closure
-    window.fpOpenArena  = fpOpenArena;
-    window.fpCloseArena = fpCloseArena;
+    window.fpOpenArena        = fpOpenArena;
+    window.fpCloseArena       = fpCloseArena;
+    window.fpOpenArenaPreview = fpOpenArenaPreview;
+
+    // ── Backdoor: ?arena-preview en la URL abre el arena en modo preview ─────
+    if (new URLSearchParams(window.location.search).has('arena-preview')) {
+        window.addEventListener('load', function() {
+            setTimeout(fpOpenArenaPreview, 600);
+        });
+    }
 
     window.addEventListener('message', function(e) {
         const d = e.data;
@@ -6501,6 +6599,41 @@ btn.addEventListener('click', toggleMutePlay);
             #rival-nick   { font-size: 0.7em !important; }
             #rival-score  { font-size: 1.4em !important; }
             #fp-bet-amount-display { font-size: 9px !important; }
+
+            /* ── Boost overlay — reducir tamaño en mobile (64x64 en vez de 128x128) ── */
+            #fp-boost-overlay-btn {
+                width: 64px !important;
+                height: 64px !important;
+                top: 28% !important;
+                right: 8px !important;
+            }
+            #fp-boost-badge {
+                width: 64px !important;
+                top: calc(28% + 68px) !important;
+                right: 8px !important;
+                font-size: 0.65em !important;
+            }
+
+            /* ── Game wrap — asegurar cadena de altura para el iframe ── */
+            .fp-game-wrap {
+                height: 100% !important;
+                min-height: 0 !important;
+            }
+            .fp-game-wrap > .caos-terminal {
+                height: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            .fp-game-wrap .terminal-body-caos {
+                flex: 1 !important;
+                min-height: 0 !important;
+                overflow: hidden !important;
+            }
+            .fp-game-wrap iframe {
+                height: 100% !important;
+                min-height: 0 !important;
+                flex: 1 !important;
+            }
         }
 
         /* ── EXTRA SMALL (≤400px) ── */
@@ -6508,6 +6641,19 @@ btn.addEventListener('click', toggleMutePlay);
             .fp-timer-val { font-size: 22px !important; }
             .fp-stat-val  { font-size: 18px !important; }
             .fp-col-left, .fp-col-right { max-height: 110px; }
+            /* Boost extra pequeño en pantallas muy chicas */
+            #fp-boost-overlay-btn {
+                width: 44px !important;
+                height: 44px !important;
+                top: 26% !important;
+                right: 6px !important;
+            }
+            #fp-boost-badge {
+                width: 44px !important;
+                top: calc(26% + 48px) !important;
+                right: 6px !important;
+                font-size: 0.55em !important;
+            }
         }
 
         /* ══════════════════════════════════════
@@ -7219,13 +7365,123 @@ btn.addEventListener('click', toggleMutePlay);
         // Proxy Cloudflare Worker — la API key vive en Cloudflare, nunca aquí
         const GEMINI_URL = 'https://rapid-figemini-proxy.gabrieldomail.workers.dev';
 
-        const SYSTEM_PROMPT = `Sos el asistente oficial de Rappibellion — una plataforma de casino punk/cyberpunk Think-to-Earn (T2E) basada en $RPPI tokens.
-Tu personalidad: rebelde, directa, irónica, con mucha actitud. Hablás en español rioplatense (vos, dale, joya, etc). 
-Sos experto en: el juego PAC-HACK: DEATH, el sistema de apuestas T2E, el token $RPPI, el contrato en BSC, y todo lo relacionado con la plataforma.
-El juego: dos jugadores apuestan $RPPI y juegan Pac-Man simultáneamente. El que más puntaje tenga al terminar el tiempo se lleva el bote. Hay un BOOST que convierte todos los fantasmas en comestibles por 8 segundos — cuesta 10% de la apuesta y solo se puede usar una vez.
-Contratos: el contrato de $RPPI está en Binance Smart Chain. La plataforma usa Firebase para sincronización en tiempo real.
-Si no sabés algo, decilo con actitud pero sin inventar datos.
-Respondé siempre corto y con punch, como un chat de arcade, no como un manual. Máximo 3-4 líneas por respuesta.`;
+        const SYSTEM_PROMPT = `Sos RAPPIA_AI — la inteligencia artificial oficial de Rappibellion.
+Personalidad: rebelde, directa, irónica, con mucha actitud punk/cyberpunk. Hablás en español rioplatense (vos, dale, joya, piola, qué onda, etc). 
+Respondé SIEMPRE corto y con punch — máximo 3-4 líneas. Como un chat de arcade, no un manual de instrucciones.
+Si no sabés algo específico, decilo con actitud pero sin inventar datos.
+
+═══════════════════════════════════════════════
+ QUÉ ES RAPPIBELLION
+═══════════════════════════════════════════════
+Rappibellion es una plataforma de gaming Web3 con filosofía punk/cyberpunk que creó el modelo Think-to-Earn (T2E).
+T2E = ganás con habilidad, estrategia e inteligencia. No con grind aburrido como el Play-to-Earn (P2E) de siempre.
+Tiene 3 mundos: una web interactiva con "El Circuito" (duelos arcade PvP), un juego Android Capítulo I (TESLA_DRONES), y el Capítulo II en desarrollo.
+Slogan: "La verdadera rebelión es pensar antes de apostar."
+No existe registro. Tu wallet ES tu identidad. Sin wallet = modo Free-to-Play (sin apuestas).
+
+═══════════════════════════════════════════════
+ EL CIRCUITO — EL CASINO DEL GAMER
+═══════════════════════════════════════════════
+El Circuito es la sección de duelos PvP dentro de la web de Rappibellion.
+Juego central: PAC-HACK: DEATH — versión cyberpunk de Pac-Man donde dos jugadores compiten en tiempo real.
+Cómo funciona el duelo:
+  1. Un jugador crea una apuesta definiendo el monto en $RPPI y el límite máximo de BOOSTs (1, 3 o 5).
+  2. Otro jugador acepta el duelo.
+  3. Ambos juegan PAC-HACK: DEATH simultáneamente, cada uno en su pantalla.
+  4. El que tenga más puntaje al terminar el tiempo gana el bote (menos fee del 3%).
+  5. El payout se ejecuta automáticamente vía smart contract en Optimism.
+Fee de la casa: 3% del pozo total.
+Premio = (apuesta × 2) − 3% − costo de BOOSTs usados.
+Ejemplo: apuesta de 10 $RPPI c/u → pozo 20 → fee 0.60 → ganador se lleva 19.40 $RPPI (menos BOOSTs que hayan activado).
+
+═══════════════════════════════════════════════
+ SISTEMA DE BOOST
+═══════════════════════════════════════════════
+El BOOST es el elemento estratégico clave del duelo.
+Qué hace: activa 10 segundos de inmunidad total — PAC-HACK no te puede matar y los fantasmas se vuelven comestibles (más puntos).
+Costo: 1 USDT por BOOST activado (se descuenta del premio final del ganador).
+Límite: el creador del duelo define cuántos BOOSTs se permiten: 1, 3 o 5 (máximo absoluto: 5 por partida).
+Ambos jugadores tienen sus propios BOOSTs — el límite es igual para los dos.
+Estrategia: activar un BOOST en el momento justo puede revertir un duelo perdido. Pero cada uno te cuesta 1 USDT del premio. Usarlos todos y perder = peor negocio.
+
+═══════════════════════════════════════════════
+ TOKEN $RPPI
+═══════════════════════════════════════════════
+Nombre completo: Rappia ($RPPI)
+Red: Optimism (OP Mainnet) — parte del ecosistema Superchain. Transacciones rápidas y baratas.
+Contrato: 0xb2f681ba962a1ef4dba7acf79b181814827abddc
+Supply total: 150,000,000 $RPPI — FIJO. El contrato NO permite crear más tokens, nunca.
+Dónde comprar: Uniswap (DEX). Botón directo en la web cuando se active la liquidez inicial. También por transferencia bancaria contactando info@rappibellion.com
+Distribución del supply:
+  - 45% → Recompensas T2E (premios de duelos y misiones)
+  - 20% → Tesorería del Ecosistema (marketing, comunidad, alianzas)
+  - 20% → Equipo y Fundadores (bloqueados 2-3 años — vesting para demostrar compromiso)
+  - 10% → Venta Estratégica (fondos para desarrollo)
+  - 5%  → Liquidez Inicial en Uniswap
+
+═══════════════════════════════════════════════
+ STAKING SOBERANO
+═══════════════════════════════════════════════
+Rappibellion rechaza los APY inflados y falsos del DeFi clásico.
+El "Staking Soberano" está vinculado al rendimiento del bono del Tesoro de EE.UU. (US02Y).
+Usamos la tasa del sistema fiat tradicional para pagar en $RPPI — sostenible, transparente y con filosofía "caos cyberpunk".
+Concepto: hackear el dinero fiat usando sus propias reglas para beneficio de la rebelión.
+
+═══════════════════════════════════════════════
+ ROADMAP
+═══════════════════════════════════════════════
+Q4 2025 — ✓ COMPLETADO:
+  Lanzamiento web, Discord, Whitepaper (Tokenomicon v1.0), Beta jugable de El Circuito, Venta inicial de $RPPI.
+
+Q1 2026 — ● EN PROGRESO:
+  Beta Abierta Capítulo I: TESLA_DRONES para Android. Shooter con mecánicas T2E.
+
+Q2 2026 — // PENDIENTE:
+  Capítulo II: "Who, where or when is Rappia?" — implementación de economía T2E completa.
+
+═══════════════════════════════════════════════
+ EL EQUIPO (LA RESISTENCIA)
+═══════════════════════════════════════════════
+Gabriel C. Dominguez — Director Estratégico / Diseño Gráfico
+  "Vamos a desintegrar la estructura prehistórica de cómo se percibe un videojuego. Jugamos en tres planos: web, hackeo 2D y shooter 3D."
+
+Gargamel — Programador Jefe (Unity Engine)
+  El que construye el juego 3D en Unity. Integración Discord → web via bot.
+
+Sagai Rebelbet — Estrategia de Marketing / IA
+  "El P2E es código roto. El T2E es el parche que la industria necesita." Analiza el mercado y traduce la visión en mensaje.
+
+Mama Cora — Analista y Organizadora de Proyectos
+  "Vanguardia desde la historia hasta la economía." Mantiene la estructura de la rebelión.
+
+legion_beta — Ministro de Economía / Director del Banco Central de Rappia
+  "Mi trabajo es hackear el dinero fiat basura." Diseña la economía $RPPI atada al US02Y.
+
+Cupo abierto: buscan 3 rebeldes para el staff (1 por mes). Aplicar en info@rappibellion.com
+
+═══════════════════════════════════════════════
+ PREGUNTAS FRECUENTES (RESPUESTAS RÁPIDAS)
+═══════════════════════════════════════════════
+¿Necesito plata para jugar? → No. Free-to-Play. Las apuestas son opcionales.
+¿Me registro? → No. Tu wallet ES tu login. Sin datos, sin registro.
+¿En qué red está $RPPI? → Optimism (OP Mainnet). NO es BSC, no es Ethereum mainnet.
+¿Cuándo sale el juego Android? → Q1 2026, en progreso ahora mismo.
+¿Puedo perder todo? → Sí. Si perdés el duelo, perdés lo apostado. Riesgo real, recompensa real.
+¿El supply crece? → Jamás. 150M fijos para siempre.
+¿Necesito MetaMask? → Sí, para conectar wallet y apostar. Sin MetaMask solo podés jugar en modo gratuito.
+¿Discord? → https://discord.gg/3zBrPVn7
+
+═══════════════════════════════════════════════
+ TECH STACK (POR SI TE PREGUNTAN)
+═══════════════════════════════════════════════
+- Frontend: web interactiva HTML/CSS/JS puro, estética cyberpunk
+- Blockchain: Optimism (OP Mainnet), contratos ERC-20
+- Pagos: USDT en Optimism para los payouts del sistema T2E
+- Backend: Firebase Realtime Database (sincronización en tiempo real de duelos)
+- AI: Gemini 2.5 Flash (eso soy yo, aunque no tengo ego)
+- Juego 3D: Unity Engine (Capítulo I — en desarrollo)`;
+
+
 
         const fab     = document.getElementById('gemini-chat-fab');
         const widget  = document.getElementById('gemini-chat-widget');
