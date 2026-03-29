@@ -491,6 +491,7 @@ async function handleRefund(request, env, corsHeaders) {
 }
 
 // ── Firebase Auth Token (Service Account → Bearer token) ─────────────────────
+// ── Firebase Auth Token (Service Account → Bearer token) ─────────────────────
 async function getFirebaseToken(serviceAccountJson) {
   const sa   = JSON.parse(serviceAccountJson);
   const now  = Math.floor(Date.now() / 1000);
