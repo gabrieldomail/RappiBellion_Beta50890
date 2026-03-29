@@ -112,6 +112,9 @@ export default {
     if (url.pathname === '/refund') {
       return handleRefund(request, env, corsHeaders);
     }
+    if (url.pathname === '/dispute') {
+      return handleDispute(request, env, corsHeaders);
+    }
     // ── Gemini API proxy (passthrough — el frontend ya envía formato Gemini) ──
     const apiKey = env.GEMINI_API_KEY;
     if (!apiKey) {
@@ -402,6 +405,117 @@ async function handlePayout(request, env, corsHeaders) {
       } catch (_) { /* si Firebase también falla, no bloquear la respuesta */ }
     }
     return json({ error: 'Payout error: ' + err.message }, 500);
+  }
+}
+
+// ── /dispute handler ────────────────────────────────────────────────────────
+// Body esperado: { betId, requester, reason? }
+// Cualquiera de los dos jugadores puede dispararlo.
+// Condiciones para activarse:
+//   a) El duelo está en 'in_progress' y pasaron más de DISPUTE_TIMEOUT_MS desde startedAt
+//   b) O el frontend detectó un crash y envía reason: 'bug' (igual aplica el timeout como mínimo)
+// Resultado: reembolso total a ambos jugadores (bet.amount × 2 txs). La casa absorbe el gas.
+const DISPUTE_TIMEOUT_MS = 20 * 60 * 1000; // 20 minutos desde que arrancó el duelo
+
+async function handleDispute(request, env, corsHeaders) {
+  const json = (data, status = 200) =>
+    new Response(JSON.stringify(data), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+
+  try {
+    if (!env.PAYOUT_PRIVATE_KEY)       return json({ error: 'PAYOUT_PRIVATE_KEY no configurado' }, 500);
+    if (!env.FIREBASE_SERVICE_ACCOUNT) return json({ error: 'FIREBASE_SERVICE_ACCOUNT no configurado' }, 500);
+
+    if (env.PAYOUT_SECRET) {
+      const reqSecret = request.headers.get('X-Payout-Secret');
+      if (!reqSecret || reqSecret !== env.PAYOUT_SECRET) {
+        return json({ error: 'No autorizado' }, 401);
+      }
+    }
+
+    const { betId, requester, reason } = await request.json();
+    if (!betId || !requester) return json({ error: 'betId y requester son requeridos' }, 400);
+
+    const fbToken = await getFirebaseToken(env.FIREBASE_SERVICE_ACCOUNT);
+    const betRes  = await fetch(`${FB_DB_URL}/t2e_bets/${betId}.json?auth=${fbToken}`);
+    const bet     = await betRes.json();
+
+    if (!bet) return json({ error: 'Apuesta no encontrada' }, 404);
+
+    // Bloquear si ya fue resuelta
+    if (['paid', 'cancelled', 'disputed'].includes(bet.status) ||
+        ['completed', 'refunded_both', 'refunded_creator'].includes(bet.payoutStatus)) {
+      return json({ error: `Apuesta ya resuelta — estado: ${bet.status}` }, 400);
+    }
+
+    // Verificar que el requester es participante legítimo
+    const participants = [bet.creator, bet.acceptor].filter(Boolean).map(a => a.toLowerCase());
+    if (!participants.includes(requester.toLowerCase())) {
+      return json({ error: 'Solo los participantes del duelo pueden abrir un dispute' }, 403);
+    }
+
+    // Verificar timeout — el duelo debe llevar al menos DISPUTE_TIMEOUT_MS sin resolverse
+    const referenceTime = bet.startedAt || bet.createdAt || 0;
+    const elapsed = Date.now() - referenceTime;
+    if (elapsed < DISPUTE_TIMEOUT_MS) {
+      const minutesLeft = Math.ceil((DISPUTE_TIMEOUT_MS - elapsed) / 60000);
+      return json({
+        error: `Dispute disponible en ${minutesLeft} minuto${minutesLeft !== 1 ? 's' : ''} — el duelo aún puede resolverse normalmente`
+      }, 400);
+    }
+
+    const amount   = parseFloat(bet.amount);
+    const provider = new ethers.providers.JsonRpcProvider(OPTIMISM_RPC);
+    const wallet   = new ethers.Wallet(env.PAYOUT_PRIVATE_KEY, provider);
+    const usdt     = new ethers.Contract(USDT_ADDRESS, USDT_ABI, wallet);
+    const amountRaw = ethers.utils.parseUnits(amount.toFixed(6), USDT_DECIMALS);
+
+    const txHashes = {};
+
+    // Reembolsar al creador si depositó
+    if (bet.creatorTxHash && bet.creator) {
+      const tx = await usdt.transfer(bet.creator, amountRaw);
+      const receipt = await tx.wait(1);
+      txHashes.creator = receipt.transactionHash;
+    }
+
+    // Reembolsar al acceptor si depositó
+    if (bet.acceptorTxHash && bet.acceptor) {
+      const tx = await usdt.transfer(bet.acceptor, amountRaw);
+      const receipt = await tx.wait(1);
+      txHashes.acceptor = receipt.transactionHash;
+    }
+
+    const refundedCount = Object.keys(txHashes).length;
+    const payoutStatus  = refundedCount === 2 ? 'refunded_both' : refundedCount === 1 ? 'refunded_creator' : 'cancelled_no_deposit';
+
+    // Marcar como disputada en Firebase
+    await fetch(`${FB_DB_URL}/t2e_bets/${betId}.json?auth=${fbToken}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        status:          'disputed',
+        payoutStatus,
+        disputedAt:      Date.now(),
+        disputeReason:   reason || 'timeout',
+        disputeBy:       requester,
+        refundTxCreator: txHashes.creator  || null,
+        refundTxAcceptor:txHashes.acceptor || null,
+      })
+    });
+
+    return json({
+      ok:               true,
+      payoutStatus,
+      refundedPlayers:  refundedCount,
+      amountEach:       amount.toFixed(2),
+      txCreator:        txHashes.creator  || null,
+      txAcceptor:       txHashes.acceptor || null,
+      note:             'Gas de las transacciones absorbido por la casa.'
+    });
+
+  } catch (err) {
+    console.error('[dispute] error:', err);
+    return json({ error: 'Dispute error: ' + err.message }, 500);
   }
 }
 
