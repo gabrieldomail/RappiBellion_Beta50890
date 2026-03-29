@@ -22,7 +22,7 @@ const USDT_ABI = [
 ];
 
 // Firebase REST base URL (Realtime DB)
-const FB_DB_URL          = 'https://rappibellion-default-rtdb.firebaseio.com';          // apuestas / bets
+const FB_DB_URL          = 'https://rappibellion-comments-default-rtdb.firebaseio.com'; // apuestas / bets (misma DB que comments)
 const FB_COMMENTS_DB_URL = 'https://rappibellion-comments-default-rtdb.firebaseio.com'; // opiniones / comments
 
 // ── Pool de opiniones diarias (seed automático via cron) ──────────────────────
@@ -58,6 +58,30 @@ const SEED_STAFF_APPS = [
   { username: 'MatiasRPPI',       statement: 'Moderé comunidades de 10k+ usuarios. El orden y la energía positiva en una comunidad crypto hacen la diferencia. Yo lo sé hacer.' },
   { username: 'darkfire_gamer',   statement: 'Top 5 en el ranking de la beta. Si alguien conoce las mecánicas de PAC-HACK de adentro, soy yo. Quiero ayudar a equilibrar los duelos.' },
   { username: 'ValentinaPixel',   statement: 'Illustradora y animadora 2D. El arte de Rappia ya está bueno pero yo tengo ideas para llevarlo al siguiente nivel. Portafolio listo para compartir.' },
+];
+
+// ── Wallets ficticias para el ranking simulado ──────────────────────────────
+const _W = [
+  '0xd9e7f2a4c8b1e3d5f7a9c2e4b6d8f1a3c5e7b9d1', // rebelde_alpha
+  '0x7b3d5f9a1c4e7b2d4f6a8c1e3b5d7f9a2c4e6b8d', // sombra_digital
+  '0x4c8e2a6f1d5b9e3c7a1f5d9b3e7c1a5f9d3b7e2c', // crack_0xff
+  '0x1f4a8c2e6b9d3f7a1c5e9b2d6f8a3c7e1b4d8f2a', // turbo_hack
+  '0x8d2f6b1e4a9c3f7d1b5e9a2f4d8c1b3f7e2a6d9c', // pichi_neo
+];
+
+// ── Pool de duelos simulados (seed cada 3 días via cron) ─────────────────────
+// W[0] = 3 wins | W[1] = 2 wins | W[2] = 2 wins | W[3] = 1 win | W[4] = 2 wins
+const SEED_BETS = [
+  { creator: _W[0], acceptor: _W[1], amount: 10, winner: _W[0] }, // W0 win #1
+  { creator: _W[1], acceptor: _W[2], amount: 5,  winner: _W[1] }, // W1 win #1
+  { creator: _W[2], acceptor: _W[0], amount: 8,  winner: _W[2] }, // W2 win #1
+  { creator: _W[0], acceptor: _W[3], amount: 5,  winner: _W[0] }, // W0 win #2
+  { creator: _W[3], acceptor: _W[1], amount: 10, winner: _W[3] }, // W3 win #1
+  { creator: _W[4], acceptor: _W[0], amount: 5,  winner: _W[0] }, // W0 win #3
+  { creator: _W[1], acceptor: _W[4], amount: 8,  winner: _W[1] }, // W1 win #2
+  { creator: _W[2], acceptor: _W[4], amount: 5,  winner: _W[4] }, // W4 win #1
+  { creator: _W[3], acceptor: _W[2], amount: 10, winner: _W[2] }, // W2 win #2
+  { creator: _W[4], acceptor: _W[3], amount: 5,  winner: _W[4] }, // W4 win #2
 ];
 
 const OPENROUTER_MODELS = [
@@ -171,11 +195,14 @@ export default {
   },
 
   // ── Cron triggers ──────────────────────────────────────────────────────────
-  // 0 10 * * *   → 1 opinión T2E por día (10:00 UTC)
-  // 0 16 */2 * * → 1 aplicante al staff cada 2 días (16:00 UTC)
+  // 0 10 * * *    → 1 opinión T2E por día (10:00 UTC)
+  // 0 16 */2 * *  → 1 aplicante al staff cada 2 días (16:00 UTC)
+  // 0 12 */3 * *  → 1 duelo simulado en el ranking cada 3 días (12:00 UTC)
   async scheduled(event, env, ctx) {
     if (event.cron === '0 16 */2 * *') {
       ctx.waitUntil(seedStaffApplication(event.scheduledTime, env));
+    } else if (event.cron === '0 12 */3 * *') {
+      ctx.waitUntil(seedSimulatedBet(event.scheduledTime, env));
     } else {
       ctx.waitUntil(seedDailyOpinion(event.scheduledTime, env));
     }
@@ -269,6 +296,62 @@ async function seedStaffApplication(scheduledTime, env) {
     }
   } catch (err) {
     console.error('[staff-seed] Error general:', err.message);
+  }
+}
+
+// ── seedSimulatedBet — publica un duelo completado en el ranking cada 3 días ──
+async function seedSimulatedBet(scheduledTime, env) {
+  if (!env.FIREBASE_SERVICE_ACCOUNT) {
+    console.error('[lb-seed] FIREBASE_SERVICE_ACCOUNT no configurado');
+    return;
+  }
+
+  // Ciclar la pool por número de evento (día / 3)
+  const eventIndex = Math.floor(scheduledTime / 1000 / 86400 / 3);
+  const entry      = SEED_BETS[eventIndex % SEED_BETS.length];
+
+  // Jitter ±4h para timestamps realistas
+  const jitterMs  = Math.floor((Math.random() * 8 - 4) * 60 * 60 * 1000);
+  const paidAt    = scheduledTime + jitterMs;
+  const createdAt = paidAt - Math.floor((Math.random() * 30 + 5) * 60 * 1000); // 5-35 min antes
+
+  const amount   = entry.amount;
+  const totalPot = amount * 2;
+  const houseFee = totalPot * (HOUSE_FEE_PCT / 100);
+  const prize    = totalPot - houseFee;
+
+  const bet = {
+    creator:      entry.creator,
+    acceptor:     entry.acceptor,
+    amount:       amount,
+    status:       'paid',
+    payoutStatus: 'completed',
+    winner:       entry.winner,
+    prize:        prize.toFixed(6),
+    houseFee:     houseFee.toFixed(6),
+    createdAt,
+    paidAt,
+    creatorTxHash:  '0xsimulated_' + Math.random().toString(16).slice(2,18),
+    acceptorTxHash: '0xsimulated_' + Math.random().toString(16).slice(2,18),
+    payoutTxHash:   '0xsimulated_' + Math.random().toString(16).slice(2,18),
+    seeded: true,
+  };
+
+  try {
+    const fbToken = await getFirebaseToken(env.FIREBASE_SERVICE_ACCOUNT);
+    const res = await fetch(`${FB_DB_URL}/t2e_bets.json?auth=${fbToken}`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(bet)
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('[lb-seed] Firebase error:', err);
+    } else {
+      console.log(`[lb-seed] Duelo publicado: ${entry.winner.slice(0,8)}... ganó ${prize.toFixed(2)} USDT (evento ${eventIndex})`);
+    }
+  } catch (err) {
+    console.error('[lb-seed] Error general:', err.message);
   }
 }
 

@@ -6,7 +6,8 @@ compatibility_flags = ["nodejs_compat"]
 [triggers]
 crons = [
   "0 10 * * *",    # publica 1 opinión T2E por día a las 10:00 UTC
-  "0 16 */2 * *"   # publica 1 aplicante al staff cada 2 días a las 16:00 UTC
+  "0 16 */2 * *",  # publica 1 aplicante al staff cada 2 días a las 16:00 UTC
+  "0 12 */3 * *"   # publica 1 duelo simulado en el ranking cada 3 días a las 12:00 UTC
 ]
 
 [vars]
