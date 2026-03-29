@@ -84,7 +84,7 @@ const SEED_BETS = [
   { creator: _W[4], acceptor: _W[3], amount: 5,  winner: _W[4] }, // W4 win #2
 ];
 
-const GEMINI_MODEL        = 'gemini-2.5-flash-preview-04-17';
+const GEMINI_MODEL        = 'gemini-2.5-flash';
 const GEMINI_API_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 export default {
