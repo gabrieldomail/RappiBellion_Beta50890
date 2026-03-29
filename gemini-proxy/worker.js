@@ -22,7 +22,29 @@ const USDT_ABI = [
 ];
 
 // Firebase REST base URL (Realtime DB)
-const FB_DB_URL = 'https://rappibellion-default-rtdb.firebaseio.com'; // ajustar si el proyecto tiene otro nombre
+const FB_DB_URL          = 'https://rappibellion-default-rtdb.firebaseio.com';          // apuestas / bets
+const FB_COMMENTS_DB_URL = 'https://rappibellion-comments-default-rtdb.firebaseio.com'; // opiniones / comments
+
+// ── Pool de opiniones diarias (seed automático via cron) ──────────────────────
+const SEED_OPINIONS = [
+  { username: 'CryptoPibe_BA',    opinion: 'Jugué 3 duelos y gané 2. El sistema T2E funciona diferente, no es suerte sino velocidad mental. Me gustó mucho.' },
+  { username: 'xX_NeoHacker_Xx', opinion: 'Al principio pensé que era como todos los P2E de siempre pero no. PAC-HACK es adictivo y encima te pagás el café si ganás jaja' },
+  { username: 'LauraDeFuego',     opinion: 'Me pareció muy original. La UI está buena, el circuito carga rápido. Espero que cuando salga completo tenga más modos de juego.' },
+  { username: 'ElViejo_Hodler',   opinion: 'Llevo años en crypto y esto me parece uno de los conceptos más frescos que vi. T2E tiene sentido: si sos bueno ganás, punto.' },
+  { username: 'NachoCriptoNerd',  opinion: 'Perdí el primer duelo por UN segundo de diferencia. Me voy a entrenar y vuelvo. RAPPIA va a ser grande.' },
+  { username: 'Marisol_9000',     opinion: 'Me costó conectar la wallet al principio pero una vez dentro voló. El sistema de BOOST está bueno para darle emoción.' },
+  { username: 'darknet_gaucho',   opinion: 'El concepto de Think-to-Earn es lo que faltaba. Nada de staking aburrido, acá te medís contra otro humano. Eso sí es un juego.' },
+  { username: 'SebastianX',       opinion: 'Beta muy sólida. El flujo apuesta → duelo → pago funciona muy bien. Sigan así.' },
+  { username: 'CrackDelTeclado',  opinion: 'Tres duelos hoy. Gané los tres. No sé si mis rivales estaban dormidos pero RAPPIA pega diferente 👀' },
+  { username: 'AgusWEB3',         opinion: 'El T2E me parece el futuro de los juegos crypto. Rappibellion va por buen camino, solo falta más marketing para que explote.' },
+  { username: 'PixelBandit_OK',   opinion: 'Jugué en modo gratuito para practicar y después metí fichas reales. Buena decisión. Gané mi primer duel con 5 puntos de ventaja.' },
+  { username: 'MarianoStake',     opinion: 'Qué locura encontrar un proyecto tan bien armado. La interfaz es top, el PAC-HACK es divertidísimo.' },
+  { username: 'SilverHands2025',  opinion: 'Los boosts cambian el juego completamente. Estrategia pura. Me fui con +3 USDT después de 2 horas. No está nada mal.' },
+  { username: 'Roque_Despierto',  opinion: 'Soy escéptico de todo en crypto pero esto me convenció. Es simple: ganás o perdés en base a lo que jugás. Sin trampa.' },
+  { username: 'turbodelcia',      opinion: 'El circuito lag un poco el primer día pero hoy estuvo perfecta toda la sesión. Quedé top 3 en el ranking. Fuego 🔥' },
+  { username: 'Valentina_NFT',    opinion: 'El sistema de duelos evita los bots porque necesitás jugar de verdad. Eso vale mucho en este ambiente.' },
+  { username: 'EL_GRAN_PICHI',    opinion: 'Peeero por qué no saqué esto antes jajaja. Llevaba meses buscando algo entretenido en web3. Rappia to the moon 🚀' },
+];
 
 const OPENROUTER_MODELS = [
   'meta-llama/llama-3.1-8b-instruct:free',
@@ -34,8 +56,7 @@ const OPENROUTER_MODELS = [
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 export default {
-  async fetch(request, env) {
-    const origin = request.headers.get('Origin') || '';
+  async fetch(request, env) {    const origin = request.headers.get('Origin') || '';
     const allowed = ALLOWED_ORIGINS.some(o => origin.startsWith(o));
     const corsHeaders = {
       'Access-Control-Allow-Origin': allowed ? origin : ALLOWED_ORIGINS[0],
@@ -134,8 +155,58 @@ export default {
       return new Response(JSON.stringify({ error: { message: 'Worker error: ' + err.message } }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
+  },
+
+  // ── Cron trigger: publica 1 opinión por día a las 10:00 UTC ────────────────
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(seedDailyOpinion(event.scheduledTime, env));
   }
 };
+
+// ── seedDailyOpinion — publica una opinión automática en Firebase ─────────────
+async function seedDailyOpinion(scheduledTime, env) {
+  if (!env.FIREBASE_SERVICE_ACCOUNT) {
+    console.error('[seed] FIREBASE_SERVICE_ACCOUNT no configurado');
+    return;
+  }
+
+  // Elegir opinión según el número de día (cicla la pool completa)
+  const dayIndex = Math.floor(scheduledTime / 1000 / 86400);
+  const entry    = SEED_OPINIONS[dayIndex % SEED_OPINIONS.length];
+
+  // Timestamp con variación aleatoria ±2h para que no siempre aparezca a la misma hora exacta
+  const jitterMs   = Math.floor((Math.random() * 4 - 2) * 60 * 60 * 1000);
+  const timestamp  = scheduledTime + jitterMs;
+  const date       = new Date(timestamp).toLocaleString('es-ES', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires'
+  });
+
+  const opinion = {
+    username:  entry.username,
+    opinion:   entry.opinion,
+    timestamp,
+    date,
+    seeded:    true   // flag para distinguirlas de las reales si alguna vez hace falta
+  };
+
+  try {
+    const fbToken = await getFirebaseToken(env.FIREBASE_SERVICE_ACCOUNT);
+    const res = await fetch(`${FB_COMMENTS_DB_URL}/t2e-opinions.json?auth=${fbToken}`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(opinion)
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('[seed] Firebase error:', err);
+    } else {
+      console.log(`[seed] Opinión publicada: ${entry.username} (día ${dayIndex})`);
+    }
+  } catch (err) {
+    console.error('[seed] Error general:', err.message);
+  }
+}
 
 // ── /payout handler ───────────────────────────────────────────────────────────
 // Body esperado: { betId, winner, playerScore, rivalScore, boostsP1, boostsP2 }

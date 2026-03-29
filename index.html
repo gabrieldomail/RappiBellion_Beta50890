@@ -494,6 +494,27 @@
     </div>
 </div>
 
+<!-- 🟩 TETRIS-CIPHER — promo widget (siempre visible) -->
+<div id="tetris-promo-window">
+    <div class="tetris-promo-terminal">
+        <div class="tetris-promo-hdr">
+            <span>TETRIS-CIPHER</span>
+            <button onclick="document.getElementById('tetris-promo-window').style.display='none'" style="background:none;border:none;color:rgba(0,255,65,0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
+        </div>
+        <div class="tetris-promo-body">
+            <div class="tetris-promo-img-wrap">
+                <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width:100%;height:auto;display:block;opacity:0.85;">
+            </div>
+            <p class="tetris-promo-tagline">Organiza el código encriptado<br>antes de que el sistema colapse.</p>
+            <div class="tetris-promo-date-box">
+                <span class="tetris-promo-date-label">DEMO DISPONIBLE</span>
+                <span class="tetris-promo-date">16.04.2026</span>
+            </div>
+            <p class="tetris-promo-sub">// THINK TO EARN — modo T2E en beta cerrada</p>
+        </div>
+    </div>
+</div>
+
 <!-- ⚔ DUEL INBOX — trigger button (visible when wallet connected) -->
 <button id="duel-trigger-btn" onclick="toggleDuelInbox()" title="Bandeja de Desafíos">
     DUELOS <span id="duel-badge">0</span>
@@ -3381,8 +3402,11 @@ btn.addEventListener('click', toggleMutePlay);
                     <div class="game-placeholder">
                         <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
                         <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">[TETRIS-CIPHER]</strong><br>(El \"Código\")</p>
-                        <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde);">
-                            ¡MAKE YOUR BET!
+                        <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde);" disabled>
+                            ¡COMING SOON!
+                        </button>
+                        <button class="cta-button" id="play-tetriscipher-demo" style="margin-top: 5px; background: transparent; border-color: var(--color-caos-verde); color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde); cursor: default;" disabled>
+                            ⏳ [TETRIS-CIPHER] // EN DESARROLLO
                         </button>
                     </div>
                     <div class="game-placeholder">
@@ -8309,6 +8333,12 @@ window.addEventListener('load', function() { loadLeaderboard(); });
 var _duelWallet = null;
 var _duelPoll   = null;
 
+function toggleTetrisPromo() {
+    var w = document.getElementById('tetris-promo-window');
+    if (!w) return;
+    w.classList.toggle('tetris-promo-hidden');
+}
+
 function toggleDuelInbox() {
     var w = document.getElementById('duel-inbox-window');
     if (!w) return;
@@ -8497,6 +8527,82 @@ function _duelOnDisconnect() {
         if (addr) _duelOnConnect(addr);
     }, 1500);
 })();
+</script>
+
+<!-- 👻 GHOST MESSAGE -->
+<div id="ghost-msg">compre rappia para la cartera de la dama o el bolsillo del caballero</div>
+
+<!-- 👻 GHOST MESSAGE 2 -->
+<div id="ghost-msg2">LOS MAS VIVOS compran y holdean RAPPIA.... mientras los otros estan dandole de comer a las palomas en la plaza</div>
+
+<!-- 👻 GHOST MESSAGE 3 -->
+<div id="ghost-msg3">PAC-HACK FREEPLAY o te vas a quedar mirando como las VACAS cuando el tren abandona la estacion.</div>
+
+<!-- 👻 GHOST MESSAGE 4 -->
+<div id="ghost-msg4">es dificil jugar con MESSI</div>
+
+<script>
+(function ghostLoop() {
+    var el = document.getElementById('ghost-msg');
+    // Posición aleatoria en pantalla
+    el.style.top  = (Math.random() * 75 + 5) + 'vh';
+    el.style.left = (Math.random() * 55 + 2) + 'vw';
+    el.style.display = 'block';
+    // 15% de chance de quedarse 1 segundo legible, resto flash corto
+    var isLong   = Math.random() < 0.15;
+    var visibleMs = isLong ? 1000 : Math.floor(Math.random() * 130 + 40);
+    setTimeout(function() {
+        el.style.display = 'none';
+        // Pausa antes del próximo flash: 1 a 5 segundos
+        var hiddenMs = Math.floor(Math.random() * 4000 + 1000);
+        setTimeout(ghostLoop, hiddenMs);
+    }, visibleMs);
+})();
+
+// Loop independiente para ghost-msg2 — desfasado 3 segundos al inicio
+setTimeout(function ghostLoop2() {
+    var el = document.getElementById('ghost-msg2');
+    el.style.top  = (Math.random() * 75 + 5) + 'vh';
+    el.style.left = (Math.random() * 55 + 2) + 'vw';
+    el.style.display = 'block';
+    var isLong    = Math.random() < 0.15;
+    var visibleMs = isLong ? 1000 : Math.floor(Math.random() * 130 + 40);
+    setTimeout(function() {
+        el.style.display = 'none';
+        var hiddenMs = Math.floor(Math.random() * 5000 + 2000);
+        setTimeout(ghostLoop2, hiddenMs);
+    }, visibleMs);
+}, 3000);
+
+// Loop independiente para ghost-msg3 — desfasado 6 segundos al inicio
+setTimeout(function ghostLoop3() {
+    var el = document.getElementById('ghost-msg3');
+    el.style.top  = (Math.random() * 75 + 5) + 'vh';
+    el.style.left = (Math.random() * 55 + 2) + 'vw';
+    el.style.display = 'block';
+    var isLong    = Math.random() < 0.15;
+    var visibleMs = isLong ? 1000 : Math.floor(Math.random() * 130 + 40);
+    setTimeout(function() {
+        el.style.display = 'none';
+        var hiddenMs = Math.floor(Math.random() * 4500 + 1500);
+        setTimeout(ghostLoop3, hiddenMs);
+    }, visibleMs);
+}, 6000);
+
+// Loop independiente para ghost-msg4 — desfasado 9 segundos al inicio
+setTimeout(function ghostLoop4() {
+    var el = document.getElementById('ghost-msg4');
+    el.style.top  = (Math.random() * 75 + 5) + 'vh';
+    el.style.left = (Math.random() * 55 + 2) + 'vw';
+    el.style.display = 'block';
+    var isLong    = Math.random() < 0.15;
+    var visibleMs = isLong ? 1000 : Math.floor(Math.random() * 130 + 40);
+    setTimeout(function() {
+        el.style.display = 'none';
+        var hiddenMs = Math.floor(Math.random() * 5000 + 2000);
+        setTimeout(ghostLoop4, hiddenMs);
+    }, visibleMs);
+}, 9000);
 </script>
 
 </body>

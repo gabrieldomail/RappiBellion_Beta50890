@@ -3,6 +3,9 @@ main            = "worker.js"
 compatibility_date  = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
+[triggers]
+crons = ["0 10 * * *"]   # publica 1 opinión por día a las 10:00 UTC
+
 [vars]
 # Variables no-secretas (las secretas van por `wrangler secret put`)
 # GEMINI_API_KEY, PAYOUT_PRIVATE_KEY, FIREBASE_SERVICE_ACCOUNT, PAYOUT_SECRET

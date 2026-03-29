@@ -5419,8 +5419,8 @@ footer::before {
    ══════════════════════════════════════════════ */
 #duel-trigger-btn {
     position: fixed;
-    bottom: 55vh;
-    left: 14px;
+    top: 20px;
+    left: 384px;
     z-index: 9991;
     background: transparent;
     border: none;
@@ -5600,4 +5600,231 @@ footer::before {
 .duel-send-btn:hover {
     background: linear-gradient(90deg, rgba(255,0,255,0.3), rgba(0,255,255,0.2));
     box-shadow: 0 0 18px rgba(255,0,255,0.5), 0 0 18px rgba(0,255,255,0.3);
+}
+
+/* COMING SOON buttons — conservan el color aunque estén disabled */
+#make-bet-tetriscipher:disabled,
+#play-tetriscipher-demo:disabled {
+    opacity: 0.85;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════
+   TETRIS-CIPHER PROMO WIDGET
+   ══════════════════════════════════════════════ */
+
+/* Botón flotante — por encima del de DUELOS */
+#tetris-promo-btn {
+    position: fixed;
+    bottom: calc(63vh + 160px);
+    left: 14px;
+    z-index: 9991;
+    background: transparent;
+    border: none;
+    color: var(--color-texto);
+    font-family: 'Orbitron', monospace;
+    font-size: 1.75em;
+    letter-spacing: 3px;
+    padding: 4px 0;
+    cursor: pointer;
+    display: block;
+    transition: opacity 0.2s;
+    animation: glitchCyan 1s linear infinite;
+    box-shadow: none;
+}
+#tetris-promo-btn:hover { opacity: 0.8; }
+
+/* Panel promo */
+.tetris-promo-hidden { display: none !important; }
+
+#tetris-promo-window {
+    position: fixed;
+    top: calc(30vh - 160px);
+    left: 14px;
+    width: 280px;
+    z-index: 9990;
+    font-family: 'Orbitron', monospace;
+}
+
+.tetris-promo-terminal {
+    background: #040f04;
+    border: 1px solid var(--color-caos-verde);
+    box-shadow:
+        0 0 12px rgba(0,255,65,0.35),
+        0 0 30px rgba(0,255,65,0.12),
+        inset 0 0 20px rgba(0,0,0,0.7);
+}
+
+.tetris-promo-hdr {
+    background: rgba(0,255,65,0.12);
+    border-bottom: 1px solid rgba(0,255,65,0.25);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 11px;
+}
+.tetris-promo-hdr span {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.275em;
+    letter-spacing: 3px;
+    color: var(--color-texto);
+    display: inline-block;
+    animation: glitchHard 0.273s steps(1) infinite;
+}
+
+.tetris-promo-body {
+    padding: 12px 14px 14px;
+}
+
+.tetris-promo-img-wrap {
+    border: 1px solid rgba(0,255,65,0.2);
+    margin-bottom: 10px;
+    box-shadow: 0 0 10px rgba(0,255,65,0.15);
+}
+
+.tetris-promo-tagline {
+    font-size: 0.6em;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.6;
+    margin: 0 0 12px;
+    text-align: center;
+}
+
+.tetris-promo-date-box {
+    border: 1px solid var(--color-caos-verde);
+    background: rgba(0,255,65,0.06);
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+    box-shadow: 0 0 12px rgba(0,255,65,0.2);
+}
+
+.tetris-promo-date-label {
+    display: block;
+    font-size: 0.52em;
+    letter-spacing: 4px;
+    color: rgba(0,255,65,0.6);
+    margin-bottom: 5px;
+}
+
+.tetris-promo-date {
+    display: block;
+    font-size: 1.4em;
+    letter-spacing: 4px;
+    color: var(--color-caos-verde);
+    text-shadow:
+        0 0 6px var(--color-caos-verde),
+        0 0 16px var(--color-caos-verde),
+        .04em 0 0 rgba(255,0,0,.5),
+        -.04em 0 0 rgba(0,255,255,.5);
+    animation: glitchHard 0.328s steps(1) infinite;
+}
+
+.tetris-promo-sub {
+    font-size: 0.5em;
+    letter-spacing: 2px;
+    color: rgba(0,255,65,0.4);
+    text-align: center;
+    margin: 0;
+}
+
+/* ── GHOST MESSAGE ─────────────────────────────── */
+#ghost-msg {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    pointer-events: none;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1em;
+    font-weight: normal;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--color-caos-verde);
+    line-height: 1.6;
+    max-width: 420px;
+    text-shadow:
+        1px 0 0 rgba(255,0,0,.5),
+        -1px 0 0 rgba(0,255,255,.5),
+        0 0 10px rgba(0,255,65,0.4);
+    white-space: normal;
+    user-select: none;
+}
+
+#ghost-msg2 {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    pointer-events: none;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1em;
+    font-weight: normal;
+    letter-spacing: normal;
+    text-transform: none;
+    color: #ffffff;
+    line-height: 1.6;
+    max-width: 420px;
+    text-shadow:
+        2px 0 0 rgba(255,0,0,.6),
+        -2px 0 0 rgba(0,255,255,.6),
+        0 0 14px rgba(255,255,255,0.3);
+    white-space: normal;
+    user-select: none;
+}
+
+#ghost-msg3 {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    pointer-events: none;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1em;
+    font-weight: normal;
+    letter-spacing: normal;
+    text-transform: none;
+    color: #ffffff;
+    line-height: 1.6;
+    max-width: 420px;
+    text-shadow:
+        2px 0 0 rgba(255,0,0,.6),
+        -2px 0 0 rgba(0,255,255,.6),
+        0 0 14px rgba(255,255,255,0.3);
+    white-space: normal;
+    user-select: none;
+}
+
+#ghost-msg4 {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    pointer-events: none;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1em;
+    font-weight: normal;
+    letter-spacing: normal;
+    text-transform: none;
+    color: #ffffff;
+    line-height: 1.6;
+    max-width: 420px;
+    text-shadow:
+        2px 0 0 rgba(255,0,0,.6),
+        -2px 0 0 rgba(0,255,255,.6),
+        0 0 14px rgba(255,255,255,0.3);
+    white-space: normal;
+    user-select: none;
+}
+
+@keyframes glitchHard {
+  0%   { transform: translateX(0)      skewX(0deg);   color: var(--color-texto);        text-shadow: 3px 0 0 rgba(255,0,0,.9), -3px 0 0 rgba(0,255,255,.9); }
+  10%  { transform: translateX(-6px)   skewX(-4deg);  color: #ff003c;                   text-shadow: 6px 0 0 rgba(0,255,255,.9), -4px 0 0 rgba(255,0,0,.9); }
+  20%  { transform: translateX(6px)    skewX(4deg);   color: #00ffcc;                   text-shadow: -6px 0 0 rgba(255,0,255,.9), 4px 0 0 rgba(0,255,0,.9); }
+  30%  { transform: translateX(-4px)   skewX(0deg);   color: var(--color-texto);        text-shadow: 3px 0 0 rgba(255,0,0,.9), -3px 0 0 rgba(0,255,255,.9); }
+  40%  { transform: translateX(0)      skewX(5deg);   color: #ffff00;                   text-shadow: -5px 0 0 rgba(255,0,255,.9), 5px 0 0 rgba(0,255,255,.9); }
+  50%  { transform: translateX(8px)    skewX(-5deg);  color: #ff003c;                   text-shadow: 6px 0 0 rgba(255,255,0,.9), -6px 0 0 rgba(0,255,255,.9); }
+  60%  { transform: translateX(-8px)   skewX(2deg);   color: var(--color-texto);        text-shadow: -4px 0 0 rgba(255,0,0,.9), 4px 0 0 rgba(0,255,0,.9); }
+  70%  { transform: translateX(4px)    skewX(-2deg);  color: #00ffcc;                   text-shadow: 5px 0 0 rgba(255,0,255,.9), -5px 0 0 rgba(255,255,0,.9); }
+  80%  { transform: translateX(-2px)   skewX(0deg);   color: var(--color-texto);        text-shadow: 3px 0 0 rgba(255,0,0,.9), -3px 0 0 rgba(0,255,255,.9); }
+  90%  { transform: translateX(0)      skewX(-3deg);  color: #ff003c;                   text-shadow: -6px 0 0 rgba(0,255,255,.9), 6px 0 0 rgba(255,0,0,.9); }
+  100% { transform: translateX(0)      skewX(0deg);   color: var(--color-texto);        text-shadow: 3px 0 0 rgba(255,0,0,.9), -3px 0 0 rgba(0,255,255,.9); }
 }
