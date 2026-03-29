@@ -46,6 +46,20 @@ const SEED_OPINIONS = [
   { username: 'EL_GRAN_PICHI',    opinion: 'Peeero por qué no saqué esto antes jajaja. Llevaba meses buscando algo entretenido en web3. Rappia to the moon 🚀' },
 ];
 
+// ── Pool de aplicantes al staff (seed cada 2 días via cron) ──────────────────
+const SEED_STAFF_APPS = [
+  { username: 'GonzaFuerte_BA',   statement: 'Llevo 2 años en gaming web3 y Rappibellion es el único proyecto que me parece honesto. Quiero ser parte del equipo que lo lleva al próximo nivel.' },
+  { username: 'Tomi_Arcade',      statement: 'Soy diseñador UX y gamer desde los 10 años. El T2E de Rappia es exactamente el concepto que esperaba que alguien construyera. Me uno o muero en el intento.' },
+  { username: 'NathyDev',         statement: 'Front-end dev con experiencia en DApps. Vi el código del circuito y está prolijo. Quiero aportar en la parte visual y en testing de la beta.' },
+  { username: 'ElRebelde_Crypto', statement: 'Community manager con 4k seguidores en X. Ya estoy hablando de Rappibellion en mis posts. Hagámoslo oficial.' },
+  { username: 'PichiMarketer',    statement: 'Trabajo en marketing digital crypto. La propuesta de T2E es vendible sin hype vacío, solo con el producto. Quiero ser el que lo comunique.' },
+  { username: 'ZeusCodex',        statement: 'Fullstack con Solidity. He auditado contratos para 3 proyectos DeFi. Rappibellion necesita alguien que cuide el código on-chain. Soy ese alguien.' },
+  { username: 'Camila_Web3',      statement: 'Estoy haciendo mi tesis sobre gamificación en blockchain y Rappibellion es mi caso de estudio favorito. Quiero aprender y aportar a la vez.' },
+  { username: 'MatiasRPPI',       statement: 'Moderé comunidades de 10k+ usuarios. El orden y la energía positiva en una comunidad crypto hacen la diferencia. Yo lo sé hacer.' },
+  { username: 'darkfire_gamer',   statement: 'Top 5 en el ranking de la beta. Si alguien conoce las mecánicas de PAC-HACK de adentro, soy yo. Quiero ayudar a equilibrar los duelos.' },
+  { username: 'ValentinaPixel',   statement: 'Illustradora y animadora 2D. El arte de Rappia ya está bueno pero yo tengo ideas para llevarlo al siguiente nivel. Portafolio listo para compartir.' },
+];
+
 const OPENROUTER_MODELS = [
   'meta-llama/llama-3.1-8b-instruct:free',
   'qwen/qwen-2.5-72b-instruct:free',
@@ -157,9 +171,15 @@ export default {
     }
   },
 
-  // ── Cron trigger: publica 1 opinión por día a las 10:00 UTC ────────────────
+  // ── Cron triggers ──────────────────────────────────────────────────────────
+  // 0 10 * * *   → 1 opinión T2E por día (10:00 UTC)
+  // 0 16 */2 * * → 1 aplicante al staff cada 2 días (16:00 UTC)
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(seedDailyOpinion(event.scheduledTime, env));
+    if (event.cron === '0 16 */2 * *') {
+      ctx.waitUntil(seedStaffApplication(event.scheduledTime, env));
+    } else {
+      ctx.waitUntil(seedDailyOpinion(event.scheduledTime, env));
+    }
   }
 };
 
@@ -205,6 +225,51 @@ async function seedDailyOpinion(scheduledTime, env) {
     }
   } catch (err) {
     console.error('[seed] Error general:', err.message);
+  }
+}
+
+// ── seedStaffApplication — publica una aplicación al staff cada 2 días ────────
+async function seedStaffApplication(scheduledTime, env) {
+  if (!env.FIREBASE_SERVICE_ACCOUNT) {
+    console.error('[staff-seed] FIREBASE_SERVICE_ACCOUNT no configurado');
+    return;
+  }
+
+  // Ciclar la pool por número de evento (día / 2)
+  const eventIndex = Math.floor(scheduledTime / 1000 / 86400 / 2);
+  const entry      = SEED_STAFF_APPS[eventIndex % SEED_STAFF_APPS.length];
+
+  // Jitter ±3h para que no aparezca siempre a la misma hora exacta
+  const jitterMs  = Math.floor((Math.random() * 6 - 3) * 60 * 60 * 1000);
+  const timestamp = scheduledTime + jitterMs;
+  const date      = new Date(timestamp).toLocaleString('es-ES', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires'
+  });
+
+  const application = {
+    username:  entry.username,
+    statement: entry.statement,
+    timestamp,
+    date,
+    seeded:    true
+  };
+
+  try {
+    const fbToken = await getFirebaseToken(env.FIREBASE_SERVICE_ACCOUNT);
+    const res = await fetch(`${FB_COMMENTS_DB_URL}/staff-apps.json?auth=${fbToken}`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(application)
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('[staff-seed] Firebase error:', err);
+    } else {
+      console.log(`[staff-seed] Aplicación publicada: ${entry.username} (evento ${eventIndex})`);
+    }
+  } catch (err) {
+    console.error('[staff-seed] Error general:', err.message);
   }
 }
 
