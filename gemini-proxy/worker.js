@@ -94,7 +94,6 @@ export default {
     if (url.pathname === '/refund') {
       return handleRefund(request, env, corsHeaders);
     }
-
     // ── Gemini / OpenRouter proxy (ruta por defecto) ──────────────────────
     const apiKey = env.GEMINI_API_KEY;
     if (!apiKey) {
