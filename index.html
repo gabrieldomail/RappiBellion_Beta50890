@@ -97,6 +97,33 @@
             </div>
         </section>
 
+<!-- ═══════════════════════════════════════════
+     LEADERBOARD "LOS MÁS VIVOS"
+═══════════════════════════════════════════ -->
+<section id="leaderboard" class="container section-separator">
+    <h2 class="glitch-title">[ LOS MÁS VIVOS // REBEL_RANKING ]</h2>
+    <p style="color:var(--color-caos-amarillo);font-family:'Courier New',monospace;font-size:0.82em;letter-spacing:4px;margin-top:-10px;">
+        // WALLETS QUE ESTÁN GANANDO LA GUERRA //
+    </p>
+    <div class="lb-container">
+        <div id="lb-status-bar" style="font-size:0.68em;letter-spacing:3px;color:rgba(0,255,65,0.4);text-align:right;margin-bottom:12px;font-family:'Courier New',monospace;">[ EN ESPERA... ]</div>
+        <div class="lb-header-row">
+            <span>#</span>
+            <span>WALLET // ID REBELDE</span>
+            <span>WINS</span>
+            <span>USDT GANADO</span>
+            <span>DUELOS</span>
+        </div>
+        <div id="leaderboard-list">
+            <div style="text-align:center;padding:40px;color:#333;font-family:'Courier New',monospace;font-size:0.85em;letter-spacing:2px;">[ DESPLAZATE HASTA AQUÍ PARA CARGAR EL RANKING ]</div>
+        </div>
+        <div style="text-align:center;margin-top:16px;">
+            <button class="lb-refresh-btn" onclick="loadLeaderboard()">↺ REFRESH_RANKING</button>
+            <p style="font-size:0.72em;color:#444;font-family:'Courier New',monospace;margin-top:12px;letter-spacing:2px;">// ranking en tiempo real desde Firebase //</p>
+        </div>
+    </div>
+</section>
+
 <section id="concept" class="container section-separator">
     <h2 class="glitch-title">El "Play-to-Earn" ha muerto. Bienvenido al "THINK-TO-EARN".</h2>
     
@@ -2963,33 +2990,6 @@ updateMuteBtnVisibility();
             </div>
         </div>
 
-    </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     LEADERBOARD "LOS MÁS VIVOS"
-═══════════════════════════════════════════ -->
-<section id="leaderboard" class="container section-separator">
-    <h2 class="glitch-title">[ LOS MÁS VIVOS // REBEL_RANKING ]</h2>
-    <p style="color:var(--color-caos-amarillo);font-family:'Courier New',monospace;font-size:0.82em;letter-spacing:4px;margin-top:-10px;">
-        // WALLETS QUE ESTÁN GANANDO LA GUERRA //
-    </p>
-    <div class="lb-container">
-        <div id="lb-status-bar" style="font-size:0.68em;letter-spacing:3px;color:rgba(0,255,65,0.4);text-align:right;margin-bottom:12px;font-family:'Courier New',monospace;">[ EN ESPERA... ]</div>
-        <div class="lb-header-row">
-            <span>#</span>
-            <span>WALLET // ID REBELDE</span>
-            <span>WINS</span>
-            <span>USDT GANADO</span>
-            <span>DUELOS</span>
-        </div>
-        <div id="leaderboard-list">
-            <div style="text-align:center;padding:40px;color:#333;font-family:'Courier New',monospace;font-size:0.85em;letter-spacing:2px;">[ DESPLAZATE HASTA AQUÍ PARA CARGAR EL RANKING ]</div>
-        </div>
-        <div style="text-align:center;margin-top:16px;">
-            <button class="lb-refresh-btn" onclick="loadLeaderboard()">↺ REFRESH_RANKING</button>
-            <p style="font-size:0.72em;color:#444;font-family:'Courier New',monospace;margin-top:12px;letter-spacing:2px;">// ranking en tiempo real desde Firebase //</p>
-        </div>
     </div>
 </section>
 
@@ -8302,15 +8302,8 @@ async function loadLeaderboard() {
     }
 }
 
-// Auto-load leaderboard the first time the section scrolls into view
-(function() {
-    var sec = document.getElementById('leaderboard');
-    if (!sec) return;
-    var obs = new IntersectionObserver(function(entries) {
-        if (entries[0].isIntersecting) { loadLeaderboard(); obs.disconnect(); }
-    }, { threshold: 0.1 });
-    obs.observe(sec);
-})();
+// Auto-load leaderboard on page load (section is near the top now)
+window.addEventListener('load', function() { loadLeaderboard(); });
 
 // ── DUEL INBOX ────────────────────────────────────────────
 var _duelWallet = null;
