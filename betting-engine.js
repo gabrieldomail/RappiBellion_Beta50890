@@ -72,17 +72,8 @@ class BettingEngine {
             // Cargar apuestas activas iniciales
             await this.loadActiveBets();
 
-            // Si estamos en modo demo, generar apuestas simuladas
-            if (this.isDemoMode) {
-                await this.generateDemoBets();
-            }
-
             this.isInitialized = true;
             console.log('✅ Motor de apuestas T2E inicializado');
-
-            if (this.isDemoMode) {
-                console.log('🎭 Sistema funcionando sin contrato desplegado');
-            }
 
         } catch (error) {
             console.error('❌ Error inicializando motor de apuestas:', error);
