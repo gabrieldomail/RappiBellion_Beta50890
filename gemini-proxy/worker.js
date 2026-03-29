@@ -1,5 +1,6 @@
 // Rappibellion — AI Proxy Worker (OpenRouter)
 // La API key se guarda en Variables de Entorno (Secrets), nunca en el código
+import { ethers } from 'ethers';
 
 const ALLOWED_ORIGINS = [
   'https://rappibellion.com',
@@ -140,9 +141,17 @@ async function handlePayout(request, env, corsHeaders) {
     new Response(JSON.stringify(data), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
   try {
-    // 1. Validar secrets
+    // 1. Validar secrets y autenticación
     if (!env.PAYOUT_PRIVATE_KEY)      return json({ error: 'PAYOUT_PRIVATE_KEY no configurado' }, 500);
     if (!env.FIREBASE_SERVICE_ACCOUNT) return json({ error: 'FIREBASE_SERVICE_ACCOUNT no configurado' }, 500);
+
+    // Verificar PAYOUT_SECRET (defensa en profundidad contra llamadas externas)
+    if (env.PAYOUT_SECRET) {
+      const reqSecret = request.headers.get('X-Payout-Secret');
+      if (!reqSecret || reqSecret !== env.PAYOUT_SECRET) {
+        return json({ error: 'No autorizado' }, 401);
+      }
+    }
 
     const body = await request.json();
     const { betId, winner, playerScore, rivalScore, boostsP1 = 0, boostsP2 = 0 } = body;
@@ -154,16 +163,23 @@ async function handlePayout(request, env, corsHeaders) {
     const betRes  = await fetch(`${FB_DB_URL}/t2e_bets/${betId}.json?auth=${fbToken}`);
     const bet     = await betRes.json();
 
-    if (!bet || bet.status === 'paid') {
-      return json({ error: bet ? 'Apuesta ya pagada' : 'Apuesta no encontrada' }, 400);
+    if (!bet) return json({ error: 'Apuesta no encontrada' }, 404);
+    if (bet.status === 'paid' || bet.payoutStatus === 'completed') {
+      return json({ error: 'Apuesta ya pagada' }, 400);
     }
 
-    // 3. Verificar que ambos depósitos existen en Firebase
+    // 3. Verificar que winner es participante legítimo (previene fraude)
+    const validWinners = [bet.creator, bet.acceptor].filter(Boolean).map(a => a.toLowerCase());
+    if (!validWinners.includes(winner.toLowerCase())) {
+      return json({ error: 'winner no es participante de esta apuesta' }, 403);
+    }
+
+    // 4. Verificar que ambos depósitos existen en Firebase
     if (!bet.creatorTxHash || !bet.acceptorTxHash) {
       return json({ error: 'Faltan txHash de depósitos — jugadores no confirmaron' }, 400);
     }
 
-    // 4. Calcular premio
+    // 5. Calcular premio
     const amount      = parseFloat(bet.amount);
     const totalPot    = amount * 2;
     const totalBoosts = (parseInt(boostsP1) + parseInt(boostsP2)) * BOOST_COST_USDT;
@@ -172,10 +188,7 @@ async function handlePayout(request, env, corsHeaders) {
 
     if (prize <= 0) return json({ error: 'Premio calculado es 0 o negativo' }, 400);
 
-    // 5. Enviar USDT al ganador via ethers.js
-    // Importamos ethers desde skypack (CF Workers soporta ESM desde URLs)
-    const { ethers } = await import('https://cdn.skypack.dev/ethers@5.7.2');
-
+    // 6. Enviar USDT al ganador via ethers (bundleado via npm)
     const provider = new ethers.providers.JsonRpcProvider(OPTIMISM_RPC);
     const wallet   = new ethers.Wallet(env.PAYOUT_PRIVATE_KEY, provider);
     const usdt     = new ethers.Contract(USDT_ADDRESS, USDT_ABI, wallet);
@@ -184,7 +197,7 @@ async function handlePayout(request, env, corsHeaders) {
     const tx       = await usdt.transfer(winner, prizeRaw);
     const receipt  = await tx.wait(1);
 
-    // 6. Marcar apuesta como pagada en Firebase
+    // 7. Marcar apuesta como pagada en Firebase
     await fetch(`${FB_DB_URL}/t2e_bets/${betId}.json?auth=${fbToken}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },

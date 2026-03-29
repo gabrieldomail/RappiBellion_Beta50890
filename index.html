@@ -1803,10 +1803,11 @@ document.addEventListener('DOMContentLoaded', function() {
             };
 
             // Llamar al CF Worker para ejecutar el pago automático
-            const PAYOUT_URL = 'https://rapid-figemini-proxy.gabrieldomail.workers.dev/payout';
+            const PAYOUT_URL    = 'https://rapid-figemini-proxy.gabrieldomail.workers.dev/payout';
+            const PAYOUT_SECRET = 'rppi_payout_2026'; // debe coincidir con el secret PAYOUT_SECRET del worker
             fetch(PAYOUT_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-Payout-Secret': PAYOUT_SECRET },
                 body: JSON.stringify({
                     betId,
                     winner:      winnerAddress,

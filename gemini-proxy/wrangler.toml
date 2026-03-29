@@ -1,0 +1,9 @@
+name            = "rapid-figemini-proxy"
+main            = "worker.js"
+compatibility_date  = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# Variables no-secretas (las secretas van por `wrangler secret put`)
+# GEMINI_API_KEY, PAYOUT_PRIVATE_KEY, FIREBASE_SERVICE_ACCOUNT, PAYOUT_SECRET
+# → configurar con: wrangler secret put NOMBRE
