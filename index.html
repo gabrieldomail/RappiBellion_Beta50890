@@ -467,6 +467,55 @@
     </div>
 </div>
 
+<!-- ⚔ DUEL INBOX — trigger button (visible when wallet connected) -->
+<button id="duel-trigger-btn" onclick="toggleDuelInbox()" title="Bandeja de Desafíos">
+    ⚔ DUELOS <span id="duel-badge">0</span>
+</button>
+
+<!-- ⚔ DUEL INBOX — float window -->
+<div id="duel-inbox-window" class="minimized">
+    <div class="duel-inbox-terminal">
+        <div class="duel-inbox-hdr">
+            <span style="font-size:0.68em;letter-spacing:3px;color:var(--color-caos-verde);text-shadow:0 0 6px var(--color-caos-verde);">[⚔ DUEL_INBOX // DESAFÍOS]</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+                <span id="duel-badge2" style="display:none;background:var(--color-primario);color:#fff;font-size:0.7em;padding:1px 7px;border-radius:10px;">0</span>
+                <button onclick="document.getElementById('duel-inbox-window').classList.add('minimized')"
+                    style="background:none;border:none;color:rgba(0,255,65,0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
+            </div>
+        </div>
+        <div class="duel-inbox-tabs">
+            <button class="duel-inbox-tab active" id="dtab-inbox" onclick="switchDuelTab('inbox')">INBOX</button>
+            <button class="duel-inbox-tab" id="dtab-send" onclick="switchDuelTab('send')">ENVIAR DESAFÍO</button>
+        </div>
+        <!-- INBOX TAB -->
+        <div id="duel-tab-inbox" class="duel-inbox-body">
+            <div id="duel-inbox-list" style="font-size:0.82em;color:#444;letter-spacing:2px;text-align:center;padding:20px 0;">
+                [ CONECTA TU BILLETERA ]
+            </div>
+        </div>
+        <!-- SEND TAB -->
+        <div id="duel-tab-send" class="duel-inbox-body" style="display:none;">
+            <label class="duel-form-label">WALLET DEL RIVAL</label>
+            <input id="duel-to-wallet" class="duel-form-input" type="text" placeholder="0x..." maxlength="42">
+            <label class="duel-form-label">JUEGO</label>
+            <select id="duel-game" class="duel-form-input" style="color:var(--color-caos-verde);background:#0a0a0a;">
+                <option value="packack">PAC-HACK DEATH</option>
+                <option value="spacebreaker">SPACE-BREAKER</option>
+                <option value="tetriscipher">TETRIS-CIPHER</option>
+                <option value="memorybreach">MEMORY-BREACH</option>
+            </select>
+            <label class="duel-form-label">APUESTA (USDT)</label>
+            <input id="duel-amount" class="duel-form-input" type="number" min="1" placeholder="10">
+            <label class="duel-form-label">FECHA Y HORA DEL DUELO</label>
+            <input id="duel-datetime" class="duel-form-input" type="datetime-local" style="color-scheme:dark;">
+            <label class="duel-form-label">MENSAJE OPCIONAL</label>
+            <input id="duel-msg" class="duel-form-input" type="text" maxlength="80" placeholder="te espero mañana a las 9pm...">
+            <button class="duel-send-btn" onclick="sendDuelInvite()">⚔ ENVIAR DESAFÍO</button>
+            <p id="duel-send-status" style="font-size:0.7em;text-align:center;letter-spacing:2px;min-height:18px;margin-top:6px;"></p>
+        </div>
+    </div>
+</div>
+
 <!-- === MODAL DE APUESTAS T2E === -->
 <div id="make-bet-modal" class="game-menu-hidden">
     <div class="bet-modal-content caos-terminal">
@@ -2914,6 +2963,33 @@ updateMuteBtnVisibility();
             </div>
         </div>
 
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     LEADERBOARD "LOS MÁS VIVOS"
+═══════════════════════════════════════════ -->
+<section id="leaderboard" class="container section-separator">
+    <h2 class="glitch-title">[ LOS MÁS VIVOS // REBEL_RANKING ]</h2>
+    <p style="color:var(--color-caos-amarillo);font-family:'Courier New',monospace;font-size:0.82em;letter-spacing:4px;margin-top:-10px;">
+        // WALLETS QUE ESTÁN GANANDO LA GUERRA //
+    </p>
+    <div class="lb-container">
+        <div id="lb-status-bar" style="font-size:0.68em;letter-spacing:3px;color:rgba(0,255,65,0.4);text-align:right;margin-bottom:12px;font-family:'Courier New',monospace;">[ EN ESPERA... ]</div>
+        <div class="lb-header-row">
+            <span>#</span>
+            <span>WALLET // ID REBELDE</span>
+            <span>WINS</span>
+            <span>USDT GANADO</span>
+            <span>DUELOS</span>
+        </div>
+        <div id="leaderboard-list">
+            <div style="text-align:center;padding:40px;color:#333;font-family:'Courier New',monospace;font-size:0.85em;letter-spacing:2px;">[ DESPLAZATE HASTA AQUÍ PARA CARGAR EL RANKING ]</div>
+        </div>
+        <div style="text-align:center;margin-top:16px;">
+            <button class="lb-refresh-btn" onclick="loadLeaderboard()">↺ REFRESH_RANKING</button>
+            <p style="font-size:0.72em;color:#444;font-family:'Courier New',monospace;margin-top:12px;letter-spacing:2px;">// ranking en tiempo real desde Firebase //</p>
+        </div>
     </div>
 </section>
 
@@ -8160,6 +8236,274 @@ function fpChaosUnlockConfirm() {
     var pct = document.getElementById('fp-chaos-pct');
     if (pct) pct.textContent = '🔓 FREE';
 }
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   LEADERBOARD "LOS MÁS VIVOS"  +  DUEL INBOX SYSTEM
+   ══════════════════════════════════════════════════════════ */
+const _FB = 'https://rappibellion-default-rtdb.firebaseio.com';
+
+// ── LEADERBOARD ──────────────────────────────────────────
+async function loadLeaderboard() {
+    var list   = document.getElementById('leaderboard-list');
+    var status = document.getElementById('lb-status-bar');
+    if (!list) return;
+    if (status) status.textContent = '[ CARGANDO... ]';
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#333;font-family:Courier New,monospace;font-size:0.85em;letter-spacing:2px;">[ CONSULTANDO_FIREBASE... ]</div>';
+    try {
+        var res  = await fetch(_FB + '/t2e_bets.json');
+        var bets = await res.json();
+        var stats = {};
+        if (bets && typeof bets === 'object') {
+            Object.values(bets).forEach(function(bet) {
+                if (!bet || typeof bet !== 'object') return;
+                var addPlayer = function(addr, played) {
+                    var k = addr.toLowerCase();
+                    if (!stats[k]) stats[k] = { wins: 0, earned: 0, played: 0 };
+                    if (played) stats[k].played++;
+                };
+                if (bet.creator)  addPlayer(bet.creator,  bet.status && bet.status !== 'open');
+                if (bet.acceptor) addPlayer(bet.acceptor, bet.status && bet.status !== 'open');
+                if (bet.status === 'paid' && bet.winner) {
+                    var k = bet.winner.toLowerCase();
+                    if (!stats[k]) stats[k] = { wins: 0, earned: 0, played: 0 };
+                    stats[k].wins++;
+                    stats[k].earned += parseFloat(bet.prize || bet.amount || 0);
+                }
+            });
+        }
+        var sorted = Object.entries(stats)
+            .filter(function(e) { return e[1].played > 0; })
+            .sort(function(a, b) { return b[1].wins - a[1].wins || b[1].earned - a[1].earned; })
+            .slice(0, 10);
+        if (sorted.length === 0) {
+            list.innerHTML = '<div style="text-align:center;padding:48px;font-family:Courier New,monospace;"><div style="color:#333;font-size:0.9em;letter-spacing:2px;">[ SIN_BATALLAS_REGISTRADAS_AÚN ]</div><div style="color:#222;font-size:0.75em;margin-top:12px;">// Sé el primero en entrar al ranking //</div></div>';
+            if (status) status.textContent = '[ VACÍO // ' + new Date().toLocaleTimeString() + ' ]';
+            return;
+        }
+        var emo = ['🥇','🥈','🥉'];
+        var cls = ['lb-top1','lb-top2','lb-top3'];
+        list.innerHTML = sorted.map(function(e, i) {
+            var w = e[0]; var s = e[1];
+            var short = w.slice(0,6) + '....' + w.slice(-4);
+            return '<div class="lb-row ' + (cls[i] || '') + '">'
+                 + '<span class="lb-rank">'   + (emo[i] || '#' + (i+1)) + '</span>'
+                 + '<span class="lb-wallet">' + short                   + '</span>'
+                 + '<span class="lb-wins">'   + s.wins                  + '</span>'
+                 + '<span class="lb-earned">' + s.earned.toFixed(2) + ' USDT</span>'
+                 + '<span class="lb-bets">'   + s.played                + '</span>'
+                 + '</div>';
+        }).join('');
+        if (status) status.textContent = '[ ONLINE // LAST_UPDATE: ' + new Date().toLocaleTimeString() + ' ]';
+    } catch(e) {
+        list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--color-primario);font-family:Courier New,monospace;font-size:0.8em;letter-spacing:2px;">[ ERROR_CONECTANDO_FIREBASE ]</div>';
+        if (status) status.textContent = '[ ERROR ]';
+    }
+}
+
+// Auto-load leaderboard the first time the section scrolls into view
+(function() {
+    var sec = document.getElementById('leaderboard');
+    if (!sec) return;
+    var obs = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) { loadLeaderboard(); obs.disconnect(); }
+    }, { threshold: 0.1 });
+    obs.observe(sec);
+})();
+
+// ── DUEL INBOX ────────────────────────────────────────────
+var _duelWallet = null;
+var _duelPoll   = null;
+
+function toggleDuelInbox() {
+    var w = document.getElementById('duel-inbox-window');
+    if (!w) return;
+    if (w.classList.contains('minimized')) {
+        w.classList.remove('minimized');
+        loadDuelInbox();
+    } else {
+        w.classList.add('minimized');
+    }
+}
+
+function switchDuelTab(tab) {
+    document.getElementById('duel-tab-inbox').style.display = tab === 'inbox' ? 'block' : 'none';
+    document.getElementById('duel-tab-send').style.display  = tab === 'send'  ? 'block' : 'none';
+    document.getElementById('dtab-inbox').classList.toggle('active', tab === 'inbox');
+    document.getElementById('dtab-send').classList.toggle('active',  tab === 'send');
+}
+
+async function loadDuelInbox() {
+    var list = document.getElementById('duel-inbox-list');
+    if (!list) return;
+    if (!_duelWallet) {
+        list.innerHTML = '<div style="color:#333;text-align:center;padding:22px;font-size:0.78em;letter-spacing:2px;">[ CONECTA TU BILLETERA ]</div>';
+        return;
+    }
+    list.innerHTML = '<div style="color:#333;text-align:center;padding:12px;font-size:0.75em;">[ CARGANDO... ]</div>';
+    try {
+        var res  = await fetch(_FB + '/duel_invites/' + _duelWallet.toLowerCase() + '.json');
+        var data = await res.json();
+        if (!data) {
+            list.innerHTML = '<div style="color:#333;text-align:center;padding:22px;font-size:0.75em;letter-spacing:2px;">[ BANDEJA VACÍA ]</div>';
+            _updateDuelBadge(0);
+            return;
+        }
+        var items   = Object.entries(data);
+        var pending = items.filter(function(x) { return x[1].status === 'pending'; }).length;
+        _updateDuelBadge(pending);
+        items.sort(function(a, b) {
+            if (a[1].status === 'pending' && b[1].status !== 'pending') return -1;
+            if (b[1].status === 'pending' && a[1].status !== 'pending') return  1;
+            return (a[1].scheduledAt || 0) - (b[1].scheduledAt || 0);
+        });
+        var gNames = { packack:'PAC-HACK DEATH', spacebreaker:'SPACE-BREAKER', tetriscipher:'TETRIS-CIPHER', memorybreach:'MEMORY-BREACH' };
+        list.innerHTML = items.slice(0, 20).map(function(entry) {
+            var key = entry[0]; var inv = entry[1];
+            var fromShort = inv.from ? (inv.from.slice(0,6) + '....' + inv.from.slice(-4)) : '???';
+            var gameName  = gNames[inv.game] || inv.game || '---';
+            var dtStr     = inv.scheduledAt ? new Date(inv.scheduledAt).toLocaleString('es-AR', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '---';
+            var sColor    = inv.status === 'pending' ? 'var(--color-caos-verde)' : inv.status === 'accepted' ? 'var(--color-caos-amarillo)' : '#555';
+            var sLabel    = inv.status === 'pending' ? '● NUEVO' : inv.status === 'accepted' ? '✓ ACEPTADO' : '✕ RECHAZADO';
+            var safeFrom  = (inv.from || '').replace(/'/g, '"');
+            var btns = inv.status === 'pending'
+                ? '<div style="display:flex;gap:5px;margin-top:6px;">'
+                    + '<button class="duel-send-btn" style="font-size:0.68em;padding:5px;" onclick="respondDuelInvite(\'' + key + '\',\'' + safeFrom + '\',\'accepted\')">✓ ACEPTAR</button>'
+                    + '<button class="duel-send-btn" style="font-size:0.68em;padding:5px;border-color:rgba(255,0,100,0.35);color:rgba(255,0,100,0.6);" onclick="respondDuelInvite(\'' + key + '\',\'' + safeFrom + '\',\'declined\')">✕ RECHAZAR</button>'
+                  + '</div>'
+                : '';
+            return '<div class="duel-card ' + (inv.status === 'pending' ? 'duel-card-pending' : '') + '">'
+                 + '<div style="display:flex;justify-content:space-between;margin-bottom:3px;">'
+                 +   '<span style="color:var(--color-azul-glitch);font-size:0.8em;">FROM: ' + fromShort + '</span>'
+                 +   '<span style="color:' + sColor + ';font-size:0.65em;">' + sLabel + '</span>'
+                 + '</div>'
+                 + '<div style="color:var(--color-caos-amarillo);font-size:0.75em;margin-bottom:2px;">' + gameName + ' — ' + (inv.amount || '?') + ' USDT</div>'
+                 + '<div style="color:#666;font-size:0.7em;margin-bottom:2px;">⏰ ' + dtStr + '</div>'
+                 + (inv.message ? '<div style="color:#888;font-size:0.7em;font-style:italic;">"' + inv.message + '"</div>' : '')
+                 + btns
+                 + '</div>';
+        }).join('');
+    } catch(e) {
+        list.innerHTML = '<div style="color:var(--color-primario);text-align:center;padding:14px;font-size:0.75em;">[ERROR_CARGANDO_INBOX]</div>';
+    }
+}
+
+async function respondDuelInvite(key, fromWallet, response) {
+    if (!_duelWallet) return;
+    try {
+        await fetch(_FB + '/duel_invites/' + _duelWallet.toLowerCase() + '/' + key + '.json', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: response, respondedAt: Date.now() })
+        });
+        if (response === 'accepted' && fromWallet) {
+            var notif = {
+                from: _duelWallet, type: 'accepted',
+                message: 'Tu desafío fue ACEPTADO por ' + _duelWallet.slice(0,6) + '....' + _duelWallet.slice(-4),
+                createdAt: Date.now(), status: 'pending'
+            };
+            await fetch(_FB + '/duel_invites/' + fromWallet.toLowerCase() + '.json', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(notif)
+            });
+        }
+        loadDuelInbox();
+    } catch(e) { /* silent */ }
+}
+
+async function sendDuelInvite() {
+    var statusEl = document.getElementById('duel-send-status');
+    var setStatus = function(msg, ok) {
+        if (statusEl) {
+            statusEl.style.color = ok ? 'var(--color-caos-verde)' : 'var(--color-primario)';
+            statusEl.textContent = msg;
+        }
+    };
+    if (!_duelWallet) { setStatus('// conectá tu billetera //'); return; }
+    var toWallet = ((document.getElementById('duel-to-wallet') || {}).value || '').trim();
+    var game     = (document.getElementById('duel-game')     || {}).value;
+    var amount   = parseFloat((document.getElementById('duel-amount') || {}).value);
+    var dtStr    = ((document.getElementById('duel-datetime') || {}).value || '');
+    var message  = ((document.getElementById('duel-msg')     || {}).value || '').trim();
+    if (!toWallet.startsWith('0x') || toWallet.length < 10) { setStatus('// wallet inválida //');    return; }
+    if (!dtStr)                                              { setStatus('// falta fecha y hora //'); return; }
+    if (!amount || amount <= 0)                              { setStatus('// apuesta inválida //');   return; }
+    setStatus('[ ENVIANDO... ]', true);
+    var invite = { from: _duelWallet, game: game, amount: amount,
+                   scheduledAt: new Date(dtStr).getTime(),
+                   message: message, createdAt: Date.now(), status: 'pending' };
+    try {
+        var res = await fetch(_FB + '/duel_invites/' + toWallet.toLowerCase() + '.json', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(invite)
+        });
+        if (res.ok) {
+            setStatus('[ DESAFÍO ENVIADO ✓ ]', true);
+            ['duel-to-wallet','duel-amount','duel-datetime','duel-msg'].forEach(function(id) {
+                var el = document.getElementById(id); if (el) el.value = '';
+            });
+            setTimeout(function() { if (statusEl) statusEl.textContent = ''; }, 3000);
+        } else {
+            setStatus('[ ERROR ' + res.status + ' — revisar reglas Firebase ]');
+        }
+    } catch(e) { setStatus('[ ERROR DE RED ]'); }
+}
+
+function _updateDuelBadge(n) {
+    ['duel-badge','duel-badge2'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.style.display = n > 0 ? 'inline-block' : 'none';
+        el.textContent   = n;
+    });
+}
+
+async function _checkDuelBadge() {
+    if (!_duelWallet) return;
+    try {
+        var res  = await fetch(_FB + '/duel_invites/' + _duelWallet.toLowerCase() + '.json');
+        var data = await res.json();
+        if (!data) { _updateDuelBadge(0); return; }
+        _updateDuelBadge(Object.values(data).filter(function(x) { return x.status === 'pending'; }).length);
+    } catch(e) { /* silent */ }
+}
+
+function _duelOnConnect(addr) {
+    _duelWallet = addr;
+    var btn = document.getElementById('duel-trigger-btn');
+    if (btn) btn.style.display = 'flex';
+    _checkDuelBadge();
+    if (_duelPoll) clearInterval(_duelPoll);
+    _duelPoll = setInterval(_checkDuelBadge, 60000);
+}
+
+function _duelOnDisconnect() {
+    _duelWallet = null;
+    var btn = document.getElementById('duel-trigger-btn');
+    if (btn) btn.style.display = 'none';
+    var win = document.getElementById('duel-inbox-window');
+    if (win) win.classList.add('minimized');
+    if (_duelPoll) { clearInterval(_duelPoll); _duelPoll = null; }
+    _updateDuelBadge(0);
+}
+
+// Wallet connection polling — no changes to t2e-integration.js needed
+(function() {
+    var last = null;
+    setInterval(function() {
+        var addr = window.ethereum && window.ethereum.selectedAddress;
+        if (addr && addr !== last) { last = addr; _duelOnConnect(addr); }
+        else if (!addr && last)   { last = null;  _duelOnDisconnect(); }
+    }, 5000);
+    // Check immediately after a short delay (MetaMask may already be connected)
+    setTimeout(function() {
+        var addr = window.ethereum && window.ethereum.selectedAddress;
+        if (addr) _duelOnConnect(addr);
+    }, 1500);
+})();
 </script>
 
 </body>
