@@ -315,13 +315,11 @@ class T2EIntegration {
         if (!launchButton) return;
 
         const { amount, timeLimit, boostLimit } = this.selectedBetOptions;
-
-        // Verificar si todos los campos están completos
         const isComplete = amount && timeLimit && boostLimit && this.currentGameType;
 
         if (isComplete) {
             launchButton.disabled = false;
-            launchButton.textContent = `🚀 LANZAR APUESTA: ${amount} $RPPI`;
+            launchButton.textContent = `🚀 LANZAR APUESTA: ${amount} USDT`;
             launchButton.style.backgroundColor = 'var(--color-caos-verde)';
         } else {
             launchButton.disabled = true;
@@ -350,8 +348,8 @@ class T2EIntegration {
                 throw new Error('Completa todos los campos');
             }
 
-            // Mostrar loading
-            this.showLoading('Creando apuesta en blockchain...');
+            // Mostrar loading con mensaje correcto
+            this.showLoading(`Esperando firma MetaMask para depositar ${betData.amount} USDT...`);
 
             // Preparar datos de la apuesta
             const betData = {
@@ -367,8 +365,8 @@ class T2EIntegration {
             // Ocultar loading
             this.hideLoading();
 
-            // Mostrar éxito
-            this.showNotification(`¡Desafío lanzado! ID: ${betId} — Esperando oponente...`, 'success');
+            // Mostrar éxito con info del depósito
+            this.showNotification(`✅ Depósito confirmado. Desafío activo — esperando oponente...`, 'success');
 
             // Cerrar modal
             this.closeBetModal();
@@ -393,8 +391,7 @@ class T2EIntegration {
         try {
             console.log('🤝 Aceptando apuesta del lobby:', betData);
 
-            // Mostrar loading
-            this.showLoading('Aceptando apuesta...');
+            this.showLoading('Esperando firma MetaMask para depositar...');
 
             // Aceptar apuesta
             await this.bettingEngine.acceptBet(betData.id);
@@ -418,41 +415,28 @@ class T2EIntegration {
         };
     }
 
-    /**
-     * Actualiza la UI general
-     */
     async updateUI() {
         try {
-            // Actualizar saldo de RPPI
-            await this.updateRPPIBalance();
-
-            // Actualizar estado de conexión
+            await this.updateRPPIBalance(); // ahora muestra USDT
             this.updateConnectionStatus();
-
-            // Actualizar lobby de apuestas
             await this.updateBetsLobby();
-
         } catch (error) {
             console.error('❌ Error actualizando UI:', error);
         }
     }
 
     /**
-     * Actualiza el saldo de RPPI en la UI
+     * Actualiza el saldo USDT en la UI
      */
     async updateRPPIBalance() {
         try {
-            const balance = await this.web3Config.getRPPIBalance();
+            const balance = await this.web3Config.getUSDTBalance();
             const balanceElements = document.querySelectorAll('.rppi-balance');
-
-            balanceElements.forEach(element => {
-                element.textContent = `${balance} $RPPI`;
+            balanceElements.forEach(el => {
+                el.textContent = `${parseFloat(balance).toFixed(2)} USDT`;
             });
-
-            console.log('💰 Saldo RPPI actualizado:', balance);
-
         } catch (error) {
-            console.error('❌ Error actualizando saldo RPPI:', error);
+            // silencioso — puede fallar antes de conectar
         }
     }
 
@@ -533,7 +517,7 @@ class T2EIntegration {
 
         betItem.innerHTML = `
             <span><strong>Nick:</strong> ${bet.creator.substring(0, 6)}<button onclick="navigator.clipboard.writeText('${bet.creator}')" title="Copiar wallet completa" style="background:none;border:none;cursor:pointer;padding:0 2px;font-size:0.9em;vertical-align:middle;opacity:0.8;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">📋</button>${bet.creator.substring(bet.creator.length - 4)}</span>
-            <span><strong>Monto:</strong> ${bet.amount} $RPPI</span>
+            <span><strong>Monto:</strong> ${bet.amount} USDT</span>
             <span><strong>Tiempo:</strong> ${timeRemaining}</span>
             <span><strong>Boosts:</strong> ${bet.boostLimit}x</span>
             <span><strong>Juego:</strong> ${gameName}</span>

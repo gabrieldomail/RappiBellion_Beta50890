@@ -27,23 +27,34 @@ class Web3Config {
             }
         };
 
-        // Configuración del token $RPPI
+        // ── USDT en Optimism (modo producción) ──────────────────────────────
+        this.USDT_CONFIG = {
+            address: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58',
+            abi: [
+                "function balanceOf(address owner) view returns (uint256)",
+                "function transfer(address to, uint256 amount) returns (bool)",
+                "function decimals() view returns (uint8)",
+                "function symbol() view returns (string)"
+            ],
+            decimals: 6,   // USDT usa 6 decimales
+            symbol: 'USDT'
+        };
+
+        // Wallet de la casa — recibe depósitos de ambos jugadores
+        this.HOUSE_WALLET = '0x2c3d4526Ffad5823510120040762Ae9cAdc23D7E';
+
+        // Fee structure
+        this.HOUSE_FEE_PCT  = 3;    // 3% del pozo total
+        this.BOOST_COST_USDT = 1;   // 1 USDT fijo por boost
+
+        // Mantener $RPPI config para compatibilidad visual (símbolo en UI)
         this.RPPI_CONFIG = {
             address: '0xb2f681ba962a1ef4dba7acf79b181814827abddc',
             abi: [
-                // ERC-20 estándar functions
                 "function balanceOf(address owner) view returns (uint256)",
                 "function transfer(address to, uint256 amount) returns (bool)",
-                "function transferFrom(address from, address to, uint256 amount) returns (bool)",
-                "function approve(address spender, uint256 amount) returns (bool)",
-                "function allowance(address owner, address spender) view returns (uint256)",
-                "function totalSupply() view returns (uint256)",
                 "function decimals() view returns (uint8)",
-                "function symbol() view returns (string)",
-                "function name() view returns (string)",
-                // Eventos
-                "event Transfer(address indexed from, address indexed to, uint256 value)",
-                "event Approval(address indexed owner, address indexed spender, uint256 value)"
+                "function symbol() view returns (string)"
             ],
             decimals: 18,
             symbol: '$RPPI'
@@ -201,7 +212,14 @@ class Web3Config {
         try {
             console.log('📄 Inicializando contratos...');
 
-            // Contrato $RPPI
+            // Contrato USDT en Optimism (producción)
+            this.contracts.USDT = new ethers.Contract(
+                this.USDT_CONFIG.address,
+                this.USDT_CONFIG.abi,
+                this.signer
+            );
+
+            // Contrato $RPPI (mantener para compatibilidad)
             this.contracts.RPPI = new ethers.Contract(
                 this.RPPI_CONFIG.address,
                 this.RPPI_CONFIG.abi,
@@ -234,7 +252,45 @@ class Web3Config {
     }
 
     /**
-     * Obtiene el saldo de $RPPI del usuario
+     * Deposita USDT a la house wallet — llamado al crear/aceptar una apuesta
+     * @param {string} amountUsdt — monto en USDT (ej: "10")
+     * @returns {string} txHash de la transacción
+     */
+    async depositToHouse(amountUsdt) {
+        try {
+            if (!this.contracts.USDT) throw new Error('Contrato USDT no inicializado');
+            // USDT tiene 6 decimales
+            const amountRaw = ethers.utils.parseUnits(amountUsdt.toString(), 6);
+            const tx = await this.contracts.USDT.transfer(this.HOUSE_WALLET, amountRaw);
+            console.log('💸 Depósito enviado, esperando confirmación...');
+            const receipt = await tx.wait(1); // 1 confirmación es suficiente en Optimism
+            console.log('✅ Depósito confirmado:', receipt.transactionHash);
+            return receipt.transactionHash;
+        } catch (error) {
+            console.error('❌ Error en depósito:', error);
+            // Mensajes de error legibles para el usuario
+            if (error.code === 4001) throw new Error('Transacción rechazada por el usuario');
+            if (error.message && error.message.includes('insufficient')) throw new Error('Saldo USDT insuficiente');
+            throw error;
+        }
+    }
+
+    /**
+     * Obtiene el saldo USDT del usuario
+     */
+    async getUSDTBalance(address = null) {
+        try {
+            const userAddress = address || await this.signer.getAddress();
+            const balance = await this.contracts.USDT.balanceOf(userAddress);
+            return ethers.utils.formatUnits(balance, 6);
+        } catch (error) {
+            console.error('❌ Error obteniendo saldo USDT:', error);
+            return '0';
+        }
+    }
+
+    /**
+     * Obtiene el saldo de $RPPI del usuario (mantenido para compatibilidad)
      */
     async getRPPIBalance(address = null) {
         try {
@@ -243,7 +299,7 @@ class Web3Config {
             return ethers.utils.formatEther(balance);
         } catch (error) {
             console.error('❌ Error obteniendo saldo RPPI:', error);
-            throw error;
+            return '0';
         }
     }
 
@@ -271,11 +327,11 @@ class Web3Config {
     }
 
     /**
-     * Verifica si el usuario tiene suficiente saldo
+     * Verifica si el usuario tiene suficiente USDT
      */
     async hasEnoughBalance(amount) {
         try {
-            const balance = await this.getRPPIBalance();
+            const balance = await this.getUSDTBalance();
             return parseFloat(balance) >= parseFloat(amount);
         } catch (error) {
             console.error('❌ Error verificando saldo:', error);

@@ -739,25 +739,29 @@ class BettingEngine {
      */
     async createDemoBet(betData) {
         try {
-            console.log('🎭 Creando apuesta demo:', betData);
+            console.log('� Creando apuesta con depósito USDT:', betData);
 
-            // Simular delay de transacción
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Verificar saldo USDT antes de pedir firma
+            const hasBalance = await this.web3Config.hasEnoughBalance(betData.amount);
+            if (!hasBalance) {
+                throw new Error(`Saldo USDT insuficiente. Necesitás al menos ${betData.amount} USDT en Optimism.`);
+            }
 
-            // Generar ID único
-            const betId = `demo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
-            // Usar dirección demo si no hay conexión real
+            // Obtener dirección del creador
             let userAddress;
             try {
                 userAddress = await this.web3Config.getUserAddress();
             } catch (error) {
-                // Si no hay conexión, usar dirección demo
-                userAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'; // Dirección demo
-                console.log('🎭 Usando dirección demo:', userAddress);
+                throw new Error('MetaMask no conectado. Conectá tu billetera primero.');
             }
 
-            // Crear apuesta demo
+            // 💸 Depósito real: transfer USDT → house wallet
+            const txHash = await this.web3Config.depositToHouse(betData.amount);
+
+            // Generar ID único
+            const betId = `rb-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+            // Crear apuesta
             const demoBet = {
                 id: betId,
                 creator: userAddress,
@@ -768,101 +772,105 @@ class BettingEngine {
                 gameType: betData.gameType,
                 status: this.web3Config.BET_STATUS.PENDING,
                 createdAt: new Date(),
-                acceptedAt: null
+                acceptedAt: null,
+                creatorTxHash: txHash
             };
 
-            // Agregar a apuestas activas
             this.activeBets.set(betId, demoBet);
-
-            // Agregar a apuestas del usuario
             this.userBets.set(betId, demoBet);
-
-            // Notificar actualización
             this.notifyBetUpdate('betCreated', demoBet);
 
-            // Escribir en Firebase para sincronización cross-device
+            // Escribir en Firebase con txHash como prueba de pago
             const fbDB = window._fbDB;
             if (fbDB) {
                 fbDB.ref('t2e_bets/' + betId).set({
                     id: betId,
                     creator: demoBet.creator,
                     amount: demoBet.amount,
+                    currency: 'USDT',
                     timeLimit: demoBet.timeLimit,
                     boostLimit: demoBet.boostLimit,
                     gameType: demoBet.gameType,
                     status: 'open',
-                    createdAt: demoBet.createdAt.getTime()
+                    createdAt: demoBet.createdAt.getTime(),
+                    creatorTxHash: txHash,
+                    payoutStatus: 'pending'
                 });
             }
 
-            console.log('✅ Apuesta demo creada:', betId);
+            console.log('✅ Apuesta creada, depósito confirmado:', txHash);
             return betId;
 
         } catch (error) {
-            console.error('❌ Error creando apuesta demo:', error);
+            console.error('❌ Error creando apuesta:', error);
             throw error;
         }
     }
 
     /**
-     * Acepta una apuesta simulada en modo demo
+     * Acepta una apuesta con depósito USDT real
      */
     async acceptDemoBet(betId) {
         try {
-            console.log('🎭 Aceptando apuesta demo:', betId);
+            console.log('🤝 Aceptando apuesta con depósito USDT:', betId);
 
             const bet = this.activeBets.get(betId);
             if (!bet) {
-                throw new Error('Apuesta demo no encontrada');
+                throw new Error('Apuesta no encontrada');
             }
 
-            // Simular delay de transacción
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
-            // Usar dirección demo si no hay conexión real
+            // Verificar que el aceptador no sea el creador
             let userAddress;
             try {
                 userAddress = await this.web3Config.getUserAddress();
             } catch (error) {
-                // Si no hay conexión, usar dirección demo diferente
-                userAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44f'; // Dirección demo diferente
-                console.log('🎭 Usando dirección demo para aceptar:', userAddress);
+                throw new Error('MetaMask no conectado. Conectá tu billetera primero.');
             }
+
+            if (userAddress.toLowerCase() === bet.creator.toLowerCase()) {
+                throw new Error('No podés aceptar tu propia apuesta.');
+            }
+
+            // Verificar saldo USDT
+            const hasBalance = await this.web3Config.hasEnoughBalance(bet.amount);
+            if (!hasBalance) {
+                throw new Error(`Saldo USDT insuficiente. Necesitás ${bet.amount} USDT en Optimism.`);
+            }
+
+            // 💸 Depósito real: transfer USDT → house wallet
+            const txHash = await this.web3Config.depositToHouse(bet.amount);
 
             // Actualizar apuesta
             bet.acceptor = userAddress;
             bet.status = this.web3Config.BET_STATUS.ACTIVE;
             bet.acceptedAt = new Date();
+            bet.acceptorTxHash = txHash;
 
-            // Mover de activas a usuario
             this.activeBets.delete(betId);
             this.userBets.set(betId, bet);
 
-            // REGRESSION FIX: mark as processed BEFORE writing to Firebase so the
-            // child_changed listener triggered by the Firebase .update() below
-            // does NOT re-fire betAccepted a second time on the acceptor device.
+            // REGRESSION FIX: mark as processed BEFORE writing to Firebase
             this._processedMatchedBets.add(betId);
 
             // Notificar actualización — fires fpOpenArena on THIS device
             this.notifyBetUpdate('betAccepted', bet);
 
-            // Actualizar Firebase para sincronización cross-device
-            // This write will trigger child_changed on the CREATOR device (P1),
-            // which will fire betAccepted there exactly once (guarded by _processedMatchedBets).
+            // Actualizar Firebase con txHash del aceptador
             const fbDB = window._fbDB;
             if (fbDB) {
                 fbDB.ref('t2e_bets/' + betId).update({
                     status: 'matched',
                     acceptor: userAddress,
-                    acceptedAt: Date.now()
+                    acceptedAt: Date.now(),
+                    acceptorTxHash: txHash
                 });
             }
 
-            console.log('✅ Apuesta demo aceptada');
+            console.log('✅ Apuesta aceptada, depósito confirmado:', txHash);
             return { status: true };
 
         } catch (error) {
-            console.error('❌ Error aceptando apuesta demo:', error);
+            console.error('❌ Error aceptando apuesta:', error);
             throw error;
         }
     }

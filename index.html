@@ -1692,15 +1692,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const betResultEl = document.getElementById('vrd-bet-result');
         if (betResultEl) {
             if (betResult) {
-                const wonStr  = betResult.won ? '🏆 GANASTE' : '💀 PERDISTE';
-                const color   = betResult.won ? 'var(--color-caos-verde)' : 'var(--color-caos-rosa)';
-                const prizeStr = betResult.won ? `+${betResult.amount} $RPPI` : `-${betResult.amount} $RPPI`;
                 betResultEl.style.display = 'block';
-                betResultEl.innerHTML = `
-                    <div style="font-size:1.4em;color:${color};text-shadow:0 0 15px ${color};font-weight:bold;margin-bottom:6px;">${wonStr}</div>
-                    <div style="font-size:0.9em;color:#ccc;margin-bottom:4px;">TU SCORE: <strong style="color:var(--color-caos-amarillo);">${betResult.playerScore}</strong> vs RIVAL: <strong style="color:#aaa;">${betResult.rivalScore}</strong></div>
-                    <div style="font-size:1.1em;color:${color};">${prizeStr}</div>
-                `;
+                betResultEl.innerHTML = _fpBetResultHTML(betResult);
             } else {
                 betResultEl.style.display = 'none';
             }
@@ -1785,27 +1778,110 @@ document.addEventListener('DOMContentLoaded', function() {
             const bet = engine.activeBets.get(betId) || engine.userBets.get(betId);
             if (!bet) return;
 
-            // Usar score real del rival (pasado por parámetro, obtenido de Firebase)
-            // Si no hay score real (p.ej. rival desconectado), fallback a 0
             rivalScore = rivalScore || 0;
-            const won = playerScore >= rivalScore;
+            const won  = playerScore >= rivalScore;
 
-            // Marcar apuesta como completada en el engine demo
-            bet.status = window.T2EIntegration.web3Config.BET_STATUS.COMPLETED || 3;
+            // Dirección del ganador
+            const myAddress = window.T2EIntegration.web3Config &&
+                              window.T2EIntegration.web3Config.currentAccount;
+            const winnerAddress = won ? myAddress : (myAddress === bet.creator ? bet.acceptor : bet.creator);
+
+            // Marcar apuesta como completada en el engine
+            bet.status = window.T2EIntegration.web3Config.BET_STATUS
+                       ? window.T2EIntegration.web3Config.BET_STATUS.COMPLETED
+                       : 3;
             engine.userBets.set(betId, bet);
             engine.activeBets.delete(betId);
 
-            // Mostrar resultado en el veredicto (inyectar info de apuesta)
+            // Pre-llenar resultado (pago pendiente) — fpShowVerdict lo leerá
             window._fpLastBetResult = {
-                won,
-                playerScore,
-                rivalScore,
-                amount:   bet.amount,
-                betId
+                won, playerScore, rivalScore,
+                amount:  bet.amount,
+                betId,
+                payoutPending: true,
+                winnerAddress
             };
+
+            // Llamar al CF Worker para ejecutar el pago automático
+            const PAYOUT_URL = 'https://rapid-figemini-proxy.gabrieldomail.workers.dev/payout';
+            fetch(PAYOUT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    betId,
+                    winner:      winnerAddress,
+                    playerScore,
+                    rivalScore,
+                    boostsP1:    bet.boosts_p1 || 0,
+                    boostsP2:    bet.boosts_p2 || 0
+                })
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.ok) {
+                    window._fpLastBetResult.payoutPending = false;
+                    window._fpLastBetResult.prize         = data.prize;
+                    window._fpLastBetResult.txHash        = data.txHash;
+                    // Actualizar el panel de resultado si ya está visible
+                    _fpUpdateBetResultPanel(window._fpLastBetResult);
+                } else {
+                    window._fpLastBetResult.payoutPending = false;
+                    window._fpLastBetResult.payoutError   = data.error || 'Error desconocido';
+                    _fpUpdateBetResultPanel(window._fpLastBetResult);
+                }
+            })
+            .catch(function(err) {
+                window._fpLastBetResult.payoutPending = false;
+                window._fpLastBetResult.payoutError   = err.message;
+                _fpUpdateBetResultPanel(window._fpLastBetResult);
+            });
+
         } catch(e) {
             console.warn('_fpResolveDemo error:', e);
         }
+    }
+
+    function _fpUpdateBetResultPanel(result) {
+        const el = document.getElementById('vrd-bet-result');
+        if (!el || el.style.display === 'none') return;
+        el.innerHTML = _fpBetResultHTML(result);
+    }
+
+    function _fpBetResultHTML(result) {
+        const won      = result.won;
+        const color    = won ? 'var(--color-caos-verde)' : 'var(--color-caos-rosa)';
+        const wonStr   = won ? '🏆 GANASTE' : '💀 PERDISTE';
+        let payoutLine = '';
+        if (result.payoutPending) {
+            payoutLine = '<div style="font-size:0.85em;color:#aaa;margin-top:6px;">💸 Procesando pago USDT...</div>';
+        } else if (result.txHash) {
+            const short  = result.txHash.slice(0,10) + '...' + result.txHash.slice(-6);
+            const link   = 'https://optimistic.etherscan.io/tx/' + result.txHash;
+            const prize  = parseFloat(result.prize || result.amount).toFixed(2);
+            payoutLine   = `
+                <div style="font-size:1em;color:var(--color-caos-verde);margin-top:6px;">
+                    ✅ +${prize} USDT enviado al ganador
+                </div>
+                <div style="font-size:0.75em;margin-top:4px;">
+                    <a href="${link}" target="_blank" rel="noopener"
+                       style="color:var(--color-azul-glitch);text-decoration:underline;">
+                       TX: ${short}
+                    </a>
+                </div>`;
+        } else if (result.payoutError) {
+            payoutLine = `<div style="font-size:0.8em;color:var(--color-caos-rosa);margin-top:6px;">⚠️ ${result.payoutError}</div>`;
+        }
+        return `
+            <div style="font-size:1.4em;color:${color};text-shadow:0 0 15px ${color};font-weight:bold;margin-bottom:6px;">${wonStr}</div>
+            <div style="font-size:0.9em;color:#ccc;margin-bottom:4px;">
+                TU SCORE: <strong style="color:var(--color-caos-amarillo);">${result.playerScore}</strong>
+                vs RIVAL: <strong style="color:#aaa;">${result.rivalScore}</strong>
+            </div>
+            <div style="font-size:0.95em;color:#ddd;margin-bottom:4px;">
+                Apuesta: <strong style="color:${color};">${parseFloat(result.amount).toFixed(2)} USDT</strong> c/u
+            </div>
+            ${payoutLine}
+        `;
     }
 
     // Exposed globally so inline onclick="fpFireBoost()" can reach it

@@ -7,8 +7,30 @@ const ALLOWED_ORIGINS = [
   'https://gabrieldomail.github.io',
 ];
 
-const OPENROUTER_MODEL = 'google/gemini-2.0-flash-exp:free';
-const OPENROUTER_URL   = 'https://openrouter.ai/api/v1/chat/completions';
+// ── Configuración de pagos ─────────────────────────────────────────────────
+const OPTIMISM_RPC      = 'https://mainnet.optimism.io';
+const USDT_ADDRESS      = '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58'; // USDT Optimism
+const HOUSE_FEE_PCT     = 3;    // 3% del pozo
+const BOOST_COST_USDT   = 1.0;  // 1 USDT por boost
+const USDT_DECIMALS     = 6;
+
+// ABI mínimo ERC-20 para transferir USDT
+const USDT_ABI = [
+  'function transfer(address to, uint256 amount) returns (bool)',
+  'function decimals() view returns (uint8)'
+];
+
+// Firebase REST base URL (Realtime DB)
+const FB_DB_URL = 'https://rappibellion-default-rtdb.firebaseio.com'; // ajustar si el proyecto tiene otro nombre
+
+const OPENROUTER_MODELS = [
+  'meta-llama/llama-3.1-8b-instruct:free',
+  'qwen/qwen-2.5-72b-instruct:free',
+  'mistralai/mistral-small-24b-instruct-2501:free',
+  'qwen/qwen2.5-7b-instruct:free',
+  'meta-llama/llama-3.2-3b-instruct:free',
+];
+const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 export default {
   async fetch(request, env) {
@@ -27,7 +49,15 @@ export default {
       return new Response('Method not allowed', { status: 405, headers: corsHeaders });
     }
 
-    const apiKey = env.GEMINI_API_KEY; // mismo nombre de secret, solo cambia el destino
+    const url = new URL(request.url);
+
+    // ── Routing ──────────────────────────────────────────────────────────────
+    if (url.pathname === '/payout') {
+      return handlePayout(request, env, corsHeaders);
+    }
+
+    // ── Gemini / OpenRouter proxy (ruta por defecto) ──────────────────────
+    const apiKey = env.GEMINI_API_KEY;
     if (!apiKey) {
       return new Response(JSON.stringify({ error: { message: 'Worker: API key no configurada' } }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
@@ -50,34 +80,51 @@ export default {
         messages.push({ role, content: text });
       }
 
-      const orRes = await fetch(OPENROUTER_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': 'https://rappibellion.com',
-          'X-Title': 'Rappibellion',
-        },
-        body: JSON.stringify({ model: OPENROUTER_MODEL, messages }),
-      });
+      // Intenta cada modelo en orden hasta que uno funcione
+      let lastError = 'No models available';
+      for (const model of OPENROUTER_MODELS) {
+        const orRes = await fetch(OPENROUTER_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+            'HTTP-Referer': 'https://rappibellion.com',
+            'X-Title': 'Rappibellion',
+          },
+          body: JSON.stringify({ model, messages }),
+        });
 
-      const data = await orRes.json();
+        const data = await orRes.json();
 
-      if (!orRes.ok) {
-        return new Response(JSON.stringify({ error: { message: data?.error?.message || 'OpenRouter error' } }),
-          { status: orRes.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+        if (!orRes.ok) {
+          lastError = data?.error?.message || 'OpenRouter error';
+          // Errores de modelo/proveedor → probar el siguiente
+          const retryable = orRes.status === 404 || orRes.status === 503 || orRes.status === 529 ||
+            lastError.includes('No endpoints') || lastError.includes('not found') ||
+            lastError.includes('Provider returned error') || lastError.includes('overloaded') ||
+            lastError.includes('unavailable') || lastError.includes('not a valid model') ||
+            lastError.includes('invalid model');
+          if (retryable) continue;
+          // Auth / rate limit global — no tiene sentido reintentar
+          return new Response(JSON.stringify({ error: { message: lastError } }),
+            { status: orRes.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+        }
+
+        // Convierte respuesta OpenAI → formato Gemini para el frontend
+        const replyText = data?.choices?.[0]?.message?.content || '';
+        const geminiResponse = {
+          candidates: [{ content: { parts: [{ text: replyText }] } }]
+        };
+
+        return new Response(JSON.stringify(geminiResponse), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
       }
 
-      // Convierte respuesta OpenAI → formato Gemini para el frontend
-      const replyText = data?.choices?.[0]?.message?.content || '';
-      const geminiResponse = {
-        candidates: [{ content: { parts: [{ text: replyText }] } }]
-      };
-
-      return new Response(JSON.stringify(geminiResponse), {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      // Todos los modelos fallaron
+      return new Response(JSON.stringify({ error: { message: lastError } }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
     } catch (err) {
       return new Response(JSON.stringify({ error: { message: 'Worker error: ' + err.message } }),
@@ -85,3 +132,133 @@ export default {
     }
   }
 };
+
+// ── /payout handler ───────────────────────────────────────────────────────────
+// Body esperado: { betId, winner, playerScore, rivalScore, boostsP1, boostsP2 }
+async function handlePayout(request, env, corsHeaders) {
+  const json = (data, status = 200) =>
+    new Response(JSON.stringify(data), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+
+  try {
+    // 1. Validar secrets
+    if (!env.PAYOUT_PRIVATE_KEY)      return json({ error: 'PAYOUT_PRIVATE_KEY no configurado' }, 500);
+    if (!env.FIREBASE_SERVICE_ACCOUNT) return json({ error: 'FIREBASE_SERVICE_ACCOUNT no configurado' }, 500);
+
+    const body = await request.json();
+    const { betId, winner, playerScore, rivalScore, boostsP1 = 0, boostsP2 = 0 } = body;
+
+    if (!betId || !winner) return json({ error: 'betId y winner son requeridos' }, 400);
+
+    // 2. Leer apuesta de Firebase
+    const fbToken = await getFirebaseToken(env.FIREBASE_SERVICE_ACCOUNT);
+    const betRes  = await fetch(`${FB_DB_URL}/t2e_bets/${betId}.json?auth=${fbToken}`);
+    const bet     = await betRes.json();
+
+    if (!bet || bet.status === 'paid') {
+      return json({ error: bet ? 'Apuesta ya pagada' : 'Apuesta no encontrada' }, 400);
+    }
+
+    // 3. Verificar que ambos depósitos existen en Firebase
+    if (!bet.creatorTxHash || !bet.acceptorTxHash) {
+      return json({ error: 'Faltan txHash de depósitos — jugadores no confirmaron' }, 400);
+    }
+
+    // 4. Calcular premio
+    const amount      = parseFloat(bet.amount);
+    const totalPot    = amount * 2;
+    const totalBoosts = (parseInt(boostsP1) + parseInt(boostsP2)) * BOOST_COST_USDT;
+    const houseFee    = totalPot * (HOUSE_FEE_PCT / 100);
+    const prize       = totalPot - houseFee - totalBoosts;
+
+    if (prize <= 0) return json({ error: 'Premio calculado es 0 o negativo' }, 400);
+
+    // 5. Enviar USDT al ganador via ethers.js
+    // Importamos ethers desde skypack (CF Workers soporta ESM desde URLs)
+    const { ethers } = await import('https://cdn.skypack.dev/ethers@5.7.2');
+
+    const provider = new ethers.providers.JsonRpcProvider(OPTIMISM_RPC);
+    const wallet   = new ethers.Wallet(env.PAYOUT_PRIVATE_KEY, provider);
+    const usdt     = new ethers.Contract(USDT_ADDRESS, USDT_ABI, wallet);
+
+    const prizeRaw = ethers.utils.parseUnits(prize.toFixed(6), USDT_DECIMALS);
+    const tx       = await usdt.transfer(winner, prizeRaw);
+    const receipt  = await tx.wait(1);
+
+    // 6. Marcar apuesta como pagada en Firebase
+    await fetch(`${FB_DB_URL}/t2e_bets/${betId}.json?auth=${fbToken}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        status:       'paid',
+        payoutStatus: 'completed',
+        winner,
+        prize:        prize.toFixed(6),
+        payoutTxHash: receipt.transactionHash,
+        paidAt:       Date.now(),
+        scores:       { p1: playerScore, p2: rivalScore },
+        boosts:       { p1: boostsP1, p2: boostsP2 },
+        houseFee:     houseFee.toFixed(6)
+      })
+    });
+
+    return json({
+      ok:      true,
+      winner,
+      prize:   prize.toFixed(2),
+      txHash:  receipt.transactionHash,
+      houseFee: houseFee.toFixed(2)
+    });
+
+  } catch (err) {
+    console.error('[payout] error:', err);
+    return json({ error: 'Payout error: ' + err.message }, 500);
+  }
+}
+
+// ── Firebase Auth Token (Service Account → Bearer token) ─────────────────────
+async function getFirebaseToken(serviceAccountJson) {
+  const sa   = JSON.parse(serviceAccountJson);
+  const now  = Math.floor(Date.now() / 1000);
+  const claim = {
+    iss: sa.client_email,
+    sub: sa.client_email,
+    aud: 'https://oauth2.googleapis.com/token',
+    iat: now,
+    exp: now + 3600,
+    scope: 'https://www.googleapis.com/auth/firebase.database https://www.googleapis.com/auth/userinfo.email'
+  };
+
+  // Crear JWT firmado con RS256 usando la private key del service account
+  const header  = btoa(JSON.stringify({ alg: 'RS256', typ: 'JWT' })).replace(/=/g,'');
+  const payload = btoa(JSON.stringify(claim)).replace(/=/g,'');
+  const toSign  = `${header}.${payload}`;
+
+  const keyData = sa.private_key
+    .replace('-----BEGIN PRIVATE KEY-----', '')
+    .replace('-----END PRIVATE KEY-----', '')
+    .replace(/\n/g, '');
+
+  const binaryKey = Uint8Array.from(atob(keyData), c => c.charCodeAt(0));
+  const cryptoKey = await crypto.subtle.importKey(
+    'pkcs8', binaryKey.buffer,
+    { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+    false, ['sign']
+  );
+
+  const sigBuffer = await crypto.subtle.sign(
+    'RSASSA-PKCS1-v1_5', cryptoKey,
+    new TextEncoder().encode(toSign)
+  );
+  const sig = btoa(String.fromCharCode(...new Uint8Array(sigBuffer))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+
+  const jwt = `${toSign}.${sig}`;
+
+  // Intercambiar JWT por access token
+  const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`
+  });
+  const tokenData = await tokenRes.json();
+  return tokenData.access_token;
+}
