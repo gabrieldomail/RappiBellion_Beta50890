@@ -5419,26 +5419,26 @@ footer::before {
    ══════════════════════════════════════════════ */
 #duel-trigger-btn {
     position: fixed;
-    bottom: 24px;
-    left: 24px;
+    bottom: 55vh;
+    left: 14px;
     z-index: 9991;
-    background: rgba(0,255,65,0.08);
-    border: 1px solid rgba(0,255,65,0.38);
-    color: var(--color-caos-verde);
+    background: transparent;
+    border: none;
+    color: var(--color-texto);
     font-family: 'Orbitron', monospace;
-    font-size: 0.6em;
-    letter-spacing: 2px;
-    padding: 9px 13px;
+    font-size: 1.75em;
+    letter-spacing: 3px;
+    padding: 4px 0;
     cursor: pointer;
     display: none;
     align-items: center;
-    transition: all 0.2s;
-    text-shadow: 0 0 8px var(--color-caos-verde);
-    box-shadow: 0 0 12px rgba(0,255,65,0.08);
+    transition: opacity 0.2s;
+    animation: glitchCyan 1s linear infinite;
+    box-shadow: none;
 }
 #duel-trigger-btn:hover {
-    background: rgba(0,255,65,0.16);
-    box-shadow: 0 0 20px rgba(0,255,65,0.2);
+    opacity: 0.8;
+    box-shadow: none;
 }
 #duel-badge {
     display: none;
@@ -5455,97 +5455,149 @@ footer::before {
     font-family: monospace;
     vertical-align: middle;
 }
+/* ── DUEL INBOX WINDOW — posicionada justo debajo del trigger btn ── */
 #duel-inbox-window {
     position: fixed;
-    bottom: 72px;
+    top: 45vh;
     left: 14px;
-    width: 330px;
+    width: 340px;
     z-index: 9990;
-    font-family: 'Courier New', monospace;
+    font-family: 'Orbitron', monospace;
 }
 #duel-inbox-window.minimized { display: none; }
+
+/* Terminal punk: borde arco-iris caótico */
 .duel-inbox-terminal {
-    background: #030d06;
-    border: 1px solid rgba(0,255,65,0.35);
-    box-shadow: 0 0 28px rgba(0,255,65,0.09), inset 0 0 30px rgba(0,0,0,0.5);
+    background: #07000f;
+    border: 1px solid #ff00ff;
+    box-shadow:
+        0 0 6px #ff00ff,
+        0 0 18px rgba(255,0,255,0.35),
+        inset 0 0 20px rgba(0,0,0,0.8),
+        2px 0 0 #00ffff,
+        -2px 0 0 #ffff00;
+    animation: glitchCyan 1s linear infinite;
 }
+
+/* Header rojo/magenta */
 .duel-inbox-hdr {
-    background: rgba(0,255,65,0.1);
-    border-bottom: 1px solid rgba(0,255,65,0.2);
+    background: linear-gradient(90deg, rgba(255,0,80,0.25), rgba(255,0,255,0.12), rgba(0,0,0,0.4));
+    border-bottom: 1px solid #ff0050;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 7px 11px;
 }
+
+/* Tabs con colores locos */
 .duel-inbox-tabs {
     display: flex;
-    border-bottom: 1px solid rgba(0,255,65,0.12);
+    border-bottom: 1px solid rgba(255,255,0,0.2);
 }
 .duel-inbox-tab {
     flex: 1;
     background: none;
     border: none;
     border-bottom: 2px solid transparent;
-    color: rgba(0,255,65,0.35);
-    font-family: 'Courier New', monospace;
-    font-size: 0.68em;
+    color: rgba(0,255,255,0.35);
+    font-family: 'Orbitron', monospace;
+    font-size: 0.62em;
     letter-spacing: 3px;
     padding: 8px 4px;
     cursor: pointer;
     transition: all 0.15s;
+    text-transform: uppercase;
 }
+.duel-inbox-tab:first-child { color: rgba(255,0,255,0.5); }
+.duel-inbox-tab:last-child  { color: rgba(255,255,0,0.5); }
 .duel-inbox-tab.active {
-    color: var(--color-caos-verde);
-    border-bottom-color: var(--color-caos-verde);
-    text-shadow: 0 0 6px var(--color-caos-verde);
+    color: #fff;
+    border-bottom-color: #00ffff;
+    text-shadow:
+        0 0 6px #00ffff,
+        0 0 14px #00ffff,
+        .04em 0 0 rgba(255,0,0,.7);
 }
+
+/* Body scrollable */
 .duel-inbox-body {
-    max-height: 300px;
+    max-height: 280px;
     overflow-y: auto;
     padding: 10px;
     scrollbar-width: thin;
-    scrollbar-color: var(--color-caos-verde) #111;
+    scrollbar-color: #ff00ff #111;
 }
+
+/* Cards de duelo: cada una con su propio color de borde */
 .duel-card {
-    border: 1px solid rgba(0,255,65,0.12);
+    border: 1px solid rgba(0,255,255,0.2);
     padding: 9px;
     margin-bottom: 6px;
-    background: rgba(0,0,0,0.3);
-    font-size: 0.8em;
+    background: rgba(0,0,0,0.4);
+    font-size: 0.75em;
+    font-family: 'Orbitron', monospace;
+    letter-spacing: 1px;
 }
-.duel-card-pending { border-color: rgba(0,255,65,0.3); }
+.duel-card:nth-child(odd)  { border-color: rgba(255,0,255,0.3); }
+.duel-card:nth-child(even) { border-color: rgba(255,255,0,0.25); }
+.duel-card-pending { border-color: #ff0050 !important; box-shadow: 0 0 8px rgba(255,0,80,0.3); }
+
+/* Labels de formulario: colores rotativos */
 .duel-form-label {
-    font-size: 0.63em;
+    font-size: 0.58em;
     letter-spacing: 3px;
-    color: rgba(0,255,255,0.45);
     display: block;
     margin-bottom: 3px;
+    text-transform: uppercase;
+    font-family: 'Orbitron', monospace;
 }
+.duel-form-label:nth-of-type(1) { color: #ff00ff; text-shadow: 0 0 4px #ff00ff; }
+.duel-form-label:nth-of-type(2) { color: #00ffff; text-shadow: 0 0 4px #00ffff; }
+.duel-form-label:nth-of-type(3) { color: #ffff00; text-shadow: 0 0 4px #ffff00; }
+.duel-form-label:nth-of-type(4) { color: #ff0050; text-shadow: 0 0 4px #ff0050; }
+.duel-form-label:nth-of-type(5) { color: #00ff65; text-shadow: 0 0 4px #00ff65; }
+
+/* Inputs */
 .duel-form-input {
-    background: rgba(0,0,0,0.6);
-    border: 1px solid rgba(0,255,65,0.28);
+    background: rgba(0,0,0,0.7);
+    border: 1px solid rgba(255,0,255,0.3);
     color: #fff;
-    font-family: 'Courier New', monospace;
-    font-size: 11px;
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
     padding: 6px 9px;
     outline: none;
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 7px;
+    transition: border-color 0.15s;
 }
-.duel-form-input:focus { border-color: var(--color-caos-verde); }
+.duel-form-input:focus {
+    border-color: #ff00ff;
+    box-shadow: 0 0 8px rgba(255,0,255,0.4);
+}
+
+/* Botón enviar: punk total */
 .duel-send-btn {
-    background: rgba(0,255,65,0.1);
-    border: 1px solid rgba(0,255,65,0.45);
-    color: var(--color-caos-verde);
+    background: linear-gradient(90deg, rgba(255,0,255,0.15), rgba(0,255,255,0.1));
+    border: 1px solid #ff00ff;
+    color: #fff;
     font-family: 'Orbitron', monospace;
-    font-size: 0.62em;
+    font-size: 0.6em;
     letter-spacing: 3px;
-    padding: 9px;
+    padding: 10px;
     cursor: pointer;
     width: 100%;
     margin-top: 4px;
-    transition: background 0.2s;
-    text-shadow: 0 0 6px var(--color-caos-verde);
+    text-transform: uppercase;
+    text-shadow:
+        0 0 6px #ff00ff,
+        0 0 12px #00ffff,
+        .05em 0 0 rgba(255,255,0,.5);
+    transition: all 0.2s;
+    box-shadow: 0 0 10px rgba(255,0,255,0.25);
 }
-.duel-send-btn:hover { background: rgba(0,255,65,0.2); }
+.duel-send-btn:hover {
+    background: linear-gradient(90deg, rgba(255,0,255,0.3), rgba(0,255,255,0.2));
+    box-shadow: 0 0 18px rgba(255,0,255,0.5), 0 0 18px rgba(0,255,255,0.3);
+}
