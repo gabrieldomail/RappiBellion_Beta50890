@@ -6423,7 +6423,9 @@ btn.addEventListener('click', toggleMutePlay);
                     "left right"
                     "game game";
                 grid-template-columns: 1fr 1fr !important;
-                grid-template-rows: auto 1fr !important;
+                grid-template-rows: 130px 1fr !important;
+                height: 100vh !important;
+                height: 100dvh !important;
                 overflow: hidden !important;
             }
             .fp-col-left  { grid-area: left !important; }
@@ -6437,7 +6439,11 @@ btn.addEventListener('click', toggleMutePlay);
                 animation: none !important;
                 transition: none !important;
                 transform: none !important;
+                box-shadow: none !important;
             }
+            /* Eliminar imágenes de fondo en mobile — ahorro de red + GPU */
+            .fp-col-left  { background: #030a06 !important; }
+            .fp-col-right { background: #0d0a14 !important; }
             .fp-col-left::before,
             .fp-col-left::after,
             .fp-col-right::before,
