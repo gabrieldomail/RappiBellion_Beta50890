@@ -56,6 +56,9 @@ export default {
     if (url.pathname === '/payout') {
       return handlePayout(request, env, corsHeaders);
     }
+    if (url.pathname === '/refund') {
+      return handleRefund(request, env, corsHeaders);
+    }
 
     // ── Gemini / OpenRouter proxy (ruta por defecto) ──────────────────────
     const apiKey = env.GEMINI_API_KEY;
@@ -225,6 +228,91 @@ async function handlePayout(request, env, corsHeaders) {
   } catch (err) {
     console.error('[payout] error:', err);
     return json({ error: 'Payout error: ' + err.message }, 500);
+  }
+}
+
+// ── /refund handler ───────────────────────────────────────────────────────────
+// Body esperado: { betId }
+// Solo puede llamarlo el creador — se verifica contra bet.creator en Firebase
+// Solo aplica si la apuesta NO fue aceptada aún (status === 'open')
+// Mínimo 30 minutos desde la creación antes de poder cancelar
+const REFUND_MIN_WAIT_MS = 30 * 60 * 1000; // 30 minutos
+
+async function handleRefund(request, env, corsHeaders) {
+  const json = (data, status = 200) =>
+    new Response(JSON.stringify(data), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+
+  try {
+    if (!env.PAYOUT_PRIVATE_KEY)       return json({ error: 'PAYOUT_PRIVATE_KEY no configurado' }, 500);
+    if (!env.FIREBASE_SERVICE_ACCOUNT) return json({ error: 'FIREBASE_SERVICE_ACCOUNT no configurado' }, 500);
+
+    if (env.PAYOUT_SECRET) {
+      const reqSecret = request.headers.get('X-Payout-Secret');
+      if (!reqSecret || reqSecret !== env.PAYOUT_SECRET) {
+        return json({ error: 'No autorizado' }, 401);
+      }
+    }
+
+    const { betId, requester } = await request.json();
+    if (!betId || !requester) return json({ error: 'betId y requester son requeridos' }, 400);
+
+    const fbToken = await getFirebaseToken(env.FIREBASE_SERVICE_ACCOUNT);
+    const betRes  = await fetch(`${FB_DB_URL}/t2e_bets/${betId}.json?auth=${fbToken}`);
+    const bet     = await betRes.json();
+
+    if (!bet)                    return json({ error: 'Apuesta no encontrada' }, 404);
+    if (bet.status !== 'open')   return json({ error: `No se puede cancelar — estado actual: ${bet.status}` }, 400);
+    if (bet.payoutStatus === 'completed') return json({ error: 'Apuesta ya pagada' }, 400);
+
+    // Solo el creador puede pedir el refund
+    if (bet.creator?.toLowerCase() !== requester.toLowerCase()) {
+      return json({ error: 'Solo el creador puede cancelar la apuesta' }, 403);
+    }
+
+    // Verificar tiempo mínimo de espera
+    const elapsed = Date.now() - (bet.createdAt || 0);
+    if (elapsed < REFUND_MIN_WAIT_MS) {
+      const minutesLeft = Math.ceil((REFUND_MIN_WAIT_MS - elapsed) / 60000);
+      return json({ error: `Esperá ${minutesLeft} minuto${minutesLeft !== 1 ? 's' : ''} más antes de cancelar` }, 400);
+    }
+
+    if (!bet.creatorTxHash) {
+      // No hubo depósito on-chain — solo marcar como cancelada en Firebase
+      await fetch(`${FB_DB_URL}/t2e_bets/${betId}.json?auth=${fbToken}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'cancelled', cancelledAt: Date.now() })
+      });
+      return json({ ok: true, refundTxHash: null, note: 'Sin depósito — apuesta cancelada sin transferencia' });
+    }
+
+    // Devolver USDT al creador
+    const amount   = parseFloat(bet.amount);
+    const provider = new ethers.providers.JsonRpcProvider(OPTIMISM_RPC);
+    const wallet   = new ethers.Wallet(env.PAYOUT_PRIVATE_KEY, provider);
+    const usdt     = new ethers.Contract(USDT_ADDRESS, USDT_ABI, wallet);
+
+    const refundRaw = ethers.utils.parseUnits(amount.toFixed(6), USDT_DECIMALS);
+    const tx        = await usdt.transfer(bet.creator, refundRaw);
+    const receipt   = await tx.wait(1);
+
+    // Marcar como cancelada en Firebase
+    await fetch(`${FB_DB_URL}/t2e_bets/${betId}.json?auth=${fbToken}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        status:        'cancelled',
+        payoutStatus:  'refunded',
+        cancelledAt:   Date.now(),
+        refundTxHash:  receipt.transactionHash
+      })
+    });
+
+    return json({ ok: true, refundTxHash: receipt.transactionHash, amount: amount.toFixed(2) });
+
+  } catch (err) {
+    console.error('[refund] error:', err);
+    return json({ error: 'Refund error: ' + err.message }, 500);
   }
 }
 

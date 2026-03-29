@@ -793,10 +793,19 @@ class T2EIntegration {
         const timeRemaining = this.bettingEngine.formatTimeRemaining(bet.createdAt, bet.timeLimit);
         const statusText = this.bettingEngine.formatBetStatus(bet.status);
 
-        // Solo mostrar botón de cancelar si la apuesta está pendiente
-        const cancelButton = bet.status === this.web3Config.BET_STATUS.PENDING ?
-            `<button class="retire-hack-btn" data-bet-id="${bet.id}" title="Cancelar apuesta">[RETIRE HACK]</button>` :
-            '';
+        // Mostrar botón de cancelar si la apuesta está abierta (no aceptada) y pasaron 30 min
+        const isOpen        = bet.status === this.web3Config.BET_STATUS.PENDING || bet.status === 'open';
+        const myAddress     = this.web3Config.currentAccount;
+        const isCreator     = myAddress && bet.creator?.toLowerCase() === myAddress.toLowerCase();
+        const elapsed       = Date.now() - (bet.createdAt || 0);
+        const canCancel     = isOpen && isCreator && elapsed >= 30 * 60 * 1000;
+        const minutesLeft   = isOpen && isCreator && elapsed < 30 * 60 * 1000
+            ? Math.ceil((30 * 60 * 1000 - elapsed) / 60000) : 0;
+        const cancelButton  = canCancel
+            ? `<button class="retire-hack-btn" data-bet-id="${bet.id}" title="Cancelar y recuperar USDT" onclick="window.T2EIntegration && window.T2EIntegration.cancelUserBet('${bet.id}')">[CANCELAR — REFUND USDT]</button>`
+            : isOpen && isCreator && minutesLeft > 0
+                ? `<button class="retire-hack-btn" disabled title="Esperá ${minutesLeft} min más" style="opacity:0.4;cursor:not-allowed;">[CANCELAR en ${minutesLeft} min]</button>`
+                : '';
 
         betItem.innerHTML = `
             <div class="user-bet-header">
@@ -832,36 +841,43 @@ class T2EIntegration {
     }
 
     /**
-     * Cancela una apuesta del usuario
+     * Cancela una apuesta abierta y solicita refund USDT al worker
      */
     async cancelUserBet(betId) {
         try {
-            console.log('❌ Cancelando apuesta del usuario:', betId);
+            if (!confirm('¿Cancelar la apuesta y recuperar tu USDT? La transacción de refund puede tardar unos segundos.')) return;
 
-            // Mostrar confirmación
-            if (!confirm('¿Estás seguro de que quieres cancelar esta apuesta? Perderás los tokens apostados.')) {
+            this.showLoading('Solicitando refund al worker...');
+
+            const myAddress     = this.web3Config.currentAccount;
+            const REFUND_URL    = 'https://rapid-figemini-proxy.gabrieldomail.workers.dev/refund';
+            const PAYOUT_SECRET = 'rppi_payout_2026';
+
+            const res  = await fetch(REFUND_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Payout-Secret': PAYOUT_SECRET },
+                body: JSON.stringify({ betId, requester: myAddress })
+            });
+            const data = await res.json();
+
+            this.hideLoading();
+
+            if (!data.ok) {
+                this.showError('Error en refund: ' + (data.error || 'desconocido'));
                 return;
             }
 
-            // Mostrar loading
-            this.showLoading('Cancelando apuesta...');
+            const txMsg = data.refundTxHash
+                ? `\nTX: ${data.refundTxHash.slice(0,10)}...`
+                : ' (sin depósito on-chain)';
+            this.showNotification(`✅ Apuesta cancelada — ${data.amount || ''} USDT devueltos${txMsg}`, 'success');
 
-            // Cancelar apuesta
-            await this.bettingEngine.cancelBet(betId);
-
-            // Ocultar loading
-            this.hideLoading();
-
-            // Mostrar éxito
-            this.showNotification('Apuesta cancelada exitosamente', 'success');
-
-            // Recargar apuestas del usuario
             await this.loadUserBetsIntoWindow();
 
-        } catch (error) {
+        } catch (err) {
             this.hideLoading();
-            this.showError('Error cancelando apuesta: ' + error.message);
-            console.error('❌ Error cancelando apuesta del usuario:', error);
+            this.showError('Error cancelando apuesta: ' + err.message);
+            console.error('cancelUserBet error:', err);
         }
     }
 
