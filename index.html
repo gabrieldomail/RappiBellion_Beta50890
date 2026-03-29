@@ -1755,10 +1755,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Si hay apuesta activa, resolver usando el score REAL del rival (no inventado)
         if (fpState.betMode && fpState.betId && window.T2EIntegration) {
-            // Leer el score real del rival del panel (fue actualizado por Firebase en tiempo real)
-            const rivalScoreEl = document.getElementById('rival-score');
-            const realRivalScore = parseInt((rivalScoreEl ? rivalScoreEl.textContent : '0').replace(/\D/g, ''), 10) || 0;
-            _fpResolveDemo(fpState.betId, fpState.score, realRivalScore);
+            // Leer score del rival de Firebase (fuente de verdad — resiste desconexiones del rival)
+            var _snap_betId   = fpState.betId;
+            var _snap_myScore = fpState.score;
+            var _snap_rivalry = fpState.rivalRole;
+            if (window._fbDB && _snap_rivalry) {
+                window._fbDB.ref('t2e_bets/' + _snap_betId + '/scores/' + _snap_rivalry)
+                    .once('value')
+                    .then(function(snap) {
+                        var fbScore    = snap.val();
+                        var finalRival = (fbScore !== null && fbScore !== undefined) ? parseInt(fbScore, 10) : 0;
+                        _fpResolveDemo(_snap_betId, _snap_myScore, finalRival);
+                    })
+                    .catch(function() {
+                        // fallback DOM si Firebase falla
+                        var rivalScoreEl = document.getElementById('rival-score');
+                        var domScore = parseInt((rivalScoreEl ? rivalScoreEl.textContent : '0').replace(/\D/g, ''), 10) || 0;
+                        _fpResolveDemo(_snap_betId, _snap_myScore, domScore);
+                    });
+            } else {
+                var rivalScoreEl = document.getElementById('rival-score');
+                var realRivalScore = parseInt((rivalScoreEl ? rivalScoreEl.textContent : '0').replace(/\D/g, ''), 10) || 0;
+                _fpResolveDemo(fpState.betId, fpState.score, realRivalScore);
+            }
         }
 
         // Volver a panel free play después de mostrar el veredicto
@@ -1799,7 +1818,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 amount:  bet.amount,
                 betId,
                 payoutPending: true,
-                winnerAddress
+                winnerAddress,
+                boostsP1: bet.boosts_p1 || 0,
+                boostsP2: bet.boosts_p2 || 0
             };
 
             // Llamar al CF Worker para ejecutar el pago automático
@@ -1870,7 +1891,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     </a>
                 </div>`;
         } else if (result.payoutError) {
-            payoutLine = `<div style="font-size:0.8em;color:var(--color-caos-rosa);margin-top:6px;">⚠️ ${result.payoutError}</div>`;
+            payoutLine = `
+                <div style="font-size:0.8em;color:var(--color-caos-rosa);margin-top:6px;">⚠️ ${result.payoutError}</div>
+                <button onclick="window._fpRetryPayout()"
+                        style="margin-top:8px;padding:6px 18px;background:var(--color-caos-amarillo);color:#000;
+                               border:none;border-radius:6px;cursor:pointer;font-weight:700;font-size:0.85em;">
+                    🔄 Reintentar pago
+                </button>`;
         }
         return `
             <div style="font-size:1.4em;color:${color};text-shadow:0 0 15px ${color};font-weight:bold;margin-bottom:6px;">${wonStr}</div>
@@ -1884,6 +1911,46 @@ document.addEventListener('DOMContentLoaded', function() {
             ${payoutLine}
         `;
     }
+
+    // ── Retry payout manualmente si el primer intento falló ──────────────
+    window._fpRetryPayout = function() {
+        var result = window._fpLastBetResult;
+        if (!result || !result.betId || !result.winnerAddress) return;
+        result.payoutPending = true;
+        result.payoutError   = null;
+        _fpUpdateBetResultPanel(result);
+        var PAYOUT_URL    = 'https://rapid-figemini-proxy.gabrieldomail.workers.dev/payout';
+        var PAYOUT_SECRET = 'rppi_payout_2026';
+        fetch(PAYOUT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Payout-Secret': PAYOUT_SECRET },
+            body: JSON.stringify({
+                betId:       result.betId,
+                winner:      result.winnerAddress,
+                playerScore: result.playerScore,
+                rivalScore:  result.rivalScore,
+                boostsP1:    result.boostsP1 || 0,
+                boostsP2:    result.boostsP2 || 0
+            })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.ok) {
+                result.payoutPending = false;
+                result.prize         = data.prize;
+                result.txHash        = data.txHash;
+            } else {
+                result.payoutPending = false;
+                result.payoutError   = data.error || 'Error desconocido';
+            }
+            _fpUpdateBetResultPanel(result);
+        })
+        .catch(function(err) {
+            result.payoutPending = false;
+            result.payoutError   = err.message;
+            _fpUpdateBetResultPanel(result);
+        });
+    };
 
     // Exposed globally so inline onclick="fpFireBoost()" can reach it
     window.fpFireBoost = function fpFireBoost() {

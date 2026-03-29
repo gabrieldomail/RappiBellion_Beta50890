@@ -143,6 +143,7 @@ async function handlePayout(request, env, corsHeaders) {
   const json = (data, status = 200) =>
     new Response(JSON.stringify(data), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
+  let betId; // hoisted — accesible en catch para marcar fallo en Firebase
   try {
     // 1. Validar secrets y autenticación
     if (!env.PAYOUT_PRIVATE_KEY)      return json({ error: 'PAYOUT_PRIVATE_KEY no configurado' }, 500);
@@ -157,7 +158,8 @@ async function handlePayout(request, env, corsHeaders) {
     }
 
     const body = await request.json();
-    const { betId, winner, playerScore, rivalScore, boostsP1 = 0, boostsP2 = 0 } = body;
+    betId = body.betId; // asignada al let hoisted
+    const { winner, playerScore, rivalScore, boostsP1 = 0, boostsP2 = 0 } = body;
 
     if (!betId || !winner) return json({ error: 'betId y winner son requeridos' }, 400);
 
@@ -227,6 +229,17 @@ async function handlePayout(request, env, corsHeaders) {
 
   } catch (err) {
     console.error('[payout] error:', err);
+    // Marcar fallo en Firebase para trazabilidad y habilitar retry desde la UI
+    if (betId && env.FIREBASE_SERVICE_ACCOUNT) {
+      try {
+        const fbToken = await getFirebaseToken(env.FIREBASE_SERVICE_ACCOUNT);
+        await fetch(`${FB_DB_URL}/t2e_bets/${betId}.json?auth=${fbToken}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ payoutStatus: 'failed', payoutError: err.message, failedAt: Date.now() })
+        });
+      } catch (_) { /* si Firebase también falla, no bloquear la respuesta */ }
+    }
     return json({ error: 'Payout error: ' + err.message }, 500);
   }
 }
