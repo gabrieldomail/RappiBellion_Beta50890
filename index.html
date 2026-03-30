@@ -1648,7 +1648,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpScoreEl)  fpScoreEl.textContent = '0000';
         if (fpTimerEl)  fpTimerEl.style.color = '';
         if (fpArena)    fpArena.classList.add('show');
-        _fpEnterFullscreen();
+        if (fpState.betMode) _fpEnterFullscreen();
 
         // Activar/desactivar panel rival según betMode
         _fpToggleRivalPanel(fpState.betMode, betId);
@@ -2240,7 +2240,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function fpCloseArena() {
         clearInterval(fpState.interval);
         if (fpArena)  fpArena.classList.remove('show');
-        _fpExitFullscreen();
+        if (fpState.betMode) _fpExitFullscreen();
         if (fpIframe) fpIframe.src = '';
         if (fpTimerEl) { fpTimerEl.style.color = ''; fpTimerEl.textContent = '00:00'; }
         if (fpControlSelector) fpControlSelector.classList.remove('show');
