@@ -5329,9 +5329,9 @@ footer::before {
     border: 2px solid #ffdc00;
     color: #ffdc00;
     font-family: 'Orbitron', monospace;
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 2px;
-    padding: 7px 14px;
+    padding: 8px 17px;
     cursor: pointer;
     box-shadow: 0 0 14px rgba(255, 220, 0, 0.3);
     transition: background 0.2s;
@@ -5343,11 +5343,122 @@ footer::before {
         top: auto;
         bottom: 70px;
         right: 10px;
-        font-size: 9px;
-        padding: 6px 11px;
+        font-size: 11px;
+        padding: 7px 13px;
         letter-spacing: 1px;
     }
 }
+
+/* ── Contact Modal — Cyberpunk Chaos Rebellion ───────────────────────────── */
+@keyframes cm-border-spin {
+    0%   { border-color: #ff0080; box-shadow: 0 0 50px #ff008099, inset 0 0 25px #ff008018; }
+    17%  { border-color: #ffdc00; box-shadow: 0 0 50px #ffdc0099, inset 0 0 25px #ffdc0018; }
+    34%  { border-color: #00ffff; box-shadow: 0 0 50px #00ffff99, inset 0 0 25px #00ffff18; }
+    50%  { border-color: #7fff00; box-shadow: 0 0 50px #7fff0099, inset 0 0 25px #7fff0018; }
+    67%  { border-color: #9d00ff; box-shadow: 0 0 50px #9d00ff99, inset 0 0 25px #9d00ff18; }
+    84%  { border-color: #ff3c5e; box-shadow: 0 0 50px #ff3c5e99, inset 0 0 25px #ff3c5e18; }
+    100% { border-color: #ff0080; box-shadow: 0 0 50px #ff008099, inset 0 0 25px #ff008018; }
+}
+@keyframes cm-slide {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+}
+@keyframes cm-glitch {
+    0%,87%,100% { text-shadow: 2px 0 #ff0080, -2px 0 #00ffff; transform: skewX(0deg); }
+    88% { text-shadow: 6px 0 #ff0080, -6px 0 #00ffff; transform: skewX(-5deg); }
+    90% { text-shadow: -6px 0 #ff0080, 6px 0 #7fff00; transform: skewX(5deg); }
+    92% { text-shadow: 4px 0 #9d00ff, -4px 0 #ffdc00; transform: skewX(-2deg); }
+    94% { text-shadow: 2px 0 #ff0080, -2px 0 #00ffff; transform: skewX(0deg); }
+}
+#contact-modal-inner {
+    background: #020408;
+    border: 3px solid #ff0080;
+    width: 100%;
+    max-width: 648px;
+    font-family: 'Courier New', monospace;
+    position: relative;
+    animation: cm-border-spin 3s linear infinite;
+    overflow: hidden;
+}
+#contact-modal-scanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.38) 2px,
+        rgba(0,0,0,0.38) 4px
+    );
+}
+#contact-modal-header {
+    padding: 11px 19px;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #ff0080, #9d00ff, #00ffff, #7fff00, #ffdc00, #ff3c5e, #ff0080);
+    background-size: 300% 100%;
+    animation: cm-slide 4s linear infinite;
+    color: #fff;
+    position: relative;
+    z-index: 10;
+}
+#contact-modal-header > span {
+    animation: cm-glitch 6s infinite;
+    display: inline-block;
+}
+#contact-modal-body {
+    padding: 24px 27px;
+    position: relative;
+    z-index: 2;
+}
+.ct-label   { font-size: 12px; letter-spacing: 3px; display: block; margin-bottom: 4px; font-weight: bold; }
+.ct-label-1 { color: #00ffff; text-shadow: 0 0 8px #00ffff99; }
+.ct-label-2 { color: #ff0080; text-shadow: 0 0 8px #ff008099; }
+.ct-label-3 { color: #7fff00; text-shadow: 0 0 8px #7fff0099; }
+.ct-label-4 { color: #9d00ff; text-shadow: 0 0 8px #9d00ff99; }
+.ct-label-5 { color: #ff3c5e; text-shadow: 0 0 8px #ff3c5e99; }
+.ct-field {
+    width: 100%; box-sizing: border-box;
+    background: rgba(0,0,0,0.72);
+    color: #e8e8e8;
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    padding: 8px 11px;
+    outline: none;
+    letter-spacing: 1px;
+    border: 1px solid;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+.ct-field-1 { border-color: rgba(0,255,255,0.3); }  .ct-field-1:focus { border-color: #00ffff; box-shadow: 0 0 14px #00ffff88; }
+.ct-field-2 { border-color: rgba(255,0,128,0.3); }  .ct-field-2:focus { border-color: #ff0080; box-shadow: 0 0 14px #ff008088; }
+.ct-field-3 { border-color: rgba(127,255,0,0.3); }  .ct-field-3:focus { border-color: #7fff00; box-shadow: 0 0 14px #7fff0088; }
+.ct-field-3 option { background: #020408; color: #e8e8e8; }
+.ct-field-4 { border-color: rgba(157,0,255,0.3); }  .ct-field-4:focus { border-color: #9d00ff; box-shadow: 0 0 14px #9d00ff88; }
+.ct-field-5 { border-color: rgba(255,60,94,0.3); }  .ct-field-5:focus { border-color: #ff3c5e;  box-shadow: 0 0 14px #ff3c5e88; }
+#ct-submit-btn {
+    width: 100%;
+    margin-top: 19px;
+    background: linear-gradient(90deg, #ff0080, #9d00ff, #00ffff, #7fff00, #ffdc00, #ff3c5e, #ff0080);
+    background-size: 300% 100%;
+    animation: cm-slide 3s linear infinite;
+    border: none;
+    color: #fff;
+    font-family: 'Orbitron', monospace;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    padding: 14px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+}
+#ct-submit-btn:hover  { opacity: 0.85; transform: scale(1.01); }
+#ct-submit-btn:active { transform: scale(0.98); }
 
 /* ── BOOST BUTTON (Arena) ── */
 #fp-boost-btn {

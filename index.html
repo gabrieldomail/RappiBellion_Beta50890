@@ -433,49 +433,40 @@
 
 <!-- === BOTÓN FLOTANTE: CONTACTO === -->
 <button id="contact-float-btn" title="Contacto / Soporte" onclick="document.getElementById('contact-modal').style.display='flex'">
-    ✉ SOPORTE
+    SOPORTE
 </button>
 
 <!-- === MODAL: FORMULARIO DE CONTACTO / TICKET === -->
 <div id="contact-modal" style="display:none;position:fixed;inset:0;z-index:10000;
-     background:rgba(0,0,0,0.82);align-items:center;justify-content:center;padding:16px;">
-  <div style="background:#050a0f;border:2px solid #ffdc00;box-shadow:0 0 30px rgba(255,220,0,0.4);
-              width:100%;max-width:480px;font-family:'Courier New',monospace;position:relative;">
+     background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:16px;">
+  <div id="contact-modal-inner">
+    <!-- Scanlines overlay -->
+    <div id="contact-modal-scanlines"></div>
     <!-- Header -->
-    <div style="background:#ffdc00;color:#000;padding:8px 14px;font-size:12px;font-weight:bold;
-                letter-spacing:2px;display:flex;justify-content:space-between;align-items:center;">
-      <span>[SOPORTE // RAPPIBELLION_TICKET]</span>
+    <div id="contact-modal-header">
+      <span>npx RAPPIBELLION_SYS - SOPORTE  ver.4.09</span>
       <button onclick="document.getElementById('contact-modal').style.display='none'"
-              style="background:none;border:none;font-size:16px;font-weight:bold;cursor:pointer;
+              style="background:none;border:none;font-size:22px;font-weight:bold;cursor:pointer;
                      color:#000;line-height:1;padding:0 4px;">✕</button>
     </div>
     <!-- Body -->
-    <div style="padding:18px 20px;">
+    <div id="contact-modal-body">
       <div id="contact-form-wrap">
-        <p style="color:rgba(255,220,0,0.6);font-size:9px;letter-spacing:3px;margin:0 0 14px;">
-          // COMPLETÁ EL FORMULARIO — TE RESPONDEMOS A LA BREVEDAD //
+        <p style="color:#ff0080;font-size:12px;letter-spacing:3px;margin:0 0 19px;text-shadow:0 0 10px #ff0080;">
+          &gt;&gt; INICIANDO PROTOCOLO DE CONTACTO... BIENVENIDO A LA REBELIÓN &lt;&lt;
         </p>
-        <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;flex-direction:column;gap:14px;">
           <div>
-            <label style="color:#ffdc00;font-size:9px;letter-spacing:2px;display:block;margin-bottom:3px;">WALLET</label>
-            <input id="ct-wallet" type="text" placeholder="0x..." maxlength="42"
-              style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.5);
-                     border:1px solid rgba(255,220,0,0.4);color:#ffdc00;font-family:'Courier New',monospace;
-                     font-size:11px;padding:6px 8px;outline:none;letter-spacing:1px;">
+            <label class="ct-label ct-label-1">WALLET</label>
+            <input id="ct-wallet" type="text" placeholder="0x..." maxlength="42" class="ct-field ct-field-1">
           </div>
           <div>
-            <label style="color:#ffdc00;font-size:9px;letter-spacing:2px;display:block;margin-bottom:3px;">EMAIL</label>
-            <input id="ct-email" type="email" placeholder="tu@mail.com"
-              style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.5);
-                     border:1px solid rgba(255,220,0,0.4);color:#ffdc00;font-family:'Courier New',monospace;
-                     font-size:11px;padding:6px 8px;outline:none;letter-spacing:1px;">
+            <label class="ct-label ct-label-2">EMAIL</label>
+            <input id="ct-email" type="email" placeholder="tu@mail.com" class="ct-field ct-field-2">
           </div>
           <div>
-            <label style="color:#ffdc00;font-size:9px;letter-spacing:2px;display:block;margin-bottom:3px;">ASUNTO</label>
-            <select id="ct-subject"
-              style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.5);
-                     border:1px solid rgba(255,220,0,0.4);color:#ffdc00;font-family:'Courier New',monospace;
-                     font-size:11px;padding:6px 8px;outline:none;letter-spacing:1px;">
+            <label class="ct-label ct-label-3">ASUNTO</label>
+            <select id="ct-subject" class="ct-field ct-field-3">
               <option value="">— SELECCIONÁ —</option>
               <option value="Problema con pago">Problema con pago</option>
               <option value="Bug en el juego">Bug en el juego</option>
@@ -487,45 +478,31 @@
             </select>
           </div>
           <div>
-            <label style="color:#ffdc00;font-size:9px;letter-spacing:2px;display:block;margin-bottom:3px;">BET ID <span style="color:rgba(255,220,0,0.35)">(opcional)</span></label>
-            <input id="ct-betid" type="text" placeholder="Solo si el reclamo es sobre una apuesta específica"
-              style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.5);
-                     border:1px solid rgba(255,220,0,0.4);color:#ffdc00;font-family:'Courier New',monospace;
-                     font-size:11px;padding:6px 8px;outline:none;letter-spacing:1px;">
+            <label class="ct-label ct-label-4">BET ID <span style="color:rgba(157,0,255,0.45);font-size:11px;">(opcional)</span></label>
+            <input id="ct-betid" type="text" placeholder="Solo si el reclamo es sobre una apuesta específica" class="ct-field ct-field-4">
           </div>
           <div>
-            <label style="color:#ffdc00;font-size:9px;letter-spacing:2px;display:block;margin-bottom:3px;">MENSAJE</label>
-            <textarea id="ct-message" rows="4" placeholder="Describí tu problema o consulta..."
-              style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.5);resize:vertical;
-                     border:1px solid rgba(255,220,0,0.4);color:#ffdc00;font-family:'Courier New',monospace;
-                     font-size:11px;padding:6px 8px;outline:none;letter-spacing:1px;"></textarea>
+            <label class="ct-label ct-label-5">MENSAJE</label>
+            <textarea id="ct-message" rows="4" placeholder="Describí tu problema o consulta..." class="ct-field ct-field-5" style="resize:vertical;"></textarea>
           </div>
         </div>
-        <div id="contact-error" style="color:#ff3c5e;font-size:10px;margin-top:8px;display:none;letter-spacing:1px;"></div>
-        <button onclick="submitContactForm()"
-          style="width:100%;margin-top:14px;background:rgba(255,220,0,0.12);
-                 border:1px solid #ffdc00;color:#ffdc00;font-family:'Orbitron',monospace;
-                 font-size:11px;letter-spacing:3px;padding:10px;cursor:pointer;
-                 text-shadow:0 0 8px #ffdc00;transition:background 0.2s;"
-          onmouseover="this.style.background='rgba(255,220,0,0.25)'"
-          onmouseout="this.style.background='rgba(255,220,0,0.12)'">
-          ENVIAR TICKET
-        </button>
+        <div id="contact-error" style="color:#ff3c5e;font-size:13px;margin-top:11px;display:none;letter-spacing:1px;text-shadow:0 0 6px #ff3c5e;"></div>
+        <button id="ct-submit-btn" onclick="submitContactForm()">ENVIAR TICKET A LA REBELIÓN</button>
       </div>
       <!-- Confirmación post-envío -->
-      <div id="contact-success" style="display:none;text-align:center;padding:20px 0;">
-        <div style="font-size:28px;margin-bottom:12px;">✅</div>
-        <div style="color:#00ff41;font-size:12px;letter-spacing:3px;margin-bottom:8px;">TICKET GENERADO</div>
-        <div id="contact-ticket-id" style="color:#ffdc00;font-size:18px;font-weight:bold;
-             letter-spacing:4px;font-family:'Orbitron',monospace;margin-bottom:12px;"></div>
-        <div style="color:rgba(255,255,255,0.5);font-size:10px;letter-spacing:1px;line-height:1.6;">
-          Te enviamos la confirmación por email.<br>
+      <div id="contact-success" style="display:none;text-align:center;padding:27px 0;">
+        <div style="font-size:38px;margin-bottom:16px;">⚡</div>
+        <div style="color:#7fff00;font-size:16px;letter-spacing:4px;margin-bottom:11px;text-shadow:0 0 14px #7fff00;">TICKET GENERADO — LA REBELIÓN LO RECIBIÓ</div>
+        <div id="contact-ticket-id" style="color:#00ffff;font-size:24px;font-weight:bold;
+             letter-spacing:5px;font-family:'Orbitron',monospace;margin-bottom:16px;text-shadow:0 0 16px #00ffff;"></div>
+        <div style="color:rgba(255,255,255,0.6);font-size:14px;letter-spacing:1px;line-height:1.8;">
+          Confirmación enviada por email.<br>
           Respondemos en menos de 48hs.
         </div>
         <button onclick="document.getElementById('contact-modal').style.display='none';document.getElementById('contact-form-wrap').style.display='block';document.getElementById('contact-success').style.display='none';"
-          style="margin-top:16px;background:none;border:1px solid rgba(255,220,0,0.4);color:#ffdc00;
-                 font-family:'Courier New',monospace;font-size:10px;letter-spacing:2px;
-                 padding:6px 14px;cursor:pointer;">CERRAR</button>
+          style="margin-top:22px;background:none;border:1px solid #7fff00;color:#7fff00;
+                 font-family:'Courier New',monospace;font-size:14px;letter-spacing:3px;
+                 padding:8px 19px;cursor:pointer;text-shadow:0 0 8px #7fff00;">CERRAR</button>
       </div>
     </div>
   </div>
