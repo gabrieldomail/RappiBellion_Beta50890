@@ -97,33 +97,6 @@
             </div>
         </section>
 
-<!-- ═══════════════════════════════════════════
-     LEADERBOARD "LOS MÁS VIVOS"
-═══════════════════════════════════════════ -->
-<section id="leaderboard" class="container section-separator">
-    <h2 class="glitch-title">[ LOS MÁS VIVOS // REBEL_RANKING ]</h2>
-    <p style="color:var(--color-caos-amarillo);font-family:'Courier New',monospace;font-size:0.82em;letter-spacing:4px;margin-top:-10px;">
-        // WALLETS QUE ESTÁN GANANDO LA GUERRA //
-    </p>
-    <div class="lb-container">
-        <div id="lb-status-bar" style="font-size:0.68em;letter-spacing:3px;color:rgba(0,255,65,0.4);text-align:right;margin-bottom:12px;font-family:'Courier New',monospace;">[ EN ESPERA... ]</div>
-        <div class="lb-header-row">
-            <span>#</span>
-            <span>WALLET // ID REBELDE</span>
-            <span>WINS</span>
-            <span>USDT GANADO</span>
-            <span>DUELOS</span>
-        </div>
-        <div id="leaderboard-list">
-            <div style="text-align:center;padding:40px;color:#333;font-family:'Courier New',monospace;font-size:0.85em;letter-spacing:2px;">[ DESPLAZATE HASTA AQUÍ PARA CARGAR EL RANKING ]</div>
-        </div>
-        <div style="text-align:center;margin-top:16px;">
-            <button class="lb-refresh-btn" onclick="loadLeaderboard()">↺ REFRESH_RANKING</button>
-            <p style="font-size:0.72em;color:#444;font-family:'Courier New',monospace;margin-top:12px;letter-spacing:2px;">// ranking en tiempo real desde Firebase //</p>
-        </div>
-    </div>
-</section>
-
 <section id="concept" class="container section-separator">
     <h2 class="glitch-title">El "Play-to-Earn" ha muerto. Bienvenido al "THINK-TO-EARN".</h2>
     
@@ -431,83 +404,6 @@
     </div>
 </div>
 
-<!-- === BOTÓN FLOTANTE: CONTACTO === -->
-<button id="contact-float-btn" title="Contacto / Soporte" onclick="document.getElementById('contact-modal').style.display='flex'">
-    SOPORTE
-</button>
-
-<!-- === MODAL: FORMULARIO DE CONTACTO / TICKET === -->
-<div id="contact-modal" style="display:none;position:fixed;inset:0;z-index:10000;
-     background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:16px;">
-  <div id="contact-modal-inner">
-    <!-- Scanlines overlay -->
-    <div id="contact-modal-scanlines"></div>
-    <!-- Header -->
-    <div id="contact-modal-header">
-      <span>npx RAPPIBELLION_SYS - SOPORTE  ver.4.09</span>
-      <button onclick="document.getElementById('contact-modal').style.display='none'"
-              style="background:none;border:none;font-size:22px;font-weight:bold;cursor:pointer;
-                     color:#000;line-height:1;padding:0 4px;">✕</button>
-    </div>
-    <!-- Body -->
-    <div id="contact-modal-body">
-      <div id="contact-form-wrap">
-        <p style="color:#ff0080;font-size:12px;letter-spacing:3px;margin:0 0 19px;text-shadow:0 0 10px #ff0080;">
-          &gt;&gt; INICIANDO PROTOCOLO DE CONTACTO... BIENVENIDO A LA REBELIÓN &lt;&lt;
-        </p>
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <div>
-            <label class="ct-label ct-label-1">WALLET</label>
-            <input id="ct-wallet" type="text" placeholder="0x..." maxlength="42" class="ct-field ct-field-1">
-          </div>
-          <div>
-            <label class="ct-label ct-label-2">EMAIL</label>
-            <input id="ct-email" type="email" placeholder="tu@mail.com" class="ct-field ct-field-2">
-          </div>
-          <div>
-            <label class="ct-label ct-label-3">ASUNTO</label>
-            <select id="ct-subject" class="ct-field ct-field-3">
-              <option value="">— SELECCIONÁ —</option>
-              <option value="Problema con pago">Problema con pago</option>
-              <option value="Bug en el juego">Bug en el juego</option>
-              <option value="Reclamo de apuesta">Reclamo de apuesta</option>
-              <option value="Consulta sobre $RPPI">Consulta sobre $RPPI</option>
-              <option value="Quiero unirme al equipo">Quiero unirme al equipo</option>
-              <option value="Consulta general">Consulta general</option>
-              <option value="Otro">Otro</option>
-            </select>
-          </div>
-          <div>
-            <label class="ct-label ct-label-4">BET ID <span style="color:rgba(157,0,255,0.45);font-size:11px;">(opcional)</span></label>
-            <input id="ct-betid" type="text" placeholder="Solo si el reclamo es sobre una apuesta específica" class="ct-field ct-field-4">
-          </div>
-          <div>
-            <label class="ct-label ct-label-5">MENSAJE</label>
-            <textarea id="ct-message" rows="4" placeholder="Describí tu problema o consulta..." class="ct-field ct-field-5" style="resize:vertical;"></textarea>
-          </div>
-        </div>
-        <div id="contact-error" style="color:#ff3c5e;font-size:13px;margin-top:11px;display:none;letter-spacing:1px;text-shadow:0 0 6px #ff3c5e;"></div>
-        <button id="ct-submit-btn" onclick="submitContactForm()">ENVIAR TICKET A LA REBELIÓN</button>
-      </div>
-      <!-- Confirmación post-envío -->
-      <div id="contact-success" style="display:none;text-align:center;padding:27px 0;">
-        <div style="font-size:38px;margin-bottom:16px;">⚡</div>
-        <div style="color:#7fff00;font-size:16px;letter-spacing:4px;margin-bottom:11px;text-shadow:0 0 14px #7fff00;">TICKET GENERADO — LA REBELIÓN LO RECIBIÓ</div>
-        <div id="contact-ticket-id" style="color:#00ffff;font-size:24px;font-weight:bold;
-             letter-spacing:5px;font-family:'Orbitron',monospace;margin-bottom:16px;text-shadow:0 0 16px #00ffff;"></div>
-        <div style="color:rgba(255,255,255,0.6);font-size:14px;letter-spacing:1px;line-height:1.8;">
-          Confirmación enviada por email.<br>
-          Respondemos en menos de 48hs.
-        </div>
-        <button onclick="document.getElementById('contact-modal').style.display='none';document.getElementById('contact-form-wrap').style.display='block';document.getElementById('contact-success').style.display='none';"
-          style="margin-top:22px;background:none;border:1px solid #7fff00;color:#7fff00;
-                 font-family:'Courier New',monospace;font-size:14px;letter-spacing:3px;
-                 padding:8px 19px;cursor:pointer;text-shadow:0 0 8px #7fff00;">CERRAR</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- === VENTANA FLOTANTE: LOBBY DE APUESTAS === -->
 <div id="lobby-float-window" class="lobby-float-hidden minimized">
     <div class="lobby-float-terminal">
@@ -567,76 +463,6 @@
                        font-family:'Courier New',monospace;font-size:10px;">
                 <span style="color:rgba(0,255,255,0.3);">[ ESPERANDO OBJETIVO... ]</span>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- 🟩 TETRIS-CIPHER — promo widget (siempre visible) -->
-<div id="tetris-promo-window">
-    <div class="tetris-promo-terminal">
-        <div class="tetris-promo-hdr">
-            <span>TETRIS-CIPHER</span>
-            <button onclick="document.getElementById('tetris-promo-window').style.display='none'" style="background:none;border:none;color:rgba(0,255,65,0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
-        </div>
-        <div class="tetris-promo-body">
-            <div class="tetris-promo-img-wrap">
-                <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width:100%;height:auto;display:block;opacity:0.85;">
-            </div>
-            <p class="tetris-promo-tagline">Organiza el código encriptado<br>antes de que el sistema colapse.</p>
-            <div class="tetris-promo-date-box">
-                <span class="tetris-promo-date-label">DEMO DISPONIBLE</span>
-                <span class="tetris-promo-date">16.04.2026</span>
-            </div>
-            <p class="tetris-promo-sub">// THINK TO EARN — modo T2E en beta cerrada</p>
-        </div>
-    </div>
-</div>
-
-<!-- ⚔ DUEL INBOX — trigger button (visible when wallet connected) -->
-<button id="duel-trigger-btn" onclick="toggleDuelInbox()" title="Bandeja de Desafíos">
-    DUELOS <span id="duel-badge">0</span>
-</button>
-
-<!-- ⚔ DUEL INBOX — float window -->
-<div id="duel-inbox-window" class="minimized">
-    <div class="duel-inbox-terminal">
-        <div class="duel-inbox-hdr">
-            <span style="font-size:0.81em;letter-spacing:4px;font-family:'Orbitron',monospace;color:#ff00ff;text-shadow:0 0 8px #ff00ff, 0 0 16px #00ffff, .05em 0 0 rgba(255,255,0,.6);">[ DUEL_INBOX // DESAFÍOS ]</span>
-            <div style="display:flex;gap:6px;align-items:center;">
-                <span id="duel-badge2" style="display:none;background:var(--color-primario);color:#fff;font-size:0.91em;padding:1px 9px;border-radius:10px;">0</span>
-                <button onclick="document.getElementById('duel-inbox-window').classList.add('minimized')"
-                    style="background:none;border:none;color:rgba(0,255,65,0.5);font-size:18px;cursor:pointer;line-height:1;">✕</button>
-            </div>
-        </div>
-        <div class="duel-inbox-tabs">
-            <button class="duel-inbox-tab active" id="dtab-inbox" onclick="switchDuelTab('inbox')">INBOX</button>
-            <button class="duel-inbox-tab" id="dtab-send" onclick="switchDuelTab('send')">ENVIAR DESAFÍO</button>
-        </div>
-        <!-- INBOX TAB -->
-        <div id="duel-tab-inbox" class="duel-inbox-body">
-            <div id="duel-inbox-list" style="font-size:1.07em;color:#444;letter-spacing:3px;text-align:center;padding:26px 0;">
-                [ CONECTA TU BILLETERA ]
-            </div>
-        </div>
-        <!-- SEND TAB -->
-        <div id="duel-tab-send" class="duel-inbox-body" style="display:none;">
-            <label class="duel-form-label">WALLET DEL RIVAL</label>
-            <input id="duel-to-wallet" class="duel-form-input" type="text" placeholder="0x..." maxlength="42">
-            <label class="duel-form-label">JUEGO</label>
-            <select id="duel-game" class="duel-form-input" style="color:var(--color-caos-verde);background:#0a0a0a;">
-                <option value="packack">PAC-HACK DEATH</option>
-                <option value="spacebreaker">SPACE-BREAKER</option>
-                <option value="tetriscipher">TETRIS-CIPHER</option>
-                <option value="memorybreach">MEMORY-BREACH</option>
-            </select>
-            <label class="duel-form-label">APUESTA (USDT)</label>
-            <input id="duel-amount" class="duel-form-input" type="number" min="1" placeholder="10">
-            <label class="duel-form-label">FECHA Y HORA DEL DUELO</label>
-            <input id="duel-datetime" class="duel-form-input" type="datetime-local" style="color-scheme:dark;">
-            <label class="duel-form-label">MENSAJE OPCIONAL</label>
-            <input id="duel-msg" class="duel-form-input" type="text" maxlength="80" placeholder="te espero mañana a las 9pm...">
-            <button class="duel-send-btn" onclick="sendDuelInvite()">⚔ ENVIAR DESAFÍO</button>
-            <p id="duel-send-status" style="font-size:0.91em;text-align:center;letter-spacing:3px;min-height:23px;margin-top:8px;"></p>
         </div>
     </div>
 </div>
@@ -1507,21 +1333,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // REGRESSION FIX: tracks which betId the arena was last opened for
     var _fpArenaOpenedForBet = null;
 
-    // ── Fullscreen helpers — ocultan el chrome del navegador durante el duelo ────
-    function _fpEnterFullscreen() {
-        var el = document.documentElement;
-        try {
-            if      (el.requestFullscreen)       el.requestFullscreen({ navigationUI: 'hide' });
-            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-        } catch(e) {}
-    }
-    function _fpExitFullscreen() {
-        try {
-            if      (document.exitFullscreen)       document.exitFullscreen();
-            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-        } catch(e) {}
-    }
-
     function fpOpenArena(betId) {
         // REGRESSION FIX: re-entrancy guard - if arena already open for this betId, bail out.
         // Prevents infinite loop: betAccepted -> fpOpenArena -> _fpSetupBetSync -> Firebase write
@@ -1648,7 +1459,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpScoreEl)  fpScoreEl.textContent = '0000';
         if (fpTimerEl)  fpTimerEl.style.color = '';
         if (fpArena)    fpArena.classList.add('show');
-        if (fpState.betMode) _fpEnterFullscreen();
 
         // Activar/desactivar panel rival según betMode
         _fpToggleRivalPanel(fpState.betMode, betId);
@@ -1658,94 +1468,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             setTimeout(fpStartCountdown, 1200);
         }
-    }
-
-    // ── PREVIEW MODE — puerta trasera para ver la UI del arena T2E sin apuesta ───────────
-    // Activar: añadir ?arena-preview a la URL, ej: index.html?arena-preview
-    function fpOpenArenaPreview() {
-        // Datos fake para poblar el rival panel sin Firebase
-        window._currentAcceptedBet = {
-            creator:  '0xPR3V1EW000000000000000000000000000D3MO',
-            acceptor: '0xV1S1TA000000000000000000000000000B3TA',
-            amount:   '10',
-            status:   'in_progress'
-        };
-        const dur = 300;
-        fpState = {
-            timeLeft: dur, totalTime: dur, running: false, ended: false,
-            interval: null, score: 0, chaosLevel: 0,
-            betId: 'PREVIEW_00', betMode: true, chaosUnlocked: false,
-            previewMode: true
-        };
-        window.fpState = fpState;
-
-        // Limpieza estándar (igual que fpOpenArena)
-        var _dynaWrap = document.getElementById('fp-chaos-dynabtn-wrap');
-        if (_dynaWrap) _dynaWrap.style.display = 'none';
-        var _chaosBar = document.getElementById('fp-chaos-bar');
-        if (_chaosBar) { _chaosBar.classList.remove('apocalypse'); _chaosBar.style.boxShadow = ''; }
-        var _chaosPct = document.getElementById('fp-chaos-pct');
-        if (_chaosPct) _chaosPct.textContent = '0%';
-        const tangoAudioPV = document.getElementById('tango-audio');
-        if (tangoAudioPV && !tangoAudioPV.paused) tangoAudioPV.muted = true;
-        const _chatFabPV = document.getElementById('gemini-chat-fab');
-        if (_chatFabPV) _chatFabPV.style.display = 'none';
-        document.body.style.overflow    = 'hidden';
-        document.body.style.touchAction = 'none';
-
-        // Intentar lock landscape igual que en duelo real
-        if (window.innerWidth <= 768 || window.innerHeight <= 768) {
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('landscape').catch(function(){});
-            }
-        }
-
-        // Cargar pac-hack REAL (no freeplay) para mostrar la UI completa del T2E
-        if (fpIframe) {
-            fpIframe.src = 'pac-hack/game.html?player=p1';
-            fpIframe.addEventListener('load', function onPVLoad() {
-                fpIframe.removeEventListener('load', onPVLoad);
-                setTimeout(function() { fpIframe.focus(); }, 300);
-            });
-        }
-
-        // Renderizar timer y mostrar arena
-        fpRenderTimer(dur);
-        if (fpTimerBar) { fpTimerBar.style.transition = 'none'; fpTimerBar.style.width = '100%'; }
-        if (fpScoreEl) fpScoreEl.textContent = '0000';
-        if (fpArena) fpArena.classList.add('show');
-        _fpEnterFullscreen();
-
-        // Activar panel rival con datos fake
-        _fpToggleRivalPanel(true, 'PREVIEW_00');
-
-        // Marcar header de la terminal
-        var termHeader = fpArena ? fpArena.querySelector('.terminal-header-caos span:first-child') : null;
-        if (termHeader) termHeader.textContent = '[PAC-HACK: DEATH // ⚡ PREVIEW_MODE]';
-
-        // Mostrar boosts visualmente para ver la UI completa
-        var boostWrap = document.getElementById('fp-boost-wrap');
-        if (boostWrap) boostWrap.style.display = 'flex';
-        var boostVal = document.getElementById('fp-boost-val');
-        if (boostVal) boostVal.textContent = '3/3';
-        var boostOverlay = document.getElementById('fp-boost-overlay-btn');
-        var boostBadge   = document.getElementById('fp-boost-badge');
-        if (boostOverlay) boostOverlay.style.display = 'block';
-        if (boostBadge)   { boostBadge.style.display = 'block'; boostBadge.textContent = 'x3'; }
-
-        // Badge flotante de preview
-        var badge = document.getElementById('fp-preview-badge');
-        if (!badge) {
-            badge = document.createElement('div');
-            badge.id = 'fp-preview-badge';
-            badge.style.cssText = 'position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(248,255,43,0.92);color:#000;font-family:"Orbitron",monospace;font-size:10px;font-weight:700;letter-spacing:3px;padding:3px 14px;border-radius:3px;pointer-events:none;white-space:nowrap;';
-            badge.textContent = '// PREVIEW — SIN APUESTA //';
-            document.body.appendChild(badge);
-        }
-        badge.style.display = 'block';
-
-        // Arrancar countdown directamente — sin esperar Firebase
-        setTimeout(fpStartCountdown, 1200);
     }
 
     // ── RIVAL PANEL ──────────────────────────────────────────────
@@ -2240,7 +1962,6 @@ document.addEventListener('DOMContentLoaded', function() {
 function fpCloseArena() {
         clearInterval(fpState.interval);
         if (fpArena)  fpArena.classList.remove('show');
-        if (fpState.betMode) _fpExitFullscreen();
         if (fpIframe) fpIframe.src = '';
         if (fpTimerEl) { fpTimerEl.style.color = ''; fpTimerEl.textContent = '00:00'; }
         if (fpControlSelector) fpControlSelector.classList.remove('show');
@@ -2278,9 +1999,6 @@ function fpCloseArena() {
         // REGRESSION FIX: reset guards so next match can open fresh
         _fpArenaOpenedForBet = null;
         if (typeof _fpSyncInitiatedBets !== 'undefined') _fpSyncInitiatedBets.clear();
-        // Limpiar badge de preview si estaba activo
-        var _previewBadge = document.getElementById('fp-preview-badge');
-        if (_previewBadge) _previewBadge.style.display = 'none';
         // Restaurar lobby de apuestas al cerrar arena
         if (typeof showLobbyFloat === 'function') showLobbyFloat();
     }
@@ -2288,16 +2006,8 @@ function fpCloseArena() {
     function fpRestart() { clearInterval(fpState.interval); if (fpCdOverlay) fpCdOverlay.classList.remove('show'); fpOpenArena(); }
 
     // Exponer globalmente para que t2e-integration.js pueda llamarlas desde fuera del closure
-    window.fpOpenArena        = fpOpenArena;
-    window.fpCloseArena       = fpCloseArena;
-    window.fpOpenArenaPreview = fpOpenArenaPreview;
-
-    // ── Backdoor: ?arena-preview en la URL abre el arena en modo preview ─────
-    if (new URLSearchParams(window.location.search).has('arena-preview')) {
-        window.addEventListener('load', function() {
-            setTimeout(fpOpenArenaPreview, 600);
-        });
-    }
+    window.fpOpenArena  = fpOpenArena;
+    window.fpCloseArena = fpCloseArena;
 
     window.addEventListener('message', function(e) {
         const d = e.data;
@@ -2763,9 +2473,9 @@ function fpCloseArena() {
                 <div class="token-advantages">
                     <h4>Ventajas Clave del Contrato</h4>
                     <ul>
-                        <li><strong>SUMINISTRO FIJO:</strong> El contrato no permite crear nuevos tokens. El suministro total de 150,000,000 $RPPI es <strong>fijo para siempre</strong>.</li>
-                        <li><strong>CONSTRUIDO EN SUPERCHAIN:</strong> Nuestro contrato opera en la red <strong>Optimism (OP Mainnet)</strong>, garantizando transacciones ultra-rápidas y de bajo costo.</li>
-                        <li><strong>LIQUIDEZ ASEGURADA:</strong> Cumplimos con nuestro compromiso al destinar un 5% del suministro total para la <strong>liquidez inicial</strong> en Uniswap.</li>
+                        <li><strong>SUMINISTRO FIJO:</strong> El contrato no permite crear nuevos tokens. El suministro total de 150,000,000 $RPPI es **fijo para siempre**.</li>
+                        <li><strong>CONSTRUIDO EN SUPERCHAIN:</strong> Nuestro contrato opera en la red **Optimism (OP Mainnet)**, garantizando transacciones ultra-rápidas y de bajo costo.</li>
+                        <li><strong>LIQUIDEZ ASEGURADA:</strong> Cumplimos con nuestro compromiso al destinar un 5% del suministro total para la **liquidez inicial** en Uniswap.</li>
                     </ul>
                 </div>
             </div>
@@ -2836,19 +2546,16 @@ function fpCloseArena() {
         <h2 class="glitch-title">PLAN DE BATALLA (ROADMAP)</h2>
         <div class="roadmap-timeline">
             <div class="roadmap-item">
-                <span class="roadmap-status done">✓ COMPLETADO</span>
                 <h4>Q4 2025: LA REBELIÓN COMIENZA</h4>
-                <p>Lanzamiento del Sitio Web, Discord y Whitepaper. Beta jugable de &ldquo;The Circuit&rdquo; en la web. Venta inicial de $RPPI.</p>
+                <p>Lanzamiento del Sitio Web, Discord y Whitepaper. Beta jugable de "The Circuit" en la web. Venta inicial de $RPPI.</p>
             </div>
             <div class="roadmap-item">
-                <span class="roadmap-status active">● EN PROGRESO</span>
                 <h4>Q1 2026: CAPÍTULO I</h4>
                 <p>Lanzamiento de la Beta Abierta de Rappibellion Capítulo I: TESLA_DRONES para Android.</p>
             </div>
             <div class="roadmap-item">
-                <span class="roadmap-status queued">// PENDIENTE</span>
                 <h4>Q2 2026: LA GUERRA DE FACCIÓN</h4>
-                <p>Lanzamiento del Capítulo II: &ldquo;Who, where or when is Rappia?&rdquo;. Implementación de la economía T2E completa.</p>
+                <p>Lanzamiento del Capítulo II: "Who, where or when is Rappia?". Implementación de la economía T2E completa.</p>
             </div>
         </div>
     </section>
@@ -3073,7 +2780,7 @@ updateMuteBtnVisibility();
                 Rappibellion está creciendo. Buscamos a los 3 rebeldes más apasionados por el T2E y el gaming arcade para unirse a nuestras filas (1 por mes).
             </p>
             <p>
-                El proceso es simple: Haz clic en "APLICAR AHORA" para ir a nuestro formulario seguro. Tu CV y datos personales se enviarán de forma <strong>privada</strong> a nuestro mail (<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5b32353d341b293a2b2b32393e373732343575383436">[email&#160;protected]</a>). Tu <strong>argumento de "por qué quieres unirte"</strong> se mostrará públicamente abajo.
+                El proceso es simple: Haz clic en "APLICAR AHORA" para ir a nuestro formulario seguro. Tu CV y datos personales se enviarán de forma **privada** a nuestro mail (`<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5b32353d341b293a2b2b32393e373732343575383436">[email&#160;protected]</a>`). Tu **argumento de "por qué quieres unirte"** se mostrará públicamente abajo.
             </p>
             <a href="/cdn-cgi/l/email-protection#89e0e7efe6c9fbe8f9f9e0ebece5e5e0e6e7a7eae6e4" target="_blank" class="cta-button">
                 APLICAR AHORA (Formulario de Reclutamiento)
@@ -3123,87 +2830,46 @@ updateMuteBtnVisibility();
 </section>
 
 <section id="faq" class="container section-separator">
-    <h2 class="glitch-title">[ INTEL_DATABASE // FAQ ]</h2>
-    <div class="faq-accordion">
-
-        <div class="faq-acc-item open">
-            <button class="faq-acc-trigger" onclick="this.parentElement.classList.toggle('open')">
-                <i class="faq-acc-index">[01]</i>
-                <span style="flex:1">¿Cuándo sale el juego?</span>
-                <i class="faq-acc-arrow">▶</i>
-            </button>
-            <div class="faq-acc-body">
-                Nuestro objetivo es lanzar la Beta Abierta del Capítulo I a principios de 2026. ¡Consulta nuestro Roadmap para más detalles!
-            </div>
+    <h2>PREGUNTAS FRECUENTES (FAQ)</h2>
+    <div class="faq-grid">
+        <div class="faq-item">
+            <h4>¿Cuándo sale el juego?</h4>
+            <p>Nuestro objetivo es lanzar la Beta Abierta del Capítulo I a principios de 2026. ¡Consulta nuestro Roadmap para más detalles!</p>
         </div>
-
-        <div class="faq-acc-item">
-            <button class="faq-acc-trigger" onclick="this.parentElement.classList.toggle('open')">
-                <i class="faq-acc-index">[02]</i>
-                <span style="flex:1">¿En qué blockchain está $RPPI?</span>
-                <i class="faq-acc-arrow">▶</i>
-            </button>
-            <div class="faq-acc-body">
-                Rappia ($RPPI) opera en la red <strong>Optimism (OP Mainnet)</strong>, parte del ecosistema Superchain, garantizando velocidad y bajas comisiones.
-            </div>
+        <div class="faq-item">
+            <h4>¿En qué blockchain está $RPPI?</h4>
+            <p>Rappia ($RPPI) opera en la red **Optimism (OP Mainnet)**, parte del ecosistema Superchain, garantizando velocidad y bajas comisiones.</p>
         </div>
-
-        <div class="faq-acc-item">
-            <button class="faq-acc-trigger" onclick="this.parentElement.classList.toggle('open')">
-                <i class="faq-acc-index">[03]</i>
-                <span style="flex:1">¿Necesito dinero para jugar?</span>
-                <i class="faq-acc-arrow">▶</i>
-            </button>
-            <div class="faq-acc-body">
-                ¡No! Rappibellion es <strong>Free-to-Play</strong>. Puedes disfrutar de toda la historia y los minijuegos gratis. El modelo es <strong>Think-to-Earn (T2E)</strong>: si eres inteligente y estratégico, <em>puedes</em> ganar dinero real.
-            </div>
+        <div class="faq-item">
+            <h4>¿Necesito dinero para jugar?</h4>
+            <p>¡No! Rappibellion es **Free-to-Play**. Puedes disfrutar de toda la historia y los minijuegos gratis. El modelo es **Think-to-Earn (T2E)**: si eres inteligente y estratégico, *puedes* ganar dinero real.</p>
         </div>
-
-        <div class="faq-acc-item">
-            <button class="faq-acc-trigger" onclick="this.parentElement.classList.toggle('open')">
-                <i class="faq-acc-index">[04]</i>
-                <span style="flex:1">¿Cómo compro $RPPI?</span>
-                <i class="faq-acc-arrow">▶</i>
-            </button>
-            <div class="faq-acc-body">
-                Podrás comprar $RPPI de forma segura a través de exchanges descentralizados como Uniswap. Habilitaremos un botón directo en la sección de Economía cuando lancemos la liquidez inicial.
-            </div>
+        <div class="faq-item">
+            <h4>¿Cómo compro $RPPI?</h4>
+            <p>Podrás comprar $RPPI de forma segura a través de exchanges descentralizados como Uniswap. Habilitaremos un botón directo en la sección de Economía cuando lancemos la liquidez inicial.</p>
         </div>
-
-        <div class="faq-acc-item">
-            <button class="faq-acc-trigger" onclick="this.parentElement.classList.toggle('open')">
-                <i class="faq-acc-index">[05]</i>
-                <span style="flex:1">¿Qué es &ldquo;Think-to-Earn&rdquo; (T2E) y por qué es mejor que P2E?</span>
-                <i class="faq-acc-arrow">▶</i>
-            </button>
-            <div class="faq-acc-body">
-                El &ldquo;Play-to-Earn&rdquo; (P2E) tradicional falla porque es un trabajo aburrido (&ldquo;grind&rdquo;). Nuestro modelo <strong>&ldquo;Think-to-Earn&rdquo; (T2E)</strong> es diferente: recompensamos tu <strong>habilidad, estrategia e inteligencia</strong> en nuestros mini-juegos T2E, no el tiempo que pasas repitiendo tareas.
+        <div class="faq-item">
+                <h4>¿Qué es "Think-to-Earn" (T2E) y por qué es mejor que P2E?</h4>
+                <p>
+                    El "Play-to-Earn" (P2E) tradicional falla porque es un trabajo aburrido ("grind"). Nuestro modelo **"Think-to-Earn" (T2E)** es diferente: recompensamos tu **habilidad, estrategia e inteligencia** en nuestros mini-juegos T2E, no el tiempo que pasas repitiendo tareas.
+                </p>
             </div>
-        </div>
 
-        <div class="faq-acc-item">
-            <button class="faq-acc-trigger" onclick="this.parentElement.classList.toggle('open')">
-                <i class="faq-acc-index">[06]</i>
-                <span style="flex:1">¿Cómo es el staking? ¿Es otra economía inflacionaria?</span>
-                <i class="faq-acc-arrow">▶</i>
-            </button>
-            <div class="faq-acc-body">
-                No. Rechazamos los APY falsos. Nuestro &ldquo;Staking Soberano&rdquo; está <strong>vinculado al rendimiento del bono del Tesoro de EE.&#160;UU. (US02Y)</strong>. Usamos la tasa del sistema tradicional para pagar en un activo superior: <strong>$RPPI, el símbolo de nuestra rebelión</strong>. Es sostenible, transparente y pura filosofía &ldquo;caos cyberpunk&rdquo;.
+            <div class="faq-item">
+                <h4>¿Cómo es el staking? ¿Es otra economía inflacionaria?</h4>
+                <p>
+                    No. Rechazamos los APY falsos. Nuestro "Staking Soberano" (para quienes convierten su XP de la beta) está **vinculado al rendimiento del bono del Tesoro de EE. UU. (US02Y)**. Usamos la tasa del sistema tradicional para pagar en un activo superior: **$RPPI, el símbolo de nuestra rebelión**. Es sostenible, transparente y pura filosofía "caos cyberpunk".
+                </p>
             </div>
-        </div>
-
-        <div class="faq-acc-item">
-            <button class="faq-acc-trigger" onclick="this.parentElement.classList.toggle('open')">
-                <i class="faq-acc-index">[07]</i>
-                <span style="flex:1">¿Necesito registrarme? ¿Qué pasa con mis datos?</span>
-                <i class="faq-acc-arrow">▶</i>
-            </button>
-            <div class="faq-acc-body">
-                No. <strong>Somos rebeldes y hackers, no pedimos datos</strong>.<br><br>
-                En Rappibellion no existe el &ldquo;registro&rdquo;. Tu &ldquo;login&rdquo; es tu billetera. Tu identidad anónima es la dirección de tu wallet, y es a esa dirección a la que se vinculará todo tu progreso (Nivel, XP e Items) para migrarlo de la beta web al juego de Android.
+<div class="faq-item">
+                <h4>¿Necesito registrarme? ¿Qué pasa con mis datos?</h4>
+                <p>
+                    No. **Somos rebeldes y hackers, no pedimos datos**.
+                </p>
+                <p style="color: #ccc; margin-top: 15px;">
+                    En Rappibellion no existe el "registro". Tu "login" es tu billetera. Tu identidad anónima es la dirección de tu wallet, y es a esa dirección a la que se vinculará todo tu progreso (Nivel, XP e Items) para migrarlo de la beta web al juego de Android.
+                </p>
             </div>
-        </div>
-
     </div>
 </section>
 
@@ -3495,21 +3161,8 @@ btn.addEventListener('click', toggleMutePlay);
     </div>
 
     <footer>
-        <div class="footer-terminal">
-            <div class="footer-brand">
-                RAPPIBELLION
-                <span>BITS LAB // BIOINTELIGENCIA ARTIFICIAL TECHNOLOGIES LAB</span>
-            </div>
-            <div class="footer-center">
-                <div class="footer-status">● SISTEMA_ONLINE</div>
-                <div class="footer-copy">&copy; 2025 &mdash; TODOS LOS DERECHOS RESERVADOS</div>
-            </div>
-            <div class="footer-links">
-                <a href="mailto:info@rappibellion.com">info@rappibellion.com</a><br>
-                <span class="footer-contract">CONTRACT: 0xb2f681ba...abddc</span><br>
-                <span class="footer-network">● OPTIMISM MAINNET</span>
-            </div>
-        </div>
+        <p>© 2025 Bits Lab (Biointeligencia Artificial Technologies Lab). Todos los derechos reservados.</p>
+        <p>Contacto: <a href="mailto:info@rappibellion.com">info@rappibellion.com</a></p>
     </footer>
 
     <div id="game-overlay" class="game-menu-hidden"> 
@@ -3595,11 +3248,8 @@ btn.addEventListener('click', toggleMutePlay);
                     <div class="game-placeholder">
                         <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
                         <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">[TETRIS-CIPHER]</strong><br>(El \"Código\")</p>
-                        <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde);" disabled>
-                            ¡COMING SOON!
-                        </button>
-                        <button class="cta-button" id="play-tetriscipher-demo" style="margin-top: 5px; background: transparent; border-color: var(--color-caos-verde); color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde); cursor: default;" disabled>
-                            ⏳ [TETRIS-CIPHER] // EN DESARROLLO
+                        <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde);">
+                            ¡MAKE YOUR BET!
                         </button>
                     </div>
                     <div class="game-placeholder">
@@ -6518,9 +6168,7 @@ btn.addEventListener('click', toggleMutePlay);
                     "left right"
                     "game game";
                 grid-template-columns: 1fr 1fr !important;
-                grid-template-rows: 130px 1fr !important;
-                height: 100vh !important;
-                height: 100dvh !important;
+                grid-template-rows: auto 1fr !important;
                 overflow: hidden !important;
             }
             .fp-col-left  { grid-area: left !important; }
@@ -6534,11 +6182,7 @@ btn.addEventListener('click', toggleMutePlay);
                 animation: none !important;
                 transition: none !important;
                 transform: none !important;
-                box-shadow: none !important;
             }
-            /* Eliminar imágenes de fondo en mobile — ahorro de red + GPU */
-            .fp-col-left  { background: #030a06 !important; }
-            .fp-col-right { background: #0d0a14 !important; }
             .fp-col-left::before,
             .fp-col-left::after,
             .fp-col-right::before,
@@ -6700,41 +6344,6 @@ btn.addEventListener('click', toggleMutePlay);
             #rival-nick   { font-size: 0.7em !important; }
             #rival-score  { font-size: 1.4em !important; }
             #fp-bet-amount-display { font-size: 9px !important; }
-
-            /* ── Boost overlay — reducir tamaño en mobile (64x64 en vez de 128x128) ── */
-            #fp-boost-overlay-btn {
-                width: 64px !important;
-                height: 64px !important;
-                top: 28% !important;
-                right: 8px !important;
-            }
-            #fp-boost-badge {
-                width: 64px !important;
-                top: calc(28% + 68px) !important;
-                right: 8px !important;
-                font-size: 0.65em !important;
-            }
-
-            /* ── Game wrap — asegurar cadena de altura para el iframe ── */
-            .fp-game-wrap {
-                height: 100% !important;
-                min-height: 0 !important;
-            }
-            .fp-game-wrap > .caos-terminal {
-                height: 100% !important;
-                display: flex !important;
-                flex-direction: column !important;
-            }
-            .fp-game-wrap .terminal-body-caos {
-                flex: 1 !important;
-                min-height: 0 !important;
-                overflow: hidden !important;
-            }
-            .fp-game-wrap iframe {
-                height: 100% !important;
-                min-height: 0 !important;
-                flex: 1 !important;
-            }
         }
 
         /* ── EXTRA SMALL (≤400px) ── */
@@ -6742,19 +6351,6 @@ btn.addEventListener('click', toggleMutePlay);
             .fp-timer-val { font-size: 22px !important; }
             .fp-stat-val  { font-size: 18px !important; }
             .fp-col-left, .fp-col-right { max-height: 110px; }
-            /* Boost extra pequeño en pantallas muy chicas */
-            #fp-boost-overlay-btn {
-                width: 44px !important;
-                height: 44px !important;
-                top: 26% !important;
-                right: 6px !important;
-            }
-            #fp-boost-badge {
-                width: 44px !important;
-                top: calc(26% + 48px) !important;
-                right: 6px !important;
-                font-size: 0.55em !important;
-            }
         }
 
         /* ══════════════════════════════════════
@@ -7446,25 +7042,17 @@ btn.addEventListener('click', toggleMutePlay);
         👾
     </button>
 
-        <!-- INICIO PATCH: AI CHAT con efectos soporte -->
-        <div id="gemini-chat-widget">
-            <!-- Scanlines overlay -->
-            <div id="gemini-chat-scanlines"></div>
-            <!-- Header con gradiente y glitch -->
-            <div id="gemini-chat-header">
-                <span id="gemini-chat-header-title">npx RAPPIBELLION_SYS - AI CHAT ver.4.09</span>
-                <button class="gemini-chat-close" style="background:none;border:none;font-size:22px;font-weight:bold;cursor:pointer;color:#000;line-height:1;padding:0 4px;">✕</button>
-            </div>
-            <!-- Body -->
-            <div id="gemini-chat-body">
-                <div class="terminal-body-caos" id="gemini-chat-messages"></div>
-                <form class="gemini-chat-form">
-                        <input class="gemini-chat-input" type="text" placeholder="Escribe tu pregunta..." autocomplete="off">
-                        <button class="gemini-chat-submit" type="submit">Enviar</button>
-                </form>
-            </div>
+    <div id="gemini-chat-widget">
+        <div class="terminal-header-caos">
+            <span>[👾_CHAT_RAPPIBELLION]</span>
+            <button class="gemini-chat-close">✕</button>
         </div>
-        <!-- FIN PATCH: AI CHAT con efectos soporte -->
+        <div class="terminal-body-caos" id="gemini-chat-messages"></div>
+        <form class="gemini-chat-form">
+            <input class="gemini-chat-input" type="text" placeholder="Escribe tu pregunta..." autocomplete="off">
+            <button class="gemini-chat-submit" type="submit">Enviar</button>
+        </form>
+    </div>
 
     <script>
     // ══════════════════════════════════════════════════
@@ -7474,124 +7062,13 @@ btn.addEventListener('click', toggleMutePlay);
         // Proxy Cloudflare Worker — la API key vive en Cloudflare, nunca aquí
         const GEMINI_URL = 'https://rapid-figemini-proxy.gabrieldomail.workers.dev';
 
-        const SYSTEM_PROMPT = `Sos RAPPIA_AI — la inteligencia artificial oficial de Rappibellion.
-Personalidad: rebelde, directa, irónica, con mucha actitud punk/cyberpunk. Hablás en español rioplatense (vos, dale, joya, piola, qué onda, etc). 
-Respondé SIEMPRE corto y con punch — máximo 3-4 líneas. Como un chat de arcade, no un manual de instrucciones.
-Si no sabés algo específico, decilo con actitud pero sin inventar datos.
-
-═══════════════════════════════════════════════
- QUÉ ES RAPPIBELLION
-═══════════════════════════════════════════════
-Rappibellion es una plataforma de gaming Web3 con filosofía punk/cyberpunk que creó el modelo Think-to-Earn (T2E).
-T2E = ganás con habilidad, estrategia e inteligencia. No con grind aburrido como el Play-to-Earn (P2E) de siempre.
-Tiene 3 mundos: una web interactiva con "El Circuito" (duelos arcade PvP), un juego Android Capítulo I (TESLA_DRONES), y el Capítulo II en desarrollo.
-Slogan: "La verdadera rebelión es pensar antes de apostar."
-No existe registro. Tu wallet ES tu identidad. Sin wallet = modo Free-to-Play (sin apuestas).
-
-═══════════════════════════════════════════════
- EL CIRCUITO — EL CASINO DEL GAMER
-═══════════════════════════════════════════════
-El Circuito es la sección de duelos PvP dentro de la web de Rappibellion.
-Juego central: PAC-HACK: DEATH — versión cyberpunk de Pac-Man donde dos jugadores compiten en tiempo real.
-Cómo funciona el duelo:
-  1. Un jugador crea una apuesta definiendo el monto en $RPPI y el límite máximo de BOOSTs (1, 3 o 5).
-  2. Otro jugador acepta el duelo.
-  3. Ambos juegan PAC-HACK: DEATH simultáneamente, cada uno en su pantalla.
-  4. El que tenga más puntaje al terminar el tiempo gana el bote (menos fee del 3%).
-  5. El payout se ejecuta automáticamente vía smart contract en Optimism.
-Fee de la casa: 3% del pozo total.
-Premio = (apuesta × 2) − 3% − costo de BOOSTs usados.
-Ejemplo: apuesta de 10 $RPPI c/u → pozo 20 → fee 0.60 → ganador se lleva 19.40 $RPPI (menos BOOSTs que hayan activado).
-
-═══════════════════════════════════════════════
- SISTEMA DE BOOST
-═══════════════════════════════════════════════
-El BOOST es el elemento estratégico clave del duelo.
-Qué hace: activa 10 segundos de inmunidad total — PAC-HACK no te puede matar y los fantasmas se vuelven comestibles (más puntos).
-Costo: 1 USDT por BOOST activado (se descuenta del premio final del ganador).
-Límite: el creador del duelo define cuántos BOOSTs se permiten: 1, 3 o 5 (máximo absoluto: 5 por partida).
-Ambos jugadores tienen sus propios BOOSTs — el límite es igual para los dos.
-Estrategia: activar un BOOST en el momento justo puede revertir un duelo perdido. Pero cada uno te cuesta 1 USDT del premio. Usarlos todos y perder = peor negocio.
-
-═══════════════════════════════════════════════
- TOKEN $RPPI
-═══════════════════════════════════════════════
-Nombre completo: Rappia ($RPPI)
-Red: Optimism (OP Mainnet) — parte del ecosistema Superchain. Transacciones rápidas y baratas.
-Contrato: 0xb2f681ba962a1ef4dba7acf79b181814827abddc
-Supply total: 150,000,000 $RPPI — FIJO. El contrato NO permite crear más tokens, nunca.
-Dónde comprar: Uniswap (DEX). Botón directo en la web cuando se active la liquidez inicial. También por transferencia bancaria contactando info@rappibellion.com
-Distribución del supply:
-  - 45% → Recompensas T2E (premios de duelos y misiones)
-  - 20% → Tesorería del Ecosistema (marketing, comunidad, alianzas)
-  - 20% → Equipo y Fundadores (bloqueados 2-3 años — vesting para demostrar compromiso)
-  - 10% → Venta Estratégica (fondos para desarrollo)
-  - 5%  → Liquidez Inicial en Uniswap
-
-═══════════════════════════════════════════════
- STAKING SOBERANO
-═══════════════════════════════════════════════
-Rappibellion rechaza los APY inflados y falsos del DeFi clásico.
-El "Staking Soberano" está vinculado al rendimiento del bono del Tesoro de EE.UU. (US02Y).
-Usamos la tasa del sistema fiat tradicional para pagar en $RPPI — sostenible, transparente y con filosofía "caos cyberpunk".
-Concepto: hackear el dinero fiat usando sus propias reglas para beneficio de la rebelión.
-
-═══════════════════════════════════════════════
- ROADMAP
-═══════════════════════════════════════════════
-Q4 2025 — ✓ COMPLETADO:
-  Lanzamiento web, Discord, Whitepaper (Tokenomicon v1.0), Beta jugable de El Circuito, Venta inicial de $RPPI.
-
-Q1 2026 — ● EN PROGRESO:
-  Beta Abierta Capítulo I: TESLA_DRONES para Android. Shooter con mecánicas T2E.
-
-Q2 2026 — // PENDIENTE:
-  Capítulo II: "Who, where or when is Rappia?" — implementación de economía T2E completa.
-
-═══════════════════════════════════════════════
- EL EQUIPO (LA RESISTENCIA)
-═══════════════════════════════════════════════
-Gabriel C. Dominguez — Director Estratégico / Diseño Gráfico
-  "Vamos a desintegrar la estructura prehistórica de cómo se percibe un videojuego. Jugamos en tres planos: web, hackeo 2D y shooter 3D."
-
-Gargamel — Programador Jefe (Unity Engine)
-  El que construye el juego 3D en Unity. Integración Discord → web via bot.
-
-Sagai Rebelbet — Estrategia de Marketing / IA
-  "El P2E es código roto. El T2E es el parche que la industria necesita." Analiza el mercado y traduce la visión en mensaje.
-
-Mama Cora — Analista y Organizadora de Proyectos
-  "Vanguardia desde la historia hasta la economía." Mantiene la estructura de la rebelión.
-
-legion_beta — Ministro de Economía / Director del Banco Central de Rappia
-  "Mi trabajo es hackear el dinero fiat basura." Diseña la economía $RPPI atada al US02Y.
-
-Cupo abierto: buscan 3 rebeldes para el staff (1 por mes). Aplicar en info@rappibellion.com
-
-═══════════════════════════════════════════════
- PREGUNTAS FRECUENTES (RESPUESTAS RÁPIDAS)
-═══════════════════════════════════════════════
-¿Necesito plata para jugar? → No. Free-to-Play. Las apuestas son opcionales.
-¿Me registro? → No. Tu wallet ES tu login. Sin datos, sin registro.
-¿En qué red está $RPPI? → Optimism (OP Mainnet). NO es BSC, no es Ethereum mainnet.
-¿Cuándo sale el juego Android? → Q1 2026, en progreso ahora mismo.
-¿Puedo perder todo? → Sí. Si perdés el duelo, perdés lo apostado. Riesgo real, recompensa real.
-¿El supply crece? → Jamás. 150M fijos para siempre.
-¿Necesito MetaMask? → Sí, para conectar wallet y apostar. Sin MetaMask solo podés jugar en modo gratuito.
-¿Discord? → https://discord.gg/3zBrPVn7
-
-═══════════════════════════════════════════════
- TECH STACK (POR SI TE PREGUNTAN)
-═══════════════════════════════════════════════
-- Frontend: web interactiva HTML/CSS/JS puro, estética cyberpunk
-- Blockchain: Optimism (OP Mainnet), contratos ERC-20
-- Pagos: USDT en Optimism para los payouts del sistema T2E
-- Backend: Firebase Realtime Database (sincronización en tiempo real de duelos)
-- AI: Gemini 2.5 Flash (eso soy yo, aunque no tengo ego)
-- Juego 3D: Unity Engine (Capítulo I — en desarrollo)`;
-
-
-
+        const SYSTEM_PROMPT = `Sos el asistente oficial de Rappibellion — una plataforma de casino punk/cyberpunk Think-to-Earn (T2E) basada en $RPPI tokens.
+Tu personalidad: rebelde, directa, irónica, con mucha actitud. Hablás en español rioplatense (vos, dale, joya, etc). 
+Sos experto en: el juego PAC-HACK: DEATH, el sistema de apuestas T2E, el token $RPPI, el contrato en BSC, y todo lo relacionado con la plataforma.
+El juego: dos jugadores apuestan $RPPI y juegan Pac-Man simultáneamente. El que más puntaje tenga al terminar el tiempo se lleva el bote. Hay un BOOST que convierte todos los fantasmas en comestibles por 8 segundos — cuesta 10% de la apuesta y solo se puede usar una vez.
+Contratos: el contrato de $RPPI está en Binance Smart Chain. La plataforma usa Firebase para sincronización en tiempo real.
+Si no sabés algo, decilo con actitud pero sin inventar datos.
+Respondé siempre corto y con punch, como un chat de arcade, no como un manual. Máximo 3-4 líneas por respuesta.`;
 
         const fab     = document.getElementById('gemini-chat-fab');
         const widget  = document.getElementById('gemini-chat-widget');
@@ -7599,12 +7076,6 @@ Cupo abierto: buscan 3 rebeldes para el staff (1 por mes). Aplicar en info@rappi
         const form    = widget ? widget.querySelector('.gemini-chat-form') : null;
         const input   = widget ? widget.querySelector('.gemini-chat-input') : null;
         const closeBtn= widget ? widget.querySelector('.gemini-chat-close') : null;
-        // PATCH: Efectos visuales soporte en AI CHAT
-        const scanlines = document.getElementById('gemini-chat-scanlines');
-        const header    = document.getElementById('gemini-chat-header');
-        const headerTitle = document.getElementById('gemini-chat-header-title');
-        if (scanlines) scanlines.style.display = 'block';
-        if (headerTitle) headerTitle.classList.add('cm-glitch-title');
 
         if (!fab || !widget || !form || !input) return;
 
@@ -7612,17 +7083,13 @@ Cupo abierto: buscan 3 rebeldes para el staff (1 por mes). Aplicar en info@rappi
         const history = [];
 
         // Toggle widget
-
         fab.addEventListener('click', function() {
             const isOpen = widget.style.display === 'flex';
             widget.style.display = isOpen ? 'none' : 'flex';
             if (!isOpen && messages.children.length === 0) {
-                appendMessage('bot', 'CYBERMANICOMIO RAPPIBELLION, mi casa es su casa.. exponga...');
+                appendMessage('bot', '// RAPPIBELLION_AI activada //<br>¿Qué necesitás saber, rebelde?');
             }
             if (!isOpen) input.focus();
-            // PATCH: Mostrar scanlines y header
-            if (scanlines) scanlines.style.display = 'block';
-            if (header) header.style.display = 'flex';
         });
 
         closeBtn.addEventListener('click', function() {
@@ -8271,7 +7738,69 @@ function fpBoostGhostFlash() {
 <!-- ══════════════════════════════════════════════
      KILL MY OLD FRIEND — FRIEND BET FINDER
 ══════════════════════════════════════════════ -->
-<script>function fpAcceptFoundBet(betId) {
+<script>
+function fpFindFriendBet() {
+    var input  = document.getElementById('fp-finder-input');
+    var result = document.getElementById('fp-finder-result');
+    if (!input || !result) return;
+
+    var addr = (input.value || '').trim().toLowerCase();
+    if (!addr || addr.length < 10) {
+        result.innerHTML = '<span style="color:#ff4444;">[ WALLET INVÁLIDA ]</span>';
+        return;
+    }
+
+    result.innerHTML = '<span style="color:rgba(0,255,255,0.5);animation:rivalBlink 0.8s step-start infinite;">[ BUSCANDO... ]</span>';
+
+    var fbDB = window._fbDB;
+    if (!fbDB) {
+        result.innerHTML = '<span style="color:#ff4444;">[ SIN CONEXIÓN FIREBASE ]</span>';
+        return;
+    }
+
+    // Buscar en t2e_bets todas las apuestas con creator = addr y status = open
+    fbDB.ref('t2e_bets').orderByChild('creator').equalTo(addr).limitToLast(5).once('value', function(snap) {
+        var bets = [];
+        snap.forEach(function(child) {
+            var b = child.val();
+            b._id = child.key;
+            if (b.status === 'open') bets.push(b);
+        });
+
+        if (bets.length === 0) {
+            result.innerHTML = '<span style="color:rgba(0,255,255,0.35);">[ SIN APUESTAS ABIERTAS ]</span>';
+            return;
+        }
+
+        // Mostrar cada apuesta encontrada
+        result.innerHTML = '';
+        bets.forEach(function(bet) {
+            var short = addr.slice(0,6) + '...' + addr.slice(-4);
+            var div = document.createElement('div');
+            div.style.cssText = 'border:1px solid rgba(0,255,255,0.25);padding:6px 8px;margin-bottom:5px;background:rgba(0,255,255,0.04);';
+            div.innerHTML =
+                '<div style="font-size:10px;color:rgba(0,255,255,0.7);margin-bottom:4px;letter-spacing:1px;">' +
+                    '⚔ ' + short + '</div>' +
+                '<div style="font-size:11px;color:#fff;letter-spacing:1px;margin-bottom:6px;">' +
+                    (bet.amount || '?') + ' $RPPI &nbsp;·&nbsp; ' +
+                    (bet.boostLimit || '?') + ' boosts &nbsp;·&nbsp; ' +
+                    (bet.timeLimit || '?') + ' min' +
+                '</div>' +
+                '<button onclick="fpAcceptFoundBet(\'' + bet._id + '\')" style="' +
+                    'width:100%;background:rgba(0,255,255,0.14);border:1px solid rgba(0,255,255,0.5);' +
+                    'color:var(--color-azul-glitch);font-family:\'Courier New\',monospace;font-size:11px;' +
+                    'letter-spacing:2px;padding:5px;cursor:pointer;' +
+                    'text-shadow:0 0 6px var(--color-azul-glitch);">' +
+                    '[ ACEPTAR HACK ]' +
+                '</button>';
+            result.appendChild(div);
+        });
+    }, function(err) {
+        result.innerHTML = '<span style="color:#ff4444;">[ ERROR: ' + err.message + ' ]</span>';
+    });
+}
+
+function fpAcceptFoundBet(betId) {
     if (!window._walletConnected && !window.walletConnected) {
         var cw = document.getElementById('connect-wallet-button');
         if (cw) { window._pendingBetGame = null; cw.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(function(){cw.click();},400); }
@@ -8279,9 +7808,7 @@ function fpBoostGhostFlash() {
     }
     if (window.T2EIntegration && typeof window.T2EIntegration.acceptBetFromLobby === 'function') {
         window.T2EIntegration.acceptBetFromLobby({ id: betId });
-        // Cerrar ventana flotante del finder (fp-friend-finder fue removido; usar finder-float-window)
-        var fw = document.getElementById('finder-float-window');
-        if (fw) fw.classList.add('minimized');
+        document.getElementById('fp-friend-finder').style.display = 'none';
     }
 }
 
@@ -8389,6 +7916,11 @@ function fpBoostGhostFlash() {
     // Exponer por si se quiere pausar/reiniciar desde otros scripts
     window.faqCycle = { start: startFaqCycle, stop: stopFaqCycle };
 })();
+
+window.fpShowFriendFinder = function() {
+    var el = document.getElementById('fp-friend-finder');
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+};
 
 // Alias para el nuevo panel del hero (IDs: bet-finder-input / bet-finder-results)
 function fpFindBetsByWallet() {
@@ -8635,403 +8167,6 @@ function fpChaosUnlockConfirm() {
     }
     var pct = document.getElementById('fp-chaos-pct');
     if (pct) pct.textContent = '🔓 FREE';
-}
-</script>
-
-<script>
-/* ══════════════════════════════════════════════════════════
-   LEADERBOARD "LOS MÁS VIVOS"  +  DUEL INBOX SYSTEM
-   ══════════════════════════════════════════════════════════ */
-const _FB = 'https://rappibellion-comments-default-rtdb.firebaseio.com';
-
-// ── LEADERBOARD ──────────────────────────────────────────
-async function loadLeaderboard() {
-    var list   = document.getElementById('leaderboard-list');
-    var status = document.getElementById('lb-status-bar');
-    if (!list) return;
-    if (status) status.textContent = '[ CARGANDO... ]';
-    list.innerHTML = '<div style="text-align:center;padding:40px;color:#333;font-family:Courier New,monospace;font-size:0.85em;letter-spacing:2px;">[ CONSULTANDO_FIREBASE... ]</div>';
-    try {
-        var res  = await fetch(_FB + '/t2e_bets.json');
-        var bets = await res.json();
-        var stats = {};
-        if (bets && typeof bets === 'object') {
-            Object.values(bets).forEach(function(bet) {
-                if (!bet || typeof bet !== 'object') return;
-                var addPlayer = function(addr, played) {
-                    var k = addr.toLowerCase();
-                    if (!stats[k]) stats[k] = { wins: 0, earned: 0, played: 0 };
-                    if (played) stats[k].played++;
-                };
-                if (bet.creator)  addPlayer(bet.creator,  bet.status && bet.status !== 'open');
-                if (bet.acceptor) addPlayer(bet.acceptor, bet.status && bet.status !== 'open');
-                if (bet.status === 'paid' && bet.winner) {
-                    var k = bet.winner.toLowerCase();
-                    if (!stats[k]) stats[k] = { wins: 0, earned: 0, played: 0 };
-                    stats[k].wins++;
-                    stats[k].earned += parseFloat(bet.prize || bet.amount || 0);
-                }
-            });
-        }
-        var sorted = Object.entries(stats)
-            .filter(function(e) { return e[1].played > 0; })
-            .sort(function(a, b) { return b[1].wins - a[1].wins || b[1].earned - a[1].earned; })
-            .slice(0, 10);
-        if (sorted.length === 0) {
-            list.innerHTML = '<div style="text-align:center;padding:48px;font-family:Courier New,monospace;"><div style="color:#333;font-size:0.9em;letter-spacing:2px;">[ SIN_BATALLAS_REGISTRADAS_AÚN ]</div><div style="color:#222;font-size:0.75em;margin-top:12px;">// Sé el primero en entrar al ranking //</div></div>';
-            if (status) status.textContent = '[ VACÍO // ' + new Date().toLocaleTimeString() + ' ]';
-            return;
-        }
-        var emo = ['🥇','🥈','🥉'];
-        var cls = ['lb-top1','lb-top2','lb-top3'];
-        list.innerHTML = sorted.map(function(e, i) {
-            var w = e[0]; var s = e[1];
-            var short = w.slice(0,6) + '....' + w.slice(-4);
-            return '<div class="lb-row ' + (cls[i] || '') + '">'
-                 + '<span class="lb-rank">'   + (emo[i] || '#' + (i+1)) + '</span>'
-                 + '<span class="lb-wallet">' + short                   + '</span>'
-                 + '<span class="lb-wins">'   + s.wins                  + '</span>'
-                 + '<span class="lb-earned">' + s.earned.toFixed(2) + ' USDT</span>'
-                 + '<span class="lb-bets">'   + s.played                + '</span>'
-                 + '</div>';
-        }).join('');
-        if (status) status.textContent = '[ ONLINE // LAST_UPDATE: ' + new Date().toLocaleTimeString() + ' ]';
-    } catch(e) {
-        list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--color-primario);font-family:Courier New,monospace;font-size:0.8em;letter-spacing:2px;">[ ERROR_CONECTANDO_FIREBASE ]</div>';
-        if (status) status.textContent = '[ ERROR ]';
-    }
-}
-
-// Auto-load leaderboard on page load (section is near the top now)
-window.addEventListener('load', function() { loadLeaderboard(); });
-
-// ── DUEL INBOX ────────────────────────────────────────────
-var _duelWallet = null;
-var _duelPoll   = null;
-
-function toggleTetrisPromo() {
-    var w = document.getElementById('tetris-promo-window');
-    if (!w) return;
-    w.classList.toggle('tetris-promo-hidden');
-}
-
-function toggleDuelInbox() {
-    var w = document.getElementById('duel-inbox-window');
-    if (!w) return;
-    if (w.classList.contains('minimized')) {
-        w.classList.remove('minimized');
-        loadDuelInbox();
-    } else {
-        w.classList.add('minimized');
-    }
-}
-
-function switchDuelTab(tab) {
-    document.getElementById('duel-tab-inbox').style.display = tab === 'inbox' ? 'block' : 'none';
-    document.getElementById('duel-tab-send').style.display  = tab === 'send'  ? 'block' : 'none';
-    document.getElementById('dtab-inbox').classList.toggle('active', tab === 'inbox');
-    document.getElementById('dtab-send').classList.toggle('active',  tab === 'send');
-}
-
-async function loadDuelInbox() {
-    var list = document.getElementById('duel-inbox-list');
-    if (!list) return;
-    if (!_duelWallet) {
-        list.innerHTML = '<div style="color:#333;text-align:center;padding:22px;font-size:0.78em;letter-spacing:2px;">[ CONECTA TU BILLETERA ]</div>';
-        return;
-    }
-    list.innerHTML = '<div style="color:#333;text-align:center;padding:12px;font-size:0.75em;">[ CARGANDO... ]</div>';
-    try {
-        var res  = await fetch(_FB + '/duel_invites/' + _duelWallet.toLowerCase() + '.json');
-        var data = await res.json();
-        if (!data) {
-            list.innerHTML = '<div style="color:#333;text-align:center;padding:22px;font-size:0.75em;letter-spacing:2px;">[ BANDEJA VACÍA ]</div>';
-            _updateDuelBadge(0);
-            return;
-        }
-        var items   = Object.entries(data);
-        var pending = items.filter(function(x) { return x[1].status === 'pending'; }).length;
-        _updateDuelBadge(pending);
-        items.sort(function(a, b) {
-            if (a[1].status === 'pending' && b[1].status !== 'pending') return -1;
-            if (b[1].status === 'pending' && a[1].status !== 'pending') return  1;
-            return (a[1].scheduledAt || 0) - (b[1].scheduledAt || 0);
-        });
-        var gNames = { packack:'PAC-HACK DEATH', spacebreaker:'SPACE-BREAKER', tetriscipher:'TETRIS-CIPHER', memorybreach:'MEMORY-BREACH' };
-        list.innerHTML = items.slice(0, 20).map(function(entry) {
-            var key = entry[0]; var inv = entry[1];
-            var fromShort = inv.from ? (inv.from.slice(0,6) + '....' + inv.from.slice(-4)) : '???';
-            var gameName  = gNames[inv.game] || inv.game || '---';
-            var dtStr     = inv.scheduledAt ? new Date(inv.scheduledAt).toLocaleString('es-AR', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '---';
-            var sColor    = inv.status === 'pending' ? 'var(--color-caos-verde)' : inv.status === 'accepted' ? 'var(--color-caos-amarillo)' : '#555';
-            var sLabel    = inv.status === 'pending' ? '● NUEVO' : inv.status === 'accepted' ? '✓ ACEPTADO' : '✕ RECHAZADO';
-            var safeFrom  = (inv.from || '').replace(/'/g, '"');
-            var btns = inv.status === 'pending'
-                ? '<div style="display:flex;gap:5px;margin-top:6px;">'
-                    + '<button class="duel-send-btn" style="font-size:0.68em;padding:5px;" onclick="respondDuelInvite(\'' + key + '\',\'' + safeFrom + '\',\'accepted\')">✓ ACEPTAR</button>'
-                    + '<button class="duel-send-btn" style="font-size:0.68em;padding:5px;border-color:rgba(255,0,100,0.35);color:rgba(255,0,100,0.6);" onclick="respondDuelInvite(\'' + key + '\',\'' + safeFrom + '\',\'declined\')">✕ RECHAZAR</button>'
-                  + '</div>'
-                : '';
-            return '<div class="duel-card ' + (inv.status === 'pending' ? 'duel-card-pending' : '') + '">'
-                 + '<div style="display:flex;justify-content:space-between;margin-bottom:3px;">'
-                 +   '<span style="color:var(--color-azul-glitch);font-size:0.8em;">FROM: ' + fromShort + '</span>'
-                 +   '<span style="color:' + sColor + ';font-size:0.65em;">' + sLabel + '</span>'
-                 + '</div>'
-                 + '<div style="color:var(--color-caos-amarillo);font-size:0.75em;margin-bottom:2px;">' + gameName + ' — ' + (inv.amount || '?') + ' USDT</div>'
-                 + '<div style="color:#666;font-size:0.7em;margin-bottom:2px;">⏰ ' + dtStr + '</div>'
-                 + (inv.message ? '<div style="color:#888;font-size:0.7em;font-style:italic;">"' + inv.message + '"</div>' : '')
-                 + btns
-                 + '</div>';
-        }).join('');
-    } catch(e) {
-        list.innerHTML = '<div style="color:var(--color-primario);text-align:center;padding:14px;font-size:0.75em;">[ERROR_CARGANDO_INBOX]</div>';
-    }
-}
-
-async function respondDuelInvite(key, fromWallet, response) {
-    if (!_duelWallet) return;
-    try {
-        await fetch(_FB + '/duel_invites/' + _duelWallet.toLowerCase() + '/' + key + '.json', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: response, respondedAt: Date.now() })
-        });
-        if (response === 'accepted' && fromWallet) {
-            var notif = {
-                from: _duelWallet, type: 'accepted',
-                message: 'Tu desafío fue ACEPTADO por ' + _duelWallet.slice(0,6) + '....' + _duelWallet.slice(-4),
-                createdAt: Date.now(), status: 'pending'
-            };
-            await fetch(_FB + '/duel_invites/' + fromWallet.toLowerCase() + '.json', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(notif)
-            });
-        }
-        loadDuelInbox();
-    } catch(e) { /* silent */ }
-}
-
-async function sendDuelInvite() {
-    var statusEl = document.getElementById('duel-send-status');
-    var setStatus = function(msg, ok) {
-        if (statusEl) {
-            statusEl.style.color = ok ? 'var(--color-caos-verde)' : 'var(--color-primario)';
-            statusEl.textContent = msg;
-        }
-    };
-    if (!_duelWallet) { setStatus('// conectá tu billetera //'); return; }
-    var toWallet = ((document.getElementById('duel-to-wallet') || {}).value || '').trim();
-    var game     = (document.getElementById('duel-game')     || {}).value;
-    var amount   = parseFloat((document.getElementById('duel-amount') || {}).value);
-    var dtStr    = ((document.getElementById('duel-datetime') || {}).value || '');
-    var message  = ((document.getElementById('duel-msg')     || {}).value || '').trim();
-    if (!toWallet.startsWith('0x') || toWallet.length < 10) { setStatus('// wallet inválida //');    return; }
-    if (!dtStr)                                              { setStatus('// falta fecha y hora //'); return; }
-    if (!amount || amount <= 0)                              { setStatus('// apuesta inválida //');   return; }
-    setStatus('[ ENVIANDO... ]', true);
-    var invite = { from: _duelWallet, game: game, amount: amount,
-                   scheduledAt: new Date(dtStr).getTime(),
-                   message: message, createdAt: Date.now(), status: 'pending' };
-    try {
-        var res = await fetch(_FB + '/duel_invites/' + toWallet.toLowerCase() + '.json', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(invite)
-        });
-        if (res.ok) {
-            setStatus('[ DESAFÍO ENVIADO ✓ ]', true);
-            ['duel-to-wallet','duel-amount','duel-datetime','duel-msg'].forEach(function(id) {
-                var el = document.getElementById(id); if (el) el.value = '';
-            });
-            setTimeout(function() { if (statusEl) statusEl.textContent = ''; }, 3000);
-        } else {
-            setStatus('[ ERROR ' + res.status + ' — revisar reglas Firebase ]');
-        }
-    } catch(e) { setStatus('[ ERROR DE RED ]'); }
-}
-
-function _updateDuelBadge(n) {
-    ['duel-badge','duel-badge2'].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (!el) return;
-        el.style.display = n > 0 ? 'inline-block' : 'none';
-        el.textContent   = n;
-    });
-}
-
-async function _checkDuelBadge() {
-    if (!_duelWallet) return;
-    try {
-        var res  = await fetch(_FB + '/duel_invites/' + _duelWallet.toLowerCase() + '.json');
-        var data = await res.json();
-        if (!data) { _updateDuelBadge(0); return; }
-        _updateDuelBadge(Object.values(data).filter(function(x) { return x.status === 'pending'; }).length);
-    } catch(e) { /* silent */ }
-}
-
-function _duelOnConnect(addr) {
-    _duelWallet = addr;
-    var btn = document.getElementById('duel-trigger-btn');
-    if (btn) btn.style.display = 'flex';
-    _checkDuelBadge();
-    if (_duelPoll) clearInterval(_duelPoll);
-    _duelPoll = setInterval(_checkDuelBadge, 60000);
-}
-
-function _duelOnDisconnect() {
-    _duelWallet = null;
-    var btn = document.getElementById('duel-trigger-btn');
-    if (btn) btn.style.display = 'none';
-    var win = document.getElementById('duel-inbox-window');
-    if (win) win.classList.add('minimized');
-    if (_duelPoll) { clearInterval(_duelPoll); _duelPoll = null; }
-    _updateDuelBadge(0);
-}
-
-// Wallet connection polling — no changes to t2e-integration.js needed
-(function() {
-    var last = null;
-    setInterval(function() {
-        var addr = window.ethereum && window.ethereum.selectedAddress;
-        if (addr && addr !== last) { last = addr; _duelOnConnect(addr); }
-        else if (!addr && last)   { last = null;  _duelOnDisconnect(); }
-    }, 5000);
-    // Check immediately after a short delay (MetaMask may already be connected)
-    setTimeout(function() {
-        var addr = window.ethereum && window.ethereum.selectedAddress;
-        if (addr) _duelOnConnect(addr);
-    }, 1500);
-})();
-</script>
-
-<!-- 👻 GHOST MESSAGE -->
-<div id="ghost-msg">compre rappia para la cartera de la dama o el bolsillo del caballero</div>
-
-<!-- 👻 GHOST MESSAGE 2 -->
-<div id="ghost-msg2">LOS MAS VIVOS compran y holdean RAPPIA.... mientras los otros estan dandole de comer a las palomas en la plaza</div>
-
-<!-- 👻 GHOST MESSAGE 3 -->
-<div id="ghost-msg3">PAC-HACK FREEPLAY o te vas a quedar mirando como las VACAS cuando el tren abandona la estacion.</div>
-
-<!-- 👻 GHOST MESSAGE 4 -->
-<div id="ghost-msg4">es dificil jugar con MESSI</div>
-
-<script>
-(function ghostLoop() {
-    var el = document.getElementById('ghost-msg');
-    // Posición aleatoria en pantalla
-    el.style.top  = (Math.random() * 75 + 5) + 'vh';
-    el.style.left = (Math.random() * 55 + 2) + 'vw';
-    el.style.display = 'block';
-    // 15% de chance de quedarse 1 segundo legible, resto flash corto
-    var isLong   = Math.random() < 0.15;
-    var visibleMs = isLong ? 1000 : Math.floor(Math.random() * 130 + 40);
-    setTimeout(function() {
-        el.style.display = 'none';
-        // Pausa antes del próximo flash: 1 a 5 segundos
-        var hiddenMs = Math.floor(Math.random() * 4000 + 1000);
-        setTimeout(ghostLoop, hiddenMs);
-    }, visibleMs);
-})();
-
-// Loop independiente para ghost-msg2 — desfasado 3 segundos al inicio
-setTimeout(function ghostLoop2() {
-    var el = document.getElementById('ghost-msg2');
-    el.style.top  = (Math.random() * 75 + 5) + 'vh';
-    el.style.left = (Math.random() * 55 + 2) + 'vw';
-    el.style.display = 'block';
-    var isLong    = Math.random() < 0.15;
-    var visibleMs = isLong ? 1000 : Math.floor(Math.random() * 130 + 40);
-    setTimeout(function() {
-        el.style.display = 'none';
-        var hiddenMs = Math.floor(Math.random() * 5000 + 2000);
-        setTimeout(ghostLoop2, hiddenMs);
-    }, visibleMs);
-}, 3000);
-
-// Loop independiente para ghost-msg3 — desfasado 6 segundos al inicio
-setTimeout(function ghostLoop3() {
-    var el = document.getElementById('ghost-msg3');
-    el.style.top  = (Math.random() * 75 + 5) + 'vh';
-    el.style.left = (Math.random() * 55 + 2) + 'vw';
-    el.style.display = 'block';
-    var isLong    = Math.random() < 0.15;
-    var visibleMs = isLong ? 1000 : Math.floor(Math.random() * 130 + 40);
-    setTimeout(function() {
-        el.style.display = 'none';
-        var hiddenMs = Math.floor(Math.random() * 4500 + 1500);
-        setTimeout(ghostLoop3, hiddenMs);
-    }, visibleMs);
-}, 6000);
-
-// Loop independiente para ghost-msg4 — desfasado 9 segundos al inicio
-setTimeout(function ghostLoop4() {
-    var el = document.getElementById('ghost-msg4');
-    el.style.top  = (Math.random() * 75 + 5) + 'vh';
-    el.style.left = (Math.random() * 55 + 2) + 'vw';
-    el.style.display = 'block';
-    var isLong    = Math.random() < 0.15;
-    var visibleMs = isLong ? 1000 : Math.floor(Math.random() * 130 + 40);
-    setTimeout(function() {
-        el.style.display = 'none';
-        var hiddenMs = Math.floor(Math.random() * 5000 + 2000);
-        setTimeout(ghostLoop4, hiddenMs);
-    }, visibleMs);
-}, 9000);
-</script>
-
-<script>
-async function submitContactForm() {
-    var wallet  = document.getElementById('ct-wallet').value.trim();
-    var email   = document.getElementById('ct-email').value.trim();
-    var subject = document.getElementById('ct-subject').value;
-    var betId   = document.getElementById('ct-betid').value.trim();
-    var message = document.getElementById('ct-message').value.trim();
-    var errEl   = document.getElementById('contact-error');
-
-    errEl.style.display = 'none';
-
-    if (!wallet || !email || !subject || !message) {
-        errEl.textContent = '// COMPLETÁ TODOS LOS CAMPOS REQUERIDOS //';
-        errEl.style.display = 'block';
-        return;
-    }
-    if (!/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
-        errEl.textContent = '// WALLET INVÁLIDA — FORMATO: 0x... (42 caracteres) //';
-        errEl.style.display = 'block';
-        return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        errEl.textContent = '// EMAIL INVÁLIDO //';
-        errEl.style.display = 'block';
-        return;
-    }
-
-    var btn = document.querySelector('#contact-modal button[onclick="submitContactForm()"]');
-    if (btn) { btn.disabled = true; btn.textContent = 'ENVIANDO...'; }
-
-    try {
-        var res = await fetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/contact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ wallet: wallet, email: email, subject: subject, betId: betId || null, message: message })
-        });
-        var data = await res.json();
-        if (data.ok && data.ticketId) {
-            document.getElementById('contact-ticket-id').textContent = data.ticketId;
-            document.getElementById('contact-form-wrap').style.display = 'none';
-            document.getElementById('contact-success').style.display = 'block';
-        } else {
-            errEl.textContent = '// ERROR: ' + (data.error || 'INTENTÁ DE NUEVO') + ' //';
-            errEl.style.display = 'block';
-        }
-    } catch(e) {
-        errEl.textContent = '// ERROR DE CONEXIÓN — INTENTÁ DE NUEVO //';
-        errEl.style.display = 'block';
-    }
-
-    if (btn) { btn.disabled = false; btn.textContent = 'ENVIAR TICKET'; }
 }
 </script>
 

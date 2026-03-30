@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RappiBellion — Lineamientos y Mecánicas</title>
+  <style>
+    /* ── Fuentes & variables ─────────────────────────────────────────── */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    :root {
+      --orange:    #f97316;
+      --orange-dk: #c2410c;
+      --bg:        #0f0f0f;
+      --surface:   #1a1a1a;
+      --border:    #2e2e2e;
+      --txt:       #e5e5e5;
+      --muted:     #a3a3a3;
+      --green:     #22c55e;
+      --red:       #ef4444;
+      --blue:      #3b82f6;
+      --yellow:    #eab308;
+    }
+
+    /* ── Reset ───────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--txt);
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    /* ── Layout ──────────────────────────────────────────────────────── */
+    .page-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    /* ── Portada ─────────────────────────────────────────────────────── */
+    .cover {
+      text-align: center;
+      padding: 60px 0 48px;
+      border-bottom: 2px solid var(--orange);
+      margin-bottom: 48px;
+    }
+    .cover-logo {
+      width: 80px;
+      height: 80px;
+      background: var(--orange);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 24px;
+      letter-spacing: -2px;
+    }
+    .cover h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: -0.5px;
+    }
+    .cover .subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .cover .version {
+      display: inline-block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 4px 16px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 20px;
+    }
+
+    /* ── Secciones ───────────────────────────────────────────────────── */
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--orange);
+      border-left: 4px solid var(--orange);
+      padding-left: 12px;
+      margin: 48px 0 20px;
+    }
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--txt);
+      margin: 24px 0 10px;
+    }
+
+    p { margin-bottom: 12px; color: var(--txt); }
+
+    /* ── Tarjetas ────────────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--orange);
+      margin-bottom: 8px;
+    }
+
+    /* ── Grilla 2 columnas ───────────────────────────────────────────── */
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Tabla ───────────────────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    th {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--orange);
+    }
+    td {
+      border: 1px solid var(--border);
+      padding: 9px 14px;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #141414; }
+
+    /* ── Código inline ───────────────────────────────────────────────── */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #1e1e1e;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 13px;
+      color: #fbbf24;
+    }
+
+    /* ── Lista ───────────────────────────────────────────────────────── */
+    ul, ol {
+      padding-left: 20px;
+      margin-bottom: 12px;
+    }
+    li { margin-bottom: 5px; }
+
+    /* ── Badges de estado ────────────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      border-radius: 99px;
+      padding: 2px 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-green  { background: #14532d; color: var(--green); }
+    .badge-red    { background: #450a0a; color: var(--red);   }
+    .badge-yellow { background: #422006; color: var(--yellow); }
+    .badge-blue   { background: #1e3a5f; color: var(--blue);  }
+    .badge-orange { background: #431407; color: var(--orange); }
+
+    /* ── Bloque de fórmula ───────────────────────────────────────────── */
+    .formula {
+      background: #0d1117;
+      border: 1px solid var(--orange);
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: #fbbf24;
+      margin-bottom: 16px;
+      white-space: pre-wrap;
+    }
+
+    /* ── Flujo de pasos ──────────────────────────────────────────────── */
+    .steps { counter-reset: step; }
+    .step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+    }
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      min-width: 30px;
+      height: 30px;
+      background: var(--orange);
+      color: #000;
+      font-weight: 700;
+      font-size: 14px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-content { padding-top: 4px; }
+
+    /* ── Alerta ──────────────────────────────────────────────────────── */
+    .alert {
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    .alert-red    { background: #1c0606; border: 1px solid #7f1d1d; color: #fca5a5; }
+    .alert-yellow { background: #1c1200; border: 1px solid #78350f; color: #fde68a; }
+    .alert-green  { background: #052e16; border: 1px solid #14532d; color: #86efac; }
+    .alert-blue   { background: #0c1a30; border: 1px solid #1e40af; color: #93c5fd; }
+
+    /* ── Divisor ─────────────────────────────────────────────────────── */
+    hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+    /* ── Footer ──────────────────────────────────────────────────────── */
+    .footer {
+      text-align: center;
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ── Índice ──────────────────────────────────────────────────────── */
+    .toc { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px; margin-bottom: 48px; }
+    .toc h3 { color: var(--orange); margin-bottom: 12px; }
+    .toc ol { counter-reset: toc-item; list-style: none; padding-left: 0; }
+    .toc li { counter-increment: toc-item; padding: 4px 0; border-bottom: 1px solid var(--border); }
+    .toc li:last-child { border-bottom: none; }
+    .toc li::before { content: counter(toc-item) ". "; color: var(--orange); font-weight: 600; }
+
+    /* ── PRINT ───────────────────────────────────────────────────────── */
+    @media print {
+      body { background: #fff; color: #111; font-size: 12pt; }
+      .page-wrap { max-width: 100%; padding: 0; }
+      .cover { border-color: #f97316; }
+      .cover h1 { color: #c2410c; }
+      .cover-logo { background: #f97316; }
+      h2 { color: #c2410c; border-color: #f97316; page-break-before: always; }
+      h2:first-of-type { page-break-before: avoid; }
+      .card { background: #f9f9f9; border-color: #ddd; }
+      .card-title { color: #c2410c; }
+      code { background: #f3f4f6; border-color: #d1d5db; color: #b45309; }
+      table { font-size: 11pt; }
+      th { background: #f3f4f6; color: #c2410c; border-color: #d1d5db; }
+      td { border-color: #d1d5db; }
+      .formula { background: #f9f9f9; border-color: #c2410c; color: #b45309; }
+      .alert-red    { background: #fef2f2; border-color: #fca5a5; color: #991b1b; }
+      .alert-yellow { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+      .alert-green  { background: #f0fdf4; border-color: #86efac; color: #166534; }
+      .alert-blue   { background: #eff6ff; border-color: #93c5fd; color: #1e40af; }
+      .badge-green  { background: #dcfce7; color: #166534; }
+      .badge-red    { background: #fee2e2; color: #991b1b; }
+      .badge-yellow { background: #fef9c3; color: #854d0e; }
+      .badge-blue   { background: #dbeafe; color: #1e40af; }
+      .badge-orange { background: #ffedd5; color: #c2410c; }
+      .step::before { background: #f97316; }
+      .toc { background: #f9f9f9; border-color: #ddd; }
+      .toc h3 { color: #c2410c; }
+      .toc li::before { color: #c2410c; }
+      tr:nth-child(even) td { background: #f9f9f9; }
+      .footer { color: #6b7280; }
+      hr { border-color: #e5e7eb; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- ── PORTADA ──────────────────────────────────────────────────────────── -->
+  <div class="cover">
+    <div class="cover-logo">R</div>
+    <h1>RappiBellion</h1>
+    <div class="subtitle">Lineamientos y Mecánicas del Sistema de Apuestas</div>
+    <div class="version">v1.0 · Pac-Hack Beta · Marzo 2026</div>
+  </div>
+
+  <!-- ── ÍNDICE ───────────────────────────────────────────────────────────── -->
+  <div class="toc">
+    <h3>Índice</h3>
+    <ol>
+      <li>Concepto General de la Plataforma</li>
+      <li>Token RPPI — Economía y Liquidez</li>
+      <li>Flujo Completo de una Apuesta</li>
+      <li>Estructura de Premios y Comisiones</li>
+      <li>Mecánica de Boosts</li>
+      <li>Cancelación y Reembolso</li>
+      <li>Seguridad y Anti-fraude</li>
+      <li>Estados de una Apuesta</li>
+      <li>Red y Contratos</li>
+      <li>Preguntas Frecuentes (base para chatbot/FAQ)</li>
+    </ol>
+  </div>
+
+  <!-- ── 1. CONCEPTO GENERAL ──────────────────────────────────────────────── -->
+  <h2>1. Concepto General de la Plataforma</h2>
+
+  <p>
+    <strong>RappiBellion</strong> es una plataforma de apuestas competitivas basada en partidas de
+    <strong>Pac-Hack</strong> (variante personalizada de Pac-Man). Dos jugadores se enfrentan en tiempo real;
+    el resultado del juego determina automáticamente quién recibe el pozo.
+  </p>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Moneda de apuesta</div>
+      <p><strong>USDT</strong> en la red <strong>Optimism</strong> (L2 de Ethereum).<br/>
+      Comisiones de red: &lt;$0.01 USD por transacción.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Token nativo</div>
+      <p><strong>RPPI</strong> — token de gobernanza / utilidad de la plataforma.<br/>
+      Almacena valor referenciado al bono US02Y.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Principio clave</div>
+    <p>
+      Los fondos <strong>nunca quedan en custodia del sitio</strong> durante el juego.
+      El depósito va a la billetera de la casa que actúa como escrow temporal;
+      el pago se ejecuta automáticamente vía smart contract / worker al finalizar la partida.
+    </p>
+  </div>
+
+  <!-- ── 2. TOKEN RPPI ─────────────────────────────────────────────────────── -->
+  <h2>2. Token RPPI — Economía y Liquidez</h2>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Contrato</div>
+      <p>Desplegado y verificado en <strong>Optimism Mainnet</strong>.<br/>
+      Verificable en: <code>optimistic.etherscan.io</code>, <code>blockscout.com</code></p>
+    </div>
+    <div class="card">
+      <div class="card-title">Pool de liquidez</div>
+      <p>Estructura objetivo: <strong>1 RPPI ≈ 1 USDT</strong> en Uniswap V3.<br/>
+      Pendiente de creación para habilitar listado en CoinGecko/CMC.</p>
+    </div>
+  </div>
+
+  <h3>Modelo de apreciación</h3>
+  <p>
+    El precio objetivo de RPPI está anclado al rendimiento del bono del Tesoro de EE.UU. a 2 años
+    (<strong>US02Y</strong>). El valor del token sube gradualmente siguiendo ese índice,
+    lo que lo diferencia de monedas estables puras y le da un incentivo de retención.
+  </p>
+
+  <table>
+    <tr>
+      <th>Aspecto</th>
+      <th>Detalle</th>
+    </tr>
+    <tr>
+      <td>Red</td>
+      <td>Optimism (OP Mainnet)</td>
+    </tr>
+    <tr>
+      <td>Precio base</td>
+      <td>1 RPPI = 1 USDT (al momento del lanzamiento del pool)</td>
+    </tr>
+    <tr>
+      <td>Apreciación</td>
+      <td>Referenciada a US02Y (~4–5% anual en condiciones normales)</td>
+    </tr>
+    <tr>
+      <td>Uso en plataforma</td>
+      <td>Gobernanza, acceso a funciones premium, futuros descuentos en comisión de la casa</td>
+    </tr>
+    <tr>
+      <td>Logo</td>
+      <td>Círculo naranja con letra R (mismo ícono del botón de boost en el sitio)</td>
+    </tr>
+    <tr>
+      <td>CoinGecko / CMC</td>
+      <td>Pendiente — requiere pool de liquidez activo primero</td>
+    </tr>
+  </table>
+
+  <!-- ── 3. FLUJO DE APUESTA ───────────────────────────────────────────────── -->
+  <h2>3. Flujo Completo de una Apuesta</h2>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-content">
+        <strong>Creación del reto</strong><br/>
+        El Jugador 1 (creador) define el monto en USDT y crea la apuesta.
+        Se genera un <code>betId</code> único en Firebase con estado <code>open</code>.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-content">
+        <strong>Depósito del creador</strong><br/>
+        Jugador 1 transfiere el monto de USDT a la billetera de la casa.
+        El <code>txHash</code> se guarda en Firebase como <code>creatorTxHash</code>.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-content">
+        <strong>Aceptación del reto</strong><br/>
+        Jugador 2 (aceptor) ve el reto y deposita el mismo monto en USDT.
+        El <code>txHash</code> se guarda como <code>acceptorTxHash</code>.
+        Estado pasa a <code>active</code>.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-content">
+        <strong>Inicio del partido</strong><br/>
+        Ambos jugadores inician la partida de Pac-Hack. Los puntajes se registran en tiempo real.
+        Cada jugador puede comprar boosts opcionales durante la partida.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-content">
+        <strong>Fin del partido</strong><br/>
+        El sistema compara los puntajes finales y determina el ganador automáticamente.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-content">
+        <strong>Payout automático</strong><br/>
+        El frontend llama al endpoint <code>POST /payout</code> del worker de Cloudflare.
+        El worker transfiere el premio neto en USDT al ganador.
+        Firebase se actualiza con estado <code>paid</code> y el <code>payoutTxHash</code>.
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-blue">
+    <strong>Nota de seguridad:</strong> El worker verifica que el <code>winner</code>
+    declarado sea efectivamente <code>bet.creator</code> o <code>bet.acceptor</code> antes
+    de ejecutar cualquier transferencia. Nadie externo puede forzar un pago a una dirección arbitraria.
+  </div>
+
+  <!-- ── 4. PREMIOS Y COMISIONES ───────────────────────────────────────────── -->
+  <h2>4. Estructura de Premios y Comisiones</h2>
+
+  <div class="formula">Premio neto = (Monto × 2)  −  Comisión de la casa (3%)  −  Boosts totales
+
+Ejemplo con apuesta de 10 USDT y 2 boosts:
+  Pozo total        = 10 + 10           = 20.00 USDT
+  Comisión (3%)     = 20 × 0.03         =  0.60 USDT
+  Boosts (2 × 1$)   = 2                 =  2.00 USDT
+  ─────────────────────────────────────────────────
+  Premio al ganador =                   = 17.40 USDT</div>
+
+  <table>
+    <tr>
+      <th>Concepto</th>
+      <th>Valor</th>
+      <th>Destino</th>
+    </tr>
+    <tr>
+      <td>Comisión de la casa</td>
+      <td>3% del pozo total</td>
+      <td>Billetera de la casa (operaciones)</td>
+    </tr>
+    <tr>
+      <td>Costo por boost</td>
+      <td>1 USDT / unidad</td>
+      <td>Billetera de la casa (revenue por ventajas)</td>
+    </tr>
+    <tr>
+      <td>Pozo mínimo</td>
+      <td>Sin mínimo técnico (recomendado: ≥1 USDT)</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>Premio máximo</td>
+      <td>Sin límite definido (depende del monto apostado)</td>
+      <td>Al ganador, automáticamente</td>
+    </tr>
+  </table>
+
+  <div class="alert alert-yellow">
+    <strong>Importante:</strong> Si el premio calculado resulta 0 o negativo (por boosts excesivos),
+    el worker rechaza el pago con error. Esto es una salvaguarda ante abuso de boosts.
+  </div>
+
+  <!-- ── 5. MECÁNICA DE BOOSTS ──────────────────────────────────────────────── -->
+  <h2>5. Mecánica de Boosts</h2>
+
+  <p>
+    Los boosts son <strong>ventajas de juego opcionales</strong> que cualquier jugador puede activar
+    durante la partida pagando 1 USDT adicional por cada uno. Cambian dinámicamente la experiencia
+    de la partida, no el resultado financiero directo.
+  </p>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">¿Qué hace un boost?</div>
+      <ul>
+        <li>Activa efectos en el tablero de Pac-Hack</li>
+        <li>Puede beneficiar al activador o perjudicar al rival</li>
+        <li>El tipo/efecto depende de la implementación del juego</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Impacto económico</div>
+      <ul>
+        <li>Cada boost descuenta 1 USDT del premio final</li>
+        <li>El descuento se aplica <em>independientemente</em> de quién los compró</li>
+        <li>Suma total de boosts de ambos jugadores se resta del pozo</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="alert alert-blue">
+    Los boosts <code>boostsP1</code> y <code>boostsP2</code> se envían al worker al llamar
+    a <code>/payout</code>. El worker los usa para calcular el premio neto antes de transferir.
+  </div>
+
+  <!-- ── 6. CANCELACIÓN Y REEMBOLSO ────────────────────────────────────────── -->
+  <h2>6. Cancelación y Reembolso</h2>
+
+  <p>
+    Un reto puede cancelarse <strong>manualmente</strong> si no fue aceptado por ningún rival,
+    bajo las siguientes condiciones estrictas:
+  </p>
+
+  <table>
+    <tr>
+      <th>Condición</th>
+      <th>Regla</th>
+    </tr>
+    <tr>
+      <td>¿Quién puede cancelar?</td>
+      <td>Solo el <strong>creador</strong> de la apuesta.</td>
+    </tr>
+    <tr>
+      <td>Estado requerido</td>
+      <td>La apuesta debe estar en estado <code>open</code> (sin aceptar).</td>
+    </tr>
+    <tr>
+      <td>Tiempo mínimo de espera</td>
+      <td><strong>30 minutos</strong> desde la creación antes de poder cancelar.</td>
+    </tr>
+    <tr>
+      <td>¿Se reembolsa el USDT?</td>
+      <td>Sí, si el creador ya había depositado (<code>creatorTxHash</code> existe).<br/>
+      Si no hubo depósito on-chain, solo se cancela el registro en Firebase.</td>
+    </tr>
+    <tr>
+      <td>Endpoint</td>
+      <td><code>POST /refund</code> — requiere<code> X-Payout-Secret</code> header.</td>
+    </tr>
+  </table>
+
+  <h3>¿Qué pasa si el rival nunca acepta?</h3>
+  <p>
+    Pasados 30 minutos, el creador puede pulsar el botón <strong>"CANCELAR — REFUND USDT"</strong>
+    en la interfaz. El worker procesa la devolución automáticamente en la red Optimism.
+    El estado queda como <code>cancelled / payoutStatus: refunded</code> en Firebase.
+  </p>
+
+  <div class="alert alert-red">
+    <strong>No hay auto-cancelación.</strong> La plataforma NO cancela apuestas automáticamente
+    por timeout. El creador debe solicitarlo de forma activa desde la UI.
+  </div>
+
+  <!-- ── 7. SEGURIDAD Y ANTI-FRAUDE ─────────────────────────────────────────── -->
+  <h2>7. Seguridad y Anti-fraude</h2>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Autenticación de pagos</div>
+      <p>Todo llamado a <code>/payout</code> y <code>/refund</code> debe incluir el header
+      <code>X-Payout-Secret</code>. Llamadas sin el secret correcto reciben <code>401 No autorizado</code>.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Validación de ganador</div>
+      <p>El worker verifica que el <code>winner</code> declarado sea exactamente
+      <code>bet.creator</code> o <code>bet.acceptor</code>. Cualquier otra dirección → <code>403</code>.</p>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Anti doble-pago</div>
+      <p>Si Firebase ya tiene <code>status: 'paid'</code> o <code>payoutStatus: 'completed'</code>,
+      el worker rechaza inmediatamente sin ejecutar ninguna transferencia.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Verificación de depósitos</div>
+      <p>El payout solo se procesa si existen tanto <code>creatorTxHash</code> como
+      <code>acceptorTxHash</code> en Firebase, confirmando que ambos depositaron.</p>
+    </div>
+  </div>
+
+  <h3>Punto de mejora pendiente</h3>
+  <div class="alert alert-yellow">
+    <strong>Puntaje del rival:</strong> En la versión actual, si un rival se desconecta
+    intencionalmente para evitar una derrota, su puntaje podría no registrarse correctamente.
+    La solución planeada es guardar los puntajes en Firebase en tiempo real durante la partida
+    (<code>t2e_bets/{betId}/scores_live</code>), de modo que el worker use siempre el último
+    puntaje conocido, no el reportado por el cliente al finalizar.
+  </div>
+
+  <!-- ── 8. ESTADOS ────────────────────────────────────────────────────────── -->
+  <h2>8. Estados de una Apuesta</h2>
+
+  <table>
+    <tr>
+      <th>Estado</th>
+      <th>Significado</th>
+      <th>Acciones disponibles</th>
+    </tr>
+    <tr>
+      <td><span class="badge badge-yellow">open</span></td>
+      <td>Creada, esperando que alguien la acepte.</td>
+      <td>Puede ser aceptada por otro jugador, o cancelada por el creador (tras 30 min).</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-blue">active</span></td>
+      <td>Fue aceptada — ambos depositaron. Partida en curso.</td>
+      <td>Solo avanza al finalizar el partido. No se puede cancelar.</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-green">paid</span></td>
+      <td>Partido terminado, premio enviado al ganador.</td>
+      <td>Solo lectura. El <code>payoutTxHash</code> confirma la transferencia on-chain.</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-red">cancelled</span></td>
+      <td>Apuesta cancelada por el creador antes de ser aceptada.</td>
+      <td>Si hubo depósito, el refund ya fue enviado (<code>refundTxHash</code>).</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-orange">failed</span> (payoutStatus)</td>
+      <td>El payout intentó ejecutarse pero falló (error de red, saldo insuficiente, etc.).</td>
+      <td>Reintento posible desde la UI. La apuesta no se marca como pagada hasta que el tx confirme.</td>
+    </tr>
+  </table>
+
+  <!-- ── 9. RED Y CONTRATOS ────────────────────────────────────────────────── -->
+  <h2>9. Red y Contratos</h2>
+
+  <table>
+    <tr>
+      <th>Componente</th>
+      <th>Valor</th>
+    </tr>
+    <tr>
+      <td>Red</td>
+      <td>Optimism Mainnet (Chain ID: 10)</td>
+    </tr>
+    <tr>
+      <td>RPC público</td>
+      <td><code>https://mainnet.optimism.io</code></td>
+    </tr>
+    <tr>
+      <td>USDT (Tether) Optimism</td>
+      <td><code>0x94b008aA00579c1307B0EF2c499aD98a8ce58e58</code></td>
+    </tr>
+    <tr>
+      <td>Decimales USDT</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>Billetera de la casa (escrow)</td>
+      <td><code>0x2c3d4526Ffad5823510120040762Ae9cAdc23D7E</code></td>
+    </tr>
+    <tr>
+      <td>Worker URL</td>
+      <td><code>https://rapid-figemini-proxy.gabrieldomail.workers.dev</code></td>
+    </tr>
+    <tr>
+      <td>Database Firebase</td>
+      <td><code>https://rappibellion-default-rtdb.firebaseio.com</code></td>
+    </tr>
+  </table>
+
+  <div class="alert alert-green">
+    <strong>Costos de red en Optimism:</strong> Las transacciones de USDT en Optimism cuestan
+    típicamente entre <strong>$0.001 y $0.01 USD</strong>, lo que hace viables apuestas pequeñas
+    que en Ethereum mainnet serían inviables por el gas.
+  </div>
+
+  <!-- ── 10. FAQ ────────────────────────────────────────────────────────────── -->
+  <h2>10. Preguntas Frecuentes (base para chatbot / FAQ)</h2>
+
+  <h3>Acerca de las apuestas</h3>
+
+  <div class="card">
+    <div class="card-title">¿Qué necesito para apostar?</div>
+    <p>Una billetera web3 compatible (MetaMask, Coinbase Wallet, etc.) con
+    <strong>USDT en la red Optimism</strong> y un mínimo de ETH en Optimism para cubrir el gas
+    (generalmente &lt;$0.01).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">¿Cómo sé que mis fondos están seguros?</div>
+    <p>Tu depósito va directamente a la billetera de escrow de RappiBellion on-chain.
+    El pago al ganador se ejecuta automáticamente via smart contract y queda registrado en la
+    blockchain de Optimism. Puedes verificar cualquier transacción en
+    <code>optimistic.etherscan.io</code>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">¿Cuánto tarda el pago al ganar?</div>
+    <p>El pago se procesa automáticamente al finalizar la partida. Una transacción en Optimism
+    confirma en aproximadamente <strong>1–2 segundos</strong>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">¿Qué comisión cobra la plataforma?</div>
+    <p><strong>3% del pozo total.</strong> Si apostaste 10 USDT cada uno (pozo = 20 USDT),
+    la comisión es 0.60 USDT. El ganador recibe 19.40 USDT (antes de boosts).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">¿Puedo cancelar una apuesta?</div>
+    <p>Sí, solo si eres el creador y la apuesta aún no fue aceptada.
+    Debes esperar <strong>30 minutos</strong> desde la creación. Luego aparece el botón
+    "CANCELAR — REFUND USDT" y recibes tu depósito de vuelta automáticamente.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">¿Qué pasa si nadie acepta mi reto?</div>
+    <p>La apuesta permanece en estado <em>abierto</em>. Después de 30 minutos puedes cancelarla
+    y recuperar tu USDT. No hay timeout automático — debes solicitarlo vos.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">¿Qué pasa si el partido queda empatado?</div>
+    <p>En la versión actual, el sistema determina un ganador por puntaje. En caso de empate exacto,
+    se aplica la regla de desempate definida en el juego (a definir en la documentación oficial del juego).</p>
+  </div>
+
+  <h3>Acerca de los boosts</h3>
+
+  <div class="card">
+    <div class="card-title">¿Qué es un boost?</div>
+    <p>Una ventaja temporal en la partida que se compra con 1 USDT adicional. Cada boost
+    descuenta 1 USDT del premio final (del pozo, antes de pagarse al ganador).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">¿Vale la pena comprar boosts?</div>
+    <p>Depende de tu estrategia y el monto apostado. Si apostaste 5 USDT y compras 3 boosts,
+    reduces el premio en 3 USDT. Calculá si la ventaja en el juego vale ese costo.</p>
+  </div>
+
+  <h3>Acerca del token RPPI</h3>
+
+  <div class="card">
+    <div class="card-title">¿Qué es RPPI?</div>
+    <p>El token nativo de RappiBellion, desplegado en Optimism. Arranca en paridad 1 RPPI = 1 USDT
+    y aprecia siguiendo el rendimiento del bono del Tesoro de EE.UU. a 2 años (US02Y).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">¿Por qué RPPI no está en CoinGecko todavía?</div>
+    <p>CoinGecko y CoinMarketCap requieren que el token tenga un <strong>pool de liquidez activo</strong>
+    en un DEX (Uniswap, etc.) antes de aceptar el listado. El pool está en preparación.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">¿Para qué sirve tener RPPI?</div>
+    <p>Actualmente: gobernanza y acceso anticipado a funciones. A futuro: descuentos en comisión
+    de la casa, acceso a torneos exclusivos y otras ventajas de plataforma.</p>
+  </div>
+
+  <h3>Técnico</h3>
+
+  <div class="card">
+    <div class="card-title">¿Por qué usan Optimism y no otra red?</div>
+    <p>Optimism ofrece el mejor balance entre velocidad (&lt;2 seg), costo (&lt;$0.01 por tx),
+    seguridad (hereda de Ethereum mainnet) y ecosistema DeFi maduro. USDT tiene liquidez
+    nativa en Optimism.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">¿Qué billeteras son compatibles?</div>
+    <p>Cualquier billetera que soporte la red Optimism: <strong>MetaMask</strong>,
+    Coinbase Wallet, Rainbow, Trust Wallet, Ledger (vía MetaMask), entre otras.
+    Asegurate de agregar la red Optimism en tu billetera.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">¿Hay un explorador de apuestas?</div>
+    <p>Cada pago genera un <code>txHash</code> verificable en
+    <code>optimistic.etherscan.io</code>. La apuesta queda registrada en Firebase
+    con todos los detalles: scores, boosts, comisión, hash de la tx.</p>
+  </div>
+
+  <!-- ── FOOTER ────────────────────────────────────────────────────────────── -->
+  <div class="footer">
+    <p>RappiBellion — Documento interno de mecánicas · Versión 1.0 · Marzo 2026</p>
+    <p>Este documento es la fuente de verdad para el chatbot, FAQ público y soporte al usuario.</p>
+  </div>
+
+</div>
+</body>
+</html>

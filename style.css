@@ -1,3 +1,59 @@
+/* INICIO PATCH: Efectos soporte en AI CHAT */
+#gemini-chat-widget {
+    background: #020408 !important;
+    border: 3px solid #ff0080 !important;
+    animation: cm-border-spin 3s linear infinite !important;
+    overflow: hidden !important;
+    box-shadow: 0 0 50px #ff008099, inset 0 0 25px #ff008018 !important;
+    border-radius: 7px !important;
+    position: fixed;
+    bottom: 90px;
+    right: 24px;
+    z-index: 99999;
+    width: 340px;
+    max-width: 95vw;
+    font-family: 'Courier New', Courier, monospace;
+    display: none;
+    flex-direction: column;
+}
+#gemini-chat-scanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.38) 2px,
+        rgba(0,0,0,0.38) 4px
+    );
+}
+#gemini-chat-header {
+    padding: 11px 19px;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #ff0080, #9d00ff, #00ffff, #7fff00, #ffdc00, #ff3c5e, #ff0080);
+    background-size: 300% 100%;
+    animation: cm-slide 4s linear infinite;
+    color: #fff;
+    position: relative;
+    z-index: 10;
+}
+#gemini-chat-header-title {
+    animation: cm-glitch 6s infinite;
+    display: inline-block;
+}
+#gemini-chat-body {
+    padding: 24px 27px 0 27px;
+    position: relative;
+    z-index: 2;
+}
+/* FIN PATCH: Efectos soporte en AI CHAT */
 #mute-play-btn img,
 #mute-play-btn span {
     pointer-events: none;

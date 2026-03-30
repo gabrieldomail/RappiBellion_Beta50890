@@ -667,6 +667,7 @@ async function handleContact(request, env, corsHeaders) {
         body: JSON.stringify({
           from: 'Rappibellion Soporte <info@rappibellion.com>',
           to: ['info@rappibellion.com'],
+          reply_to: email,
           subject: `[${ticketId}] ${subject}`,
           html: `
 <h3 style="font-family:monospace;color:#ffdc00;background:#050a0f;padding:8px 12px;margin:0;">
