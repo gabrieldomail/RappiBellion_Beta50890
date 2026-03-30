@@ -431,6 +431,106 @@
     </div>
 </div>
 
+<!-- === BOTÓN FLOTANTE: CONTACTO === -->
+<button id="contact-float-btn" title="Contacto / Soporte" onclick="document.getElementById('contact-modal').style.display='flex'">
+    ✉ SOPORTE
+</button>
+
+<!-- === MODAL: FORMULARIO DE CONTACTO / TICKET === -->
+<div id="contact-modal" style="display:none;position:fixed;inset:0;z-index:10000;
+     background:rgba(0,0,0,0.82);align-items:center;justify-content:center;padding:16px;">
+  <div style="background:#050a0f;border:2px solid #ffdc00;box-shadow:0 0 30px rgba(255,220,0,0.4);
+              width:100%;max-width:480px;font-family:'Courier New',monospace;position:relative;">
+    <!-- Header -->
+    <div style="background:#ffdc00;color:#000;padding:8px 14px;font-size:12px;font-weight:bold;
+                letter-spacing:2px;display:flex;justify-content:space-between;align-items:center;">
+      <span>[SOPORTE // RAPPIBELLION_TICKET]</span>
+      <button onclick="document.getElementById('contact-modal').style.display='none'"
+              style="background:none;border:none;font-size:16px;font-weight:bold;cursor:pointer;
+                     color:#000;line-height:1;padding:0 4px;">✕</button>
+    </div>
+    <!-- Body -->
+    <div style="padding:18px 20px;">
+      <div id="contact-form-wrap">
+        <p style="color:rgba(255,220,0,0.6);font-size:9px;letter-spacing:3px;margin:0 0 14px;">
+          // COMPLETÁ EL FORMULARIO — TE RESPONDEMOS A LA BREVEDAD //
+        </p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div>
+            <label style="color:#ffdc00;font-size:9px;letter-spacing:2px;display:block;margin-bottom:3px;">WALLET</label>
+            <input id="ct-wallet" type="text" placeholder="0x..." maxlength="42"
+              style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.5);
+                     border:1px solid rgba(255,220,0,0.4);color:#ffdc00;font-family:'Courier New',monospace;
+                     font-size:11px;padding:6px 8px;outline:none;letter-spacing:1px;">
+          </div>
+          <div>
+            <label style="color:#ffdc00;font-size:9px;letter-spacing:2px;display:block;margin-bottom:3px;">EMAIL</label>
+            <input id="ct-email" type="email" placeholder="tu@mail.com"
+              style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.5);
+                     border:1px solid rgba(255,220,0,0.4);color:#ffdc00;font-family:'Courier New',monospace;
+                     font-size:11px;padding:6px 8px;outline:none;letter-spacing:1px;">
+          </div>
+          <div>
+            <label style="color:#ffdc00;font-size:9px;letter-spacing:2px;display:block;margin-bottom:3px;">ASUNTO</label>
+            <select id="ct-subject"
+              style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.5);
+                     border:1px solid rgba(255,220,0,0.4);color:#ffdc00;font-family:'Courier New',monospace;
+                     font-size:11px;padding:6px 8px;outline:none;letter-spacing:1px;">
+              <option value="">— SELECCIONÁ —</option>
+              <option value="Problema con pago">Problema con pago</option>
+              <option value="Bug en el juego">Bug en el juego</option>
+              <option value="Reclamo de apuesta">Reclamo de apuesta</option>
+              <option value="Consulta sobre $RPPI">Consulta sobre $RPPI</option>
+              <option value="Quiero unirme al equipo">Quiero unirme al equipo</option>
+              <option value="Consulta general">Consulta general</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+          <div>
+            <label style="color:#ffdc00;font-size:9px;letter-spacing:2px;display:block;margin-bottom:3px;">BET ID <span style="color:rgba(255,220,0,0.35)">(opcional)</span></label>
+            <input id="ct-betid" type="text" placeholder="Solo si el reclamo es sobre una apuesta específica"
+              style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.5);
+                     border:1px solid rgba(255,220,0,0.4);color:#ffdc00;font-family:'Courier New',monospace;
+                     font-size:11px;padding:6px 8px;outline:none;letter-spacing:1px;">
+          </div>
+          <div>
+            <label style="color:#ffdc00;font-size:9px;letter-spacing:2px;display:block;margin-bottom:3px;">MENSAJE</label>
+            <textarea id="ct-message" rows="4" placeholder="Describí tu problema o consulta..."
+              style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.5);resize:vertical;
+                     border:1px solid rgba(255,220,0,0.4);color:#ffdc00;font-family:'Courier New',monospace;
+                     font-size:11px;padding:6px 8px;outline:none;letter-spacing:1px;"></textarea>
+          </div>
+        </div>
+        <div id="contact-error" style="color:#ff3c5e;font-size:10px;margin-top:8px;display:none;letter-spacing:1px;"></div>
+        <button onclick="submitContactForm()"
+          style="width:100%;margin-top:14px;background:rgba(255,220,0,0.12);
+                 border:1px solid #ffdc00;color:#ffdc00;font-family:'Orbitron',monospace;
+                 font-size:11px;letter-spacing:3px;padding:10px;cursor:pointer;
+                 text-shadow:0 0 8px #ffdc00;transition:background 0.2s;"
+          onmouseover="this.style.background='rgba(255,220,0,0.25)'"
+          onmouseout="this.style.background='rgba(255,220,0,0.12)'">
+          ENVIAR TICKET
+        </button>
+      </div>
+      <!-- Confirmación post-envío -->
+      <div id="contact-success" style="display:none;text-align:center;padding:20px 0;">
+        <div style="font-size:28px;margin-bottom:12px;">✅</div>
+        <div style="color:#00ff41;font-size:12px;letter-spacing:3px;margin-bottom:8px;">TICKET GENERADO</div>
+        <div id="contact-ticket-id" style="color:#ffdc00;font-size:18px;font-weight:bold;
+             letter-spacing:4px;font-family:'Orbitron',monospace;margin-bottom:12px;"></div>
+        <div style="color:rgba(255,255,255,0.5);font-size:10px;letter-spacing:1px;line-height:1.6;">
+          Te enviamos la confirmación por email.<br>
+          Respondemos en menos de 48hs.
+        </div>
+        <button onclick="document.getElementById('contact-modal').style.display='none';document.getElementById('contact-form-wrap').style.display='block';document.getElementById('contact-success').style.display='none';"
+          style="margin-top:16px;background:none;border:1px solid rgba(255,220,0,0.4);color:#ffdc00;
+                 font-family:'Courier New',monospace;font-size:10px;letter-spacing:2px;
+                 padding:6px 14px;cursor:pointer;">CERRAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- === VENTANA FLOTANTE: LOBBY DE APUESTAS === -->
 <div id="lobby-float-window" class="lobby-float-hidden minimized">
     <div class="lobby-float-terminal">
@@ -8883,6 +8983,60 @@ setTimeout(function ghostLoop4() {
         setTimeout(ghostLoop4, hiddenMs);
     }, visibleMs);
 }, 9000);
+</script>
+
+<script>
+async function submitContactForm() {
+    var wallet  = document.getElementById('ct-wallet').value.trim();
+    var email   = document.getElementById('ct-email').value.trim();
+    var subject = document.getElementById('ct-subject').value;
+    var betId   = document.getElementById('ct-betid').value.trim();
+    var message = document.getElementById('ct-message').value.trim();
+    var errEl   = document.getElementById('contact-error');
+
+    errEl.style.display = 'none';
+
+    if (!wallet || !email || !subject || !message) {
+        errEl.textContent = '// COMPLETÁ TODOS LOS CAMPOS REQUERIDOS //';
+        errEl.style.display = 'block';
+        return;
+    }
+    if (!/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
+        errEl.textContent = '// WALLET INVÁLIDA — FORMATO: 0x... (42 caracteres) //';
+        errEl.style.display = 'block';
+        return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errEl.textContent = '// EMAIL INVÁLIDO //';
+        errEl.style.display = 'block';
+        return;
+    }
+
+    var btn = document.querySelector('#contact-modal button[onclick="submitContactForm()"]');
+    if (btn) { btn.disabled = true; btn.textContent = 'ENVIANDO...'; }
+
+    try {
+        var res = await fetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ wallet: wallet, email: email, subject: subject, betId: betId || null, message: message })
+        });
+        var data = await res.json();
+        if (data.ok && data.ticketId) {
+            document.getElementById('contact-ticket-id').textContent = data.ticketId;
+            document.getElementById('contact-form-wrap').style.display = 'none';
+            document.getElementById('contact-success').style.display = 'block';
+        } else {
+            errEl.textContent = '// ERROR: ' + (data.error || 'INTENTÁ DE NUEVO') + ' //';
+            errEl.style.display = 'block';
+        }
+    } catch(e) {
+        errEl.textContent = '// ERROR DE CONEXIÓN — INTENTÁ DE NUEVO //';
+        errEl.style.display = 'block';
+    }
+
+    if (btn) { btn.disabled = false; btn.textContent = 'ENVIAR TICKET'; }
+}
 </script>
 
 </body>

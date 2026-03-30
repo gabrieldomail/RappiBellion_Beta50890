@@ -5319,6 +5319,36 @@ footer::before {
     #lobby-float-window.minimized { width: calc(100vw - 20px); }
 }
 
+/* ── CONTACT FLOAT BUTTON ── */
+#contact-float-btn {
+    position: fixed;
+    top: 20px;
+    right: 352px;
+    z-index: 9997;
+    background: rgba(5, 10, 15, 0.97);
+    border: 2px solid #ffdc00;
+    color: #ffdc00;
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 7px 14px;
+    cursor: pointer;
+    box-shadow: 0 0 14px rgba(255, 220, 0, 0.3);
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+#contact-float-btn:hover { background: rgba(255, 220, 0, 0.12); }
+@media (max-width: 768px) {
+    #contact-float-btn {
+        top: auto;
+        bottom: 70px;
+        right: 10px;
+        font-size: 9px;
+        padding: 6px 11px;
+        letter-spacing: 1px;
+    }
+}
+
 /* ── BOOST BUTTON (Arena) ── */
 #fp-boost-btn {
     margin-top: 10px;

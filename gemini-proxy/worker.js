@@ -115,6 +115,9 @@ export default {
     if (url.pathname === '/dispute') {
       return handleDispute(request, env, corsHeaders);
     }
+    if (url.pathname === '/contact') {
+      return handleContact(request, env, corsHeaders);
+    }
     // ── Gemini API proxy (passthrough — el frontend ya envía formato Gemini) ──
     const apiKey = env.GEMINI_API_KEY;
     if (!apiKey) {
@@ -601,6 +604,116 @@ async function handleRefund(request, env, corsHeaders) {
   } catch (err) {
     console.error('[refund] error:', err);
     return json({ error: 'Refund error: ' + err.message }, 500);
+  }
+}
+
+// ── /contact handler ──────────────────────────────────────────────────────────
+// Body: { wallet, email, subject, message, betId? }
+// Genera ticket RPPI-XXXXXX, guarda en Firebase /contact_tickets, envía emails via Resend
+async function handleContact(request, env, corsHeaders) {
+  const json = (data, status = 200) =>
+    new Response(JSON.stringify(data), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+
+  try {
+    const body = await request.json().catch(() => null);
+    if (!body) return json({ error: 'Body inválido' }, 400);
+
+    const { wallet, email, subject, message, betId } = body;
+    if (!wallet || !email || !subject || !message)
+      return json({ error: 'Faltan campos requeridos' }, 400);
+
+    // Validaciones básicas de seguridad
+    if (!/^0x[a-fA-F0-9]{40}$/.test(wallet))
+      return json({ error: 'Wallet inválida' }, 400);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      return json({ error: 'Email inválido' }, 400);
+    if (message.length > 2000)
+      return json({ error: 'Mensaje demasiado largo (máx 2000 caracteres)' }, 400);
+
+    // Generar ticket ID: RPPI- + 6 hex mayúsculas
+    const ticketId  = 'RPPI-' + Math.random().toString(16).slice(2, 8).toUpperCase();
+    const createdAt = Date.now();
+
+    // Guardar en Firebase
+    if (env.FIREBASE_SERVICE_ACCOUNT) {
+      const fbToken = await getFirebaseToken(env.FIREBASE_SERVICE_ACCOUNT);
+      await fetch(`${FB_DB_URL}/contact_tickets/${ticketId}.json?auth=${fbToken}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ticketId,
+          wallet,
+          email,
+          subject,
+          message,
+          betId: betId || null,
+          createdAt,
+          status: 'open'
+        })
+      });
+    }
+
+    // Enviar emails via Resend API
+    if (env.RESEND_API_KEY) {
+      const resendHeaders = {
+        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      };
+
+      // Notificación interna al equipo
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: resendHeaders,
+        body: JSON.stringify({
+          from: 'Rappibellion Soporte <info@rappibellion.com>',
+          to: ['info@rappibellion.com'],
+          subject: `[${ticketId}] ${subject}`,
+          html: `
+<h3 style="font-family:monospace;color:#ffdc00;background:#050a0f;padding:8px 12px;margin:0;">
+  NUEVO TICKET &mdash; ${ticketId}
+</h3>
+<table style="font-family:monospace;font-size:13px;border-collapse:collapse;width:100%;margin-top:12px;">
+  <tr><td style="padding:4px 8px;color:#555;width:100px;">Ticket</td><td style="padding:4px 8px;font-weight:bold;">${ticketId}</td></tr>
+  <tr><td style="padding:4px 8px;color:#555;">Wallet</td><td style="padding:4px 8px;">${wallet}</td></tr>
+  <tr><td style="padding:4px 8px;color:#555;">Email</td><td style="padding:4px 8px;">${email}</td></tr>
+  <tr><td style="padding:4px 8px;color:#555;">Asunto</td><td style="padding:4px 8px;">${subject}</td></tr>
+  <tr><td style="padding:4px 8px;color:#555;">Bet ID</td><td style="padding:4px 8px;">${betId || '&mdash;'}</td></tr>
+</table>
+<div style="font-family:monospace;font-size:13px;margin-top:12px;padding:12px;background:#f5f5f5;white-space:pre-wrap;">${message}</div>
+          `
+        })
+      });
+
+      // Auto-respuesta al usuario
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: resendHeaders,
+        body: JSON.stringify({
+          from: 'Rappibellion Soporte <info@rappibellion.com>',
+          to: [email],
+          subject: `Tu ticket fue recibido &mdash; ${ticketId}`,
+          html: `
+<div style="font-family:monospace;background:#050a0f;color:#e0e0e0;padding:24px;max-width:480px;">
+  <h2 style="color:#ffdc00;font-size:16px;letter-spacing:3px;margin-bottom:4px;">RAPPIBELLION SOPORTE</h2>
+  <p style="color:rgba(255,220,0,0.5);font-size:11px;letter-spacing:2px;margin-top:0;">// TICKET RECIBIDO //</p>
+  <hr style="border:1px solid rgba(255,220,0,0.2);margin:16px 0;">
+  <p>Recibimos tu consulta. Tu n&uacute;mero de ticket es:</p>
+  <p style="font-size:22px;font-weight:bold;color:#ffdc00;letter-spacing:4px;margin:16px 0;">${ticketId}</p>
+  <p>Asunto: <strong>${subject}</strong></p>
+  <p style="color:rgba(255,255,255,0.5);font-size:12px;">Te respondemos en menos de 48hs h&aacute;biles.</p>
+  <hr style="border:1px solid rgba(255,220,0,0.2);margin:16px 0;">
+  <p style="color:rgba(255,255,255,0.35);font-size:10px;">&mdash; Equipo Rappibellion &middot; info@rappibellion.com</p>
+</div>
+          `
+        })
+      });
+    }
+
+    return json({ ok: true, ticketId });
+
+  } catch (err) {
+    console.error('[contact] error:', err);
+    return json({ error: 'Contact error: ' + err.message }, 500);
   }
 }
 
