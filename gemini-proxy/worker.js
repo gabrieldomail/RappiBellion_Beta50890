@@ -10,7 +10,7 @@ const ALLOWED_ORIGINS = [
 
 // ── Configuración de pagos ─────────────────────────────────────────────────
 const OPTIMISM_RPC      = 'https://mainnet.optimism.io';
-const USDT_ADDRESS      = '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58'; // USDT Optimism
+const USDT_ADDRESS      = '0x91a25d42AcA05858f692CaC03Cb20BFAC9315732'; // USDT Optimism
 const HOUSE_FEE_PCT     = 3;    // 3% del pozo
 const BOOST_COST_USDT   = 1.0;  // 1 USDT por boost
 const USDT_DECIMALS     = 6;
