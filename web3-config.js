@@ -41,7 +41,7 @@ class Web3Config {
         };
 
         // Wallet de la casa — recibe depósitos de ambos jugadores
-        this.HOUSE_WALLET = '0x2c3d4526Ffad5823510120040762Ae9cAdc23D7E';
+        this.HOUSE_WALLET = '0xFea26FAA14722548Fbf45be049b5BD38F239D464';
 
         // Fee structure
         this.HOUSE_FEE_PCT  = 3;    // 3% del pozo total
