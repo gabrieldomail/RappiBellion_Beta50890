@@ -73,11 +73,10 @@ class T2EIntegration {
         console.log('🎮 Configurando listeners de UI...');
 
         // Botones "MAKE YOUR BET" de juegos
+        // only pac-hack and arka-hack are live — spacebreaker and memorybreach are not available yet
         const betButtons = {
             'make-bet-arkahack': 'arka-hack',
-            'make-bet-spacebreaker': 'space-breaker',
-            'make-bet-pachack': 'pac-hack',
-            'make-bet-memorybreach': 'memory-breach'
+            'make-bet-pachack': 'pac-hack'
         };
 
         Object.entries(betButtons).forEach(([buttonId, gameType]) => {

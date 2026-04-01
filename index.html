@@ -363,21 +363,21 @@
                 <div class="game-placeholder">
                     <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
                     <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch);">[SPACE-BREAKER]</strong><br>(La "Flota")</p>
-                    <button class="cta-button" id="make-bet-spacebreaker" disabled style="background-color: #444; border-color: #666; color: #888; cursor: not-allowed; opacity: 0.5;">
+                    <button class="cta-button" id="make-bet-spacebreaker" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em;">
                         [ NOT AVAILABLE ]
                     </button>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
                     <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde);">[TETRIS-CIPHER]</strong><br>(El "Código")</p>
-                    <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde);">
-                        ¡MAKE YOUR BET!
+                    <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); padding: 15px 30px; font-size: 1.2em;">
+                        SOON 16.04.2026
                     </button>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/memorama.webp" alt="MEMORY-BREACH" style="width: 100%; height: auto; display: block;">
                     <p style="margin-top: 10px;"><strong style="color: var(--color-primario);">[MEMORY-BREACH]</strong><br>(La "Memoria")</p>
-                    <button class="cta-button" id="make-bet-memorybreach" disabled style="background-color: #444; border-color: #666; color: #888; cursor: not-allowed; opacity: 0.5;">
+                    <button class="cta-button" id="make-bet-memorybreach" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em;">
                         [ NOT AVAILABLE ]
                     </button>
                 </div>
@@ -2505,7 +2505,8 @@ function fpCloseArena() {
     betOptStyle.textContent = '.bet-option-button.active{background-color:var(--color-caos-verde)!important;border-color:var(--color-caos-verde)!important;color:#000!important;font-weight:bold;}';
     document.head.appendChild(betOptStyle);
 
-    const betButtons = ['make-bet-pachack','make-bet-spacebreaker','make-bet-tetriscipher','make-bet-memorybreach'];
+    // spacebreaker, tetriscipher y memorybreach no están disponibles — no reciben el listener del modal
+    const betButtons = ['make-bet-pachack'];
 
     // Regla general: si no hay billetera conectada, redirige a conectar
     function requireWalletThenBet(gameId) {
@@ -3588,15 +3589,15 @@ btn.addEventListener('click', toggleMutePlay);
                     <div class="game-placeholder">
                         <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
                         <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">[SPACE-BREAKER]</strong><br>(La \"Flota\")</p>
-                        <button class="cta-button" id="make-bet-spacebreaker" disabled style="background-color: #444; border-color: #666; color: #888; cursor: not-allowed; opacity: 0.5;">
+                        <button class="cta-button" id="make-bet-spacebreaker" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em;">
                             [ NOT AVAILABLE ]
                         </button>
                     </div>
                     <div class="game-placeholder">
                         <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
                         <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">[TETRIS-CIPHER]</strong><br>(El \"Código\")</p>
-                        <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde);" disabled>
-                            ¡COMING SOON!
+                        <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); padding: 15px 30px; font-size: 1.2em;">
+                            SOON 16.04.2026
                         </button>
                         <button class="cta-button" id="play-tetriscipher-demo" style="margin-top: 5px; background: transparent; border-color: var(--color-caos-verde); color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde); cursor: default;" disabled>
                             ⏳ [TETRIS-CIPHER] // EN DESARROLLO
@@ -3605,7 +3606,7 @@ btn.addEventListener('click', toggleMutePlay);
                     <div class="game-placeholder">
                         <img src="juegos beta/memorama.webp" alt="MEMORY-BREACH" style="width: 100%; height: auto; display: block;">
                         <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">[MEMORY-BREACH]</strong><br>(La \"Memoria\")</p>
-                        <button class="cta-button" id="make-bet-memorybreach" disabled style="background-color: #444; border-color: #666; color: #888; cursor: not-allowed; opacity: 0.5;">
+                        <button class="cta-button" id="make-bet-memorybreach" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em;">
                             [ NOT AVAILABLE ]
                         </button>
                     </div>
@@ -5497,15 +5498,8 @@ btn.addEventListener('click', toggleMutePlay);
         if (betArkaButton) {
             betArkaButton.addEventListener('click', () => processBetAndOpenGame('ARKA-HACK'));
         }
-        if (betSpaceButton) {
-            betSpaceButton.addEventListener('click', () => processBetAndOpenGame('SPACE-BREAKER'));
-        }
-        if (betTetrisButton) {
-            betTetrisButton.addEventListener('click', () => processBetAndOpenGame('TETRIS-CIPHER'));
-        }
-        if (betMemoryButton) {
-            betMemoryButton.addEventListener('click', () => processBetAndOpenGame('MEMORY-BREACH'));
-        }
+        // space-breaker, tetris-cipher y memory-breach están deshabilitados hasta su lanzamiento
+        // — no se registran listeners para que los botones no abran el modal de apuestas
     }); // <-- FIN DEL 'DOMContentLoaded'
 </script>
     <!-- Canvas Confetti library -->
