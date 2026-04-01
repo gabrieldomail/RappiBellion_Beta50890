@@ -633,8 +633,11 @@ class BettingEngine {
     }
 
     formatTimeRemaining(createdAt, timeLimit) {
+        // Bug 3 fix: createdAt can be a number (ms epoch) from the Firebase path —
+        // always normalise to a Date before calling .getTime()
+        const createdAtMs = (createdAt instanceof Date) ? createdAt.getTime() : Number(createdAt);
         const now = new Date();
-        const endTime = new Date(createdAt.getTime() + (timeLimit * 1000));
+        const endTime = new Date(createdAtMs + (Number(timeLimit) * 1000));
         const remaining = endTime - now;
 
         if (remaining <= 0) return 'Expirada';
@@ -753,12 +756,16 @@ class BettingEngine {
             const betId = `rb-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
             // Crear apuesta
+            // Bug 4 fix: resolve the seconds value once and store it consistently.
+            // The raw key (e.g. "5") is only meaningful to BETTING_LIMITS; everywhere else
+            // (lobby display, formatTimeRemaining, Firebase) expects the seconds integer.
+            const timeLimitSeconds = this.web3Config.BETTING_LIMITS.TIME_LIMITS[betData.timeLimit];
             const demoBet = {
                 id: betId,
                 creator: userAddress,
                 acceptor: null,
                 amount: betData.amount,
-                timeLimit: this.web3Config.BETTING_LIMITS.TIME_LIMITS[betData.timeLimit].toString(),
+                timeLimit: timeLimitSeconds.toString(),
                 boostLimit: betData.boostLimit,
                 gameType: betData.gameType,
                 status: this.web3Config.BET_STATUS.PENDING,
@@ -779,7 +786,7 @@ class BettingEngine {
                     creator: demoBet.creator,
                     amount: demoBet.amount,
                     currency: 'USDT',
-                    timeLimit: demoBet.timeLimit,
+                    timeLimit: timeLimitSeconds,
                     boostLimit: demoBet.boostLimit,
                     gameType: demoBet.gameType,
                     status: 'open',

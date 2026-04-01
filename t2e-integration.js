@@ -792,8 +792,9 @@ class T2EIntegration {
         const timeRemaining = this.bettingEngine.formatTimeRemaining(bet.createdAt, bet.timeLimit);
         const statusText = this.bettingEngine.formatBetStatus(bet.status);
 
-        // Mostrar botón de cancelar si la apuesta está abierta (no aceptada) y pasaron 30 min
-        const isOpen        = bet.status === this.web3Config.BET_STATUS.PENDING || bet.status === 'open';
+        // Bug 6 fix: Firebase bets use status string 'open'; on-chain bets use numeric BET_STATUS.PENDING (0).
+        // Both must match so the cancel button renders correctly in all paths.
+        const isOpen        = bet.status === this.web3Config.BET_STATUS.PENDING || bet.status === 'open' || bet.status === 0;
         const myAddress     = this.web3Config.currentAccount;
         const isCreator     = myAddress && bet.creator?.toLowerCase() === myAddress.toLowerCase();
         const elapsed       = Date.now() - (bet.createdAt || 0);
@@ -846,16 +847,33 @@ class T2EIntegration {
         try {
             if (!confirm('¿Cancelar la apuesta y recuperar tu USDT? La transacción de refund puede tardar unos segundos.')) return;
 
+            this.showLoading('Firmá el mensaje en MetaMask para autenticar el refund...');
+
+            const myAddress  = this.web3Config.currentAccount;
+            const REFUND_URL = 'https://rapid-figemini-proxy.gabrieldomail.workers.dev/refund';
+
+            // EIP-191 signature — proves to the worker that THIS wallet really wants the refund.
+            // The message includes betId so a signature can't be replayed for a different bet.
+            const msgToSign = `Rappibellion: cancelar apuesta ${betId}`;
+            let signature;
+            try {
+                signature = await this.web3Config.signer.signMessage(msgToSign);
+            } catch (signErr) {
+                this.hideLoading();
+                if (signErr.code === 4001) {
+                    this.showNotification('Firma rechazada — refund cancelado.', 'info');
+                } else {
+                    this.showError('Error firmando mensaje: ' + signErr.message);
+                }
+                return;
+            }
+
             this.showLoading('Solicitando refund al worker...');
 
-            const myAddress     = this.web3Config.currentAccount;
-            const REFUND_URL    = 'https://rapid-figemini-proxy.gabrieldomail.workers.dev/refund';
-            const PAYOUT_SECRET = null;
-
-            const res  = await fetch(REFUND_URL, {
+            const res = await fetch(REFUND_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-Payout-Secret': PAYOUT_SECRET },
-                body: JSON.stringify({ betId, requester: myAddress })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ betId, requester: myAddress, signature, message: msgToSign })
             });
             const data = await res.json();
 

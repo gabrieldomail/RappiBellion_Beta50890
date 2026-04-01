@@ -12,6 +12,7 @@ class Web3Config {
         this.isInitialized = false;
         this.provider = null;
         this.signer = null;
+        this.currentAccount = null; // Bug 1 fix: track connected wallet address
         this.contracts = {};
         this.networkConfig = {
             optimism: {
@@ -151,6 +152,11 @@ class Web3Config {
 
             // Inicializar contratos
             await this.initializeContracts();
+
+            // Bug 1 fix: populate currentAccount so t2e-integration can use it
+            try {
+                this.currentAccount = await this.signer.getAddress();
+            } catch (_) { this.currentAccount = null; }
 
             this.isInitialized = true;
             console.log('✅ Configuración Web3 inicializada correctamente');
@@ -359,8 +365,10 @@ class Web3Config {
     async estimateGas(tx) {
         try {
             const gasEstimate = await this.provider.estimateGas(tx);
-            const limits = this.getBettingLimits();
-            return gasEstimate.mul(limits.GAS_LIMIT_MULTIPLIER);
+            // Bug 2 fix: GAS_LIMIT_MULTIPLIER is a JS float (1.2) — BigNumber.mul() requires
+            // an integer. Convert to basis-points integer arithmetic instead.
+            const multiplierBps = Math.round(this.getBettingLimits().GAS_LIMIT_MULTIPLIER * 100); // 120
+            return gasEstimate.mul(multiplierBps).div(100);
         } catch (error) {
             console.error('❌ Error estimando gas:', error);
             throw error;
