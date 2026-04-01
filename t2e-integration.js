@@ -850,7 +850,7 @@ class T2EIntegration {
 
             const myAddress     = this.web3Config.currentAccount;
             const REFUND_URL    = 'https://rapid-figemini-proxy.gabrieldomail.workers.dev/refund';
-            const PAYOUT_SECRET = 'rppi_payout_2026';
+            const PAYOUT_SECRET = null;
 
             const res  = await fetch(REFUND_URL, {
                 method: 'POST',
