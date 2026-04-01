@@ -29,7 +29,7 @@ class Web3Config {
 
         // ── USDT en Optimism (modo producción) ──────────────────────────────
         this.USDT_CONFIG = {
-            address: '0xFea26FAA14722548Fbf45be049b5BD38F239D464',
+            address: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58',
             abi: [
                 "function balanceOf(address owner) view returns (uint256)",
                 "function transfer(address to, uint256 amount) returns (bool)",
