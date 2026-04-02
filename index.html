@@ -571,6 +571,36 @@
     </div>
 </div>
 
+<!-- 💚 USDT — promo widget PAC-HACK T2E (siempre visible) -->
+<div id="usdt-promo-window">
+    <div class="usdt-promo-terminal">
+        <div class="usdt-promo-hdr">
+            <span>PAC-HACK DEATH</span>
+            <button onclick="document.getElementById('usdt-promo-window').style.display='none'"
+                style="background:none;border:none;color:rgba(83,208,145,0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
+        </div>
+        <div class="usdt-promo-body">
+            <!-- Tether (USDT) logo — CoinGecko CDN -->
+            <div class="usdt-promo-logo-wrap">
+                <img src="https://assets.coingecko.com/coins/images/325/large/Tether.png"
+                     alt="USDT Tether"
+                     class="usdt-promo-logo"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                <!-- Fallback si no hay internet: círculo verde con ₮ -->
+                <div style="display:none;width:80px;height:80px;border-radius:50%;
+                            background:#26A17B;align-items:center;justify-content:center;
+                            font-size:44px;color:#fff;font-weight:bold;font-family:serif;">₮</div>
+            </div>
+            <p class="usdt-promo-tagline">PAC-HACK DEATH<br><span style="color:rgba(83,208,145,0.8);">-T2E-</span> beta</p>
+            <div class="usdt-promo-badge">
+                <span class="usdt-badge-label">DEFAULT CURRENCY</span>
+                <span class="usdt-badge-val">USDT <span style="opacity:0.55;font-size:0.8em;">// Optimism</span></span>
+            </div>
+            <p class="usdt-promo-sub">// THINK TO EARN — apuestas en USDT</p>
+        </div>
+    </div>
+</div>
+
 <!-- 🟩 TETRIS-CIPHER — promo widget (siempre visible) -->
 <div id="tetris-promo-window">
     <div class="tetris-promo-terminal">
@@ -1551,9 +1581,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const _chatWidget = document.getElementById('gemini-chat-widget');
         if (_chatFab)    _chatFab.style.display = 'none';
         if (_chatWidget) _chatWidget.style.display = 'none';
-        // Ocultar promo Tetris-Cipher para no tapar el timer/score
+        // Ocultar promo Tetris-Cipher y USDT widget para no tapar el timer/score
         const _tetrisPromo = document.getElementById('tetris-promo-window');
         if (_tetrisPromo) _tetrisPromo.classList.add('tetris-promo-hidden');
+        const _usdtPromo = document.getElementById('usdt-promo-window');
+        if (_usdtPromo) _usdtPromo.classList.add('usdt-promo-hidden');
         // Mostrar overlay de controles desktop (auto-dismiss 3s via CSS animation)
         if (window.innerWidth > 900) {
             const _keysOverlay = document.getElementById('fp-keys-overlay');
@@ -1561,7 +1593,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 _keysOverlay.classList.remove('show');
                 void _keysOverlay.offsetWidth; // reflow para reiniciar animación
                 _keysOverlay.classList.add('show');
-                setTimeout(function() { _keysOverlay.classList.remove('show'); }, 3200);
+                setTimeout(function() { _keysOverlay.classList.remove('show'); }, 7200);
             }
         }
         // Bloquear scroll de la página mientras el juego está activo
@@ -2281,9 +2313,11 @@ function fpCloseArena() {
         const _chatFabClose = document.getElementById('gemini-chat-fab');
         const _chatWidgetClose = document.getElementById('gemini-chat-widget');
         if (_chatFabClose) _chatFabClose.style.display = '';
-        // Restaurar promo Tetris-Cipher
+        // Restaurar promo Tetris-Cipher y USDT widget
         const _tetrisPromoClose = document.getElementById('tetris-promo-window');
         if (_tetrisPromoClose) _tetrisPromoClose.classList.remove('tetris-promo-hidden');
+        const _usdtPromoClose = document.getElementById('usdt-promo-window');
+        if (_usdtPromoClose) _usdtPromoClose.classList.remove('usdt-promo-hidden');
         const topbar = document.querySelector('.casino-topbar');
         if (topbar) topbar.classList.remove('visible');
         // Restaurar el zorzal si estaba sonando antes
@@ -7901,13 +7935,13 @@ Cupo abierto: buscan 3 rebeldes para el staff (1 por mes). Aplicar en info@rappi
     letter-spacing: 2px;
     color: rgba(255,255,255,0.85);
     pointer-events: none;
-    animation: keysOverlayFadeOut 3s ease forwards;
+    animation: keysOverlayFadeOut 7s ease forwards;
     white-space: nowrap;
 }
 #fp-keys-overlay.show { display: flex; gap: 20px; align-items: center; }
 @keyframes keysOverlayFadeOut {
     0%   { opacity: 1; }
-    70%  { opacity: 1; }
+    80%  { opacity: 1; }
     100% { opacity: 0; }
 }
 .fp-key-badge {
