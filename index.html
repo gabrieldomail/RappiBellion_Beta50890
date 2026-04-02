@@ -318,7 +318,7 @@
                     <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde);">SLOT 3: TETRIS-CIPHER</strong><br>(Tetris - Organiza el código encriptado)</p>
                     <button class="cta-button" onclick="window.fpOpenFreeGame('Tetris-Cipher/index.html')"
                             style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-color: var(--color-caos-verde); color: var(--color-caos-verde);">
-                        &gt; EJECUTAR_TETRIS-CIPHER.exe
+                        &gt; CYBERDINE CLASSIFIED DATA
                     </button>
                 </div>
                 <div class="game-placeholder">
@@ -2444,6 +2444,8 @@ function fpCloseArena() {
         if (fpArena)  fpArena.classList.remove('show');
         if (fpState.betMode) _fpExitFullscreen();
         if (fpIframe) fpIframe.src = '';
+        // Limpiar Skynet bg al cerrar
+        document.querySelectorAll('.fp-col-skynet').forEach(function(el) { el.classList.remove('fp-col-skynet'); });
         if (fpTimerEl) { fpTimerEl.style.color = ''; fpTimerEl.textContent = '00:00'; }
         if (fpControlSelector) fpControlSelector.classList.remove('show');
         // Restaurar scroll al salir del juego
@@ -2501,6 +2503,12 @@ function fpCloseArena() {
     // Cargador de minijuegos freeplay alternativos (Tetris-Cipher, etc.)
     window.fpOpenFreeGame = function(gameSrc) {
         window._fpNextGameSrc = gameSrc;
+        // Skynet visual: aplica fondo Cyberdyne a columnas izquierda/derecha solo para Tetris-Cipher
+        const isTetris = gameSrc && gameSrc.indexOf('Tetris-Cipher') !== -1;
+        const colLeft  = document.querySelector('.fp-col-left');
+        const colRight = document.querySelector('.fp-col-right');
+        if (colLeft)  colLeft.classList.toggle('fp-col-skynet', isTetris);
+        if (colRight) colRight.classList.toggle('fp-col-skynet', isTetris);
         fpOpenArena(null);
     };
 
@@ -3755,7 +3763,7 @@ btn.addEventListener('click', toggleMutePlay);
                         <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">SLOT 3: TETRIS-CIPHER</strong><br>(Tetris - Organiza el código encriptado)</p>
                         <button class="cta-button" onclick="window.fpOpenFreeGame('Tetris-Cipher/index.html')"
                                 style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-color: var(--color-caos-verde); color: var(--color-caos-verde);">
-                            &gt; EJECUTAR_TETRIS-CIPHER.exe
+                            &gt; CYBERDINE CLASSIFIED DATA
                         </button>
                     </div>
                     <div class="game-placeholder">
@@ -6421,6 +6429,20 @@ btn.addEventListener('click', toggleMutePlay);
             z-index: 0;
         }
         .fp-col-left > * { position: relative; z-index: 1; }
+
+        /* ── SKYNET / CYBERDINE theme — aplicado dinámicamente cuando corre Tetris-Cipher ── */
+        .fp-col-skynet {
+            background-image: url('images/cyberdine_skynet.jpg') !important;
+            background-size: cover !important;
+            background-position: center center !important;
+            background-repeat: no-repeat !important;
+            border-color: rgba(180,60,60,0.7) !important;
+            box-shadow: 0 0 24px rgba(200,40,40,0.45), inset 0 0 40px rgba(0,0,0,0.6) !important;
+        }
+        .fp-col-skynet::after {
+            background: rgba(0,0,0,0.55) !important;
+            opacity: 1 !important;
+        }
 
         /* Timer — hover scale como game-placeholder img */
         .fp-timer-val {
