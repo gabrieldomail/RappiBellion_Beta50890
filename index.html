@@ -1554,6 +1554,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Ocultar promo Tetris-Cipher para no tapar el timer/score
         const _tetrisPromo = document.getElementById('tetris-promo-window');
         if (_tetrisPromo) _tetrisPromo.classList.add('tetris-promo-hidden');
+        // Mostrar overlay de controles desktop (auto-dismiss 3s via CSS animation)
+        if (window.innerWidth > 900) {
+            const _keysOverlay = document.getElementById('fp-keys-overlay');
+            if (_keysOverlay) {
+                _keysOverlay.classList.remove('show');
+                void _keysOverlay.offsetWidth; // reflow para reiniciar animación
+                _keysOverlay.classList.add('show');
+                setTimeout(function() { _keysOverlay.classList.remove('show'); }, 3200);
+            }
+        }
         // Bloquear scroll de la página mientras el juego está activo
         document.body.style.overflow = 'hidden';
         document.body.style.touchAction = 'none';
@@ -7704,6 +7714,23 @@ Cupo abierto: buscan 3 rebeldes para el staff (1 por mes). Aplicar en info@rappi
         </div>
         <div class="tips-body">
 
+            <!-- TIP 00: CONTROLES DESKTOP — visible en todas las pantallas -->
+            <div class="tip-item" style="border-left-color:var(--color-caos-amarillo);">
+                <span class="tip-label" style="color:var(--color-caos-amarillo);">// TIP 00 — CONTROLES DESKTOP</span>
+                <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 14px;
+                            font-family:'Courier New',monospace;font-size:0.82em;margin-top:8px;">
+                    <span style="color:var(--color-caos-amarillo);font-weight:bold;">W / ↑</span>       <span style="color:#ccc;">→ MOVER ARRIBA</span>
+                    <span style="color:var(--color-caos-amarillo);font-weight:bold;">S / ↓</span>       <span style="color:#ccc;">→ MOVER ABAJO</span>
+                    <span style="color:var(--color-caos-amarillo);font-weight:bold;">A / ←</span>       <span style="color:#ccc;">→ MOVER IZQUIERDA</span>
+                    <span style="color:var(--color-caos-amarillo);font-weight:bold;">D / →</span>       <span style="color:#ccc;">→ MOVER DERECHA</span>
+                    <span style="color:var(--color-caos-rosa);font-weight:bold;">Click&nbsp;🔥</span>  <span style="color:#ccc;">→ BOOST / BOMBA</span>
+                    <span style="color:var(--color-azul-glitch);font-weight:bold;">Click&nbsp;💬</span> <span style="color:#ccc;">→ CHAT TAUNTS</span>
+                </div>
+                <p class="tip-text" style="margin-top:8px;font-style:italic;color:rgba(255,255,255,0.45);">
+                    Mobile: elegís Swipe o D-Pad al entrar a la arena.
+                </p>
+            </div>
+
             <div class="tip-item">
                 <span class="tip-label">// TIP 01 — EL SCORE NO SE ACUMULA</span>
                 <p class="tip-text">
@@ -7854,6 +7881,66 @@ Cupo abierto: buscan 3 rebeldes para el staff (1 por mes). Aplicar en info@rappi
     <div style="margin-top:12px; font-family:'Courier New',monospace; font-size:11px; color:rgba(0,255,65,0.5); letter-spacing:2px;">
         AUTO-SWIPE EN <span id="ctrl-auto-countdown" style="color:#00ff41; font-weight:bold;"></span>
     </div>
+</div>
+
+<!-- === DESKTOP KEYBINDING OVERLAY — auto-dismiss 3s, desktop only === -->
+<style>
+#fp-keys-overlay {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9990;
+    background: rgba(2, 4, 8, 0.92);
+    border: 1px solid var(--color-caos-amarillo);
+    box-shadow: 0 0 24px rgba(248,255,43,0.25);
+    padding: 14px 22px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.85);
+    pointer-events: none;
+    animation: keysOverlayFadeOut 3s ease forwards;
+    white-space: nowrap;
+}
+#fp-keys-overlay.show { display: flex; gap: 20px; align-items: center; }
+@keyframes keysOverlayFadeOut {
+    0%   { opacity: 1; }
+    70%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+.fp-key-badge {
+    display: inline-block;
+    background: rgba(248,255,43,0.12);
+    border: 1px solid rgba(248,255,43,0.5);
+    color: var(--color-caos-amarillo);
+    font-weight: bold;
+    padding: 2px 7px;
+    font-size: 11px;
+    margin-right: 3px;
+}
+/* Only show on desktop */
+@media (max-width: 900px) { #fp-keys-overlay { display: none !important; } }
+</style>
+<div id="fp-keys-overlay">
+    <span>
+        <span class="fp-key-badge">W</span>
+        <span class="fp-key-badge">A</span>
+        <span class="fp-key-badge">S</span>
+        <span class="fp-key-badge">D</span>
+        MOVER
+    </span>
+    <span style="color:rgba(255,255,255,0.3);">|</span>
+    <span>
+        <span class="fp-key-badge" style="border-color:rgba(255,0,255,0.5);color:var(--color-caos-rosa);">CLICK 🔥</span>
+        BOOST/BOMBA
+    </span>
+    <span style="color:rgba(255,255,255,0.3);">|</span>
+    <span>
+        <span class="fp-key-badge" style="border-color:rgba(0,255,255,0.5);color:var(--color-azul-glitch);">CLICK 💬</span>
+        CHAT
+    </span>
 </div>
 
 
