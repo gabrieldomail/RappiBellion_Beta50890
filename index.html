@@ -3534,7 +3534,7 @@ btn.addEventListener('click', toggleMutePlay);
                             <div class="payment-icon" style="color: var(--color-caos-amarillo);">🏦</div>
                             <div class="payment-info">
                                 <h4 style="color: var(--color-caos-amarillo); margin: 0 0 5px 0;">TRANSFERENCIA BANCARIA</h4>
-                                <p style="margin: 0; font-size: 0.85em; color: #888;">Envío de fondos tradicional</p>
+                                <p style="margin: 0; font-size: 0.85em; color: #888;">MetaMask · Local Bank Transfer · Binance P2P</p>
                             </div>
                             <div class="payment-arrow">→</div>
                         </div>
@@ -5299,13 +5299,13 @@ btn.addEventListener('click', toggleMutePlay);
                         break;
                         
                     case 'card':
-                        // MetaMask Portfolio — compra USDT en Optimism con tarjeta / Mercado Pago
-                        window.open('https://portfolio.metamask.io/buy?tokens=USDT&network=optimism', '_blank');
+                        // MetaMask Portfolio — Debit/Credit card → USDT on Optimism
+                        window.open('https://portfolio.metamask.io/buy?tokens=USDT&network=optimism&paymentCategory=debit_credit_card', '_blank');
                         break;
                         
                     case 'bank':
-                        // Transferencia bancaria - Por ahora mensaje
-                        alert('🏦 TRANSFERENCIA BANCARIA\n\nPara comprar $RPPI mediante transferencia bancaria, contáctanos en:\n\ninfo@rappibellion.com\n\nTe enviaremos los detalles de la cuenta.');
+                        // MetaMask Portfolio — Local Bank Transfer / Binance P2P → USDT on Optimism
+                        window.open('https://portfolio.metamask.io/buy?tokens=USDT&network=optimism&paymentCategory=bank_transfer', '_blank');
                         break;
                 }
             });
