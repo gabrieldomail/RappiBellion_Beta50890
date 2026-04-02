@@ -344,7 +344,7 @@
 
                 <div style="margin-top: 30px; text-align: center;">
                     <h4 style="color: var(--color-azul-glitch);">¿Ya jugaste?</h4>
-                    <a href="#" class="cta-button whitepaper">VOTAR POR MI MINIJUEGO FAVORITO</a>
+                    <button onclick="window.openVoteModal()" class="cta-button whitepaper">VOTAR POR MI MINIJUEGO FAVORITO</button>
                 </div>
             </div>
 
@@ -3566,9 +3566,7 @@ btn.addEventListener('click', toggleMutePlay);
                     <!-- Botón de Votación -->
                     <div style="margin-top: 30px; text-align: center;">
                         <h4 style="color: var(--color-azul-glitch);">¿Ya jugaste?</h4>
-                        <a href="#URL_DEL_FORMULARIO_DE_VOTO" target="_blank" class="cta-button whitepaper">
-                            VOTAR POR MI MINIJUEGO FAVORITO
-                        </a>
+                        <button onclick="window.openVoteModal()" class="cta-button whitepaper">VOTAR POR MI MINIJUEGO FAVORITO</button>
                     </div>
                 </div>
 
@@ -9027,6 +9025,324 @@ async function submitContactForm() {
 
     if (btn) { btn.disabled = false; btn.textContent = 'ENVIAR TICKET'; }
 }
+</script>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     MODAL: VOTAR POR EL PRÓXIMO MINIJUEGO
+     Guarda votos en Firebase /game_votes — un voto por sesión (localStorage)
+     ══════════════════════════════════════════════════════════════════ -->
+<style>
+/* ── Vote Modal cyberpunk skin (reutiliza cm-border-spin / cm-slide / cm-glitch de contact-modal) */
+#vote-modal-inner {
+    background: #020408;
+    border: 3px solid #F8FF2B;
+    width: 100%; max-width: 520px;
+    font-family: 'Courier New', monospace;
+    position: relative;
+    animation: cm-border-spin 3s linear infinite;
+    overflow: hidden;
+}
+#vote-modal-scanlines {
+    position: absolute; inset: 0;
+    pointer-events: none; z-index: 5;
+    background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.35) 2px, rgba(0,0,0,0.35) 4px);
+}
+#vote-modal-header {
+    padding: 11px 19px;
+    font-size: 14px; font-weight: bold; letter-spacing: 4px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(90deg,#F8FF2B,#FF00FF,#00FFFF,#00FF00,#FF3C5E,#F8FF2B);
+    background-size: 300% 100%;
+    animation: cm-slide 4s linear infinite;
+    color: #050a0f; position: relative; z-index: 10;
+}
+#vote-modal-header > span { animation: cm-glitch 6s infinite; display: inline-block; }
+#vote-modal-body {
+    padding: 20px 22px; position: relative; z-index: 2;
+    max-height: 82vh; overflow-y: auto;
+}
+#vote-options label {
+    cursor: pointer; display: flex; align-items: center; gap: 10px;
+    padding: 9px 13px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.4);
+    transition: border-color .18s, background .18s, box-shadow .18s;
+    font-size: 0.84em; letter-spacing: 1px;
+}
+#vote-options label:hover {
+    border-color: var(--color-caos-amarillo);
+    background: rgba(248,255,43,0.06);
+    box-shadow: 0 0 10px rgba(248,255,43,0.2);
+}
+#vote-options label.vote-selected {
+    border-color: var(--color-caos-amarillo);
+    background: rgba(248,255,43,0.1);
+    box-shadow: 0 0 14px rgba(248,255,43,0.35);
+}
+/* per-game neon accent when selected */
+#vote-lbl-arkanoid.vote-selected     { border-color:#00FFFF; background:rgba(0,255,255,.07);  box-shadow:0 0 14px rgba(0,255,255,.35); }
+#vote-lbl-spaceinvaders.vote-selected{ border-color:#FF00FF; background:rgba(255,0,255,.07);  box-shadow:0 0 14px rgba(255,0,255,.35); }
+#vote-lbl-memorama.vote-selected     { border-color:#9d00ff; background:rgba(157,0,255,.07);  box-shadow:0 0 14px rgba(157,0,255,.35); }
+#vote-lbl-flappy.vote-selected       { border-color:#00FF00; background:rgba(0,255,0,.07);    box-shadow:0 0 14px rgba(0,255,0,.35);   }
+#vote-lbl-snake.vote-selected        { border-color:#F8FF2B; background:rgba(248,255,43,.07); box-shadow:0 0 14px rgba(248,255,43,.35);}
+#vote-lbl-pong.vote-selected         { border-color:#FF3C5E; background:rgba(255,60,94,.07);  box-shadow:0 0 14px rgba(255,60,94,.35); }
+#vote-lbl-otro.vote-selected         { border-color:#7fff00; background:rgba(127,255,0,.07);  box-shadow:0 0 14px rgba(127,255,0,.35); }
+.vote-game-name { font-family:'Orbitron',sans-serif; font-size:0.87em; color:#fff; }
+#vote-suggestion {
+    width:100%; box-sizing:border-box;
+    background:rgba(0,0,0,0.72); color:#e8e8e8;
+    font-family:'Courier New',monospace; font-size:13px;
+    padding:8px 11px;
+    border:1px solid #F8FF2B; outline:none;
+    transition: box-shadow .2s;
+}
+#vote-suggestion:focus { box-shadow: 0 0 12px rgba(248,255,43,.45); }
+.vb-row { margin-bottom: 10px; }
+.vb-label { display:flex; justify-content:space-between; font-size:0.74em; margin-bottom:3px; }
+.vb-track { background:rgba(255,255,255,0.07); height:7px; border-radius:2px; }
+.vb-fill  { height:7px; border-radius:2px; transition:width .7s ease; }
+</style>
+
+<div id="vote-modal" style="
+    display:none; position:fixed; inset:0; z-index:99999;
+    background:rgba(0,0,0,0.88); justify-content:center; align-items:center; padding:16px;">
+  <div id="vote-modal-inner">
+    <!-- Scanlines overlay -->
+    <div id="vote-modal-scanlines"></div>
+
+    <!-- Header con gradiente animado -->
+    <div id="vote-modal-header">
+      <span>// VOTE_SYSTEM — PRÓXIMO MINIJUEGO //</span>
+      <button onclick="window.closeVoteModal()" style="
+          background:none;border:none;font-size:20px;font-weight:bold;
+          cursor:pointer;color:#050a0f;line-height:1;padding:0 4px;">✕</button>
+    </div>
+
+    <!-- Body -->
+    <div id="vote-modal-body">
+      <p style="color:rgba(0,255,255,0.7);font-size:0.76em;letter-spacing:2px;margin:0 0 16px;
+                text-shadow:0 0 8px rgba(0,255,255,0.35);">
+        &gt;&gt; Tu voto decide qué desarrollamos antes. Un voto por persona. &lt;&lt;
+      </p>
+
+      <!-- Opciones de juego -->
+      <div id="vote-options" style="display:flex;flex-direction:column;gap:7px;margin-bottom:16px;">
+        <label id="vote-lbl-arkanoid">
+          <input type="radio" name="vote-game" value="arkanoid" style="accent-color:#00FFFF;">
+          <span>🧱 <span class="vote-game-name">ARKA-HACK</span>
+            <span style="color:rgba(0,255,255,0.5);font-size:0.8em;">&nbsp;— Arkanoid (El Muro)</span></span>
+        </label>
+        <label id="vote-lbl-spaceinvaders">
+          <input type="radio" name="vote-game" value="space-invaders" style="accent-color:#FF00FF;">
+          <span>👾 <span class="vote-game-name">SPACE-BREAKER</span>
+            <span style="color:rgba(255,0,255,0.5);font-size:0.8em;">&nbsp;— Space Invaders (La Flota)</span></span>
+        </label>
+        <label id="vote-lbl-memorama">
+          <input type="radio" name="vote-game" value="memorama" style="accent-color:#9d00ff;">
+          <span>🧠 <span class="vote-game-name">MEMORY-BREACH</span>
+            <span style="color:rgba(157,0,255,0.5);font-size:0.8em;">&nbsp;— Memorama (La Memoria)</span></span>
+        </label>
+        <label id="vote-lbl-flappy">
+          <input type="radio" name="vote-game" value="flappy" style="accent-color:#00FF00;">
+          <span>🐦 <span class="vote-game-name">FLAPPY-HACK</span>
+            <span style="color:rgba(0,255,0,0.5);font-size:0.8em;">&nbsp;— Flappy Bird (La Fuga)</span></span>
+        </label>
+        <label id="vote-lbl-snake">
+          <input type="radio" name="vote-game" value="snake" style="accent-color:#F8FF2B;">
+          <span>🐍 <span class="vote-game-name">SNAKE-CIPHER</span>
+            <span style="color:rgba(248,255,43,0.5);font-size:0.8em;">&nbsp;— Snake (El Laberinto)</span></span>
+        </label>
+        <label id="vote-lbl-pong">
+          <input type="radio" name="vote-game" value="pong" style="accent-color:#FF3C5E;">
+          <span>🏓 <span class="vote-game-name">PONG-DUEL</span>
+            <span style="color:rgba(255,60,94,0.5);font-size:0.8em;">&nbsp;— Pong (El Choque)</span></span>
+        </label>
+        <label id="vote-lbl-otro">
+          <input type="radio" name="vote-game" value="otro" style="accent-color:#7fff00;">
+          <span>💡 <span class="vote-game-name">OTRO</span>
+            <span style="color:rgba(127,255,0,0.5);font-size:0.8em;">&nbsp;— Tengo una idea...</span></span>
+        </label>
+      </div>
+
+      <!-- Campo sugerencia (solo cuando elige OTRO) -->
+      <div id="vote-suggestion-wrap" style="display:none;margin-bottom:14px;">
+        <div style="font-size:9px;letter-spacing:3px;color:#7fff00;margin-bottom:5px;
+                    text-shadow:0 0 6px rgba(127,255,0,0.5);">&gt; SUGERÍ TU JUEGO:</div>
+        <input id="vote-suggestion" type="text" maxlength="80"
+          placeholder="¿Qué juego querés ver en Rappibellion?">
+      </div>
+
+      <!-- Resultados post-voto -->
+      <div id="vote-results" style="display:none;margin-bottom:16px;">
+        <div style="font-size:9px;letter-spacing:4px;color:rgba(255,255,255,0.3);
+                    border-top:1px dashed rgba(255,255,255,0.1);padding-top:12px;margin-bottom:10px;">
+          // RESULTADOS ACTUALES //
+        </div>
+        <div id="vote-bars"></div>
+      </div>
+
+      <!-- Mensaje estado -->
+      <div id="vote-msg" style="font-size:0.75em;margin-bottom:12px;min-height:18px;
+                                letter-spacing:1px;font-family:'Courier New',monospace;"></div>
+
+      <!-- Botón enviar -->
+      <button id="vote-submit-btn" onclick="window.submitVote()" class="cta-button" style="
+          width:100%;background:var(--color-caos-amarillo);
+          border-color:var(--color-caos-amarillo);color:#050a0f;
+          font-size:0.82em;letter-spacing:3px;text-shadow:none;">
+        [ ENVIAR VOTO ]
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+    var FB_VOTES = 'https://rappibellion-comments-default-rtdb.firebaseio.com/game_votes';
+    var VOTE_KEY = 'rppi_voted_minigame';
+
+    // Neon fill colors per game (for results bars)
+    var GAME_COLORS = {
+        'arkanoid':      '#00FFFF',
+        'space-invaders':'#FF00FF',
+        'memorama':      '#9d00ff',
+        'flappy':        '#00FF00',
+        'snake':         '#F8FF2B',
+        'pong':          '#FF3C5E',
+        'otro':          '#7fff00'
+    };
+
+    // Toggle .vote-selected class on click
+    document.querySelectorAll('#vote-options label').forEach(function(lbl) {
+        lbl.addEventListener('click', function() {
+            document.querySelectorAll('#vote-options label').forEach(function(l) {
+                l.classList.remove('vote-selected');
+            });
+            lbl.classList.add('vote-selected');
+            var val = lbl.querySelector('input') && lbl.querySelector('input').value;
+            document.getElementById('vote-suggestion-wrap').style.display = (val === 'otro') ? 'block' : 'none';
+        });
+    });
+
+    window.openVoteModal = function() {
+        var modal = document.getElementById('vote-modal');
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+
+        // Si ya votó, mostrar resultados directamente
+        var already = localStorage.getItem(VOTE_KEY);
+        if (already) {
+            var btn = document.getElementById('vote-submit-btn');
+            if (btn) { btn.disabled = true; btn.style.opacity = '0.45'; btn.textContent = '[ YA VOTASTE — GRACIAS ]'; }
+            document.getElementById('vote-msg').style.color = 'var(--color-caos-verde)';
+            document.getElementById('vote-msg').textContent = '✅ Ya registramos tu voto. ¡Gracias!';
+            loadVoteResults();
+        } else {
+            var btn2 = document.getElementById('vote-submit-btn');
+            if (btn2) { btn2.disabled = false; btn2.style.opacity = '1'; btn2.textContent = '[ ENVIAR VOTO ]'; }
+            document.getElementById('vote-msg').textContent = '';
+            document.getElementById('vote-results').style.display = 'none';
+        }
+    };
+
+    window.closeVoteModal = function() {
+        document.getElementById('vote-modal').style.display = 'none';
+        document.body.style.overflow = '';
+    };
+
+    // Cerrar al click en backdrop (no en el inner)
+    document.getElementById('vote-modal').addEventListener('click', function(e) {
+        if (e.target === document.getElementById('vote-modal')) window.closeVoteModal();
+    });
+
+    window.submitVote = function() {
+        if (localStorage.getItem(VOTE_KEY)) return;
+
+        var selected = document.querySelector('input[name="vote-game"]:checked');
+        if (!selected) {
+            document.getElementById('vote-msg').style.color = '#ff4444';
+            document.getElementById('vote-msg').textContent = '⚠ Elegí un juego antes de votar.';
+            return;
+        }
+
+        var game = selected.value;
+        var suggestion = '';
+        if (game === 'otro') {
+            suggestion = (document.getElementById('vote-suggestion').value || '').trim();
+            if (!suggestion) {
+                document.getElementById('vote-msg').style.color = '#ff4444';
+                document.getElementById('vote-msg').textContent = '⚠ Escribí tu sugerencia antes de enviar.';
+                return;
+            }
+        }
+
+        var btn = document.getElementById('vote-submit-btn');
+        btn.disabled = true;
+        btn.textContent = '[ ENVIANDO... ]';
+        document.getElementById('vote-msg').style.color = 'rgba(255,255,255,0.5)';
+        document.getElementById('vote-msg').textContent = 'Registrando tu voto...';
+
+        var payload = { game: game, suggestion: suggestion || null, ts: Date.now() };
+
+        fetch(FB_VOTES + '.json', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(function(r) { return r.json(); }).then(function() {
+            localStorage.setItem(VOTE_KEY, game);
+            document.getElementById('vote-msg').style.color = 'var(--color-caos-verde)';
+            document.getElementById('vote-msg').textContent = '✅ ¡Voto registrado! Gracias por participar.';
+            btn.textContent = '[ YA VOTASTE — GRACIAS ]';
+            btn.style.opacity = '0.45';
+            loadVoteResults();
+        }).catch(function() {
+            btn.disabled = false;
+            btn.textContent = '[ ENVIAR VOTO ]';
+            document.getElementById('vote-msg').style.color = '#ff4444';
+            document.getElementById('vote-msg').textContent = '❌ Error al registrar el voto. Intentá de nuevo.';
+        });
+    };
+
+    function loadVoteResults() {
+        fetch(FB_VOTES + '.json').then(function(r) { return r.json(); }).then(function(data) {
+            if (!data) return;
+            var counts = {};
+            var labels = {
+                'arkanoid':      '🧱 ARKA-HACK',
+                'space-invaders':'👾 SPACE-BREAKER',
+                'memorama':      '🧠 MEMORY-BREACH',
+                'flappy':        '🐦 FLAPPY-HACK',
+                'snake':         '🐍 SNAKE-CIPHER',
+                'pong':          '🏓 PONG-DUEL',
+                'otro':          '💡 OTRO'
+            };
+            Object.values(data).forEach(function(v) {
+                var g = v.game || 'otro';
+                counts[g] = (counts[g] || 0) + 1;
+            });
+            var total = Object.values(counts).reduce(function(a,b){return a+b;}, 0) || 1;
+            var sorted = Object.entries(counts).sort(function(a,b){return b[1]-a[1];});
+            var html = '';
+            sorted.forEach(function(entry) {
+                var pct   = Math.round(entry[1] / total * 100);
+                var lbl   = labels[entry[0]] || ('💡 ' + entry[0]);
+                var color = GAME_COLORS[entry[0]] || '#F8FF2B';
+                html += '<div class="vb-row">'
+                      + '<div class="vb-label">'
+                      + '<span style="color:' + color + ';text-shadow:0 0 6px ' + color + '88;">' + lbl + '</span>'
+                      + '<span style="color:' + color + ';">' + entry[1] + ' (' + pct + '%)</span>'
+                      + '</div>'
+                      + '<div class="vb-track">'
+                      + '<div class="vb-fill" style="width:' + pct + '%;background:' + color + ';box-shadow:0 0 8px ' + color + '88;"></div>'
+                      + '</div></div>';
+            });
+            document.getElementById('vote-bars').innerHTML = html;
+            document.getElementById('vote-results').style.display = 'block';
+        }).catch(function(){});
+    }
+})();
 </script>
 
 </body>
