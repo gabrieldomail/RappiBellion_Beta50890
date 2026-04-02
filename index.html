@@ -3523,8 +3523,8 @@ btn.addEventListener('click', toggleMutePlay);
                         <div class="payment-method-option" data-method="card">
                             <div class="payment-icon" style="color: var(--color-caos-verde);">💳</div>
                             <div class="payment-info">
-                                <h4 style="color: var(--color-caos-verde); margin: 0 0 5px 0;">TARJETA CRÉDITO/DÉBITO</h4>
-                                <p style="margin: 0; font-size: 0.85em; color: #888;">Visa, Mastercard, American Express</p>
+                                <h4 style="color: var(--color-caos-verde); margin: 0 0 5px 0;">COMPRAR USDT CON TARJETA</h4>
+                                <p style="margin: 0; font-size: 0.85em; color: #888;">MetaMask · Mercado Pago · Visa · Mastercard</p>
                             </div>
                             <div class="payment-arrow">→</div>
                         </div>
@@ -5299,8 +5299,8 @@ btn.addEventListener('click', toggleMutePlay);
                         break;
                         
                     case 'card':
-                        // Transak - Abrir widget
-                        openTransak();
+                        // MetaMask Portfolio — compra USDT en Optimism con tarjeta / Mercado Pago
+                        window.open('https://portfolio.metamask.io/buy?tokens=USDT&network=optimism', '_blank');
                         break;
                         
                     case 'bank':
@@ -5311,43 +5311,6 @@ btn.addEventListener('click', toggleMutePlay);
             });
         });
         
-        // Transak Integration
-        function openTransak() {
-            // Configuración de Transak
-            const transakConfig = {
-                apiKey: '22230dda-d861-4e80-b376-f33ae52c4fd3', // Tu API Key
-                environment: 'PRODUCTION', // Producción
-                defaultCryptoCurrency: 'ETH',
-                defaultNetwork: 'optimism',
-                networks: 'optimism',
-                cryptoCurrencyList: 'ETH',
-                walletAddress: currentAccount || '', // Pre-llenar con wallet conectada
-                themeColor: '00ffff', // Color cyberpunk
-                hostURL: window.location.origin,
-                widgetHeight: '700px',
-                widgetWidth: '450px'
-            };
-
-            // Construir URL de Transak con parámetros (PRODUCCIÓN)
-            const transakUrl = new URL('https://global.transak.com/');
-            transakUrl.searchParams.append('apiKey', transakConfig.apiKey);
-            transakUrl.searchParams.append('environment', transakConfig.environment);
-            transakUrl.searchParams.append('defaultCryptoCurrency', transakConfig.defaultCryptoCurrency);
-            transakUrl.searchParams.append('defaultNetwork', transakConfig.defaultNetwork);
-            transakUrl.searchParams.append('networks', transakConfig.networks);
-            transakUrl.searchParams.append('cryptoCurrencyList', transakConfig.cryptoCurrencyList);
-            if (transakConfig.walletAddress) {
-                transakUrl.searchParams.append('walletAddress', transakConfig.walletAddress);
-            }
-            transakUrl.searchParams.append('themeColor', transakConfig.themeColor);
-
-            // Abrir en nueva ventana
-            window.open(transakUrl.toString(), '_blank', 'width=450,height=750,scrollbars=yes,resizable=yes');
-
-            // Cerrar el overlay del modal
-            buyRppiOverlay.classList.remove('terminal-overlay-visible');
-            buyRppiOverlay.classList.add('terminal-overlay-hidden');
-        }
 
         // === SCRIPT 5: CONTROLADOR DIRECTO DE APUESTAS - ARENA PAC-HACK PvP ===
         const betArkaButton = document.getElementById('make-bet-arkahack');
