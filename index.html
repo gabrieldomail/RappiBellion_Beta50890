@@ -1551,6 +1551,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const _chatWidget = document.getElementById('gemini-chat-widget');
         if (_chatFab)    _chatFab.style.display = 'none';
         if (_chatWidget) _chatWidget.style.display = 'none';
+        // Ocultar promo Tetris-Cipher para no tapar el timer/score
+        const _tetrisPromo = document.getElementById('tetris-promo-window');
+        if (_tetrisPromo) _tetrisPromo.classList.add('tetris-promo-hidden');
         // Bloquear scroll de la página mientras el juego está activo
         document.body.style.overflow = 'hidden';
         document.body.style.touchAction = 'none';
@@ -2268,6 +2271,9 @@ function fpCloseArena() {
         const _chatFabClose = document.getElementById('gemini-chat-fab');
         const _chatWidgetClose = document.getElementById('gemini-chat-widget');
         if (_chatFabClose) _chatFabClose.style.display = '';
+        // Restaurar promo Tetris-Cipher
+        const _tetrisPromoClose = document.getElementById('tetris-promo-window');
+        if (_tetrisPromoClose) _tetrisPromoClose.classList.remove('tetris-promo-hidden');
         const topbar = document.querySelector('.casino-topbar');
         if (topbar) topbar.classList.remove('visible');
         // Restaurar el zorzal si estaba sonando antes
