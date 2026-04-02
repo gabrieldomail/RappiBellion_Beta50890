@@ -316,6 +316,10 @@
                 <div class="game-placeholder">
                     <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
                     <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde);">SLOT 3: TETRIS-CIPHER</strong><br>(Tetris - Organiza el código encriptado)</p>
+                    <button class="cta-button" onclick="window.fpOpenFreeGame('Tetris-Cipher/index.html')"
+                            style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-color: var(--color-caos-verde); color: var(--color-caos-verde);">
+                        &gt; EJECUTAR_TETRIS-CIPHER.exe
+                    </button>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/snake.PNG" alt="SNAKE-PROTOCOL" style="width: 100%; height: auto; display: block;">
@@ -765,7 +769,7 @@
             <p class="tetris-promo-tagline">Organiza el código encriptado<br>antes de que el sistema colapse.</p>
             <div class="tetris-promo-date-box">
                 <span class="tetris-promo-date-label">DEMO DISPONIBLE</span>
-                <span class="tetris-promo-date">16.04.2026</span>
+                <span class="tetris-promo-date">DISPONIBLE</span>
             </div>
             <p class="tetris-promo-sub">// THINK TO EARN — modo T2E en beta cerrada</p>
         </div>
@@ -1798,9 +1802,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Mostrar topbar + activar header de free play
         const topbar = document.querySelector('.casino-topbar');
         if (topbar) topbar.classList.add('visible');
-        // Free play usa pac-hack-freeplay; modo apuesta usa pac-hack original (sin cambios)
+        // Free play usa _fpNextGameSrc si se indicó, sino pac-hack-freeplay; modo apuesta usa pac-hack original
         if (fpIframe) {
-            fpIframe.src = (fpState.betMode ? 'pac-hack' : 'pac-hack-freeplay') + '/game.html?player=p1';
+            fpIframe.src = fpState.betMode
+                ? 'pac-hack/game.html?player=p1'
+                : (window._fpNextGameSrc || 'pac-hack-freeplay/game.html?player=p1');
+            window._fpNextGameSrc = null; // limpiar para próxima vez
             // Auto-focus al iframe para que los controles funcionen sin click previo
             fpIframe.addEventListener('load', function onIframeLoad() {
                 fpIframe.removeEventListener('load', onIframeLoad);
@@ -2491,6 +2498,11 @@ function fpCloseArena() {
     window.fpOpenArena        = fpOpenArena;
     window.fpCloseArena       = fpCloseArena;
     window.fpOpenArenaPreview = fpOpenArenaPreview;
+    // Cargador de minijuegos freeplay alternativos (Tetris-Cipher, etc.)
+    window.fpOpenFreeGame = function(gameSrc) {
+        window._fpNextGameSrc = gameSrc;
+        fpOpenArena(null);
+    };
 
     // ── Backdoor: ?arena-preview en la URL abre el arena en modo preview ─────
     if (new URLSearchParams(window.location.search).has('arena-preview')) {
@@ -3741,6 +3753,10 @@ btn.addEventListener('click', toggleMutePlay);
                     <div class="game-placeholder">
                         <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
                         <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">SLOT 3: TETRIS-CIPHER</strong><br>(Tetris - Organiza el código encriptado)</p>
+                        <button class="cta-button" onclick="window.fpOpenFreeGame('Tetris-Cipher/index.html')"
+                                style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-color: var(--color-caos-verde); color: var(--color-caos-verde);">
+                            &gt; EJECUTAR_TETRIS-CIPHER.exe
+                        </button>
                     </div>
                     <div class="game-placeholder">
                         <img src="juegos beta/snake.PNG" alt="SNAKE-PROTOCOL" style="width: 100%; height: auto; display: block;">
