@@ -6193,7 +6193,7 @@ footer::before {
 
 #mp-promo-window {
     position: fixed;
-    top: calc(30vh + 280px);
+    bottom: 130px;
     right: 14px;
     width: 340px;
     z-index: 9989;
@@ -6266,16 +6266,20 @@ footer::before {
 .mp-promo-logo-wrap {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-bottom: 10px;
+    background: #FFD700;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 0 20px rgba(255,215,0,0.45);
 }
 
 .mp-promo-logo {
     width: 90px;
-    height: 90px;
-    border-radius: 50%;
+    height: auto;
     display: block;
-    object-fit: cover;
-    box-shadow: 0 0 22px rgba(0,158,227,0.6);
+    object-fit: contain;
+    border-radius: 6px;
 }
 
 .mp-promo-tagline {
