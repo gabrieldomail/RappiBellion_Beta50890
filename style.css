@@ -6171,3 +6171,149 @@ footer::before {
     color: rgba(83,208,137,0.45);
     margin: 0;
 }
+
+/* ── MERCADO PAGO Promo Widget ─────────────────────────────────── */
+.mp-promo-hidden { display: none !important; }
+
+/* Glitch border keyframes — yellow glow / MP accent */
+@keyframes mpBorderGlitch {
+    0%        { border-color: #FFD700; box-shadow: 0 0 18px #FFD700, inset 0 0 8px rgba(255,215,0,0.18); transform: translateX(0) skewX(0deg); }
+    8%        { border-color: #F8FF2B; box-shadow: 0 0 28px #F8FF2B, inset 0 0 12px rgba(248,255,43,0.25); transform: translateX(-3px) skewX(-1deg); }
+    9%        { border-color: #FFD700; box-shadow: 0 0 40px #FFD700; transform: translateX(3px) skewX(1deg); }
+    10%       { border-color: #FFD700; transform: translateX(0) skewX(0deg); }
+    40%       { border-color: #FFD700; box-shadow: 0 0 18px #FFD700; transform: translateX(0); }
+    41%       { border-color: #F8FF2B; box-shadow: 0 0 35px #F8FF2B, inset 0 0 10px rgba(248,255,43,0.28); transform: translateX(2px) skewX(0.5deg); }
+    42%       { border-color: #FFD700; transform: translateX(-2px); }
+    43%       { border-color: #FFD700; transform: translateX(0); }
+    75%       { border-color: #FFD700; box-shadow: 0 0 32px #FFD700, inset 0 0 10px rgba(255,215,0,0.22); transform: translateX(0); }
+    76%       { border-color: #F8FF2B; transform: translateX(-2px) skewX(-0.8deg); }
+    77%       { border-color: #FFD700; transform: translateX(2px); }
+    78%,100%  { border-color: #FFD700; box-shadow: 0 0 20px #FFD700; transform: translateX(0) skewX(0deg); }
+}
+
+#mp-promo-window {
+    position: fixed;
+    top: calc(30vh + 280px);
+    right: 14px;
+    width: 340px;
+    z-index: 9989;
+    font-family: 'Orbitron', monospace;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid #FFD700;
+    background: #0a1a2e;
+    animation: mpBorderGlitch 3.8s ease-in-out infinite;
+}
+
+/* Grid celeste pulsante */
+#mp-promo-window::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0,158,227,0.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,158,227,0.10) 1px, transparent 1px);
+    background-size: 18px 18px;
+    animation: gridPulseAggressive 2.2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Scanlines */
+#mp-promo-window::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.5),
+        rgba(0,0,0,0.5) 3px,
+        transparent 3px,
+        transparent 5px
+    );
+    pointer-events: none;
+    animation: scanlineAggressive 3s linear infinite;
+    z-index: 1;
+}
+
+#mp-promo-window > * { position: relative; z-index: 2; }
+
+.mp-promo-terminal {
+    background: transparent;
+}
+
+.mp-promo-hdr {
+    background: rgba(0,158,227,0.12);
+    border-bottom: 1px solid rgba(0,158,227,0.28);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 11px;
+}
+.mp-promo-hdr span {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.72em;
+    letter-spacing: 3px;
+    color: #00BCFF;
+    text-shadow: 0 0 8px rgba(0,188,255,0.6);
+}
+
+.mp-promo-body {
+    padding: 14px 14px 16px;
+    text-align: center;
+}
+
+.mp-promo-logo-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.mp-promo-logo {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    display: block;
+    object-fit: cover;
+    box-shadow: 0 0 22px rgba(0,158,227,0.6);
+}
+
+.mp-promo-tagline {
+    font-size: 0.62em;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+    margin: 0 0 12px;
+    text-align: center;
+}
+
+.mp-promo-badge {
+    border: 1px solid #009EE3;
+    background: rgba(0,158,227,0.08);
+    padding: 8px 12px;
+    margin-bottom: 8px;
+}
+
+.mp-badge-label {
+    display: block;
+    font-size: 0.52em;
+    letter-spacing: 3px;
+    color: rgba(0,188,255,0.6);
+    margin-bottom: 3px;
+}
+
+.mp-badge-val {
+    display: block;
+    font-size: 0.9em;
+    letter-spacing: 2px;
+    color: #00BCFF;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(0,188,255,0.4);
+}
+
+.mp-promo-sub {
+    font-size: 0.52em;
+    letter-spacing: 2px;
+    color: rgba(0,188,255,0.45);
+    margin: 0;
+}

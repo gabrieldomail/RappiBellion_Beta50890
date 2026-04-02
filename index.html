@@ -601,6 +601,35 @@
     </div>
 </div>
 
+<!-- 💙 MERCADO PAGO — promo widget LATAM (siempre visible) -->
+<div id="mp-promo-window">
+    <div class="mp-promo-terminal">
+        <div class="mp-promo-hdr">
+            <span>MERCADO PAGO</span>
+            <button onclick="document.getElementById('mp-promo-window').style.display='none'"
+                style="background:none;border:none;color:rgba(0,158,227,0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
+        </div>
+        <div class="mp-promo-body">
+            <div class="mp-promo-logo-wrap">
+                <img src="images/mercado_pago2.jpg"
+                     alt="Mercado Pago"
+                     class="mp-promo-logo"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                <!-- Fallback: círculo azul MP -->
+                <div style="display:none;width:80px;height:80px;border-radius:50%;
+                            background:#009EE3;align-items:center;justify-content:center;
+                            font-size:32px;color:#fff;font-weight:bold;font-family:sans-serif;">MP</div>
+            </div>
+            <p class="mp-promo-tagline">PAGOS EN LATAM<br><span style="color:rgba(0,188,255,0.85);">-MERCADO PAGO-</span> integración</p>
+            <div class="mp-promo-badge">
+                <span class="mp-badge-label">MÉTODO DE PAGO</span>
+                <span class="mp-badge-val">MERCADO PAGO <span style="opacity:0.55;font-size:0.8em;">// LATAM</span></span>
+            </div>
+            <p class="mp-promo-sub">// PRÓXIMAMENTE — depósitos vía Mercado Pago</p>
+        </div>
+    </div>
+</div>
+
 <!-- 🟩 TETRIS-CIPHER — promo widget (siempre visible) -->
 <div id="tetris-promo-window">
     <div class="tetris-promo-terminal">
