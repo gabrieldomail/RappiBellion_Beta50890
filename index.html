@@ -621,13 +621,134 @@
                             font-size:32px;color:#fff;font-weight:bold;font-family:sans-serif;">MP</div>
             </div>
             <p class="mp-promo-tagline">PAGOS EN LATAM<br><span style="color:rgba(0,188,255,0.85);">-MERCADO PAGO-</span> integración</p>
-            <div class="mp-promo-badge">
+            <button class="mp-onboard-btn" onclick="document.getElementById('mp-onboard-modal').style.display='flex'">
                 <span class="mp-badge-label">MÉTODO DE PAGO</span>
                 <span class="mp-badge-val">MERCADO PAGO <span style="opacity:0.55;font-size:0.8em;">// LATAM</span></span>
-            </div>
+                <span class="mp-badge-hint">▶ CÓMO CARGAR SALDO</span>
+            </button>
             <p class="mp-promo-sub">// PRÓXIMAMENTE — depósitos vía Mercado Pago</p>
         </div>
     </div>
+</div>
+
+<!-- 💙 MERCADO PAGO — modal onboarding USDT vía MetaMask -->
+<div id="mp-onboard-modal" style="display:none;position:fixed;inset:0;z-index:10100;
+     background:rgba(0,0,0,0.92);align-items:flex-start;justify-content:center;
+     overflow-y:auto;padding:40px 16px;">
+  <div class="mp-modal-inner">
+    <!-- Header -->
+    <div class="mp-modal-hdr">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <img src="images/mercado_pago2.jpg" alt="MP" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+        <span style="font-family:'Orbitron',monospace;font-size:0.78em;letter-spacing:3px;color:#00BCFF;">
+          CÓMO CARGAR SALDO CON MERCADO PAGO
+        </span>
+      </div>
+      <button onclick="document.getElementById('mp-onboard-modal').style.display='none'"
+        style="background:none;border:none;color:rgba(255,215,0,0.6);font-size:20px;cursor:pointer;line-height:1;padding:0 4px;">✕</button>
+    </div>
+
+    <!-- Intro -->
+    <div class="mp-modal-intro">
+      <p>🧠 <strong>Tranqui, esto lo hace hasta un mono.</strong><br>
+      Seguí los pasos y en 10 minutos tenés USDT en tu wallet listo para jugar. La primera vez tarda un poco más por la verificación de identidad — después es instantáneo.</p>
+    </div>
+
+    <!-- Steps -->
+    <div class="mp-modal-steps">
+
+      <div class="mp-step">
+        <div class="mp-step-num">1</div>
+        <div class="mp-step-body">
+          <div class="mp-step-title">🦊 Abrí MetaMask en tu navegador</div>
+          <div class="mp-step-desc">Si no la tenés, descargala gratis desde <a href="https://metamask.io/download/" target="_blank" class="mp-link">metamask.io</a>. Es la billetera Web3 más usada del mundo.</div>
+        </div>
+      </div>
+
+      <div class="mp-step">
+        <div class="mp-step-num">2</div>
+        <div class="mp-step-body">
+          <div class="mp-step-title">🌐 Conectá tu wallet en Rappibellion</div>
+          <div class="mp-step-desc">Hacé click en el botón <strong>[ CONECTAR WALLET ]</strong> de la web. MetaMask te va a pedir que apruebes — decí que sí.</div>
+        </div>
+      </div>
+
+      <div class="mp-step">
+        <div class="mp-step-num">3</div>
+        <div class="mp-step-body">
+          <div class="mp-step-title">🟣 Seleccioná la red Optimism</div>
+          <div class="mp-step-desc">En MetaMask, arriba donde dice la red (ej. "Ethereum"), elegí <strong>Optimism</strong>. Si no aparece, la web la agrega automáticamente cuando conectás.</div>
+        </div>
+      </div>
+
+      <div class="mp-step">
+        <div class="mp-step-num">4</div>
+        <div class="mp-step-body">
+          <div class="mp-step-title">💳 Elegí el servicio de carga (on-ramp)</div>
+          <div class="mp-step-desc">MetaMask ya incluye <strong>MoonPay</strong> y <strong>Transak</strong> integrados — sin cuenta extra, sin comisión adicional para vos. También podés usar el link directo de MetaMask Portfolio.</div>
+        </div>
+      </div>
+
+      <div class="mp-step mp-step-highlight">
+        <div class="mp-step-num">5</div>
+        <div class="mp-step-body">
+          <div class="mp-step-title">🪪 Primera vez: Verificación KYC (5 min)</div>
+          <div class="mp-step-desc">Solo la primera vez te van a pedir foto del DNI y una selfie. Es por ley — lo hacen MoonPay o Transak, no nosotros. Tarda aprox. <strong>5 minutos</strong> y después nunca más.</div>
+        </div>
+      </div>
+
+      <div class="mp-step">
+        <div class="mp-step-num">6</div>
+        <div class="mp-step-body">
+          <div class="mp-step-title">💵 Ingresá el monto en ARS o USD</div>
+          <div class="mp-step-desc">Escribís cuánto querés cargar. El sistema te muestra el tipo de cambio en tiempo real antes de confirmar — sin sorpresas.</div>
+        </div>
+      </div>
+
+      <div class="mp-step">
+        <div class="mp-step-num">7</div>
+        <div class="mp-step-body">
+          <div class="mp-step-title">💳 Pagá con tarjeta o transferencia bancaria</div>
+          <div class="mp-step-desc">Podés usar tarjeta de crédito/débito o transferencia. <strong>Mercado Pago como método</strong> viene cuando activemos la integración directa — ya está en hoja de ruta.</div>
+        </div>
+      </div>
+
+      <div class="mp-step mp-step-success">
+        <div class="mp-step-num">✅</div>
+        <div class="mp-step-body">
+          <div class="mp-step-title">🎮 USDT en tu wallet — listo para jugar</div>
+          <div class="mp-step-desc">Los USDT llegan a tu wallet en Optimism en minutos. Volvés a Rappibellion, apostás, y si ganás los retirás cuando quieras. Simple.</div>
+        </div>
+      </div>
+
+    </div><!-- /steps -->
+
+    <!-- Info box -->
+    <div class="mp-modal-infobox">
+      <span style="font-size:1.1em;">ℹ️</span>
+      <div>
+        <strong>¿Sin cuenta de afiliado en MoonPay o Transak?</strong><br>
+        No importa — el link de MetaMask ya los incluye sin setup de tu parte y sin costo extra para el usuario. Es la opción más directa y rápida.
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div style="text-align:center;margin-top:24px;">
+      <a href="https://portfolio.metamask.io/buy" target="_blank" class="mp-modal-cta">
+        🦊 IR A METAMASK PORTFOLIO → COMPRAR USDT
+      </a>
+      <p style="font-size:0.6em;letter-spacing:2px;color:rgba(255,255,255,0.3);margin-top:10px;">
+        // abre en una nueva pestaña — no te desconecta del juego
+      </p>
+    </div>
+
+    <!-- Close -->
+    <div style="text-align:center;margin-top:16px;">
+      <button onclick="document.getElementById('mp-onboard-modal').style.display='none'"
+        class="mp-modal-close-btn">CERRAR</button>
+    </div>
+
+  </div>
 </div>
 
 <!-- 🟩 TETRIS-CIPHER — promo widget (siempre visible) -->

@@ -6317,3 +6317,171 @@ footer::before {
     color: rgba(0,188,255,0.45);
     margin: 0;
 }
+
+/* ── MP onboard button (replaces static badge) ─────────────────── */
+.mp-onboard-btn {
+    display: block;
+    width: 100%;
+    background: rgba(0,158,227,0.08);
+    border: 1px solid #009EE3;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+    border-radius: 4px;
+}
+.mp-onboard-btn:hover {
+    background: rgba(0,158,227,0.18);
+    border-color: #FFD700;
+    box-shadow: 0 0 12px rgba(255,215,0,0.35);
+}
+.mp-onboard-btn .mp-badge-hint {
+    display: block;
+    font-size: 0.48em;
+    letter-spacing: 3px;
+    color: #FFD700;
+    margin-top: 4px;
+    text-shadow: 0 0 6px rgba(255,215,0,0.5);
+}
+
+/* ── MP Onboarding Modal ────────────────────────────────────────── */
+.mp-modal-inner {
+    background: #0a1a2e;
+    border: 1px solid #FFD700;
+    border-radius: 14px;
+    max-width: 620px;
+    width: 100%;
+    margin: 0 auto;
+    box-shadow: 0 0 40px rgba(255,215,0,0.18), 0 0 80px rgba(0,158,227,0.12);
+    overflow: hidden;
+    font-family: 'Courier New', monospace;
+}
+
+.mp-modal-hdr {
+    background: rgba(0,158,227,0.12);
+    border-bottom: 1px solid rgba(255,215,0,0.22);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+}
+
+.mp-modal-intro {
+    padding: 16px 20px 8px;
+    font-size: 0.82em;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.7;
+    border-bottom: 1px solid rgba(0,158,227,0.12);
+    margin-bottom: 4px;
+}
+.mp-modal-intro strong { color: #00BCFF; }
+
+.mp-modal-steps {
+    padding: 12px 20px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mp-step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: rgba(0,158,227,0.05);
+    border-left: 3px solid rgba(0,158,227,0.3);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 12px;
+}
+.mp-step-highlight {
+    background: rgba(255,215,0,0.06);
+    border-left-color: #FFD700;
+}
+.mp-step-success {
+    background: rgba(0,255,100,0.06);
+    border-left-color: #00ff65;
+}
+
+.mp-step-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 1em;
+    font-weight: bold;
+    color: #FFD700;
+    min-width: 28px;
+    text-align: center;
+    padding-top: 1px;
+}
+.mp-step-success .mp-step-num { color: #00ff65; font-size: 1.2em; }
+
+.mp-step-title {
+    font-size: 0.78em;
+    letter-spacing: 1px;
+    color: #00BCFF;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+.mp-step-desc {
+    font-size: 0.72em;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.6;
+}
+.mp-step-desc strong { color: rgba(255,255,255,0.9); }
+
+.mp-link {
+    color: #FFD700;
+    text-decoration: underline;
+}
+.mp-link:hover { color: #00BCFF; }
+
+.mp-modal-infobox {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin: 16px 20px 4px;
+    background: rgba(0,188,255,0.07);
+    border: 1px solid rgba(0,188,255,0.22);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 0.72em;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.6;
+}
+.mp-modal-infobox strong { color: #00BCFF; }
+
+.mp-modal-cta {
+    display: inline-block;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7em;
+    letter-spacing: 2px;
+    color: #0a1a2e;
+    background: linear-gradient(90deg, #FFD700, #00BCFF);
+    border: none;
+    border-radius: 6px;
+    padding: 12px 22px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 18px rgba(255,215,0,0.3);
+}
+.mp-modal-cta:hover {
+    opacity: 0.88;
+    box-shadow: 0 0 28px rgba(255,215,0,0.55);
+}
+
+.mp-modal-close-btn {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.62em;
+    letter-spacing: 3px;
+    color: rgba(0,188,255,0.5);
+    background: none;
+    border: 1px solid rgba(0,188,255,0.2);
+    border-radius: 4px;
+    padding: 7px 20px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+}
+.mp-modal-close-btn:hover {
+    color: #FFD700;
+    border-color: #FFD700;
+}
