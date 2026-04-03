@@ -1977,9 +1977,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (topbar) topbar.classList.add('visible');
         // Free play usa _fpNextGameSrc si se indicó, sino pac-hack-freeplay; modo apuesta usa pac-hack original
         if (fpIframe) {
-            fpIframe.src = fpState.betMode
+            var nextGameSrc = fpState.betMode
                 ? 'pac-hack/game.html?player=p1'
                 : (window._fpNextGameSrc || 'pac-hack-freeplay/game.html?player=p1');
+            var isTetrisGame = nextGameSrc && nextGameSrc.indexOf('Tetris-Cipher') !== -1;
+            var gameName = isTetrisGame ? 'TETRIS_CIPHER // FREE_PLAY' : 'PAC-HACK: DEATH // FREE_PLAY';
+            // Actualizar header del terminal
+            var termHeader = document.querySelector('.fp-game-wrap .terminal-header-caos span:first-child');
+            if (termHeader) termHeader.textContent = '[' + gameName + ']';
+            fpIframe.src = nextGameSrc;
             window._fpNextGameSrc = null; // limpiar para próxima vez
             // Auto-focus al iframe para que los controles funcionen sin click previo
             fpIframe.addEventListener('load', function onIframeLoad() {
@@ -2096,7 +2102,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Marcar header de la terminal
         var termHeader = fpArena ? fpArena.querySelector('.terminal-header-caos span:first-child') : null;
-        if (termHeader) termHeader.textContent = '[PAC-HACK: DEATH // ⚡ PREVIEW_MODE]';
+        var previewName = window._fpCurrentGameName || 'PAC-HACK: DEATH';
+        if (termHeader) termHeader.textContent = '[' + previewName + ' // ⚡ PREVIEW_MODE]';
 
         // Mostrar boosts visualmente para ver la UI completa
         var boostWrap = document.getElementById('fp-boost-wrap');
@@ -2622,6 +2629,10 @@ function fpCloseArena() {
         // Reset faq-panel position
         var faqPanel = document.getElementById('fp-faq-panel');
         if (faqPanel) { faqPanel.style.top = ''; }
+        // Reset terminal header
+        window._fpCurrentGameName = null;
+        var termHeader = document.querySelector('.fp-game-wrap .terminal-header-caos span:first-child');
+        if (termHeader) termHeader.textContent = '[PAC-HACK: DEATH // FREE_PLAY]';
         if (fpTimerEl) { fpTimerEl.style.color = ''; fpTimerEl.textContent = '00:00'; }
         if (fpControlSelector) fpControlSelector.classList.remove('show');
         // Restaurar scroll al salir del juego
@@ -2670,7 +2681,16 @@ function fpCloseArena() {
         if (typeof showLobbyFloat === 'function') showLobbyFloat();
     }
 
-    function fpRestart() { clearInterval(fpState.interval); if (fpCdOverlay) fpCdOverlay.classList.remove('show'); fpOpenArena(); }
+    function fpRestart() { 
+        clearInterval(fpState.interval); 
+        if (fpCdOverlay) fpCdOverlay.classList.remove('show'); 
+        // Si hay un juego personalizado guardado, usarlo al reiniciar
+        if (window._fpNextGameSrc) {
+            window.fpOpenFreeGame(window._fpNextGameSrc);
+        } else {
+            fpOpenArena(); 
+        }
+    }
 
     // Exponer globalmente para que t2e-integration.js pueda llamarlas desde fuera del closure
     window.fpOpenArena        = fpOpenArena;
@@ -2690,6 +2710,10 @@ function fpCloseArena() {
             var faqPanel = document.getElementById('fp-faq-panel');
             if (faqPanel) { faqPanel.style.top = 'calc(25% + 80px)'; }
         }
+        // Actualizar header del terminal con el nombre del juego
+        window._fpCurrentGameName = isTetris ? 'TETRIS_CIPHER // FREEPLAY' : 'PAC-HACK: DEATH // FREE_PLAY';
+        var termHeader = document.querySelector('.fp-game-wrap .terminal-header-caos span:first-child');
+        if (termHeader) termHeader.textContent = '[' + window._fpCurrentGameName + ']';
         fpOpenArena(null);
     };
 
