@@ -8356,12 +8356,12 @@ Si alguien pregunta cómo pagar en ARS, explicales el flujo completo de arriba c
     <div class="fp-ctrl-subtitle">SELECCIONÁ EL MÉTODO DE CONTROL</div>
 
     <div class="fp-ctrl-options">
-        <button class="fp-ctrl-btn" id="ctrl-swipe-btn">
+        <button class="fp-ctrl-btn" id="ctrl-swipe-btn" onclick="console.log('SWIPE CLICKED'); fpStartWithControl('swipe')">
             <span class="ctrl-icon">👆</span>
             SWIPE
             <span style="font-size:9px;opacity:0.6;">Deslizá el dedo</span>
         </button>
-        <button class="fp-ctrl-btn dpad-btn" id="ctrl-dpad-btn">
+        <button class="fp-ctrl-btn dpad-btn" id="ctrl-dpad-btn" onclick="console.log('DPAD CLICKED'); fpStartWithControl('dpad')">
             <span class="ctrl-icon">🕹️</span>
             D-PAD
             <span style="font-size:9px;opacity:0.6;">Botones virtuales</span>
