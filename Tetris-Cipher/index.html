@@ -72,6 +72,14 @@
 
   setInterval(checkScoreSync, 200);
 
+  // Pausar juego cuando la arena termina (timer llega a 0)
+  function pauseGame() {
+    var main = window.main;
+    if (main && main.pause) {
+      main.pause();
+    }
+  }
+
   window.addEventListener('message', function(e) {
     if (e.data && e.data.type === 'SET_CONTROL') {
       controlMode = e.data.mode;
@@ -80,6 +88,10 @@
       } else {
         removeDpad();
       }
+    }
+    // Cuando el timer de la arena llega a 0, pausar el juego
+    if (e.data && e.data.type === 'MATCH_ENDED') {
+      pauseGame();
     }
   });
 })();
