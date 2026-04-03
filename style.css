@@ -5396,9 +5396,11 @@ footer::before {
 #contact-float-btn:hover { background: rgba(255, 220, 0, 0.12); }
 @media (max-width: 768px) {
     #contact-float-btn {
-        top: auto;
-        bottom: 70px;
-        right: 10px;
+        /* Mobile: debajo del finder-float (debajo del header del finder) */
+        top: 55px;
+        left: 10px;
+        right: auto;
+        bottom: auto;
         font-size: 11px;
         padding: 7px 13px;
         letter-spacing: 1px;
