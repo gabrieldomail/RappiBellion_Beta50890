@@ -1854,8 +1854,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpTimerEl)  fpTimerEl.style.color = '';
         if (fpArena)    fpArena.classList.add('show');
 
-        // _fpSetupBetSync ya fue llamado desde fpOpenArena — la arena espera startAt de Firebase
-        // En free play (sin betMode), también se arrancó desde fpOpenArena
+        // En free play, iniciar countdown después de elegir control
+        if (!fpState.betMode) {
+            setTimeout(fpStartCountdown, 600);
+        }
     }
 
     if (ctrlSwipeBtn) ctrlSwipeBtn.addEventListener('click', () => fpStartWithControl('swipe'));
@@ -2020,9 +2022,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             cdEl.textContent = secsLeft + 's';
                         }
                     }, 1000);
-                } else if (!fpState.betMode) {
-                    setTimeout(fpStartCountdown, 600);
-                }
+                } 
+                // NO llamar fpStartCountdown aquí — se llama después de elegir control o cuando auto-countdown elige swipe
                 return;
             }
         }
