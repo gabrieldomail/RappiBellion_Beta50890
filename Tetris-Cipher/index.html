@@ -2,9 +2,29 @@
 <body>
 <div id="wrapper"></div>
 <script>
+// WASD to Arrow keys mapping
+(function() {
+  var originalAddEventListener = document.addEventListener;
+  document.addEventListener = function(type, listener, options) {
+    if (type === 'keydown' || type === 'keyup') {
+      var wrappedListener = function(e) {
+        if (e.code === 'KeyW') { e.preventDefault(); e.stopPropagation(); Object.defineProperty(e, 'code', { value: 'ArrowUp' }); }
+        else if (e.code === 'KeyS') { e.preventDefault(); e.stopPropagation(); Object.defineProperty(e, 'code', { value: 'ArrowDown' }); }
+        else if (e.code === 'KeyA') { e.preventDefault(); e.stopPropagation(); Object.defineProperty(e, 'code', { value: 'ArrowLeft' }); }
+        else if (e.code === 'KeyD') { e.preventDefault(); e.stopPropagation(); Object.defineProperty(e, 'code', { value: 'ArrowRight' }); }
+        listener.call(this, e);
+      };
+      return originalAddEventListener.call(document, type, wrappedListener, options);
+    }
+    return originalAddEventListener.call(document, type, listener, options);
+  };
+})();
+</script>
+<script>
 (function() {
   var controlMode = 'swipe';
   var dpadEl = null;
+  var lastScore = 0;
 
   function injectKeyEvent(key, type) {
     var evt = new KeyboardEvent(type, { key: key, bubbles: true, cancelable: true });
@@ -35,6 +55,22 @@
   function removeDpad() {
     if (dpadEl) { dpadEl.remove(); dpadEl = null; }
   }
+
+  // Score syncing with parent (T2E Arena)
+  function checkScoreSync() {
+    var main = window.main;
+    if (main && main.statePlaying && main.statePlaying.stats) {
+      var currentScore = main.statePlaying.stats.score || 0;
+      if (currentScore !== lastScore) {
+        lastScore = currentScore;
+        if (window.parent !== window) {
+          window.parent.postMessage({ type: 'SCORE_UPDATE', score: currentScore }, '*');
+        }
+      }
+    }
+  }
+
+  setInterval(checkScoreSync, 200);
 
   window.addEventListener('message', function(e) {
     if (e.data && e.data.type === 'SET_CONTROL') {
