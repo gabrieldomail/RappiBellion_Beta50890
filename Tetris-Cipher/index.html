@@ -1,1 +1,51 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Tetris</title><link rel="stylesheet" href="styles/style.min.css"><link rel="icon" href="assets/images/favicon.png"></head><body><div id="wrapper"></div><script src="scripts/script.min.js"></script></body></html>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Tetris</title><link rel="stylesheet" href="styles/style.min.css"><link rel="icon" href="assets/images/favicon.png"></head>
+<body>
+<div id="wrapper"></div>
+<script>
+(function() {
+  var controlMode = 'swipe';
+  var dpadEl = null;
+
+  function injectKeyEvent(key, type) {
+    var evt = new KeyboardEvent(type, { key: key, bubbles: true, cancelable: true });
+    document.dispatchEvent(evt);
+  }
+
+  function createDpad() {
+    if (dpadEl) return;
+    dpadEl = document.createElement('div');
+    dpadEl.id = 'virtual-dpad';
+    dpadEl.innerHTML = '<div class="dpad-row"><button data-key="ArrowUp">▲</button></div>' +
+      '<div class="dpad-row"><button data-key="ArrowLeft">◀</button><button data-key="ArrowDown">▼</button><button data-key="ArrowRight">▶</button></div>' +
+      '<div class="dpad-row"><button data-key="Space">DROP</button></div>';
+    dpadEl.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;align-items:center;gap:5px;';
+    var style = document.createElement('style');
+    style.textContent = '#virtual-dpad button{width:50px;height:50px;background:rgba(0,255,65,0.2);border:2px solid #00ff41;color:#00ff41;font-size:18px;border-radius:8px;cursor:pointer;touch-action:none;}#virtual-dpad .dpad-row{display:flex;gap:5px;}';
+    dpadEl.appendChild(style);
+    document.body.appendChild(dpadEl);
+
+    dpadEl.querySelectorAll('button').forEach(function(btn) {
+      btn.addEventListener('touchstart', function(e) { e.preventDefault(); injectKeyEvent(btn.dataset.key, 'keydown'); });
+      btn.addEventListener('touchend', function(e) { e.preventDefault(); injectKeyEvent(btn.dataset.key, 'keyup'); });
+      btn.addEventListener('mousedown', function(e) { injectKeyEvent(btn.dataset.key, 'keydown'); });
+      btn.addEventListener('mouseup', function(e) { injectKeyEvent(btn.dataset.key, 'keyup'); });
+    });
+  }
+
+  function removeDpad() {
+    if (dpadEl) { dpadEl.remove(); dpadEl = null; }
+  }
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'SET_CONTROL') {
+      controlMode = e.data.mode;
+      if (controlMode === 'dpad') {
+        createDpad();
+      } else {
+        removeDpad();
+      }
+    }
+  });
+})();
+</script>
+<script src="scripts/script.min.js"></script></body></html>
