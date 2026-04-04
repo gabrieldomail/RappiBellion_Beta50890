@@ -250,7 +250,16 @@ window.addEventListener('message', function(event) {
 	if (event.data && event.data.type === 'MATCH_ENDED') {
 		console.log('[Tetris] MATCH_ENDED - pausing');
 		var self = window.main;
-		if (self && self.pause) self.pause();
+		if (self) {
+			// Enviar último score antes de pausar
+			var playing = self.currentGameState;
+			if (playing && playing.stats) {
+				var finalScore = playing.stats.score || 0;
+				window.parent.postMessage({ type: 'SCORE_UPDATE', score: finalScore }, '*');
+			}
+			// Pausar el juego
+			if (self.pause) self.pause();
+		}
 	}
 });
 
