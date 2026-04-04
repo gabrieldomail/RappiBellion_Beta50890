@@ -27,7 +27,7 @@
   var lastScore = 0;
 
   function injectKeyEvent(key, type) {
-    var evt = new KeyboardEvent(type, { key: key, bubbles: true, cancelable: true });
+    var evt = new KeyboardEvent(type, { key: key, code: key, bubbles: true, cancelable: true });
     document.dispatchEvent(evt);
   }
 
