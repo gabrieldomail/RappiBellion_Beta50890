@@ -248,17 +248,20 @@ window.addEventListener('message', function(event) {
 		}
 	}
 	if (event.data && event.data.type === 'MATCH_ENDED') {
-		console.log('[Tetris] MATCH_ENDED - pausing');
+		console.log('[Tetris] MATCH_ENDED - forcing Game Over');
 		var self = window.main;
 		if (self) {
-			// Enviar último score antes de pausar
+			// Enviar último score
 			var playing = self.currentGameState;
 			if (playing && playing.stats) {
 				var finalScore = playing.stats.score || 0;
 				window.parent.postMessage({ type: 'SCORE_UPDATE', score: finalScore }, '*');
 			}
-			// Pausar el juego
-			if (self.pause) self.pause();
+			// Forzar estado GAMEOVER para mostrar veredicto
+			self.state = GameStateType.GAMEOVER;
+			if (self.stateOver && self.stateOver.reset) {
+				self.stateOver.reset();
+			}
 		}
 	}
 });
