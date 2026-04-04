@@ -16,6 +16,9 @@ export class InputUtils {
 
 	static #oneShotEventBuffer = [];
 
+	// Flag para auto-start desde la arena
+	static autoStartPending = false;
+
 	static attachListeners() {
 		// Attach the key event listeners
 		window.addEventListener("keyup", this.#onKey.bind(this));
@@ -204,6 +207,11 @@ export class InputUtils {
 	}
 
 	static isAnyKeyDown() {
+		// También inicia si la arena envió START_MATCH
+		if (this.autoStartPending) {
+			this.autoStartPending = false;
+			return true;
+		}
 		return this.#pressedKeys.length > 0;
 	}
 

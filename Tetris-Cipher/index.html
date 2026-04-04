@@ -59,8 +59,10 @@
   // Score syncing with parent (T2E Arena)
   function checkScoreSync() {
     var main = window.main;
-    if (main && main.statePlaying && main.statePlaying.stats) {
-      var currentScore = main.statePlaying.stats.score || 0;
+    if (!main) return;
+    var playing = main.currentGameState;
+    if (playing && playing.stats) {
+      var currentScore = playing.stats.score || 0;
       if (currentScore !== lastScore) {
         lastScore = currentScore;
         if (window.parent !== window) {
@@ -72,14 +74,6 @@
 
   setInterval(checkScoreSync, 200);
 
-  // Pausar juego cuando la arena termina (timer llega a 0)
-  function pauseGame() {
-    var main = window.main;
-    if (main && main.pause) {
-      main.pause();
-    }
-  }
-
   window.addEventListener('message', function(e) {
     if (e.data && e.data.type === 'SET_CONTROL') {
       controlMode = e.data.mode;
@@ -88,10 +82,6 @@
       } else {
         removeDpad();
       }
-    }
-    // Cuando el timer de la arena llega a 0, pausar el juego
-    if (e.data && e.data.type === 'MATCH_ENDED') {
-      pauseGame();
     }
   });
 })();
