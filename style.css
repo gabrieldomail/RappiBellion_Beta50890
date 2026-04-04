@@ -5405,6 +5405,12 @@ footer::before {
         padding: 7px 13px;
         letter-spacing: 1px;
     }
+    /* Ocultar botón soporte cuando arena free play está visible */
+    .freeplay-arena.show #contact-float-btn,
+    .freeplay-arena.show #finder-float-window,
+    .freeplay-arena.show #gemini-chat-fab {
+        display: none !important;
+    }
 }
 
 /* ── Contact Modal — Cyberpunk Chaos Rebellion ───────────────────────────── */
