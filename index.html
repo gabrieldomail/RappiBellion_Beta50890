@@ -2431,9 +2431,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 400);
     }
 
-    function fpEndPractice() {
+function fpEndPractice() {
+        console.log('!!! ARENA TERMINADA: Enviando MATCH_ENDED al Tetris...');
         if (fpIframe && fpIframe.contentWindow) {
-            fpIframe.contentWindow.postMessage({ type:'MATCH_ENDED' }, '*');
+            fpIframe.contentWindow.postMessage({ type: 'MATCH_ENDED' }, '*');
         }
         if (fpTimerEl) { fpTimerEl.style.color = 'rgba(255,255,255,0.2)'; }
 

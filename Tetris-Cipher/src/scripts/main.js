@@ -236,32 +236,40 @@ export class Main {
 }
 
 // ── RAPPIBELLION ARENA INTEGRATION ──
-// Escuchar mensajes de la arena padre
 window.addEventListener('message', function(event) {
-	if (event.data && event.data.type === 'START_MATCH') {
-		console.log('[Tetris] START_MATCH - auto starting');
-		var self = window.main;
-		if (self && self.statePlaying) {
-			self.state = GameStateType.PLAYING;
-			self.statePlaying.reset();
-			InputUtils.resetAllKeys();
-		}
+	if (!event.data) return;
+
+	var self = window.main; 
+	if (!self) {
+		console.error('[Tetris] Error: window.main no está listo.');
+		return;
 	}
-	if (event.data && event.data.type === 'MATCH_ENDED') {
-		console.log('[Tetris] MATCH_ENDED - forcing Game Over');
-		var self = window.main;
-		if (self) {
-			// Enviar último score
-			var playing = self.currentGameState;
-			if (playing && playing.stats) {
-				var finalScore = playing.stats.score || 0;
-				window.parent.postMessage({ type: 'SCORE_UPDATE', score: finalScore }, '*');
-			}
-			// Forzar estado GAMEOVER para mostrar veredicto
-			self.state = GameStateType.GAMEOVER;
-			if (self.stateOver && self.stateOver.reset) {
-				self.stateOver.reset();
-			}
+
+	// 1. START MATCH - Iniciar juego
+	if (event.data.type === 'START_MATCH') {
+		console.log('[Tetris] START_MATCH - auto starting');
+		self.state = GameStateType.PLAYING;
+		if (self.statePlaying) {
+			self.statePlaying.reset();
+		}
+		InputUtils.resetAllKeys();
+	}
+
+	// 2. MATCH_ENDED - Forzar Game Over / Veredicto
+	if (event.data.type === 'MATCH_ENDED') {
+		console.log('[Tetris] MATCH_ENDED recibido - forzando veredicto');
+
+		// Capturar score final
+		if (self.statePlaying && self.statePlaying.stats) {
+			var finalScore = self.statePlaying.stats.score || 0;
+			console.log('[Tetris] Score final:', finalScore);
+			window.parent.postMessage({ type: 'SCORE_UPDATE', score: finalScore }, '*');
+		}
+
+		// Forzar estado GAMEOVER
+		self.state = GameStateType.GAMEOVER;
+		if (self.stateOver && self.stateOver.reset) {
+			self.stateOver.reset();
 		}
 	}
 });
