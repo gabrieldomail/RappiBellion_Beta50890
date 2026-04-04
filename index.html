@@ -2367,6 +2367,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const scoreEl  = document.getElementById('vrd-score');
         const phraseEl = document.getElementById('vrd-phrase');
 
+        // Obtener el veredicto según el juego
+        var verdict = fpGetVerdict(score);
+
         // Mostrar resultado de apuesta si hay una activa
         const betResult = window._fpLastBetResult;
         const betResultEl = document.getElementById('vrd-bet-result');
