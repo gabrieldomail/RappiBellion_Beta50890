@@ -6497,3 +6497,16 @@ footer::before {
     color: #FFD700;
     border-color: #FFD700;
 }
+
+/* Solo se aplica cuando se abre como APP instalada */
+@media all and (display-mode: standalone), (display-mode: fullscreen) {
+    /* Ejemplo: Ocultar el footer o textos descriptivos para ganar espacio */
+    .hero-subtitle, .description-text {
+        display: none;
+    }
+
+    /* Asegurar que la arena tenga buen margen arriba para no chocar con la cámara */
+    #freeplay-arena {
+        margin-top: 20px;
+    }
+}
