@@ -6500,12 +6500,17 @@ footer::before {
 
 /* Solo se aplica cuando se abre como APP instalada */
 @media all and (display-mode: standalone), (display-mode: fullscreen) {
-    /* Ejemplo: Ocultar el footer o textos descriptivos para ganar espacio */
+    /* Ocultar elementos de información en la app */
     .hero-subtitle, .description-text {
         display: none;
     }
 
-    /* Asegurar que la arena tenga buen margen arriba para no chocar con la cámara */
+    /* Ocultar FAQ y briefing en Tetris arena para la app */
+    #fp-faq-panel, #fp-briefing-panel {
+        display: none !important;
+    }
+
+    /* Asegurar que la arena tenga buen margen arriba */
     #freeplay-arena {
         margin-top: 20px;
     }
