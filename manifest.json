@@ -2,7 +2,7 @@
   "name": "Rappibellion T2E",
   "short_name": "Rappibellion",
   "description": "El Próximo T2E (Think-to-Earn)",
-  "start_url": "./index.html",
+  "start_url": ".",
   "display": "fullscreen",
   "orientation": "portrait",
   "background_color": "#020408",
