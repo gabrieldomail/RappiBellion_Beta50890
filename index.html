@@ -10,6 +10,17 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:,">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json?v=2">
+    <meta name="theme-color" content="#020408">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Rappibellion T2E">
+    <link rel="apple-touch-icon" href="images/icon-192x192.png">
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./service-worker.js');
+    }
+    </script>
     
     <!-- 
     ====================================
@@ -3845,7 +3856,7 @@ btn.addEventListener('click', toggleMutePlay);
                                 <li><strong>Edad Mínima:</strong> Debes ser mayor de 18 años</li>
                                 <li><strong>Jurisdicción:</strong> Este es un sistema experimental — no es juego de azar tradicional</li>
                                 <li><strong>Responsabilidad:</strong> Tú eres responsable de tus decisiones y pérdidas</li>
-                                <li><strong>Soporte:</strong> Contacto vía <a href="mailto:info@rappibellion.com" style="color:var(--color-primario);">info@rappibellion.com</a></li>
+                                <li><strong>Soporte:</strong> Contacto vía <a href="/cdn-cgi/l/email-protection#ed84838b82ad9f8c9d9d848f888181848283c38e8280" style="color:var(--color-primario);"><span class="__cf_email__" data-cfemail="751c1b131a35071405051c171019191c1a1b5b161a18">[email&#160;protected]</span></a></li>
                             </ul>
                         </div>
 
@@ -4004,7 +4015,7 @@ btn.addEventListener('click', toggleMutePlay);
                 <div class="footer-copy">&copy; 2025 &mdash; TODOS LOS DERECHOS RESERVADOS</div>
             </div>
             <div class="footer-links">
-                <a href="mailto:info@rappibellion.com">info@rappibellion.com</a><br>
+                <a href="/cdn-cgi/l/email-protection#7a13141c153a081b0a0a13181f161613151454191517"><span class="__cf_email__" data-cfemail="9ff6f1f9f0dfedfeefeff6fdfaf3f3f6f0f1b1fcf0f2">[email&#160;protected]</span></a><br>
                 <span class="footer-contract">CONTRACT: 0xb2f681ba...abddc</span><br>
                 <span class="footer-network">● OPTIMISM MAINNET</span>
             </div>
@@ -4217,65 +4228,8 @@ btn.addEventListener('click', toggleMutePlay);
         </div>
     </div>
 
-    <!-- === PAC-HACK PvP ARENA HUD === -->
-    <div id="pachack-pvp-arena" class="pacman-window-hidden" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 9998; display: flex; flex-direction: column;">
-        <div style="flex: 1; display: flex; gap: 20px; padding: 20px; overflow: hidden;">
-            <!-- PLAYER 1 -->
-            <div style="flex: 1; display: flex; flex-direction: column; background: rgba(20, 20, 40, 0.8); border: 2px solid #00ff00; border-radius: 8px; overflow: hidden;">
-                <div style="padding: 10px; background: #00ff00; color: #000; font-weight: bold; text-align: center;">
-                    [PLAYER 1]: <span id="p1-username">YOU</span>
-                </div>
-                <div style="flex: 1; overflow: hidden;">
-                    <iframe
-                        id="p1-iframe"
-                        src="pac-hack/game.html?player=p1"
-                        width="100%"
-                        height="100%"
-                        frameborder="0"
-                        style="border: none; background: #000000;"
-                    ></iframe>
-                </div>
-                <div style="padding: 10px; background: rgba(0, 255, 0, 0.2); color: #00ff00; text-align: center; font-family: monospace;">
-                    SCORE: <span id="p1-score">0</span>
-                </div>
-            </div>
 
-            <!-- CENTER STATS -->
-            <div style="width: 200px; display: flex; flex-direction: column; justify-content: center; gap: 20px; padding: 20px;">
-                <div style="background: rgba(0, 255, 255, 0.2); border: 1px solid #00ffff; padding: 15px; border-radius: 8px; color: #00ffff; text-align: center; font-family: monospace;">
-                    <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">⏱️ TIME</div>
-                    <div id="match-timer" style="font-size: 32px; font-weight: bold;">3:00</div>
-                </div>
-                <div style="background: rgba(255, 0, 255, 0.2); border: 1px solid #ff00ff; padding: 15px; border-radius: 8px; color: #ff00ff; text-align: center; font-family: monospace;">
-                    <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">👾 STATUS</div>
-                    <div id="match-status">🔴 WAITING...</div>
-                </div>
-                <button id="exit-arena-button" style="padding: 10px; background: #ff0000; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">EXIT ARENA</button>
-            </div>
-
-            <!-- PLAYER 2 -->
-            <div style="flex: 1; display: flex; flex-direction: column; background: rgba(40, 20, 20, 0.8); border: 2px solid #ff0000; border-radius: 8px; overflow: hidden;">
-                <div style="padding: 10px; background: #ff0000; color: #fff; font-weight: bold; text-align: center;">
-                    [PLAYER 2]: <span id="p2-username">RIVAL</span>
-                </div>
-                <div style="flex: 1; overflow: hidden;">
-                    <iframe
-                        id="p2-iframe"
-                        src="pac-hack/game.html?player=p2"
-                        width="100%"
-                        height="100%"
-                        frameborder="0"
-                        style="border: none; background: #000000;"
-                    ></iframe>
-                </div>
-                <div style="padding: 10px; background: rgba(255, 0, 0, 0.2); color: #ff0000; text-align: center; font-family: monospace;">
-                    SCORE: <span id="p2-score">0</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // === CYBERPUNK HUD SYSTEM (legacy — uses instance from El Circuito script) ===
     class _CyberpunkHUDFull {
         constructor() {
@@ -5707,205 +5661,6 @@ btn.addEventListener('click', toggleMutePlay);
         // ========================================
         
         const buyRppiButton = document.getElementById('buy-rppi-button');
-        const buyRppiOverlay = document.getElementById('buy-rppi-overlay');
-        const closeBuyModal = document.getElementById('close-buy-modal');
-        
-        // Open modal
-        buyRppiButton.addEventListener('click', function() {
-            buyRppiOverlay.classList.remove('terminal-overlay-hidden');
-            buyRppiOverlay.classList.add('terminal-overlay-visible');
-        });
-        
-        // Close modal
-        closeBuyModal.addEventListener('click', function() {
-            buyRppiOverlay.classList.remove('terminal-overlay-visible');
-            buyRppiOverlay.classList.add('terminal-overlay-hidden');
-        });
-        
-        // Close modal when clicking outside
-        buyRppiOverlay.addEventListener('click', function(e) {
-            if (e.target === buyRppiOverlay) {
-                buyRppiOverlay.classList.remove('terminal-overlay-visible');
-                buyRppiOverlay.classList.add('terminal-overlay-hidden');
-            }
-        });
-        
-        // Payment method handlers
-        const paymentMethods = document.querySelectorAll('.payment-method-option');
-        
-        paymentMethods.forEach(method => {
-            method.addEventListener('click', function() {
-                const methodType = this.getAttribute('data-method');
-                
-                switch(methodType) {
-                    case 'uniswap':
-                        // Uniswap - Abrir directo al pool de RPPI
-                        window.open('https://app.uniswap.org/#/swap?outputCurrency=0xb2f681ba962a1ef4dba7acf79b181814827abddc&chain=optimism', '_blank');
-                        buyRppiOverlay.classList.remove('terminal-overlay-visible');
-                        buyRppiOverlay.classList.add('terminal-overlay-hidden');
-                        break;
-                        
-                    case 'direct':
-                        // Compra directa - Por ahora mensaje
-                        alert('💎 COMPRA DIRECTA\n\nEsta función estará disponible próximamente.\n\nPodrás comprar $RPPI directamente con USDT o ETH.');
-                        break;
-                        
-                    case 'card':
-                        // MetaMask Portfolio — Debit/Credit card → USDT on Optimism
-                        window.open('https://portfolio.metamask.io/buy?tokens=USDT&network=optimism&paymentCategory=debit_credit_card', '_blank');
-                        break;
-                        
-                    case 'bank':
-                        // MetaMask Portfolio — Local Bank Transfer / Binance P2P → USDT on Optimism
-                        window.open('https://portfolio.metamask.io/buy?tokens=USDT&network=optimism&paymentCategory=bank_transfer', '_blank');
-                        break;
-                }
-            });
-        });
-        
-
-        // === SCRIPT 5: CONTROLADOR DIRECTO DE APUESTAS - ARENA PAC-HACK PvP ===
-        const betArkaButton = document.getElementById('make-bet-arkahack');
-        const betSpaceButton = document.getElementById('make-bet-spacebreaker');
-        const betPacHackButton = document.getElementById('make-bet-pachack');
-        const betTetrisButton = document.getElementById('make-bet-tetriscipher');
-        const betMemoryButton = document.getElementById('make-bet-memorybreach');
-
-        // ========================================
-        // PAC-HACK PvP ARENA SYSTEM
-        // ========================================
-
-        const pachackPvpArena = document.getElementById('pachack-pvp-arena');
-        const exitArenaButton = document.getElementById('exit-arena-button');
-        const matchTimer = document.getElementById('match-timer');
-        const matchStatus = document.getElementById('match-status');
-        const p1Score = document.getElementById('p1-score');
-        const p2Score = document.getElementById('p2-score');
-
-        let arenaActive = false;
-        let arenaTimerInterval = null;
-        let arenaTimeRemaining = 180; // 3 minutos en segundos
-        let p1CurrentScore = 0;
-        let p2CurrentScore = 0;
-
-        // Función para abrir el arena PvP
-        function openPacHackArena() {
-            console.log('🎮 ¡ABRIENDO ARENA PAC-HACK PvP!');
-            
-            if (pachackPvpArena) {
-                pachackPvpArena.classList.remove('pacman-window-hidden');
-                pachackPvpArena.style.opacity = '1';
-                pachackPvpArena.style.pointerEvents = 'auto';
-                
-                arenaActive = true;
-                arenaTimeRemaining = 180; // Reset timer
-                
-                // Notificación
-                if (cyberpunkHUD && cyberpunkHUD.isActive) {
-                    cyberpunkHUD.showNotification('🏟️ PAC-HACK PvP ARENA INITIALIZED');
-                }
-                
-                // Actualizar status
-                matchStatus.textContent = '🟢 MATCH ACTIVE';
-                p1CurrentScore = 0;
-                p2CurrentScore = 0;
-                p1Score.textContent = '0';
-                p2Score.textContent = '0';
-                
-                // Iniciar timer
-                startArenaTimer();
-                
-                // Escuchar mensajes de los iframes
-                listenToGameFrames();
-            }
-        }
-
-        // Función para cerrar el arena
-        function closeArena() {
-            console.log('🎮 Cerrando ARENA PAC-HACK...');
-            
-            arenaActive = false;
-            if (arenaTimerInterval) {
-                clearInterval(arenaTimerInterval);
-            }
-            
-            if (pachackPvpArena) {
-                pachackPvpArena.style.opacity = '0';
-                pachackPvpArena.style.pointerEvents = 'none';
-                setTimeout(() => {
-                    pachackPvpArena.classList.add('pacman-window-hidden');
-                }, 300);
-            }
-            
-            if (cyberpunkHUD && cyberpunkHUD.isActive) {
-                cyberpunkHUD.showNotification('🏁 PAC-HACK ARENA CLOSED');
-            }
-            // Restaurar lobby de apuestas al cerrar arena PvP
-            if (typeof showLobbyFloat === 'function') showLobbyFloat();
-        }
-
-        // Timer del arena
-        function startArenaTimer() {
-            if (arenaTimerInterval) clearInterval(arenaTimerInterval);
-            
-            arenaTimerInterval = setInterval(() => {
-                arenaTimeRemaining--;
-                
-                const minutes = Math.floor(arenaTimeRemaining / 60);
-                const seconds = arenaTimeRemaining % 60;
-                matchTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-                
-                if (arenaTimeRemaining <= 0) {
-                    clearInterval(arenaTimerInterval);
-                    endMatch();
-                }
-            }, 1000);
-        }
-
-        // Escuchar mensajes de los iframes del juego
-        function listenToGameFrames() {
-            window.addEventListener('message', function(event) {
-                const data = event.data;
-                if (!data || !data.type || !arenaActive) return;
-                
-                if (data.type === 'SCORE_UPDATE') {
-                    if (data.player === 'p1') {
-                        p1CurrentScore = data.score;
-                        p1Score.textContent = data.score;
-                    } else if (data.player === 'p2') {
-                        p2CurrentScore = data.score;
-                        p2Score.textContent = data.score;
-                    }
-                    
-                    // Mostrar quién va ganando
-                    if (p1CurrentScore > p2CurrentScore) {
-                        matchStatus.textContent = '🟢 P1 WINNING!';
-                    } else if (p2CurrentScore > p1CurrentScore) {
-                        matchStatus.textContent = '🔴 P2 WINNING!';
-                    } else {
-                        matchStatus.textContent = '🟡 TIED';
-                    }
-                }
-                else if (data.type === 'GAME_OVER') {
-                    console.log('Player ' + data.player + ' game over');
-                }
-            });
-        }
-
-        // Finalizar match
-        function endMatch() {
-            arenaActive = false;
-            matchStatus.textContent = '🏁 MATCH FINISHED';
-            
-            const winner = p1CurrentScore > p2CurrentScore ? 'PLAYER 1' : 
-                          p2CurrentScore > p1CurrentScore ? 'PLAYER 2' : 'TIE';
-            
-            if (cyberpunkHUD && cyberpunkHUD.isActive) {
-                cyberpunkHUD.showNotification(`🏆 WINNER: ${winner}`);
-            }
-            
-            // Notificar a ambos iframes que el match terminó
-            const p1Iframe = document.getElementById('p1-iframe');
             const p2Iframe = document.getElementById('p2-iframe');
             
             if (p1Iframe && p1Iframe.contentWindow) {
@@ -5923,46 +5678,6 @@ btn.addEventListener('click', toggleMutePlay);
             }
         }
 
-        // Botón para salir del arena
-        if (exitArenaButton) {
-            exitArenaButton.addEventListener('click', closeArena);
-        }
-
-        // Cerrar arena con Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && arenaActive && pachackPvpArena && !pachackPvpArena.classList.contains('pacman-window-hidden')) {
-                closeArena();
-            }
-        });
-
-        // Función para procesar apuesta y abrir Pac-Man
-        function processBetAndOpenGame(gameTitle) {
-            console.log(`🎮 ¡APUESTA ${gameTitle} REALIZADA! Abriendo PAC-HACK PvP ARENA...`);
-
-            // Simular que la apuesta se realizó exitosamente
-            if (cyberpunkHUD && cyberpunkHUD.isActive) {
-                cyberpunkHUD.showNotification(`${gameTitle} BET ACCEPTED`);
-            }
-
-            // Mostrar notificación de que se abre el arena
-            setTimeout(() => {
-                if (cyberpunkHUD && cyberpunkHUD.isActive) {
-                    cyberpunkHUD.showNotification('LOADING PAC-HACK PvP ARENA...');
-                }
-            }, 500);
-
-            // Abrir el arena PvP
-            setTimeout(() => {
-                openPacHackArena();
-            }, 1500); // Delay para mostrar las notificaciones
-        }
-
-        // Asignar los eventos a TODOS los botones de apuesta
-        if (betArkaButton) {
-            betArkaButton.addEventListener('click', () => processBetAndOpenGame('ARKA-HACK'));
-        }
-        // space-breaker, tetris-cipher y memory-breach están deshabilitados hasta su lanzamiento
-        // — no se registran listeners para que los botones no abran el modal de apuestas
     }); // <-- FIN DEL 'DOMContentLoaded'
 </script>
     <!-- Canvas Confetti library -->
@@ -9925,15 +9640,4 @@ async function submitContactForm() {
                       + '<span style="color:' + color + ';">' + entry[1] + ' (' + pct + '%)</span>'
                       + '</div>'
                       + '<div class="vb-track">'
-                      + '<div class="vb-fill" style="width:' + pct + '%;background:' + color + ';box-shadow:0 0 8px ' + color + '88;"></div>'
-                      + '</div></div>';
-            });
-            document.getElementById('vote-bars').innerHTML = html;
-            document.getElementById('vote-results').style.display = 'block';
-        }).catch(function(){});
-    }
-})();
-</script>
-
-</body>
-</html>
+                      + '<div class="vb

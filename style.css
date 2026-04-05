@@ -2276,7 +2276,7 @@ footer::before {
 
 .beta-container {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Siempre 2 columnas */
+    grid-template-columns: 1fr 1fr; /* Desktop: 2 columnas */
     gap: 12px;
     margin-top: 30px;
     align-items: start;
@@ -2300,10 +2300,12 @@ footer::before {
 
 @media (max-width: 767px) {
     .beta-container {
-        grid-template-columns: 1fr; /* Apilar vertical en móvil */
+        grid-template-columns: 1fr; /* Mobile: columnas apiladas verticalmente */
+        gap: 20px;
     }
     .beta-column {
         padding: 12px 8px;
+        width: 100%;
     }
     .beta-column h3 {
         font-size: 0.9em;
@@ -6501,236 +6503,180 @@ footer::before {
     border-color: #FFD700;
 }
 
-/* --- MODO PWA - Solo Tetris Arena Inmersiva --- */
-@media all and (display-mode: standalone), (display-mode: fullscreen) {
-    
-    /* Ocultar overlay de rotación */
-    #fp-rotate-overlay {
-        display: none !important;
-    }
 
-    /* Ocultar elementos que estorban en Tetris */
-    #intro-screen, .hero-v2, .leaderboard, #concept, #economy, 
-    .features-grid, .cta-section, .crypto-stats, .token-info-section, 
-    .about-section, .roadmap-section, .team-section,
+/* ==========================================================================
+   MODO INTERFAZ INMERSIVA PWA (HUD CYBERPUNK — TETRIS ARENA)
+   Transforma la web en una app nativa al instalarse como PWA.
+   Juego en VERTICAL (portrait) — sin forzado de rotación.
+   ========================================================================== */
+
+@media all and (display-mode: standalone), (display-mode: fullscreen) {
+
+    /* 1. Ocultar TODA la web tradicional — PWA va directo a la Arena */
+    body > section:not(#t2eplay-arena),
+    header, footer,
+    #game-overlay,
+    #intro-screen, #beta-start-screen,
     #finder-float-window, #lobby-float-window, #gemini-chat-fab,
-    #usdt-promo-window, #mp-promo-window, #contact-float-btn,
-    #freeplay-column, #t2e-column {
+    #usdt-promo-window, #mp-promo-window, #contact-float-btn, #mute-play-btn {
         display: none !important;
         visibility: hidden !important;
     }
 
-    /* Solo mostrar el overlay del juego y Tetris arena */
-    #game-overlay, .freeplay-arena {
-        display: block !important;
-        visibility: visible !important;
-    }
-
-    /* Arena a pantalla completa */
-    #freeplay-arena {
-        width: 100vw !important;
-        height: 100vh !important;
-        max-width: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        position: fixed !important;
-        top: 0;
-        left: 0;
-        border: none !important;
-    }
-
-    /* Ocultar FAQ y briefing (pero NO las columns que se usan para HUD) */
-    #fp-faq-panel, #fp-briefing-panel,
-    .fp-game-meta, .fp-briefing {
-        display: none !important;
-    }
-
-    /* Tetris iframe pantalla completa */
-    #tetris-iframe {
-        width: 100% !important;
-        height: 100% !important;
-    }
-
-    /* Permitir scroll en el resto */
+    /* 2. Cuerpo inmersivo */
     body {
-        overflow: auto !important;
+        margin: 0;
+        padding: 0;
+        overflow: hidden !important;
+        background: #000;
+        height: 100vh;
     }
 
-    /* --- HUD INMERSIVO (Stats Arriba / Controles Abajo) --- */
-    
-    /* Arena a pantalla completa */
+    /* 3. Arena ocupa toda la pantalla */
     #t2eplay-arena {
-        width: 100vw !important;
-        height: 100vh !important;
-        max-width: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        position: fixed !important;
-        top: 0;
-        left: 0;
-        border: none !important;
         display: flex !important;
         flex-direction: column !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        position: fixed !important;
+        top: 0;
+        left: 0;
         background: #000 !important;
+        z-index: 99999 !important;
     }
 
-    /* Columns flotantes: izquierda arriba, derecha abajo */
-    #t2eplay-arena .fp-col-left {
+    /* 4. Iframe del juego: ocupa todo */
+    .fp-game-wrap {
+        width: 100vw !important;
+        height: 100vh !important;
+        position: absolute !important;
+        top: 0;
+        left: 0;
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: 1 !important;
+    }
+
+    .caos-terminal {
+        height: 100% !important;
+        width: 100% !important;
+        max-width: none !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .terminal-header-caos { display: none !important; }
+
+    #fp-iframe {
+        width: 100vw !important;
+        height: 100vh !important;
+        border: none !important;
+    }
+
+    /* 5. HUD superior — stats flotantes en portrait */
+    .fp-col-left {
         position: absolute !important;
         top: env(safe-area-inset-top, 10px) !important;
-        left: 0 !important;
-        width: 100% !important;
+        left: 2% !important;
+        width: 96% !important;
+        height: auto !important;
+        max-height: none !important;
         display: flex !important;
-        justify-content: space-around !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
         align-items: center !important;
-        background: rgba(2, 4, 8, 0.6) !important;
-        backdrop-filter: blur(8px) !important;
-        padding: 12px 8px !important;
-        z-index: 100 !important;
-        border-bottom: 1px solid rgba(0, 188, 255, 0.3) !important;
-        gap: 10px !important;
+        background: rgba(5, 10, 15, 0.80) !important;
+        backdrop-filter: blur(6px) !important;
+        border: 1px solid var(--color-azul-glitch) !important;
+        border-radius: 8px !important;
+        padding: 8px 12px !important;
+        z-index: 10 !important;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.2) !important;
     }
 
-    #t2eplay-arena .fp-col-right {
+    .fp-col-left > div {
+        background: none !important;
+        border: none !important;
+        margin: 0 !important;
+    }
+
+    .fp-timer-block,
+    .fp-stat,
+    #fp-chaos-bar-wrap {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    .fp-timer-lbl,
+    .fp-stat-lbl,
+    .fp-chaos-label { font-size: 0.6rem !important; margin-bottom: 2px !important; }
+
+    .fp-timer-val,
+    .fp-stat-val { font-size: 1.1rem !important; color: var(--color-caos-amarillo) !important; }
+
+    .fp-timer-bar-wrap,
+    .fp-chaos-bar-outer { width: 50px !important; height: 4px !important; margin-top: 3px !important; }
+
+    /* Ocultar decoraciones innecesarias de la columna izquierda */
+    .fp-logo-glitch,
+    .fp-practice-lbl,
+    .fp-hover-glow,
+    .fp-col-left::before,
+    .fp-col-left::after { display: none !important; animation: none !important; }
+
+    /* 6. HUD inferior — controles flotantes en portrait */
+    .fp-col-right {
         position: absolute !important;
         bottom: env(safe-area-inset-bottom, 10px) !important;
         left: 5% !important;
         width: 90% !important;
-        background: rgba(2, 4, 8, 0.6) !important;
-        backdrop-filter: blur(8px) !important;
-        padding: 15px !important;
-        z-index: 100 !important;
-        border-radius: 15px !important;
-        border: 1px solid rgba(255, 0, 128, 0.3) !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        gap: 10px !important;
-    }
-
-    /* Stats box - compacta cada uno - MOSTRARLOS */
-    #t2eplay-arena .fp-col-left > * {
-        display: flex !important;
-        background: none !important;
-        border: none !important;
-        padding: 0 8px !important;
-    }
-
-    /* Forzar display en elementos internos */
-    #t2eplay-arena .fp-timer-block,
-    #t2eplay-arena .fp-stat,
-    #t2eplay-arena #fp-chaos-bar-wrap,
-    #t2eplay-arena .fp-timer-val,
-    #t2eplay-arena .fp-stat-val,
-    #t2eplay-arena .fp-timer-bar-wrap {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        min-width: 70px !important;
-        margin: 0 !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-
-    #t2eplay-arena .fp-timer-lbl,
-    #t2eplay-arena .fp-stat-lbl,
-    #t2eplay-arena .fp-chaos-label {
-        font-size: 0.6rem !important;
-        opacity: 0.8 !important;
-        margin-bottom: 2px !important;
-    }
-
-    #t2eplay-arena .fp-timer-val,
-    #t2eplay-arena .fp-stat-val {
-        font-size: 1rem !important;
-        color: #00BCFF !important;
-    }
-
-    /* Timer bar */
-    #t2eplay-arena .fp-timer-bar-wrap {
-        width: 60px !important;
-        height: 4px !important;
-        margin-top: 4px !important;
-    }
-
-    /* Chaos bar */
-    #t2eplay-arena .fp-chaos-bar-outer {
-        width: 60px !important;
-        height: 4px !important;
-    }
-
-    /* Ocultar elementos innecesarios en columns */
-    #t2eplay-arena .fp-logo-glitch,
-    #t2eplay-arena .fp-practice-lbl,
-    #t2eplay-arena #fp-boost-wrap,
-    #t2eplay-arena .fp-hover-glow,
-    #t2eplay-arena .fp-hover-glow-right {
-        display: none !important;
-    }
-
-    /* Controles compactos - MOSTRARLOS */
-    #t2eplay-arena #fp-controls-freeplay {
+        height: auto !important;
+        max-height: none !important;
         display: flex !important;
         flex-direction: row !important;
-        justify-content: center !important;
+        justify-content: space-around !important;
         align-items: center !important;
-        gap: 10px !important;
+        background: rgba(5, 10, 15, 0.80) !important;
+        backdrop-filter: blur(6px) !important;
+        border: 1px solid var(--color-primario) !important;
+        border-radius: 8px !important;
+        padding: 8px 12px !important;
+        z-index: 10 !important;
+        box-shadow: 0 0 15px rgba(255, 60, 94, 0.2) !important;
+    }
+
+    #fp-controls-freeplay {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 12px !important;
         width: 100% !important;
-        visibility: visible !important;
-        opacity: 1 !important;
+        justify-content: space-around !important;
     }
 
-    #t2eplay-arena .fp-mode-label,
-    #t2eplay-arena .fp-mode-val,
-    #t2eplay-arena .fp-mode-sub,
-    #t2eplay-arena #fp-tips-btn {
-        display: none !important;
+    #fp-duration-select {
+        width: auto !important;
+        padding: 6px 10px !important;
+        font-size: 0.8rem !important;
+        border-radius: 4px !important;
     }
 
-    #t2eplay-arena #fp-duration-select {
-        display: inline-block !important;
-        padding: 5px 8px !important;
-        font-size: 0.7rem !important;
-        visibility: visible !important;
-    }
-
-    #t2eplay-arena .fp-btn,
-    #t2eplay-arena .fp-exit-cta {
-        display: inline-block !important;
-        padding: 6px 12px !important;
-        font-size: 0.7rem !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-
-    /* Juego ocupa toda la pantalla */
-    #t2eplay-arena .fp-game-wrap {
-        position: absolute !important;
-        top: 0;
-        left: 0;
-        width: 100% !important;
-        height: 100% !important;
-        padding: 0 !important;
+    .fp-btn,
+    .fp-exit-cta {
+        width: auto !important;
+        padding: 8px 14px !important;
+        font-size: 0.8rem !important;
         margin: 0 !important;
+        border-radius: 4px !important;
     }
 
-    #t2eplay-arena .caos-terminal {
-        height: 100% !important;
-        margin: 0 !important;
-        border: none !important;
-    }
-
-    #t2eplay-arena .terminal-header-caos {
-        display: none !important;
-    }
-
-    #tetris-iframe {
-        width: 100% !important;
-        height: 100% !important;
-    }
-
-    /* Ocultar FAQ y briefing */
-    #fp-faq-panel, #fp-briefing-panel, #fp-boost-overlay-btn, #fp-boost-badge {
-        display: none !important;
-    }
+    /* Ocultar decoraciones innecesarias de la columna derecha */
+    .fp-mode-label,
+    .fp-mode-val,
+    .fp-mode-sub,
+    #fp-tips-btn,
+    .fp-hover-glow-right,
+    .fp-col-right::before,
+    .fp-col-right::after { display: none !important; animation: none !important; }
 }
