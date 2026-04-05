@@ -6552,4 +6552,168 @@ footer::before {
     body {
         overflow: auto !important;
     }
+
+    /* --- HUD INMERSIVO (Stats Arriba / Controles Abajo) --- */
+    
+    /* Arena a pantalla completa */
+    #t2eplay-arena {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        border: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        background: #000 !important;
+    }
+
+    /* Columns flotantes: izquierda arriba, derecha abajo */
+    #t2eplay-arena .fp-col-left {
+        position: absolute !important;
+        top: env(safe-area-inset-top, 10px) !important;
+        left: 0 !important;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+        background: rgba(2, 4, 8, 0.6) !important;
+        backdrop-filter: blur(8px) !important;
+        padding: 12px 8px !important;
+        z-index: 100 !important;
+        border-bottom: 1px solid rgba(0, 188, 255, 0.3) !important;
+        gap: 10px !important;
+    }
+
+    #t2eplay-arena .fp-col-right {
+        position: absolute !important;
+        bottom: env(safe-area-inset-bottom, 10px) !important;
+        left: 5% !important;
+        width: 90% !important;
+        background: rgba(2, 4, 8, 0.6) !important;
+        backdrop-filter: blur(8px) !important;
+        padding: 15px !important;
+        z-index: 100 !important;
+        border-radius: 15px !important;
+        border: 1px solid rgba(255, 0, 128, 0.3) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+
+    /* Stats box - compacta cada uno */
+    #t2eplay-arena .fp-col-left > * {
+        background: none !important;
+        border: none !important;
+        padding: 0 8px !important;
+    }
+
+    #t2eplay-arena .fp-timer-block,
+    #t2eplay-arena .fp-stat,
+    #t2eplay-arena #fp-chaos-bar-wrap {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        min-width: 70px !important;
+        margin: 0 !important;
+    }
+
+    #t2eplay-arena .fp-timer-lbl,
+    #t2eplay-arena .fp-stat-lbl,
+    #t2eplay-arena .fp-chaos-label {
+        font-size: 0.6rem !important;
+        opacity: 0.8 !important;
+        margin-bottom: 2px !important;
+    }
+
+    #t2eplay-arena .fp-timer-val,
+    #t2eplay-arena .fp-stat-val {
+        font-size: 1rem !important;
+        color: #00BCFF !important;
+    }
+
+    /* Timer bar */
+    #t2eplay-arena .fp-timer-bar-wrap {
+        width: 60px !important;
+        height: 4px !important;
+        margin-top: 4px !important;
+    }
+
+    /* Chaos bar */
+    #t2eplay-arena .fp-chaos-bar-outer {
+        width: 60px !important;
+        height: 4px !important;
+    }
+
+    /* Ocultar elementos innecesarios en columns */
+    #t2eplay-arena .fp-logo-glitch,
+    #t2eplay-arena .fp-practice-lbl,
+    #t2eplay-arena #fp-boost-wrap,
+    #t2eplay-arena .fp-hover-glow,
+    #t2eplay-arena .fp-hover-glow-right {
+        display: none !important;
+    }
+
+    /* Controles compactos */
+    #t2eplay-arena #fp-controls-freeplay {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+    #t2eplay-arena .fp-mode-label,
+    #t2eplay-arena .fp-mode-val,
+    #t2eplay-arena .fp-mode-sub,
+    #t2eplay-arena #fp-tips-btn {
+        display: none !important;
+    }
+
+    #t2eplay-arena #fp-duration-select {
+        padding: 5px 8px !important;
+        font-size: 0.7rem !important;
+    }
+
+    #t2eplay-arena .fp-btn,
+    #t2eplay-arena .fp-exit-cta {
+        padding: 6px 12px !important;
+        font-size: 0.7rem !important;
+    }
+
+    /* Juego ocupa toda la pantalla */
+    #t2eplay-arena .fp-game-wrap {
+        position: absolute !important;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        height: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    #t2eplay-arena .caos-terminal {
+        height: 100% !important;
+        margin: 0 !important;
+        border: none !important;
+    }
+
+    #t2eplay-arena .terminal-header-caos {
+        display: none !important;
+    }
+
+    #tetris-iframe {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* Ocultar FAQ y briefing */
+    #fp-faq-panel, #fp-briefing-panel, #fp-boost-overlay-btn, #fp-boost-badge {
+        display: none !important;
+    }
 }
