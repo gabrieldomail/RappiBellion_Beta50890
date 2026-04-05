@@ -6536,8 +6536,8 @@ footer::before {
         border: none !important;
     }
 
-    /* Ocultar FAQ y briefing */
-    #fp-faq-panel, #fp-briefing-panel, .fp-col-left, .fp-col-right,
+    /* Ocultar FAQ y briefing (pero NO las columns que se usan para HUD) */
+    #fp-faq-panel, #fp-briefing-panel,
     .fp-game-meta, .fp-briefing {
         display: none !important;
     }
@@ -6605,21 +6605,28 @@ footer::before {
         gap: 10px !important;
     }
 
-    /* Stats box - compacta cada uno */
+    /* Stats box - compacta cada uno - MOSTRARLOS */
     #t2eplay-arena .fp-col-left > * {
+        display: flex !important;
         background: none !important;
         border: none !important;
         padding: 0 8px !important;
     }
 
+    /* Forzar display en elementos internos */
     #t2eplay-arena .fp-timer-block,
     #t2eplay-arena .fp-stat,
-    #t2eplay-arena #fp-chaos-bar-wrap {
+    #t2eplay-arena #fp-chaos-bar-wrap,
+    #t2eplay-arena .fp-timer-val,
+    #t2eplay-arena .fp-stat-val,
+    #t2eplay-arena .fp-timer-bar-wrap {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         min-width: 70px !important;
         margin: 0 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
     #t2eplay-arena .fp-timer-lbl,
@@ -6658,7 +6665,7 @@ footer::before {
         display: none !important;
     }
 
-    /* Controles compactos */
+    /* Controles compactos - MOSTRARLOS */
     #t2eplay-arena #fp-controls-freeplay {
         display: flex !important;
         flex-direction: row !important;
@@ -6666,6 +6673,8 @@ footer::before {
         align-items: center !important;
         gap: 10px !important;
         width: 100% !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
     #t2eplay-arena .fp-mode-label,
@@ -6676,14 +6685,19 @@ footer::before {
     }
 
     #t2eplay-arena #fp-duration-select {
+        display: inline-block !important;
         padding: 5px 8px !important;
         font-size: 0.7rem !important;
+        visibility: visible !important;
     }
 
     #t2eplay-arena .fp-btn,
     #t2eplay-arena .fp-exit-cta {
+        display: inline-block !important;
         padding: 6px 12px !important;
         font-size: 0.7rem !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
     /* Juego ocupa toda la pantalla */
