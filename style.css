@@ -6501,32 +6501,60 @@ footer::before {
 /* --- MODO INTERFAZ INMERSIVA (PWA FULLSCREEN) --- */
 @media all and (display-mode: standalone), (display-mode: fullscreen) {
     
-    /* 1. Limpieza Total: Ocultamos todo lo que no sea el juego */
-    header, footer, .hero-section, .features-grid, .cta-section, 
-    .crypto-stats, .token-info-section, .about-section, 
-    .roadmap-section, .team-section, .hero-subtitle, .description-text {
+    /* 0. Forzar orientación portrait y ocultar rotate overlay */
+    body {
+        transform: rotate(0deg);
+        transform-origin: none;
+    }
+    
+    #fp-rotate-overlay {
         display: none !important;
     }
 
-    /* 2. Cuerpo de la App sin scroll y fondo puro */
+    /* 1. Limpieza Total: Ocultamos todo lo que no sea el juego */
+    header, footer, .hero-section, .features-grid, .cta-section, 
+    .crypto-stats, .token-info-section, .about-section, 
+    .roadmap-section, .team-section, .hero-subtitle, .description-text,
+    #intro-screen, #game-overlay, .hero-v2, .leaderboard {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    /* 2. Solo mostrar Tetris arena */
+    #freeplay-arena, #tetris-iframe, #tetris-hud, #gemini-chat-container {
+        display: flex !important;
+        visibility: visible !important;
+    }
+
+    /* 3. Cuerpo de la App sin scroll y fondo puro */
     body {
         margin: 0;
         padding: 0;
         overflow: hidden;
         background: #000;
         height: 100vh;
+        width: 100vw;
+        position: fixed;
     }
 
-    /* 3. Arena a Pantalla Completa Vertical */
-    .arena-container {
+    /* 4. Arena a Pantalla Completa Vertical */
+    #freeplay-arena {
         width: 100vw !important;
         height: 100vh !important;
         max-width: none !important;
         margin: 0 !important;
         padding: 0 !important;
-        position: relative;
+        position: fixed !important;
+        top: 0;
+        left: 0;
         border: none !important;
         border-radius: 0 !important;
+        background: #000 !important;
+    }
+
+    .fp-game-wrap {
+        width: 100% !important;
+        height: 100% !important;
     }
 
     #tetris-iframe {
@@ -6535,81 +6563,42 @@ footer::before {
         border: none !important;
     }
 
-    /* 4. Stats Flotantes (Timer, Score, Chaos) - Superior */
-    .arena-header {
-        position: absolute;
-        top: env(safe-area-inset-top, 10px);
-        left: 0;
-        width: 100%;
-        display: flex;
-        justify-content: space-around;
-        background: rgba(2, 4, 8, 0.5);
-        backdrop-filter: blur(8px);
-        padding: 10px 0;
-        z-index: 100;
-        border-bottom: 1px solid rgba(0, 188, 255, 0.3);
-    }
-
-    /* 5. Controles Flotantes (Duration, Restart, Exit) - Inferior */
-    .arena-footer {
-        position: absolute;
-        bottom: env(safe-area-inset-bottom, 10px);
-        left: 5%;
-        width: 90%;
-        background: rgba(2, 4, 8, 0.5);
-        backdrop-filter: blur(8px);
-        padding: 15px;
-        z-index: 100;
-        border-radius: 15px;
-        border: 1px solid rgba(255, 0, 128, 0.3);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-
-    /* Ajuste de botones para que no estorben */
-    .arena-controls {
-        flex-direction: row !important;
-        gap: 10px !important;
-    }
-
-    .control-btn {
-        padding: 8px 12px !important;
-        font-size: 0.65rem !important;
-    }
-
-    .duration-select {
-        padding: 5px !important;
-        font-size: 0.7rem !important;
-    }
-
-    /* Optimizamos los textos de las stats */
-    .stat-box {
-        background: none !important;
-        border: none !important;
-        padding: 0 !important;
-        text-align: center;
-    }
-
-    .stat-label { font-size: 0.6rem !important; opacity: 0.8; }
-    .stat-value { font-size: 1rem !important; color: #00BCFF; }
-
-    /* Hacer que el Chaos Meter sea una línea delgada flotante */
-    .chaos-meter-container {
-        width: 80% !important;
-        height: 6px !important;
-        margin-top: 5px;
-    }
-
-    /* Ocultar FAQ y briefing en Tetris arena para la app */
-    #fp-faq-panel, #fp-briefing-panel {
+    /* Ocultar columnas del Tetris arena en PWA */
+    .fp-col-left, .fp-col-right, .fp-game-meta, .fp-briefing, 
+    #fp-faq-panel, #fp-faq-text, #fp-briefing-panel {
         display: none !important;
     }
 
-    /* Asegurar que la arena tenga buen margen arriba */
-    #freeplay-arena {
-        margin-top: 0;
-        padding-top: env(safe-area-inset-top, 0);
+    /* 5. Tetris HUD stats flotantes - Superior */
+    #tetris-hud {
+        position: fixed;
+        top: env(safe-area-inset-top, 10px);
+        left: 0;
+        width: 100%;
+        display: flex !important;
+        justify-content: space-between;
+        padding: 10px 15px;
+        background: rgba(2, 4, 8, 0.7);
+        backdrop-filter: blur(8px);
+        z-index: 100;
+    }
+
+    /* 6. Controles flotantes - Inferior */
+    .arena-footer {
+        display: none !important;
+    }
+
+    #tetris-hud .controls {
+        position: fixed;
+        bottom: calc(env(safe-area-inset-bottom, 20px) + 20px);
+        right: 10px;
+        display: flex !important;
+        gap: 8px;
+    }
+
+    /* 7. Ocultar finder y otros flotantes en PWA */
+    #finder-float-window, #lobby-float-window, #gemini-chat-fab,
+    #usdt-promo-window, #mp-promo-window, #contact-float-btn {
+        display: none !important;
     }
 }
