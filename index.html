@@ -10,17 +10,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:,">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json?v=2">
-    <meta name="theme-color" content="#020408">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Rappibellion T2E">
-    <link rel="apple-touch-icon" href="images/icon-192x192.png">
-    <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./service-worker.js');
-    }
-    </script>
+    
     <!-- 
     ====================================
     $RPPI TOKEN INFO (OPTIMISM MAINNET)
@@ -1952,7 +1942,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const rotateOverlay = document.getElementById('fp-rotate-overlay');
             const tryLockLandscape = () => {
                 if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('portrait').catch(() => {
+                    screen.orientation.lock('landscape').catch(() => {
                         // iOS / sin permiso — fallback overlay
                         if (rotateOverlay && window.matchMedia('(orientation: portrait)').matches) {
                             rotateOverlay.style.display = 'flex';
@@ -2090,7 +2080,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Intentar lock landscape igual que en duelo real
         if (window.innerWidth <= 768 || window.innerHeight <= 768) {
             if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('portrait').catch(function(){});
+                screen.orientation.lock('landscape').catch(function(){});
             }
         }
 
