@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json?v=2">
     <meta name="theme-color" content="#020408">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Rappibellion T2E">
@@ -21,7 +22,6 @@
         navigator.serviceWorker.register('./service-worker.js');
     }
     </script>
-    
     <!-- 
     ====================================
     $RPPI TOKEN INFO (OPTIMISM MAINNET)
@@ -462,19 +462,11 @@
 
     </div>
 
-
 </section>
-
-    <!-- Botón flotante Mute/Play Gardel -->
-    <button id="mute-play-btn" title="Mute/Play Gardel" class="mute-play-floating" style="display:none; position: fixed; top: 32px; right: 32px; z-index: 2147483647; background: transparent; border: none; box-shadow: none; border-radius: 0; padding: 0; transition: all 0.3s ease; cursor: pointer; pointer-events: auto;">
-        <img id="bird-icon" src="images/zorzal.PNG" alt="Zorzal" width="48" height="48" style="display:block;" />
-    </button>
-
-
 <!-- === GAME OVERLAY (contenido del circuito) === -->
-<div id="game-overlay" class="game-menu-hidden">
+<div id="game-overlay" class="game-menu-hidden"> 
     <div class="game-content">
-
+    
         <div id="santo-grial-message" class="caos-terminal" style="max-width: 900px; margin-bottom: 30px;">
             <div class="terminal-header-caos">
                 <span>[INCOMING_TRANSMISSION_REBELBET]</span>
@@ -483,23 +475,23 @@
                 <p id="typewriter-text"></p>
             </div>
         </div>
-
+        
         <div class="beta-container" style="position: relative;">
             <div class="beta-column" id="free-play-column">
                 <h3 style="color: var(--color-azul-glitch); text-shadow: 0 0 10px var(--color-azul-glitch);">MODO FREE PLAY</h3>
                 <p>Practica tus habilidades de hackeo aquí. ¡Juega gratis y decide qué juegos entran a la versión final!</p>
-
+                
                 <div class="game-placeholder">
                     <img src="juegos beta/arkanoid.webp" alt="ARKA-HACK" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario);">SLOT 1: ARKA-HACK</strong><br>(Arkanoid - Rompe el firewall)</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">SLOT 1: ARKA-HACK</strong><br>(Arkanoid - Rompe el firewall)</p>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch);">SLOT 2: SPACE-BREAKER</strong><br>(Space Invaders - Defiende el nodo)</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">SLOT 2: SPACE-BREAKER</strong><br>(Space Invaders - Defiende el nodo)</p>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde);">SLOT 3: TETRIS-CIPHER</strong><br>(Tetris - Organiza el código encriptado)</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">SLOT 3: TETRIS-CIPHER</strong><br>(Tetris - Organiza el código encriptado)</p>
                     <button class="cta-button" onclick="window.fpOpenFreeGame('Tetris-Cipher/index.html')"
                             style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-color: var(--color-caos-verde); color: var(--color-caos-verde);">
                         &gt; CYBERDINE CLASSIFIED DATA
@@ -507,11 +499,11 @@
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/snake.PNG" alt="SNAKE-PROTOCOL" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-amarillo);">SLOT 4: SNAKE-PROTOCOL</strong><br>(Snake - Conecta los circuitos)</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-amarillo); text-shadow: 0 0 8px var(--color-caos-amarillo);">SLOT 4: SNAKE-PROTOCOL</strong><br>(Snake - Conecta los circuitos)</p>
                 </div>
                 <div class="game-placeholder">
-                    <img src="juegos beta/pacman.jfif" alt="PAC-HACK: DEATH" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa);">SLOT 5: PAC-HACK: DEATH</strong><br>(Pac-Man - Escapá del antivirus)</p>
+                    <img src="juegos beta/pacman.jfif" alt="PAC-HACK" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa); text-shadow: 0 0 8px var(--color-caos-rosa);">SLOT 5: PAC-HACK</strong><br>(Pac-Man - Escapá del antivirus)</p>
                     <button class="cta-button rosa" id="play-pacman-demo"
                             style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px;">
                         &gt; EJECUTAR_PACKHACK_DEATH.exe
@@ -519,57 +511,59 @@
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/memorama.webp" alt="MEMORY-BREACH" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario);">SLOT 6: MEMORY-BREACH</strong><br>(Memorama - Descubre los pares de datos)</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">SLOT 6: MEMORY-BREACH</strong><br>(Memorama - Descubre los pares de datos)</p>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/pong.webp" alt="PONG-FIREWALL" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch);">SLOT 7: PONG-FIREWALL</strong><br>(Pong - Rebotá el ataque DDoS)</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">SLOT 7: PONG-FIREWALL</strong><br>(Pong - Rebotá el ataque DDoS)</p>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/flappy bird.jpg" alt="FLAPPY-DRONE" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde);">SLOT 8: FLAPPY-DRONE</strong><br>(Flappy Bird - Piloteá el drone)</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">SLOT 8: FLAPPY-DRONE</strong><br>(Flappy Bird - Piloteá el drone de reconocimiento)</p>
                 </div>
-
+                
+                <!-- Botón de Votación -->
                 <div style="margin-top: 30px; text-align: center;">
                     <h4 style="color: var(--color-azul-glitch);">¿Ya jugaste?</h4>
                     <button onclick="window.openVoteModal()" class="cta-button whitepaper">VOTAR POR MI MINIJUEGO FAVORITO</button>
                 </div>
             </div>
-
             <div class="beta-column" id="t2e-column">
                 <h3 style="color: var(--color-primario); text-shadow: 0 0 10px var(--color-primario);">MODO THINK-TO-EARN (T2E)</h3>
-                <p>¿Listo para la rebelión? Elige tu arena, conecta tu billetera y "hackea" a la competencia.</p>
-
+                <p>¿Listo para la rebelión? Elige tu arena, conecta tu billetera y \"hackea\" a la competencia.</p>
+                
                 <div class="game-placeholder">
-                    <img src="juegos beta/pacman.jfif" alt="PAC-HACK: DEATH" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa);">[PAC-HACK: DEATH]</strong><br>(El "Laberinto")</p>
+                    <img src="juegos beta/pacman.jfif" alt="PAC-HACK" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa); text-shadow: 0 0 8px var(--color-caos-rosa);">[PAC-HACK]</strong><br>(El "Laberinto")</p>
                     <button class="cta-button" id="make-bet-pachack" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa);">
                         ¡MAKE YOUR BET!
                     </button>
-
+                    
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch);">[SPACE-BREAKER]</strong><br>(La "Flota")</p>
-                    <button class="cta-button" id="make-bet-spacebreaker" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">[SPACE-BREAKER]</strong><br>(La \"Flota\")</p>
+                    <button class="cta-button" id="make-bet-spacebreaker" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em; cursor: default;" disabled>
                         [ NOT AVAILABLE ]
                     </button>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde);">[TETRIS-CIPHER]</strong><br>(El "Código")</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">[TETRIS-CIPHER]</strong><br>(El \"Código\")</p>
                     <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); padding: 15px 30px; font-size: 1.2em;">
                         SOON 16.04.2026
+                    </button>
+                    <button class="cta-button" id="play-tetriscipher-demo" style="margin-top: 5px; background: transparent; border-color: var(--color-caos-verde); color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde); cursor: default;" disabled>
+                        ⏳ [TETRIS-CIPHER] // IN PROGRESS
                     </button>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/memorama.webp" alt="MEMORY-BREACH" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario);">[MEMORY-BREACH]</strong><br>(La "Memoria")</p>
-                    <button class="cta-button" id="make-bet-memorybreach" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">[MEMORY-BREACH]</strong><br>(La \"Memoria\")</p>
+                    <button class="cta-button" id="make-bet-memorybreach" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em; cursor: default;" disabled>
                         [ NOT AVAILABLE ]
                     </button>
                 </div>
-
                 <button id="connect-wallet-button" class="cta-button whitepaper">
                     CONECTA TU BILLETERA PARA ENTRAR AL CIRCUITO
                 </button>
@@ -578,8 +572,8 @@
                 </button>
                 <p id="wallet-status" style="margin-top: 15px; font-size: 0.9em; color: var(--color-caos-verde);"></p>
                 <p id="wallet-address" style="margin-top: 5px; font-size: 0.85em; color: var(--color-azul-glitch); font-family: var(--fuente-titulos);"></p>
-
-                <!-- Opiniones T2E -->
+                
+                <!-- Sistema de Opiniones T2E -->
                 <div class="t2e-opinions-container" style="margin-top: 30px;">
                     <h4 style="color: var(--color-caos-verde);">¡Deja tu feedback!</h4>
                     <div class="rebellion-comment-form" style="background: rgba(5, 10, 15, 0.8); border: 2px solid var(--color-primario); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
@@ -611,13 +605,26 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="game-menu-footer">
             <button id="exit-game-button" class="exit-game-button">EXIT GAME</button>
             <p>© 2025 Bits Lab (Biointeligencia Artificial Technologies Lab). Todos los derechos reservados.</p>
         </div>
+        
     </div>
+    
 </div>
+
+
+
+</section>
+
+    <!-- Botón flotante Mute/Play Gardel -->
+    <button id="mute-play-btn" title="Mute/Play Gardel" class="mute-play-floating" style="display:none; position: fixed; top: 32px; right: 32px; z-index: 2147483647; background: transparent; border: none; box-shadow: none; border-radius: 0; padding: 0; transition: all 0.3s ease; cursor: pointer; pointer-events: auto;">
+        <img id="bird-icon" src="images/zorzal.PNG" alt="Zorzal" width="48" height="48" style="display:block;" />
+    </button>
+
+
 
 <!-- === BOTÓN FLOTANTE: CONTACTO === -->
 <button id="contact-float-btn" title="Contacto / Soporte" onclick="document.getElementById('contact-modal').style.display='flex'">
@@ -1019,11 +1026,11 @@
         <div class="terminal-body-caos" style="color: var(--color-texto);">
             <div class="form-group" id="bets-offers-lobby">
                 <label style="text-align: center; color: var(--color-caos-amarillo);">[ DESAFÍOS ABIERTOS EN "EL CIRCUITO" ]</label>
-                <div class="bets-offers-list"></div>
+                <div class="bets-offers-list">
+                    <!-- Apuestas dinámicas cargadas desde blockchain -->
+                </div>
             </div>
-            <h3 id="bet-modal-title" style="color: var(--color-primario); text-align: center; border-top: 1px dashed #555; padding-top: 0px; margin-bottom: 20px;">
-                O CREA TU PROPIO DESAFÍO T2E
-            </h3>
+            <h3 id="bet-modal-title" style="color: var(--color-primario); text-align: center; border-top: 1px dashed #555; padding-top: 20px; margin-bottom: 20px;">O CREA TU PROPIO DESAFÍO T2E</h3>
             <div class="form-group">
                 <label for="bet-amount">1. DEFINE TU APUESTA (EL BOTE):</label>
                 <div style="display: flex; align-items: center;">
@@ -1052,23 +1059,6 @@
             </button>
         </div>
     </div>
-</div>
-
-<!-- ROTATE DEVICE OVERLAY — solo mobile portrait -->
-<div id="fp-rotate-overlay" style="
-    display: none;
-    position: fixed; inset: 0; z-index: 9999;
-    background: #030a06;
-    flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 24px;
-    font-family: 'Orbitron', monospace;
-    color: var(--color-caos-amarillo);
-    text-align: center;
-    padding: 32px;
-">
-    <div style="font-size: 64px; animation: fp-exit-pulse 1.2s infinite;">↺</div>
-    <div style="font-size: 14px; letter-spacing: 4px; line-height: 1.8;">ROTÁ EL DISPOSITIVO<br><span style='font-size:10px;color:rgba(0,255,255,0.7);letter-spacing:2px;'>LANDSCAPE MODE REQUIRED</span></div>
 </div>
 
 <!-- === FREE PLAY ARENA — 3 COLUMNAS === -->
@@ -1128,7 +1118,6 @@
         </div>
 
     </div>
-
     <!-- COLUMNA CENTRAL: JUEGO en terminal caos -->
     <div class="fp-game-wrap">
         <div class="caos-terminal" style="height:100%;margin:0;border-radius:0;
@@ -1639,7 +1628,7 @@ document.addEventListener('DOMContentLoaded', function() {
         startButton.addEventListener('click', function() {
             betaStartScreen.style.display = 'none';
             gameOverlay.classList.remove('game-menu-hidden');
-            if (typewriterEl) setTimeout(() => typeWriter(typewriterEl, textoSantoGrial, 30), 300);
+            // typewriter fires once via DOMContentLoaded
             const santo = document.getElementById('santo-grial-message');
             if (santo) setTimeout(() => santo.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
         });
@@ -1948,33 +1937,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(() => {});
         }
 
-        // En mobile — intentar lock landscape; si falla mostrar overlay
-        if (window.innerWidth <= 768 || window.innerHeight <= 768) {
-            const rotateOverlay = document.getElementById('fp-rotate-overlay');
-            const tryLockLandscape = () => {
-                if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('landscape').catch(() => {
-                        // iOS / sin permiso — fallback overlay
-                        if (rotateOverlay && window.matchMedia('(orientation: portrait)').matches) {
-                            rotateOverlay.style.display = 'flex';
-                        }
-                    });
-                } else if (rotateOverlay && window.matchMedia('(orientation: portrait)').matches) {
-                    rotateOverlay.style.display = 'flex';
-                }
-            };
-            tryLockLandscape();
-            // Escuchar rotación para ocultar overlay cuando gira
-            const _onOrientationChange = () => {
-                if (rotateOverlay && window.matchMedia('(orientation: landscape)').matches) {
-                    rotateOverlay.style.display = 'none';
-                }
-            };
-            window.addEventListener('orientationchange', _onOrientationChange);
-            window.addEventListener('resize', _onOrientationChange);
-            window._fpOrientationListener = _onOrientationChange;
-        }
-
         // En mobile — promover iframe a capa GPU propia
         if (window.innerWidth <= 768) {
             const wrap = document.querySelector('.fp-game-wrap');
@@ -2086,15 +2048,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const _chatFabPV = document.getElementById('gemini-chat-fab');
         if (_chatFabPV) _chatFabPV.style.display = 'none';
         document.body.style.overflow    = 'hidden';
-        document.body.style.touchAction = 'none';
-
-        // Intentar lock landscape igual que en duelo real
-        if (window.innerWidth <= 768 || window.innerHeight <= 768) {
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('landscape').catch(function(){});
-            }
-        }
-
+        
         // Cargar pac-hack REAL (no freeplay) para mostrar la UI completa del T2E
         if (fpIframe) {
             fpIframe.src = 'pac-hack/game.html?player=p1';
@@ -2996,7 +2950,7 @@ function fpCloseArena() {
         });
     }
 
-    if (playPacmanBtn) playPacmanBtn.addEventListener('click', () => fpOpenArena());
+    if (playPacmanBtn) playPacmanBtn.addEventListener('click', () => window.fpOpenFreeGame('pac-hack-freeplay/game.html'));
     if (fpExitBtn)     fpExitBtn.addEventListener('click',    fpCloseArena);
     if (fpRestartBtn)  fpRestartBtn.addEventListener('click',  fpRestart);
     document.addEventListener('keydown', (e) => {
@@ -3015,7 +2969,7 @@ function fpCloseArena() {
     document.head.appendChild(betOptStyle);
 
     // spacebreaker, tetriscipher y memorybreach no están disponibles — no reciben el listener del modal
-    const betButtons = ['make-bet-pachack'];
+    const betButtons = ['make-bet-pachack', 'make-bet-spacebreaker', 'make-bet-tetriscipher', 'make-bet-memorybreach'];
 
     // Regla general: si no hay billetera conectada, redirige a conectar
     function requireWalletThenBet(gameId) {
@@ -3089,7 +3043,7 @@ function fpCloseArena() {
             }
         });
     }
-
+    
     // FIX: conectar el botón renombrado launch-bet-button-pvp (era ID duplicado con launch-bet-button)
     const launchBetBtnPvp = document.getElementById('launch-bet-button-pvp');
     if (launchBetBtnPvp) {
@@ -3730,6 +3684,157 @@ updateMuteBtnVisibility();
     Tu navegador no soporta el audio.
     </audio>
 
+</script>
+<!-- === VEREDICTO FINAL DEL INFRAMUNDO === -->
+<div id="fp-verdict">
+    <div class="vrd-rank-icon" id="vrd-icon">☠️</div>
+    <div class="vrd-rank-name" id="vrd-rank">REY DEL INFRAMUNDO</div>
+    <div class="vrd-divider"></div>
+    <div class="vrd-score-display" id="vrd-score">0000</div>
+    <div class="vrd-score-label">// PUNTOS ACUMULADOS //</div>
+    <div class="vrd-phrase" id="vrd-phrase">"El PAC-HACK: DEATH te teme a vos"</div>
+    <div class="vrd-divider"></div>
+
+    <!-- Resultado de apuesta demo (visible solo cuando hay bet activa) -->
+    <div id="vrd-bet-result" style="display:none;width:100%;max-width:500px;
+         background:rgba(0,0,0,0.6);border:2px solid var(--color-caos-verde);
+         padding:16px 20px;margin-bottom:16px;text-align:center;
+         font-family:'Orbitron',monospace;position:relative;z-index:1;"></div>
+
+    <!-- Chaos Level alcanzado -->
+    <div style="width:100%;max-width:500px;position:relative;z-index:1;">
+        <div style="display:flex;justify-content:space-between;align-items:center;
+                    margin-bottom:6px;">
+            <span style="font-family:'Orbitron',monospace;font-size:12px;
+                         letter-spacing:3px;color:var(--color-caos-verde);"
+                  id="vrd-chaos-label">// CHAOS LEVEL ALCANZADO</span>
+            <span style="font-family:'Orbitron',monospace;font-size:14px;font-weight:900;
+                         color:var(--color-caos-verde);"
+                  id="vrd-chaos-pct">0%</span>
+        </div>
+        <div style="width:100%;height:12px;background:rgba(0,255,0,0.08);
+                    border:1px solid rgba(0,255,0,0.3);border-radius:2px;overflow:hidden;">
+            <div id="vrd-chaos-bar"
+                 style="height:100%;width:0%;border-radius:2px;transition:width 1.5s ease;
+                        background:linear-gradient(90deg,
+                            var(--color-caos-verde),
+                            var(--color-caos-amarillo),
+                            var(--color-caos-rosa),
+                            var(--color-primario));"></div>
+        </div>
+    </div>
+
+    <div class="vrd-divider"></div>
+    <div class="vrd-buttons">
+        <button class="vrd-btn vrd-btn-retry" id="vrd-retry">↺ REVANCHA</button>
+        <button class="vrd-btn vrd-btn-exit"  id="vrd-exit">✕ SALIR</button>
+    </div>
+</div>
+
+<!-- === SELECTOR DE CONTROL MOBILE === -->
+<div 
+
+<!-- === VEREDICTO FINAL DEL INFRAMUNDO === -->
+
+
+<!-- === MODAL TIPS — INFO DEL CIRCUITO === -->
+
+
+<!-- === COUNTDOWN FREE PLAY === -->
+<div id="fp-countdown">
+    <div class="countdown-num big" id="fp-cd-num">3</div>
+    <div class="countdown-sub" id="fp-cd-sub">PREPÁRATE PARA HACKEAR</div>
+</div>
+
+<!-- === SELECTOR DE CONTROL MOBILE === -->
+<div id="fp-control-selector">
+    <div class="fp-ctrl-title">// ELIGE TU ARMA //</div>
+    <div class="fp-ctrl-subtitle">SELECCIONÁ EL MÉTODO DE CONTROL</div>
+
+    <div class="fp-ctrl-options">
+        <button class="fp-ctrl-btn" id="ctrl-swipe-btn" onclick="console.log('SWIPE CLICKED'); fpStartWithControl('swipe')">
+            <span class="ctrl-icon">👆</span>
+            SWIPE
+            <span style="font-size:9px;opacity:0.6;">Deslizá el dedo</span>
+        </button>
+        <button class="fp-ctrl-btn dpad-btn" id="ctrl-dpad-btn" onclick="console.log('DPAD CLICKED'); fpStartWithControl('dpad')">
+            <span class="ctrl-icon">🕹️</span>
+            D-PAD
+            <span style="font-size:9px;opacity:0.6;">Botones virtuales</span>
+        </button>
+    </div>
+
+    <div class="fp-ctrl-disclaimer">
+        * Los zurdos también pueden jugar. Nadie dijo que sería fácil.
+    </div>
+    <div style="margin-top:12px; font-family:'Courier New',monospace; font-size:11px; color:rgba(0,255,65,0.5); letter-spacing:2px;">
+        AUTO-SWIPE EN <span id="ctrl-auto-countdown" style="color:#00ff41; font-weight:bold;"></span>
+    </div>
+</div>
+
+<!-- === DESKTOP KEYBINDING OVERLAY — auto-dismiss 3s, desktop only === -->
+<style>
+#fp-keys-overlay {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10001;
+    background: rgba(2, 4, 8, 0.92);
+    border: 1px solid var(--color-caos-amarillo);
+    box-shadow: 0 0 24px rgba(248,255,43,0.25);
+    padding: 21px 33px;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.85);
+    pointer-events: none;
+    animation: keysOverlayFadeOut 7s ease forwards;
+    white-space: nowrap;
+}
+#fp-keys-overlay.show { display: flex; gap: 28px; align-items: center; }
+@keyframes keysOverlayFadeOut {
+    0%   { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+.fp-key-badge {
+    display: inline-block;
+    background: rgba(248,255,43,0.12);
+    border: 1px solid rgba(248,255,43,0.5);
+    color: var(--color-caos-amarillo);
+    font-weight: bold;
+    padding: 3px 10px;
+    font-size: 16px;
+    margin-right: 4px;
+}
+/* Only show on desktop */
+@media (max-width: 900px) { #fp-keys-overlay { display: none !important; } }
+</style>
+<div id="fp-keys-overlay">
+    <span>
+        <span class="fp-key-badge">W</span>
+        <span class="fp-key-badge">A</span>
+        <span class="fp-key-badge">S</span>
+        <span class="fp-key-badge">D</span>
+        MOVER
+    </span>
+    <span style="color:rgba(255,255,255,0.3);">|</span>
+    <span>
+        <span class="fp-key-badge" style="border-color:rgba(255,0,255,0.5);color:var(--color-caos-rosa);">CLICK 🔥</span>
+        BOOST/BOMBA
+    </span>
+    <span style="color:rgba(255,255,255,0.3);">|</span>
+    <span>
+        <span class="fp-key-badge" style="border-color:rgba(0,255,255,0.5);color:var(--color-azul-glitch);">CLICK 💬</span>
+        CHAT
+    </span>
+</div>
+
+</div>
+
+
 <script>
 // Control Mute/Play para el audio de Gardel (Zorzal)
 const audio = document.getElementById('tango-audio');
@@ -3856,7 +3961,7 @@ btn.addEventListener('click', toggleMutePlay);
                                 <li><strong>Edad Mínima:</strong> Debes ser mayor de 18 años</li>
                                 <li><strong>Jurisdicción:</strong> Este es un sistema experimental — no es juego de azar tradicional</li>
                                 <li><strong>Responsabilidad:</strong> Tú eres responsable de tus decisiones y pérdidas</li>
-                                <li><strong>Soporte:</strong> Contacto vía <a href="/cdn-cgi/l/email-protection#ed84838b82ad9f8c9d9d848f888181848283c38e8280" style="color:var(--color-primario);"><span class="__cf_email__" data-cfemail="751c1b131a35071405051c171019191c1a1b5b161a18">[email&#160;protected]</span></a></li>
+                                <li><strong>Soporte:</strong> Contacto vía <a href="mailto:info@rappibellion.com" style="color:var(--color-primario);">info@rappibellion.com</a></li>
                             </ul>
                         </div>
 
@@ -4015,7 +4120,7 @@ btn.addEventListener('click', toggleMutePlay);
                 <div class="footer-copy">&copy; 2025 &mdash; TODOS LOS DERECHOS RESERVADOS</div>
             </div>
             <div class="footer-links">
-                <a href="/cdn-cgi/l/email-protection#7a13141c153a081b0a0a13181f161613151454191517"><span class="__cf_email__" data-cfemail="9ff6f1f9f0dfedfeefeff6fdfaf3f3f6f0f1b1fcf0f2">[email&#160;protected]</span></a><br>
+                <a href="mailto:info@rappibellion.com">info@rappibellion.com</a><br>
                 <span class="footer-contract">CONTRACT: 0xb2f681ba...abddc</span><br>
                 <span class="footer-network">● OPTIMISM MAINNET</span>
             </div>
@@ -4228,8 +4333,9 @@ btn.addEventListener('click', toggleMutePlay);
         </div>
     </div>
 
+   
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
     // === CYBERPUNK HUD SYSTEM (legacy — uses instance from El Circuito script) ===
     class _CyberpunkHUDFull {
         constructor() {
@@ -5661,6 +5767,205 @@ btn.addEventListener('click', toggleMutePlay);
         // ========================================
         
         const buyRppiButton = document.getElementById('buy-rppi-button');
+        const buyRppiOverlay = document.getElementById('buy-rppi-overlay');
+        const closeBuyModal = document.getElementById('close-buy-modal');
+        
+        // Open modal
+        buyRppiButton.addEventListener('click', function() {
+            buyRppiOverlay.classList.remove('terminal-overlay-hidden');
+            buyRppiOverlay.classList.add('terminal-overlay-visible');
+        });
+        
+        // Close modal
+        closeBuyModal.addEventListener('click', function() {
+            buyRppiOverlay.classList.remove('terminal-overlay-visible');
+            buyRppiOverlay.classList.add('terminal-overlay-hidden');
+        });
+        
+        // Close modal when clicking outside
+        buyRppiOverlay.addEventListener('click', function(e) {
+            if (e.target === buyRppiOverlay) {
+                buyRppiOverlay.classList.remove('terminal-overlay-visible');
+                buyRppiOverlay.classList.add('terminal-overlay-hidden');
+            }
+        });
+        
+        // Payment method handlers
+        const paymentMethods = document.querySelectorAll('.payment-method-option');
+        
+        paymentMethods.forEach(method => {
+            method.addEventListener('click', function() {
+                const methodType = this.getAttribute('data-method');
+                
+                switch(methodType) {
+                    case 'uniswap':
+                        // Uniswap - Abrir directo al pool de RPPI
+                        window.open('https://app.uniswap.org/#/swap?outputCurrency=0xb2f681ba962a1ef4dba7acf79b181814827abddc&chain=optimism', '_blank');
+                        buyRppiOverlay.classList.remove('terminal-overlay-visible');
+                        buyRppiOverlay.classList.add('terminal-overlay-hidden');
+                        break;
+                        
+                    case 'direct':
+                        // Compra directa - Por ahora mensaje
+                        alert('💎 COMPRA DIRECTA\n\nEsta función estará disponible próximamente.\n\nPodrás comprar $RPPI directamente con USDT o ETH.');
+                        break;
+                        
+                    case 'card':
+                        // MetaMask Portfolio — Debit/Credit card → USDT on Optimism
+                        window.open('https://portfolio.metamask.io/buy?tokens=USDT&network=optimism&paymentCategory=debit_credit_card', '_blank');
+                        break;
+                        
+                    case 'bank':
+                        // MetaMask Portfolio — Local Bank Transfer / Binance P2P → USDT on Optimism
+                        window.open('https://portfolio.metamask.io/buy?tokens=USDT&network=optimism&paymentCategory=bank_transfer', '_blank');
+                        break;
+                }
+            });
+        });
+        
+
+        // === SCRIPT 5: CONTROLADOR DIRECTO DE APUESTAS - ARENA PAC-HACK PvP ===
+        const betArkaButton = document.getElementById('make-bet-arkahack');
+        const betSpaceButton = document.getElementById('make-bet-spacebreaker');
+        const betPacHackButton = document.getElementById('make-bet-pachack');
+        const betTetrisButton = document.getElementById('make-bet-tetriscipher');
+        const betMemoryButton = document.getElementById('make-bet-memorybreach');
+
+        // ========================================
+        // PAC-HACK PvP ARENA SYSTEM
+        // ========================================
+
+        const pachackPvpArena = document.getElementById('pachack-pvp-arena');
+        const exitArenaButton = document.getElementById('exit-arena-button');
+        const matchTimer = document.getElementById('match-timer');
+        const matchStatus = document.getElementById('match-status');
+        const p1Score = document.getElementById('p1-score');
+        const p2Score = document.getElementById('p2-score');
+
+        let arenaActive = false;
+        let arenaTimerInterval = null;
+        let arenaTimeRemaining = 180; // 3 minutos en segundos
+        let p1CurrentScore = 0;
+        let p2CurrentScore = 0;
+
+        // Función para abrir el arena PvP
+        function openPacHackArena() {
+            console.log('🎮 ¡ABRIENDO ARENA PAC-HACK PvP!');
+            
+            if (pachackPvpArena) {
+                pachackPvpArena.classList.remove('pacman-window-hidden');
+                pachackPvpArena.style.opacity = '1';
+                pachackPvpArena.style.pointerEvents = 'auto';
+                
+                arenaActive = true;
+                arenaTimeRemaining = 180; // Reset timer
+                
+                // Notificación
+                if (cyberpunkHUD && cyberpunkHUD.isActive) {
+                    cyberpunkHUD.showNotification('🏟️ PAC-HACK PvP ARENA INITIALIZED');
+                }
+                
+                // Actualizar status
+                matchStatus.textContent = '🟢 MATCH ACTIVE';
+                p1CurrentScore = 0;
+                p2CurrentScore = 0;
+                p1Score.textContent = '0';
+                p2Score.textContent = '0';
+                
+                // Iniciar timer
+                startArenaTimer();
+                
+                // Escuchar mensajes de los iframes
+                listenToGameFrames();
+            }
+        }
+
+        // Función para cerrar el arena
+        function closeArena() {
+            console.log('🎮 Cerrando ARENA PAC-HACK...');
+            
+            arenaActive = false;
+            if (arenaTimerInterval) {
+                clearInterval(arenaTimerInterval);
+            }
+            
+            if (pachackPvpArena) {
+                pachackPvpArena.style.opacity = '0';
+                pachackPvpArena.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    pachackPvpArena.classList.add('pacman-window-hidden');
+                }, 300);
+            }
+            
+            if (cyberpunkHUD && cyberpunkHUD.isActive) {
+                cyberpunkHUD.showNotification('🏁 PAC-HACK ARENA CLOSED');
+            }
+            // Restaurar lobby de apuestas al cerrar arena PvP
+            if (typeof showLobbyFloat === 'function') showLobbyFloat();
+        }
+
+        // Timer del arena
+        function startArenaTimer() {
+            if (arenaTimerInterval) clearInterval(arenaTimerInterval);
+            
+            arenaTimerInterval = setInterval(() => {
+                arenaTimeRemaining--;
+                
+                const minutes = Math.floor(arenaTimeRemaining / 60);
+                const seconds = arenaTimeRemaining % 60;
+                matchTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (arenaTimeRemaining <= 0) {
+                    clearInterval(arenaTimerInterval);
+                    endMatch();
+                }
+            }, 1000);
+        }
+
+        // Escuchar mensajes de los iframes del juego
+        function listenToGameFrames() {
+            window.addEventListener('message', function(event) {
+                const data = event.data;
+                if (!data || !data.type || !arenaActive) return;
+                
+                if (data.type === 'SCORE_UPDATE') {
+                    if (data.player === 'p1') {
+                        p1CurrentScore = data.score;
+                        p1Score.textContent = data.score;
+                    } else if (data.player === 'p2') {
+                        p2CurrentScore = data.score;
+                        p2Score.textContent = data.score;
+                    }
+                    
+                    // Mostrar quién va ganando
+                    if (p1CurrentScore > p2CurrentScore) {
+                        matchStatus.textContent = '🟢 P1 WINNING!';
+                    } else if (p2CurrentScore > p1CurrentScore) {
+                        matchStatus.textContent = '🔴 P2 WINNING!';
+                    } else {
+                        matchStatus.textContent = '🟡 TIED';
+                    }
+                }
+                else if (data.type === 'GAME_OVER') {
+                    console.log('Player ' + data.player + ' game over');
+                }
+            });
+        }
+
+        // Finalizar match
+        function endMatch() {
+            arenaActive = false;
+            matchStatus.textContent = '🏁 MATCH FINISHED';
+            
+            const winner = p1CurrentScore > p2CurrentScore ? 'PLAYER 1' : 
+                          p2CurrentScore > p1CurrentScore ? 'PLAYER 2' : 'TIE';
+            
+            if (cyberpunkHUD && cyberpunkHUD.isActive) {
+                cyberpunkHUD.showNotification(`🏆 WINNER: ${winner}`);
+            }
+            
+            // Notificar a ambos iframes que el match terminó
+            const p1Iframe = document.getElementById('p1-iframe');
             const p2Iframe = document.getElementById('p2-iframe');
             
             if (p1Iframe && p1Iframe.contentWindow) {
@@ -5678,10 +5983,50 @@ btn.addEventListener('click', toggleMutePlay);
             }
         }
 
+        // Botón para salir del arena
+        if (exitArenaButton) {
+            exitArenaButton.addEventListener('click', closeArena);
+        }
+
+        // Cerrar arena con Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && arenaActive && pachackPvpArena && !pachackPvpArena.classList.contains('pacman-window-hidden')) {
+                closeArena();
+            }
+        });
+
+        // Función para procesar apuesta y abrir Pac-Man
+        function processBetAndOpenGame(gameTitle) {
+            console.log(`🎮 ¡APUESTA ${gameTitle} REALIZADA! Abriendo PAC-HACK PvP ARENA...`);
+
+            // Simular que la apuesta se realizó exitosamente
+            if (cyberpunkHUD && cyberpunkHUD.isActive) {
+                cyberpunkHUD.showNotification(`${gameTitle} BET ACCEPTED`);
+            }
+
+            // Mostrar notificación de que se abre el arena
+            setTimeout(() => {
+                if (cyberpunkHUD && cyberpunkHUD.isActive) {
+                    cyberpunkHUD.showNotification('LOADING PAC-HACK PvP ARENA...');
+                }
+            }, 500);
+
+            // Abrir el arena PvP
+            setTimeout(() => {
+                openPacHackArena();
+            }, 1500); // Delay para mostrar las notificaciones
+        }
+
+        // Asignar los eventos a TODOS los botones de apuesta
+        if (betArkaButton) {
+            betArkaButton.addEventListener('click', () => processBetAndOpenGame('ARKA-HACK'));
+        }
+        // space-breaker, tetris-cipher y memory-breach están deshabilitados hasta su lanzamiento
+        // — no se registran listeners para que los botones no abran el modal de apuestas
     }); // <-- FIN DEL 'DOMContentLoaded'
 </script>
     <!-- Canvas Confetti library -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <!-- Gemini Chat Widget (icono flotante personalizado) -->
     <style>
@@ -8008,152 +8353,6 @@ Si alguien pregunta cómo pagar en ARS, explicales el flujo completo de arriba c
     </div>
 </div>
 
-<!-- === VEREDICTO FINAL DEL INFRAMUNDO === -->
-<div id="fp-verdict">
-    <div class="vrd-rank-icon" id="vrd-icon">☠️</div>
-    <div class="vrd-rank-name" id="vrd-rank">REY DEL INFRAMUNDO</div>
-    <div class="vrd-divider"></div>
-    <div class="vrd-score-display" id="vrd-score">0000</div>
-    <div class="vrd-score-label">// PUNTOS ACUMULADOS //</div>
-    <div class="vrd-phrase" id="vrd-phrase">"El PAC-HACK: DEATH te teme a vos"</div>
-    <div class="vrd-divider"></div>
-
-    <!-- Resultado de apuesta demo (visible solo cuando hay bet activa) -->
-    <div id="vrd-bet-result" style="display:none;width:100%;max-width:500px;
-         background:rgba(0,0,0,0.6);border:2px solid var(--color-caos-verde);
-         padding:16px 20px;margin-bottom:16px;text-align:center;
-         font-family:'Orbitron',monospace;position:relative;z-index:1;"></div>
-
-    <!-- Chaos Level alcanzado -->
-    <div style="width:100%;max-width:500px;position:relative;z-index:1;">
-        <div style="display:flex;justify-content:space-between;align-items:center;
-                    margin-bottom:6px;">
-            <span style="font-family:'Orbitron',monospace;font-size:12px;
-                         letter-spacing:3px;color:var(--color-caos-verde);"
-                  id="vrd-chaos-label">// CHAOS LEVEL ALCANZADO</span>
-            <span style="font-family:'Orbitron',monospace;font-size:14px;font-weight:900;
-                         color:var(--color-caos-verde);"
-                  id="vrd-chaos-pct">0%</span>
-        </div>
-        <div style="width:100%;height:12px;background:rgba(0,255,0,0.08);
-                    border:1px solid rgba(0,255,0,0.3);border-radius:2px;overflow:hidden;">
-            <div id="vrd-chaos-bar"
-                 style="height:100%;width:0%;border-radius:2px;transition:width 1.5s ease;
-                        background:linear-gradient(90deg,
-                            var(--color-caos-verde),
-                            var(--color-caos-amarillo),
-                            var(--color-caos-rosa),
-                            var(--color-primario));"></div>
-        </div>
-    </div>
-
-    <div class="vrd-divider"></div>
-    <div class="vrd-buttons">
-        <button class="vrd-btn vrd-btn-retry" id="vrd-retry">↺ REVANCHA</button>
-        <button class="vrd-btn vrd-btn-exit"  id="vrd-exit">✕ SALIR</button>
-    </div>
-</div>
-
-<!-- === SELECTOR DE CONTROL MOBILE === -->
-<div 
-
-<!-- === VEREDICTO FINAL DEL INFRAMUNDO === -->
-
-
-<!-- === MODAL TIPS — INFO DEL CIRCUITO === -->
-
-
-<!-- === COUNTDOWN FREE PLAY === -->
-<div id="fp-countdown">
-    <div class="countdown-num big" id="fp-cd-num">3</div>
-    <div class="countdown-sub" id="fp-cd-sub">PREPÁRATE PARA HACKEAR</div>
-</div>
-
-<!-- === SELECTOR DE CONTROL MOBILE === -->
-<div id="fp-control-selector">
-    <div class="fp-ctrl-title">// ELIGE TU ARMA //</div>
-    <div class="fp-ctrl-subtitle">SELECCIONÁ EL MÉTODO DE CONTROL</div>
-
-    <div class="fp-ctrl-options">
-        <button class="fp-ctrl-btn" id="ctrl-swipe-btn" onclick="console.log('SWIPE CLICKED'); fpStartWithControl('swipe')">
-            <span class="ctrl-icon">👆</span>
-            SWIPE
-            <span style="font-size:9px;opacity:0.6;">Deslizá el dedo</span>
-        </button>
-        <button class="fp-ctrl-btn dpad-btn" id="ctrl-dpad-btn" onclick="console.log('DPAD CLICKED'); fpStartWithControl('dpad')">
-            <span class="ctrl-icon">🕹️</span>
-            D-PAD
-            <span style="font-size:9px;opacity:0.6;">Botones virtuales</span>
-        </button>
-    </div>
-
-    <div class="fp-ctrl-disclaimer">
-        * Los zurdos también pueden jugar. Nadie dijo que sería fácil.
-    </div>
-    <div style="margin-top:12px; font-family:'Courier New',monospace; font-size:11px; color:rgba(0,255,65,0.5); letter-spacing:2px;">
-        AUTO-SWIPE EN <span id="ctrl-auto-countdown" style="color:#00ff41; font-weight:bold;"></span>
-    </div>
-</div>
-
-<!-- === DESKTOP KEYBINDING OVERLAY — auto-dismiss 3s, desktop only === -->
-<style>
-#fp-keys-overlay {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10001;
-    background: rgba(2, 4, 8, 0.92);
-    border: 1px solid var(--color-caos-amarillo);
-    box-shadow: 0 0 24px rgba(248,255,43,0.25);
-    padding: 21px 33px;
-    font-family: 'Courier New', monospace;
-    font-size: 18px;
-    letter-spacing: 2px;
-    color: rgba(255,255,255,0.85);
-    pointer-events: none;
-    animation: keysOverlayFadeOut 7s ease forwards;
-    white-space: nowrap;
-}
-#fp-keys-overlay.show { display: flex; gap: 28px; align-items: center; }
-@keyframes keysOverlayFadeOut {
-    0%   { opacity: 1; }
-    80%  { opacity: 1; }
-    100% { opacity: 0; }
-}
-.fp-key-badge {
-    display: inline-block;
-    background: rgba(248,255,43,0.12);
-    border: 1px solid rgba(248,255,43,0.5);
-    color: var(--color-caos-amarillo);
-    font-weight: bold;
-    padding: 3px 10px;
-    font-size: 16px;
-    margin-right: 4px;
-}
-/* Only show on desktop */
-@media (max-width: 900px) { #fp-keys-overlay { display: none !important; } }
-</style>
-<div id="fp-keys-overlay">
-    <span>
-        <span class="fp-key-badge">W</span>
-        <span class="fp-key-badge">A</span>
-        <span class="fp-key-badge">S</span>
-        <span class="fp-key-badge">D</span>
-        MOVER
-    </span>
-    <span style="color:rgba(255,255,255,0.3);">|</span>
-    <span>
-        <span class="fp-key-badge" style="border-color:rgba(255,0,255,0.5);color:var(--color-caos-rosa);">CLICK 🔥</span>
-        BOOST/BOMBA
-    </span>
-    <span style="color:rgba(255,255,255,0.3);">|</span>
-    <span>
-        <span class="fp-key-badge" style="border-color:rgba(0,255,255,0.5);color:var(--color-azul-glitch);">CLICK 💬</span>
-        CHAT
-    </span>
-</div>
 
 
 
@@ -9640,4 +9839,15 @@ async function submitContactForm() {
                       + '<span style="color:' + color + ';">' + entry[1] + ' (' + pct + '%)</span>'
                       + '</div>'
                       + '<div class="vb-track">'
-                      + '<div class="vb
+                      + '<div class="vb-fill" style="width:' + pct + '%;background:' + color + ';box-shadow:0 0 8px ' + color + '88;"></div>'
+                      + '</div></div>';
+            });
+            document.getElementById('vote-bars').innerHTML = html;
+            document.getElementById('vote-results').style.display = 'block';
+        }).catch(function(){});
+    }
+})();
+</script>
+
+</body>
+</html>
