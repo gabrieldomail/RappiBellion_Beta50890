@@ -1981,6 +1981,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (fpState.betMode && betId) {
                     _fpSetupBetSync(betId);
                 }
+                // Mobile freeplay: ocultar flotantes que tapan la arena
+                if (!fpState.betMode) {
+                    ['contact-float-btn','duel-trigger-btn','finder-float-window',
+                     'lobby-float-window','fp-fab-drawer','fp-fab-reopen'].forEach(function(id) {
+                        var el = document.getElementById(id);
+                        if (el) { el.dataset.fpHiddenPrev = el.style.display || ''; el.style.display = 'none'; }
+                    });
+                }
                 // Countdown de 5s para auto-elegir swipe
                 const cdEl = document.getElementById('ctrl-auto-countdown');
                 if (cdEl) {
@@ -2145,7 +2153,7 @@ document.addEventListener('DOMContentLoaded', function() {
             freePanel.style.display  = 'flex';
             rivalPanel.style.display = 'none';
             if (tauntChat)    tauntChat.style.display    = 'none';
-            if (faqPanel)     faqPanel.style.display     = 'block';
+            if (faqPanel)     faqPanel.style.display     = (window.innerWidth <= 768) ? 'none' : 'block';
             if (friendFinder) friendFinder.style.display = 'none'; // ocultar hasta que el usuario lo abra
             _fpStopRivalTimer();
         }
@@ -2690,6 +2698,17 @@ function fpCloseArena() {
         const _chatFabClose = document.getElementById('gemini-chat-fab');
         const _chatWidgetClose = document.getElementById('gemini-chat-widget');
         if (_chatFabClose) _chatFabClose.style.display = '';
+        // Restaurar flotantes mobile ocultados durante la arena
+        if (window.innerWidth <= 768) {
+            ['fp-faq-panel','contact-float-btn','duel-trigger-btn',
+             'finder-float-window','lobby-float-window','fp-fab-drawer','fp-fab-reopen'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el && el.dataset.fpHiddenPrev !== undefined) {
+                    el.style.display = el.dataset.fpHiddenPrev;
+                    delete el.dataset.fpHiddenPrev;
+                }
+            });
+        }
         // Restaurar promo Tetris-Cipher y USDT widget
         const _tetrisPromoClose = document.getElementById('tetris-promo-window');
         if (_tetrisPromoClose) _tetrisPromoClose.classList.remove('tetris-promo-hidden');
@@ -2729,9 +2748,10 @@ function fpCloseArena() {
     }
 
     // Exponer globalmente para que t2e-integration.js pueda llamarlas desde fuera del closure
-    window.fpOpenArena        = fpOpenArena;
-    window.fpCloseArena       = fpCloseArena;
-    window.fpOpenArenaPreview = fpOpenArenaPreview;
+    window.fpOpenArena          = fpOpenArena;
+    window.fpCloseArena         = fpCloseArena;
+    window.fpOpenArenaPreview   = fpOpenArenaPreview;
+    window.fpStartWithControl   = fpStartWithControl; // fix: onclick en HTML lo necesita global
     // Cargador de minijuegos freeplay alternativos (Tetris-Cipher, etc.)
     window.fpOpenFreeGame = function(gameSrc) {
         window._fpNextGameSrc = gameSrc;
@@ -3961,7 +3981,7 @@ btn.addEventListener('click', toggleMutePlay);
                                 <li><strong>Edad Mínima:</strong> Debes ser mayor de 18 años</li>
                                 <li><strong>Jurisdicción:</strong> Este es un sistema experimental — no es juego de azar tradicional</li>
                                 <li><strong>Responsabilidad:</strong> Tú eres responsable de tus decisiones y pérdidas</li>
-                                <li><strong>Soporte:</strong> Contacto vía <a href="mailto:info@rappibellion.com" style="color:var(--color-primario);">info@rappibellion.com</a></li>
+                                <li><strong>Soporte:</strong> Contacto vía <a href="/cdn-cgi/l/email-protection#abc2c5cdc4ebd9cadbdbc2c9cec7c7c2c4c585c8c4c6" style="color:var(--color-primario);"><span class="__cf_email__" data-cfemail="f1989f979eb1839081819893949d9d989e9fdf929e9c">[email&#160;protected]</span></a></li>
                             </ul>
                         </div>
 
@@ -4120,7 +4140,7 @@ btn.addEventListener('click', toggleMutePlay);
                 <div class="footer-copy">&copy; 2025 &mdash; TODOS LOS DERECHOS RESERVADOS</div>
             </div>
             <div class="footer-links">
-                <a href="mailto:info@rappibellion.com">info@rappibellion.com</a><br>
+                <a href="/cdn-cgi/l/email-protection#20494e464f60524150504942454c4c494f4e0e434f4d"><span class="__cf_email__" data-cfemail="adc4c3cbc2eddfccddddc4cfc8c1c1c4c2c383cec2c0">[email&#160;protected]</span></a><br>
                 <span class="footer-contract">CONTRACT: 0xb2f681ba...abddc</span><br>
                 <span class="footer-network">● OPTIMISM MAINNET</span>
             </div>
@@ -4198,8 +4218,8 @@ btn.addEventListener('click', toggleMutePlay);
                         <button class="cta-button" id="make-bet-pachack" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa);">
                             ¡MAKE YOUR BET!
                         </button>
-                        <button class="cta-button discord" id="play-pacman-demo" style="margin-top: 5px;">
-                            🎮 ¡JUGAR PAC-HACK!
+                        <button class="cta-button discord" id="play-pacman-demo-lobby" onclick="window.fpOpenFreeGame('pac-hack-freeplay/game.html')" style="margin-top: 5px;">
+                        &gt; EJECUTAR_PACKHACK_DEATH.exe      
                         </button>
                     </div>
                     <div class="game-placeholder">
@@ -4335,7 +4355,7 @@ btn.addEventListener('click', toggleMutePlay);
 
    
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // === CYBERPUNK HUD SYSTEM (legacy — uses instance from El Circuito script) ===
     class _CyberpunkHUDFull {
         constructor() {
