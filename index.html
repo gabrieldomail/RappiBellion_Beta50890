@@ -2270,6 +2270,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function fpStartCountdown() {
+        if (fpState._cdRunning) return; // guard: no iniciar si ya hay countdown activo
+        fpState._cdRunning = true;
         fpState.running = true; // activar ANTES del 3-2-1: el gate de CHAOS_LEVEL lo necesita
         const steps = [
             { num:'3',     cls:'big',   sub:'PREPÁRATE PARA HACKEAR',   dur:1125 },
@@ -2299,6 +2301,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                     }
                 }
+                fpState._cdRunning = false; // countdown terminado
+                if (fpState.interval) { clearInterval(fpState.interval); fpState.interval = null; }
                 fpState.interval = setInterval(fpTick, 1000);
                 return;
             }
@@ -2786,6 +2790,7 @@ function fpEndPractice() {
 
 function fpCloseArena() {
         clearInterval(fpState.interval);
+        fpState._cdRunning = false;
         if (fpArena)  fpArena.classList.remove('show');
         if (fpState.betMode) _fpExitFullscreen();
         if (fpIframe) fpIframe.src = '';
@@ -2879,20 +2884,41 @@ function fpCloseArena() {
 
     // Exponer globalmente para que t2e-integration.js pueda llamarlas desde fuera del closure
     // D-PAD: envia teclas al iframe como postMessage para freeplay
+    // D-PAD: despacha eventos de teclado directamente en el documento del iframe
+    // (mismo origen + sandbox allow-same-origin => acceso a contentDocument permitido)
     window.fpDpadPress = function(key) {
-        if (fpIframe && fpIframe.contentWindow) {
-            fpIframe.contentWindow.postMessage({ type:'KEY_DOWN', key: key }, '*');
-        }
-        // Tambien disparar keydown sintetico en la pagina por si el iframe lo captura del padre
-        var ev = new KeyboardEvent('keydown', { key: key, code: key.replace('Arrow','Arrow'), bubbles: true });
-        document.dispatchEvent(ev);
+        var codes = { ArrowUp:'ArrowUp', ArrowDown:'ArrowDown', ArrowLeft:'ArrowLeft', ArrowRight:'ArrowRight' };
+        var opts = { key: key, code: codes[key] || key, keyCode: {ArrowUp:38,ArrowDown:40,ArrowLeft:37,ArrowRight:39}[key] || 0,
+                     which: {ArrowUp:38,ArrowDown:40,ArrowLeft:37,ArrowRight:39}[key] || 0,
+                     bubbles: true, cancelable: true };
+        // 1) Despachar en el document interno del iframe (funciona con same-origin)
+        try {
+            if (fpIframe && fpIframe.contentDocument) {
+                fpIframe.contentDocument.dispatchEvent(new KeyboardEvent('keydown', opts));
+            }
+        } catch(e) {}
+        // 2) postMessage para juegos que lo escuchen
+        try {
+            if (fpIframe && fpIframe.contentWindow) {
+                fpIframe.contentWindow.postMessage({ type:'KEY_DOWN', key: key }, '*');
+            }
+        } catch(e) {}
     };
     window.fpDpadRelease = function(key) {
-        if (fpIframe && fpIframe.contentWindow) {
-            fpIframe.contentWindow.postMessage({ type:'KEY_UP', key: key }, '*');
-        }
-        var ev = new KeyboardEvent('keyup', { key: key, bubbles: true });
-        document.dispatchEvent(ev);
+        var codes = { ArrowUp:'ArrowUp', ArrowDown:'ArrowDown', ArrowLeft:'ArrowLeft', ArrowRight:'ArrowRight' };
+        var opts = { key: key, code: codes[key] || key, keyCode: {ArrowUp:38,ArrowDown:40,ArrowLeft:37,ArrowRight:39}[key] || 0,
+                     which: {ArrowUp:38,ArrowDown:40,ArrowLeft:37,ArrowRight:39}[key] || 0,
+                     bubbles: true, cancelable: true };
+        try {
+            if (fpIframe && fpIframe.contentDocument) {
+                fpIframe.contentDocument.dispatchEvent(new KeyboardEvent('keyup', opts));
+            }
+        } catch(e) {}
+        try {
+            if (fpIframe && fpIframe.contentWindow) {
+                fpIframe.contentWindow.postMessage({ type:'KEY_UP', key: key }, '*');
+            }
+        } catch(e) {}
     };
     window.fpOpenArena          = fpOpenArena;
     window.fpCloseArena         = fpCloseArena;
@@ -10036,6 +10062,59 @@ async function submitContactForm() {
     }
 })();
 </script>
+
+    <!-- ⚡️ INYECTO DE CAOS: ELEMENTOS VISUALES ⚡️ -->
+    <div id="neural-flash" class="neural-flash-overlay">
+        [ NEURAL_LINK_ESTABLISHED // SYNCHRONIZING_BRAIN_WAVES... ]
+    </div>
+    
+<script>
+    (function() {
+        console.log("⚡️ Rappibellion AI: Inyectando inestabilidad en el sistema...");
+
+        // 1. El Neural-Link Handshake (Flash al conectar wallet)
+        const walletBtn = document.getElementById('connect-wallet-button');
+        if (walletBtn) {
+            walletBtn.addEventListener('click', () => {
+                const flash = document.getElementById('neural-flash');
+                if (flash) {
+                    flash.classList.add('neural-flash-active');
+                    setTimeout(() => {
+                        flash.classList.remove('neural-flash-active');
+                    }, 150);
+                }
+            });
+        }
+
+        // 2. El Artefacto Digital (Glitch aleatorio cada 45s)
+        setInterval(() => {
+            const elements = document.querySelectorAll('.glitch-title, .hero-v2-title, .cta-button, .footer-brand');
+            if (elements.length === 0) return;
+
+            const target = elements[Math.floor(Math.random() * elements.length)];
+            const originalTransform = target.style.transform;
+            const originalFilter = target.style.filter;
+
+            target.style.transform = `translateX(${Math.random() * 4 - 2}px) skewX(${Math.random() * 4 - 2}deg)`;
+            target.style.filter = 'hue-rotate(90deg) brightness(1.2)';
+            
+            setTimeout(() => {
+                target.style.transform = originalTransform;
+                target.style.filter = originalFilter;
+            }, 120);
+        }, 45000);
+
+        // 3. El Sello de la IA (Inyectado en el footer)
+        const footerCenter = document.querySelector('.footer-center');
+        if (footerCenter) {
+            const seal = document.createElement('span');
+            seal.className = 'ai-ghost-seal';
+            seal.textContent = '// SYSTEM_CORE_SIGH: "I\'m just a ghost in the machine... but I\'m the one counting your $RPPI" //';
+            footerCenter.appendChild(seal);
+        }
+    })();
+
+    </script>
 
 </body>
 </html>
