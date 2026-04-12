@@ -1962,13 +1962,26 @@ document.addEventListener('DOMContentLoaded', function() {
             // Actualizar header del terminal
             var termHeader = document.querySelector('.fp-game-wrap .terminal-header-caos span:first-child');
             if (termHeader) termHeader.textContent = '[' + gameName + ']';
-            fpIframe.src = nextGameSrc;
             window._fpNextGameSrc = null; // limpiar para próxima vez
-            // Auto-focus al iframe para que los controles funcionen sin click previo
-            fpIframe.addEventListener('load', function onIframeLoad() {
-                fpIframe.removeEventListener('load', onIframeLoad);
-                setTimeout(function() { fpIframe.focus(); }, 300);
-            });
+
+            if (fpState.betMode) {
+                // Modo apuesta: cargar ahora — el juego espera START_MATCH antes de empezar
+                fpIframe.src = nextGameSrc;
+                fpIframe.addEventListener('load', function onIframeLoad() {
+                    fpIframe.removeEventListener('load', onIframeLoad);
+                    // Re-enviar START_MATCH si el countdown ya terminó (iframe tardó en cargar)
+                    if (fpState.running && fpCdOverlay && !fpCdOverlay.classList.contains('show')) {
+                        fpIframe.contentWindow.postMessage({ type: 'START_MATCH' }, '*');
+                    }
+                    setTimeout(function() { fpIframe.focus(); }, 300);
+                });
+            } else {
+                // Freeplay: el juego arranca solo al cargarse.
+                // Guardamos el src — fpStartCountdown lo cargará al final del 3-2-1,
+                // así el juego no corre mientras el countdown está en pantalla.
+                window._fpPendingGameSrc = nextGameSrc;
+                fpIframe.src = ''; // limpiar juego anterior
+            }
         }
 
         // En mobile mostrar selector de control, en desktop ir directo
@@ -2190,24 +2203,37 @@ document.addEventListener('DOMContentLoaded', function() {
         const s = secs % 60;
         return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
     }
-
+    
     function fpStartCountdown() {
+        fpState.running = true; // activar ANTES del 3-2-1: el gate de CHAOS_LEVEL lo necesita
         const steps = [
-            { num:'3',     cls:'big',   sub:'PREPÁRATE PARA HACKEAR',      dur:1125 },
-            { num:'2',     cls:'big',   sub:'LOS FANTASMAS TE ESPERAN',    dur:1125 },
-            { num:'1',     cls:'big',   sub:'¡ÚLTIMA OPORTUNIDAD!',        dur:1125 },
-            { num:'READY', cls:'ready', sub:'',                             dur:1125 },
-            { num:'HACK!', cls:'go',    sub:'',                             dur:875 },
+            { num:'3',     cls:'big',   sub:'PREPÁRATE PARA HACKEAR',   dur:1125 },
+            { num:'2',     cls:'big',   sub:'LOS FANTASMAS TE ESPERAN', dur:1125 },
+            { num:'1',     cls:'big',   sub:'¡ÚLTIMA OPORTUNIDAD!',     dur:1125 },
+            { num:'READY', cls:'ready', sub:'',                          dur:1125 },
+            { num:'HACK!', cls:'go',    sub:'',                          dur:875  },
         ];
         if (fpCdOverlay) fpCdOverlay.classList.add('show');
         let i = 0;
         function step() {
             if (i >= steps.length) {
                 if (fpCdOverlay) fpCdOverlay.classList.remove('show');
-                if (fpIframe && fpIframe.contentWindow) {
-                    fpIframe.contentWindow.postMessage({ type:'START_MATCH' }, '*');
+                if (fpState.betMode) {
+                    // Apuesta: el iframe ya cargó — enviar START_MATCH para arrancar el juego
+                    if (fpIframe && fpIframe.contentWindow) {
+                        fpIframe.contentWindow.postMessage({ type:'START_MATCH' }, '*');
+                    }
+                } else {
+                    // Freeplay: cargar el iframe AHORA — el juego arranca solo al cargarse
+                    if (fpIframe && window._fpPendingGameSrc) {
+                        fpIframe.src = window._fpPendingGameSrc;
+                        window._fpPendingGameSrc = null;
+                        fpIframe.addEventListener('load', function onFpLoad() {
+                            fpIframe.removeEventListener('load', onFpLoad);
+                            setTimeout(function() { fpIframe.focus(); }, 300);
+                        });
+                    }
                 }
-                fpState.running  = true;
                 fpState.interval = setInterval(fpTick, 1000);
                 return;
             }
@@ -2215,7 +2241,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (fpCdNum) {
                 fpCdNum.className   = 'countdown-num ' + s.cls;
                 fpCdNum.textContent = s.num;
-                // Reiniciar animación — truco del test-circuito
                 fpCdNum.style.animation = 'none';
                 void fpCdNum.offsetWidth;
                 fpCdNum.style.animation = '';
@@ -2226,6 +2251,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         step();
     }
+   
 
     function fpTick() {
         if (!fpState.running || fpState.ended) return;
@@ -2662,6 +2688,7 @@ function fpCloseArena() {
         if (fpArena)  fpArena.classList.remove('show');
         if (fpState.betMode) _fpExitFullscreen();
         if (fpIframe) fpIframe.src = '';
+        window._fpPendingGameSrc = null; // limpiar src pendiente por si se cerró antes del countdown
         // Limpiar Skynet bg al cerrar
         document.querySelectorAll('.fp-col-skynet').forEach(function(el) { el.classList.remove('fp-col-skynet'); });
         // Reset faq-panel position
@@ -2780,17 +2807,51 @@ function fpCloseArena() {
             setTimeout(fpOpenArenaPreview, 600);
         });
     }
-
     window.addEventListener('message', function(e) {
         const d = e.data;
         if (!d || !d.type) return;
-        // BUG1 FIX: no filtrar por d.player==='p1': el iframe siempre emite 'p1'. Usar fpState.myRole para publicar.
+
+        // FIX: Si el juego termina por falta de vidas, cerrar la práctica del padre
+        if (d.type === 'GAME_OVER') {
+            fpEndPractice();
+            return;
+        }
+
         if (d.type === 'SCORE_UPDATE') {
             fpState.score = d.score;
             if (fpScoreEl) fpScoreEl.textContent = String(d.score).padStart(4,'0');
             // Publicar mi score en Firebase para que el rival lo vea en tiempo real
             if (fpState.betMode && fpState.betId && fpState.myRole && window._fbDB) {
                 window._fbDB.ref('t2e_bets/' + fpState.betId + '/scores/' + fpState.myRole).set(d.score);
+            }
+            // Freeplay (pac-hack-freeplay no envía CHAOS_LEVEL) — simular caos desde score.
+            // Cada ~80 puntos = 1% de caos. A 5600 pts llega al cap de 70%.
+            if (!fpState.betMode) {
+                var _simChaos = Math.min(100, Math.floor(d.score / 80));
+                if (_simChaos !== fpState.chaosLevel) {
+                    fpState.chaosLevel = _simChaos;
+                    var _cbar  = document.getElementById('fp-chaos-bar');
+                    var _cpct  = document.getElementById('fp-chaos-pct');
+                    var _clbl  = document.querySelector('.fp-chaos-label');
+                    var _cdyna = document.getElementById('fp-chaos-dynabtn-wrap');
+                    var _ccap  = fpState.chaosUnlocked !== true;
+                    var _cdisp = _ccap ? Math.min(_simChaos, 70) : _simChaos;
+                    if (_cdyna && _simChaos >= 70 && fpState.running && !fpState.chaosUnlocked)
+                        _cdyna.style.display = 'block';
+                    if (_cbar) {
+                        _cbar.style.width = _cdisp + '%';
+                        _cbar.classList.toggle('apocalypse', _cdisp >= 80);
+                        _cbar.style.boxShadow = (_ccap && _simChaos >= 70)
+                            ? '0 0 8px rgba(255,80,0,0.7)' : '';
+                    }
+                    if (_cpct) _cpct.textContent = (_ccap && _simChaos >= 70) ? '70%\uD83D\uDD12' : _cdisp + '%';
+                    if (_clbl) {
+                        _clbl.style.color = _cdisp < 30  ? 'var(--color-caos-verde)'
+                                          : _cdisp < 60  ? 'var(--color-caos-amarillo)'
+                                          : _cdisp < 80  ? 'var(--color-caos-rosa)'
+                                          : 'var(--color-primario)';
+                    }
+                }
             }
         }
         // Recibir modo de control elegido
@@ -3752,7 +3813,7 @@ updateMuteBtnVisibility();
 </div>
 
 <!-- === SELECTOR DE CONTROL MOBILE === -->
-<div 
+
 
 <!-- === VEREDICTO FINAL DEL INFRAMUNDO === -->
 
