@@ -1,3 +1,198 @@
+.hero-logo-rappia {
+    filter: brightness(1.15) drop-shadow(0 0 8px #FF3C5E) drop-shadow(0 0 12px #FF3C5E);
+    animation: neonOrangeLogoFlickerTight 2.2s infinite alternate;
+    transition: filter 0.2s;
+    z-index: 2;
+    position: relative;
+}
+    .hero-logo-rappibellion {
+        filter: brightness(1.15) drop-shadow(0 0 8px var(--color-caos-verde, #00FF00)) drop-shadow(0 0 12px var(--color-caos-verde, #00FF00));
+        animation: neonGreenLogoFlickerTight 2.2s infinite alternate;
+        transition: filter 0.2s;
+        z-index: 2;
+        position: relative;
+    }
+
+    @keyframes neonGreenLogoFlickerTight {
+        0%, 100% {
+            filter: brightness(1.15) drop-shadow(0 0 8px var(--color-caos-verde, #00FF00)) drop-shadow(0 0 12px var(--color-caos-verde, #00FF00));
+        }
+        10% {
+            filter: brightness(1.25) drop-shadow(0 0 12px var(--color-caos-verde, #00FF00)) drop-shadow(0 0 18px var(--color-caos-verde, #00FF00));
+        }
+        20% {
+            filter: brightness(0.9) drop-shadow(0 0 4px var(--color-caos-verde, #00FF00));
+        }
+        30% {
+            filter: brightness(1.18) drop-shadow(0 0 10px var(--color-caos-verde, #00FF00));
+        }
+        40% {
+            filter: brightness(1.0) drop-shadow(0 0 8px var(--color-caos-verde, #00FF00));
+        }
+        50% {
+            filter: brightness(1.3) drop-shadow(0 0 14px var(--color-caos-verde, #00FF00));
+        }
+        60% {
+            filter: brightness(0.8) drop-shadow(0 0 2px var(--color-caos-verde, #00FF00));
+        }
+        70% {
+            filter: brightness(1.18) drop-shadow(0 0 10px var(--color-caos-verde, #00FF00));
+        }
+        80% {
+            filter: brightness(1.0) drop-shadow(0 0 8px var(--color-caos-verde, #00FF00));
+        }
+        90% {
+            filter: brightness(1.22) drop-shadow(0 0 12px var(--color-caos-verde, #00FF00));
+        }
+    }
+
+@keyframes neonOrangeLogoFlickerTight {
+    0%, 100% {
+        filter: brightness(1.15) drop-shadow(0 0 8px #FF3C5E) drop-shadow(0 0 12px #FF3C5E);
+    }
+    10% {
+        filter: brightness(1.25) drop-shadow(0 0 12px #FF3C5E) drop-shadow(0 0 18px #FF3C5E);
+    }
+    20% {
+        filter: brightness(0.9) drop-shadow(0 0 4px #FF3C5E);
+    }
+    30% {
+        filter: brightness(1.18) drop-shadow(0 0 10px #FF3C5E);
+    }
+    40% {
+        filter: brightness(1.0) drop-shadow(0 0 8px #FF3C5E);
+    }
+    50% {
+        filter: brightness(1.3) drop-shadow(0 0 14px #FF3C5E);
+    }
+    60% {
+        filter: brightness(0.8) drop-shadow(0 0 2px #FF3C5E);
+    }
+    70% {
+        filter: brightness(1.18) drop-shadow(0 0 10px #FF3C5E);
+    }
+    80% {
+        filter: brightness(1.0) drop-shadow(0 0 8px #FF3C5E);
+    }
+    90% {
+        filter: brightness(1.22) drop-shadow(0 0 12px #FF3C5E);
+    }
+}
+.hero-logo-rappibellion {
+    filter: brightness(1.1) drop-shadow(0 0 16px #FF3C5E) drop-shadow(0 0 32px #FF3C5E);
+    animation: neonOrangeLogoFlicker 2.2s infinite alternate;
+    transition: filter 0.2s;
+    z-index: 2;
+    position: relative;
+}
+
+@keyframes neonOrangeLogoFlicker {
+    0%, 100% {
+        filter: brightness(1.1) drop-shadow(0 0 16px #FF3C5E) drop-shadow(0 0 32px #FF3C5E);
+    }
+    10% {
+        filter: brightness(1.3) drop-shadow(0 0 24px #FF3C5E) drop-shadow(0 0 48px #FF3C5E);
+    }
+    20% {
+        filter: brightness(0.8) drop-shadow(0 0 8px #FF3C5E);
+    }
+    30% {
+        filter: brightness(1.2) drop-shadow(0 0 32px #FF3C5E);
+    }
+    40% {
+        filter: brightness(1.0) drop-shadow(0 0 16px #FF3C5E);
+    }
+    50% {
+        filter: brightness(1.4) drop-shadow(0 0 40px #FF3C5E);
+    }
+    60% {
+        filter: brightness(0.7) drop-shadow(0 0 6px #FF3C5E);
+    }
+    70% {
+        filter: brightness(1.2) drop-shadow(0 0 32px #FF3C5E);
+    }
+    80% {
+        filter: brightness(1.0) drop-shadow(0 0 16px #FF3C5E);
+    }
+    90% {
+        filter: brightness(1.3) drop-shadow(0 0 24px #FF3C5E);
+    }
+}
+.hero-button-buy#buy-rppi-button, #buy-rppi-button.hero-button-buy {
+    background: transparent !important;
+    color: #fff !important;
+    border: 4px solid transparent !important;
+    border-radius: 14px !important;
+    padding: 15px 34px !important;
+    font-family: var(--fuente-titulos);
+    font-size: 1.22em;
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+    box-shadow:
+        0 0 32px 8px rgba(0,255,255,0.22),
+        0 0 64px 16px rgba(255,60,94,0.18),
+        0 0 8px 2px #00ffff,
+        0 0 0 2px rgba(255,60,94,0.18);
+    background-clip: padding-box;
+    transition: box-shadow 0.2s, border-color 0.2s, color 0.2s;
+    /* Borde degradado neon */
+    border-image: linear-gradient(120deg, #00ffff 0%, #FF3C5E 100%) 1;
+    animation: neonDualFlicker 2.2s infinite alternate;
+}
+
+@keyframes neonDualFlicker {
+    0%, 100% {
+        filter: brightness(1.1) drop-shadow(0 0 16px #00ffff) drop-shadow(0 0 32px #FF3C5E);
+        opacity: 0.96;
+    }
+    10% {
+        filter: brightness(1.3) drop-shadow(0 0 24px #00ffff) drop-shadow(0 0 48px #FF3C5E);
+        opacity: 1;
+    }
+    20% {
+        filter: brightness(0.8) drop-shadow(0 0 8px #FF3C5E);
+        opacity: 0.7;
+    }
+    30% {
+        filter: brightness(1.2) drop-shadow(0 0 32px #00ffff);
+        opacity: 0.95;
+    }
+    40% {
+        filter: brightness(1.0) drop-shadow(0 0 16px #FF3C5E);
+        opacity: 0.9;
+    }
+    50% {
+        filter: brightness(1.4) drop-shadow(0 0 40px #00ffff);
+        opacity: 1;
+    }
+    60% {
+        filter: brightness(0.7) drop-shadow(0 0 6px #FF3C5E);
+        opacity: 0.6;
+    }
+    70% {
+        filter: brightness(1.2) drop-shadow(0 0 32px #00ffff);
+        opacity: 0.95;
+    }
+    80% {
+        filter: brightness(1.0) drop-shadow(0 0 16px #FF3C5E);
+        opacity: 0.9;
+    }
+    90% {
+        filter: brightness(1.3) drop-shadow(0 0 24px #00ffff);
+        opacity: 1;
+    }
+}
+
+#buy-rppi-button.hero-button-buy:hover, .hero-button-buy#buy-rppi-button:hover {
+    color: #fff !important;
+    box-shadow:
+        0 0 48px 16px rgba(0,255,255,0.35),
+        0 0 96px 32px rgba(255,60,94,0.22),
+        0 0 16px 4px #FF3C5E,
+        0 0 0 3px rgba(0,255,255,0.22);
+    filter: brightness(1.2) drop-shadow(0 0 32px #00ffff) drop-shadow(0 0 32px #FF3C5E);
+}
 /* INICIO PATCH: Efectos soporte en AI CHAT */
 #gemini-chat-widget {
     background: #020408 !important;
@@ -1463,26 +1658,41 @@ footer::before {
 }
 
 /* Botón CTA - Igual que hero-button-buy */
+
 .t2e-cta-button {
     display: inline-block;
-    background-color: var(--color-primario);
-    color: var(--color-fondo);
-    padding: 15px 30px;
+    background: transparent !important;
+    color: #fff !important;
+    padding: 15px 34px !important;
     font-family: var(--fuente-titulos);
     font-size: 1.3em;
     font-weight: bold;
     text-decoration: none;
-    border: 2px solid var(--color-primario);
-    border-radius: 0; /* Sin bordes redondeados */
-    transition: all 0.3s ease;
+    border: 4px solid transparent !important;
+    border-radius: 14px !important;
     cursor: pointer;
-    animation: pulse 2s infinite; /* Animación del botón */
+    position: relative;
+    z-index: 2;
+    box-shadow:
+        0 0 32px 8px rgba(0,255,255,0.22),
+        0 0 64px 16px rgba(255,60,94,0.18),
+        0 0 8px 2px #00ffff,
+        0 0 0 2px rgba(255,60,94,0.18);
+    background-clip: padding-box;
+    transition: box-shadow 0.2s, border-color 0.2s, color 0.2s;
+    border-image: linear-gradient(120deg, #00ffff 0%, #FF3C5E 100%) 1;
+    animation: neonDualFlicker 2.2s infinite alternate;
     text-align: center;
 }
 
 .t2e-cta-button:hover {
-    background-color: transparent;
-    color: var(--color-primario);
+    color: #fff !important;
+    box-shadow:
+        0 0 48px 16px rgba(0,255,255,0.35),
+        0 0 96px 32px rgba(255,60,94,0.22),
+        0 0 16px 4px #FF3C5E,
+        0 0 0 3px rgba(0,255,255,0.22);
+    filter: brightness(1.2) drop-shadow(0 0 32px #00ffff) drop-shadow(0 0 32px #FF3C5E);
 }
 
 /* Los spans dentro del botón */
