@@ -304,18 +304,86 @@ a {
 }
 */
 
-.cta-button {
+
+.cta-button,
+.hero-button.hero-button-buy,
+button.hero-button.hero-button-buy {
     display: inline-block;
-    background-color: var(--color-primario);
-    color: var(--color-fondo);
+    background: transparent;
+    color: #00ffff;
     padding: 15px 30px;
     margin-top: 20px;
     font-family: var(--fuente-titulos);
     font-size: 1.2em;
     font-weight: bold;
     text-decoration: none;
-    border: 2px solid var(--color-primario);
-    transition: all 0.3s ease;
+    border: 4px solid #00ffff;
+    border-radius: 12px;
+    box-shadow:
+        0 0 32px 8px rgba(0,255,255,0.32),
+        0 0 64px 16px rgba(0,255,255,0.18),
+        0 0 8px 2px #00ffff,
+        0 0 0 2px rgba(0,255,255,0.18);
+    opacity: 0.96;
+    animation: neonTubeFlickerBtn 2.2s infinite alternate;
+    transition: box-shadow 0.2s, border-color 0.2s, color 0.2s;
+    background-clip: padding-box;
+}
+
+@keyframes neonTubeFlickerBtn {
+    0%, 100% {
+        filter: brightness(1.1) drop-shadow(0 0 16px #00ffff) drop-shadow(0 0 32px #00ffff);
+        opacity: 0.96;
+    }
+    10% {
+        filter: brightness(1.3) drop-shadow(0 0 24px #00ffff) drop-shadow(0 0 48px #00ffff);
+        opacity: 1;
+    }
+    20% {
+        filter: brightness(0.8) drop-shadow(0 0 8px #00ffff);
+        opacity: 0.7;
+    }
+    30% {
+        filter: brightness(1.2) drop-shadow(0 0 32px #00ffff);
+        opacity: 0.95;
+    }
+    40% {
+        filter: brightness(1.0) drop-shadow(0 0 16px #00ffff);
+        opacity: 0.9;
+    }
+    50% {
+        filter: brightness(1.4) drop-shadow(0 0 40px #00ffff);
+        opacity: 1;
+    }
+    60% {
+        filter: brightness(0.7) drop-shadow(0 0 6px #00ffff);
+        opacity: 0.6;
+    }
+    70% {
+        filter: brightness(1.2) drop-shadow(0 0 32px #00ffff);
+        opacity: 0.95;
+    }
+    80% {
+        filter: brightness(1.0) drop-shadow(0 0 16px #00ffff);
+        opacity: 0.9;
+    }
+    90% {
+        filter: brightness(1.3) drop-shadow(0 0 24px #00ffff);
+        opacity: 1;
+    }
+}
+
+.cta-button:hover,
+.hero-button.hero-button-buy:hover,
+button.hero-button.hero-button-buy:hover {
+    color: #fff;
+    border-color: #00ffff;
+    box-shadow:
+        0 0 48px 16px rgba(0,255,255,0.45),
+        0 0 96px 32px rgba(0,255,255,0.22),
+        0 0 16px 4px #00ffff,
+        0 0 0 3px rgba(0,255,255,0.22);
+    filter: brightness(1.2) drop-shadow(0 0 32px #00ffff);
 }
 
 .cta-button:hover {
@@ -2971,11 +3039,61 @@ footer::before {
         left: 50%;
         top: 0;
         height: 100%;
-        width: 1px;
-        background: var(--color-azul-glitch);
-        box-shadow: 0 0 10px var(--color-azul-glitch);
-        opacity: 0.5;
-        animation: pulse 2s infinite;
+        width: 8px;
+        background: radial-gradient(circle at 50% 50%, rgba(255,0,255,0.85) 60%, rgba(255,0,255,0.35) 80%, rgba(255,0,255,0.08) 100%);
+        box-shadow:
+            0 0 32px 8px rgba(255,0,255,0.32),
+            0 0 64px 16px rgba(255,0,255,0.18),
+            0 0 8px 2px #ff00ff,
+            0 0 0 2px rgba(255,0,255,0.18);
+        border-radius: 8px;
+        opacity: 0.92;
+        animation: neonTubeFlicker 2.2s infinite alternate;
+        transition: box-shadow 0.2s, background 0.2s;
+        z-index: 2;
+    }
+}
+
+@keyframes neonTubeFlicker {
+    0%, 100% {
+        filter: brightness(1.1) drop-shadow(0 0 16px #ff00ff) drop-shadow(0 0 32px #ff00ff);
+        opacity: 0.92;
+    }
+    10% {
+        filter: brightness(1.3) drop-shadow(0 0 24px #ff00ff) drop-shadow(0 0 48px #ff00ff);
+        opacity: 1;
+    }
+    20% {
+        filter: brightness(0.8) drop-shadow(0 0 8px #ff00ff);
+        opacity: 0.7;
+    }
+    30% {
+        filter: brightness(1.2) drop-shadow(0 0 32px #ff00ff);
+        opacity: 0.95;
+    }
+    40% {
+        filter: brightness(1.0) drop-shadow(0 0 16px #ff00ff);
+        opacity: 0.9;
+    }
+    50% {
+        filter: brightness(1.4) drop-shadow(0 0 40px #ff00ff);
+        opacity: 1;
+    }
+    60% {
+        filter: brightness(0.7) drop-shadow(0 0 6px #ff00ff);
+        opacity: 0.6;
+    }
+    70% {
+        filter: brightness(1.2) drop-shadow(0 0 32px #ff00ff);
+        opacity: 0.95;
+    }
+    80% {
+        filter: brightness(1.0) drop-shadow(0 0 16px #ff00ff);
+        opacity: 0.9;
+    }
+    90% {
+        filter: brightness(1.3) drop-shadow(0 0 24px #ff00ff);
+        opacity: 1;
     }
 }
 
