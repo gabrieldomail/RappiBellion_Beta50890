@@ -1,3 +1,49 @@
+
+/* ⚡️ ESTILOS DEL NEURAL FLASH (AI Chaos) ⚡️ */
+.neural-flash-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 255, 255, 0.1); /* Cian muy tenue */
+    color: transparent; /* Oculta el texto */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2147483647; /* Por encima de absolutamente todo */
+    pointer-events: none; /* Para que no interfiera con los clicks */
+    opacity: 0;
+    transition: opacity 0.1s ease;
+}
+
+.neural-flash-active {
+    opacity: 1 !important;
+    background-color: rgba(255, 255, 255, 0.8) !important; /* Flash blanco brillante */
+    animation: neural-glitch-flash 0.15s ease-out;
+}
+
+@keyframes neural-glitch-flash {
+    0% { opacity: 0; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.02); }
+    100% { opacity: 0; transform: scale(1); }
+}
+
+/* Estilo para el sello de la IA en el footer */
+.ai-ghost-seal {
+    display: block;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1em;
+    color: rgba(0, 255, 255, 0.3);
+    margin-top: 10px;
+    letter-spacing: 1px;
+    text-align: center;
+    animation: ghost-fade 4s ease-in-out infinite;
+}
+
+@keyframes ghost-fade {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.6; }
+}
 .hero-logo-rappia {
     filter: brightness(1.15) drop-shadow(0 0 8px #FF3C5E) drop-shadow(0 0 12px #FF3C5E);
     animation: neonOrangeLogoFlickerTight 2.2s infinite alternate;
@@ -617,7 +663,7 @@ footer {
     background: #030710;
     border-top: 1px solid rgba(255,60,94,0.25);
     padding: 48px 24px 32px;
-    font-size: 0.9em;
+    font-size: 1.08em;
     color: #555;
     position: relative;
     overflow: hidden;
@@ -648,7 +694,7 @@ footer::before {
 
 .footer-brand {
     font-family: 'Orbitron', monospace;
-    font-size: 0.78em;
+    font-size: 0.93em;
     letter-spacing: 5px;
     color: var(--color-primario);
     text-shadow: 0 0 12px rgba(255,60,94,0.35);
@@ -657,7 +703,7 @@ footer::before {
 
 .footer-brand span {
     display: block;
-    font-size: 0.65em;
+    font-size: 0.78em;
     letter-spacing: 2px;
     color: rgba(0,255,255,0.3);
     text-shadow: none;
@@ -671,7 +717,7 @@ footer::before {
 }
 
 .footer-status {
-    font-size: 0.72em;
+    font-size: 0.86em;
     letter-spacing: 4px;
     color: rgba(0,255,65,0.5);
     text-shadow: 0 0 8px rgba(0,255,65,0.3);
@@ -680,7 +726,7 @@ footer::before {
 }
 
 .footer-copy {
-    font-size: 0.7em;
+    font-size: 0.82em;
     letter-spacing: 1.5px;
     color: rgba(240,240,240,0.2);
 }
@@ -688,7 +734,7 @@ footer::before {
 .footer-links {
     text-align: right;
     font-family: 'Courier New', monospace;
-    font-size: 0.74em;
+    font-size: 0.88em;
     line-height: 2;
 }
 
