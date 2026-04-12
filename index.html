@@ -1181,6 +1181,29 @@
                     style="width:100%;height:100%;border:none;display:block;">
                 </iframe>
 
+                <!-- D-PAD OVERLAY - visible solo en mobile con modo dpad -->
+                <div id="fp-dpad-overlay" style="
+                    display:none; position:absolute; inset:0; z-index:20;
+                    pointer-events:none;
+                    align-items:flex-end; justify-content:center;
+                    padding-bottom:18px;">
+                    <div style="
+                        display:grid;
+                        grid-template-areas:'. up .' 'left . right' '. down .';
+                        grid-template-columns:64px 64px 64px;
+                        grid-template-rows:64px 64px 64px;
+                        gap:4px; pointer-events:auto;">
+                        <button class="fp-dpad-btn" style="grid-area:up;"
+                            ontouchstart="fpDpadPress('ArrowUp')" ontouchend="fpDpadRelease('ArrowUp')">&#9650;</button>
+                        <button class="fp-dpad-btn" style="grid-area:left;"
+                            ontouchstart="fpDpadPress('ArrowLeft')" ontouchend="fpDpadRelease('ArrowLeft')">&#9668;</button>
+                        <button class="fp-dpad-btn" style="grid-area:right;"
+                            ontouchstart="fpDpadPress('ArrowRight')" ontouchend="fpDpadRelease('ArrowRight')">&#9658;</button>
+                        <button class="fp-dpad-btn" style="grid-area:down;"
+                            ontouchstart="fpDpadPress('ArrowDown')" ontouchend="fpDpadRelease('ArrowDown')">&#9660;</button>
+                    </div>
+                </div>
+
                 <!-- BOOST OVERLAY — flotante sin fondo sobre el juego -->
                 <button id="fp-boost-overlay-btn"
                     onclick="fpFireBoost()"
@@ -1874,10 +1897,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const ctrlDpadBtn       = document.getElementById('ctrl-dpad-btn');
 
     function fpStartWithControl(mode) {
-        // Enviar modo al iframe
+        fpState.controlMode = mode; // guardar para restart
+        // Enviar modo al iframe (T2E soporta SET_CONTROL; freeplay usa dpad overlay del padre)
         if (fpIframe && fpIframe.contentWindow) {
             fpIframe.contentWindow.postMessage({ type:'SET_CONTROL', mode: mode }, '*');
         }
+        // Mostrar/ocultar dpad overlay segun modo
+        var _dpadOv = document.getElementById('fp-dpad-overlay');
+        if (_dpadOv) _dpadOv.style.display = (mode === 'dpad') ? 'flex' : 'none';
         // Ocultar selector y limpiar countdown
         if (fpControlSelector) fpControlSelector.classList.remove('show');
         const cdEl = document.getElementById('ctrl-auto-countdown');
@@ -2296,7 +2323,43 @@ document.addEventListener('DOMContentLoaded', function() {
         fpState.timeLeft--;
         fpRenderTimer(fpState.timeLeft);
         if (fpTimerBar) fpTimerBar.style.width = (fpState.timeLeft / fpState.totalTime * 100) + '%';
+        // Chaos en freeplay: sube con el tiempo transcurrido (0% al inicio, 100% al final)
+        if (!fpState.betMode) {
+            var _elapsed   = fpState.totalTime - fpState.timeLeft;
+            var _timeChaos = Math.min(100, Math.floor((_elapsed / fpState.totalTime) * 100));
+            _fpApplyChaosFreeplay(_timeChaos);
+        }
         if (fpState.timeLeft <= 0) { clearInterval(fpState.interval); fpState.ended = true; fpEndPractice(); }
+    }
+
+    // Aplica nivel de caos a la UI para freeplay (el iframe no envia CHAOS_LEVEL)
+    function _fpApplyChaosFreeplay(level) {
+        if (level === fpState.chaosLevel) return;
+        fpState.chaosLevel = level;
+        var _cbar  = document.getElementById('fp-chaos-bar');
+        var _cpct  = document.getElementById('fp-chaos-pct');
+        var _clbl  = document.querySelector('.fp-chaos-label');
+        var _cdyna = document.getElementById('fp-chaos-dynabtn-wrap');
+        var _ccap  = fpState.chaosUnlocked !== true;
+        var _cdisp = _ccap ? Math.min(level, 70) : level;
+        if (_cdyna) {
+            if (level >= 70 && fpState.running && !fpState.chaosUnlocked)
+                _cdyna.style.display = 'block';
+            else if (fpState.chaosUnlocked)
+                _cdyna.style.display = 'none';
+        }
+        if (_cbar) {
+            _cbar.style.width = _cdisp + '%';
+            _cbar.classList.toggle('apocalypse', _cdisp >= 80);
+            _cbar.style.boxShadow = (_ccap && level >= 70) ? '0 0 8px rgba(255,80,0,0.7)' : '';
+        }
+        if (_cpct) _cpct.textContent = (_ccap && level >= 70) ? '70%\uD83D\uDD12' : _cdisp + '%';
+        if (_clbl) {
+            _clbl.style.color = _cdisp < 30  ? 'var(--color-caos-verde)'
+                              : _cdisp < 60  ? 'var(--color-caos-amarillo)'
+                              : _cdisp < 80  ? 'var(--color-caos-rosa)'
+                              : 'var(--color-primario)';
+        }
     }
 
     function fpRenderTimer(secs) {
@@ -2726,7 +2789,9 @@ function fpCloseArena() {
         if (fpArena)  fpArena.classList.remove('show');
         if (fpState.betMode) _fpExitFullscreen();
         if (fpIframe) fpIframe.src = '';
-        window._fpPendingGameSrc = null; // limpiar src pendiente por si se cerró antes del countdown
+        window._fpPendingGameSrc = null;
+        var _dpadOvClose = document.getElementById('fp-dpad-overlay');
+        if (_dpadOvClose) _dpadOvClose.style.display = 'none'; // limpiar src pendiente por si se cerró antes del countdown
         // Limpiar Skynet bg al cerrar
         document.querySelectorAll('.fp-col-skynet').forEach(function(el) { el.classList.remove('fp-col-skynet'); });
         // Reset faq-panel position
@@ -2813,6 +2878,22 @@ function fpCloseArena() {
     }
 
     // Exponer globalmente para que t2e-integration.js pueda llamarlas desde fuera del closure
+    // D-PAD: envia teclas al iframe como postMessage para freeplay
+    window.fpDpadPress = function(key) {
+        if (fpIframe && fpIframe.contentWindow) {
+            fpIframe.contentWindow.postMessage({ type:'KEY_DOWN', key: key }, '*');
+        }
+        // Tambien disparar keydown sintetico en la pagina por si el iframe lo captura del padre
+        var ev = new KeyboardEvent('keydown', { key: key, code: key.replace('Arrow','Arrow'), bubbles: true });
+        document.dispatchEvent(ev);
+    };
+    window.fpDpadRelease = function(key) {
+        if (fpIframe && fpIframe.contentWindow) {
+            fpIframe.contentWindow.postMessage({ type:'KEY_UP', key: key }, '*');
+        }
+        var ev = new KeyboardEvent('keyup', { key: key, bubbles: true });
+        document.dispatchEvent(ev);
+    };
     window.fpOpenArena          = fpOpenArena;
     window.fpCloseArena         = fpCloseArena;
     window.fpOpenArenaPreview   = fpOpenArenaPreview;
@@ -2861,35 +2942,6 @@ function fpCloseArena() {
             // Publicar mi score en Firebase para que el rival lo vea en tiempo real
             if (fpState.betMode && fpState.betId && fpState.myRole && window._fbDB) {
                 window._fbDB.ref('t2e_bets/' + fpState.betId + '/scores/' + fpState.myRole).set(d.score);
-            }
-            // Freeplay (pac-hack-freeplay no envía CHAOS_LEVEL) — simular caos desde score.
-            // Cada ~80 puntos = 1% de caos. A 5600 pts llega al cap de 70%.
-            if (!fpState.betMode) {
-                var _simChaos = Math.min(100, Math.floor(d.score / 80));
-                if (_simChaos !== fpState.chaosLevel) {
-                    fpState.chaosLevel = _simChaos;
-                    var _cbar  = document.getElementById('fp-chaos-bar');
-                    var _cpct  = document.getElementById('fp-chaos-pct');
-                    var _clbl  = document.querySelector('.fp-chaos-label');
-                    var _cdyna = document.getElementById('fp-chaos-dynabtn-wrap');
-                    var _ccap  = fpState.chaosUnlocked !== true;
-                    var _cdisp = _ccap ? Math.min(_simChaos, 70) : _simChaos;
-                    if (_cdyna && _simChaos >= 70 && fpState.running && !fpState.chaosUnlocked)
-                        _cdyna.style.display = 'block';
-                    if (_cbar) {
-                        _cbar.style.width = _cdisp + '%';
-                        _cbar.classList.toggle('apocalypse', _cdisp >= 80);
-                        _cbar.style.boxShadow = (_ccap && _simChaos >= 70)
-                            ? '0 0 8px rgba(255,80,0,0.7)' : '';
-                    }
-                    if (_cpct) _cpct.textContent = (_ccap && _simChaos >= 70) ? '70%\uD83D\uDD12' : _cdisp + '%';
-                    if (_clbl) {
-                        _clbl.style.color = _cdisp < 30  ? 'var(--color-caos-verde)'
-                                          : _cdisp < 60  ? 'var(--color-caos-amarillo)'
-                                          : _cdisp < 80  ? 'var(--color-caos-rosa)'
-                                          : 'var(--color-primario)';
-                    }
-                }
             }
         }
         // Recibir modo de control elegido
@@ -7832,6 +7884,23 @@ btn.addEventListener('click', toggleMutePlay);
         .fp-ctrl-btn.dpad-btn:hover, .fp-ctrl-btn.dpad-btn:active {
             background: rgba(0,255,255,0.1);
             box-shadow: 0 0 20px rgba(0,255,255,0.4);
+        }
+        /* D-PAD overlay buttons */
+        .fp-dpad-btn {
+            width:64px; height:64px;
+            background:rgba(0,255,200,0.15);
+            border:2px solid rgba(0,255,200,0.6);
+            border-radius:8px;
+            color:rgba(0,255,200,0.9);
+            font-size:22px; line-height:1;
+            display:flex; align-items:center; justify-content:center;
+            cursor:pointer; -webkit-tap-highlight-color:transparent;
+            user-select:none; touch-action:none;
+            transition:background 0.1s, box-shadow 0.1s;
+        }
+        .fp-dpad-btn:active {
+            background:rgba(0,255,200,0.35);
+            box-shadow:0 0 14px rgba(0,255,200,0.5);
         }
         .fp-ctrl-disclaimer {
             font-family: 'Courier New', monospace;
