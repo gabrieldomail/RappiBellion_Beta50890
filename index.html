@@ -2029,24 +2029,17 @@ document.addEventListener('DOMContentLoaded', function() {
             if (termHeader) termHeader.textContent = '[' + gameName + ']';
             window._fpNextGameSrc = null; // limpiar para próxima vez
 
-            if (fpState.betMode) {
-                // Modo apuesta: cargar ahora — el juego espera START_MATCH antes de empezar
-                fpIframe.src = nextGameSrc;
-                fpIframe.addEventListener('load', function onIframeLoad() {
-                    fpIframe.removeEventListener('load', onIframeLoad);
-                    // Re-enviar START_MATCH si el countdown ya terminó (iframe tardó en cargar)
-                    if (fpState.running && fpCdOverlay && !fpCdOverlay.classList.contains('show')) {
-                        fpIframe.contentWindow.postMessage({ type: 'START_MATCH' }, '*');
-                    }
-                    setTimeout(function() { fpIframe.focus(); }, 300);
-                });
-            } else {
-                // Freeplay: el juego arranca solo al cargarse.
-                // Guardamos el src — fpStartCountdown lo cargará al final del 3-2-1,
-                // así el juego no corre mientras el countdown está en pantalla.
-                window._fpPendingGameSrc = nextGameSrc;
-                fpIframe.src = ''; // limpiar juego anterior
-            }
+            // Cargar iframe inmediatamente en todos los modos.
+            // START_MATCH se envia al final del countdown para arrancar el juego.
+            fpIframe.src = nextGameSrc;
+            fpIframe.addEventListener('load', function onIframeLoad() {
+                fpIframe.removeEventListener('load', onIframeLoad);
+                // Reenviar START_MATCH si el countdown ya termino (iframe cargo tarde)
+                if (fpState.running && fpCdOverlay && !fpCdOverlay.classList.contains('show')) {
+                    fpIframe.contentWindow.postMessage({ type: 'START_MATCH' }, '*');
+                }
+                setTimeout(function() { fpIframe.focus(); }, 300);
+            });
         }
 
         // En mobile mostrar selector de control, en desktop ir directo
@@ -2285,21 +2278,9 @@ document.addEventListener('DOMContentLoaded', function() {
         function step() {
             if (i >= steps.length) {
                 if (fpCdOverlay) fpCdOverlay.classList.remove('show');
-                if (fpState.betMode) {
-                    // Apuesta: el iframe ya cargó — enviar START_MATCH para arrancar el juego
-                    if (fpIframe && fpIframe.contentWindow) {
-                        fpIframe.contentWindow.postMessage({ type:'START_MATCH' }, '*');
-                    }
-                } else {
-                    // Freeplay: cargar el iframe AHORA — el juego arranca solo al cargarse
-                    if (fpIframe && window._fpPendingGameSrc) {
-                        fpIframe.src = window._fpPendingGameSrc;
-                        window._fpPendingGameSrc = null;
-                        fpIframe.addEventListener('load', function onFpLoad() {
-                            fpIframe.removeEventListener('load', onFpLoad);
-                            setTimeout(function() { fpIframe.focus(); }, 300);
-                        });
-                    }
+                // START_MATCH para todos los modos: arranca T2E y sincroniza freeplay
+                if (fpIframe && fpIframe.contentWindow) {
+                    fpIframe.contentWindow.postMessage({ type:'START_MATCH' }, '*');
                 }
                 fpState._cdRunning = false; // countdown terminado
                 if (fpState.interval) { clearInterval(fpState.interval); fpState.interval = null; }
@@ -2340,6 +2321,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function _fpApplyChaosFreeplay(level) {
         if (level === fpState.chaosLevel) return;
         fpState.chaosLevel = level;
+        // Notificar al juego del nivel de caos para que acelere velocidad/dificultad
+        if (fpIframe && fpIframe.contentWindow) {
+            fpIframe.contentWindow.postMessage({ type: 'CHAOS_LEVEL', level: level }, '*');
+        }
         var _cbar  = document.getElementById('fp-chaos-bar');
         var _cpct  = document.getElementById('fp-chaos-pct');
         var _clbl  = document.querySelector('.fp-chaos-label');

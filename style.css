@@ -7021,3 +7021,62 @@ footer::before {
     .fp-col-right::before,
     .fp-col-right::after { display: none !important; animation: none !important; }
 }
+
+/* ══════════════════════════════════════════════════
+   BETA SECTION — Mobile layout fix
+   Las columnas ya apilan (grid 1fr) pero el
+   game-content / game-overlay no tenían padding
+   lateral ni box-sizing seguro en mobile,
+   causando overflow horizontal.
+   ══════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+    /* Evitar que el overlay fijo genere scroll horizontal */
+    #game-overlay {
+        padding: 10px 8px;
+        box-sizing: border-box;
+        align-items: flex-start;
+    }
+
+    /* Contenedor principal: ancho 100% sin desbordar */
+    .game-content {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 0 4px;
+    }
+
+    /* Las columnas ya tienen grid 1fr — asegurar que no desborden */
+    .beta-container {
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 16px;
+    }
+
+    .beta-column {
+        box-sizing: border-box;
+        overflow: hidden;
+        /* Desactivar hover scale en mobile (interfiere con el touch) */
+        transform: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Mensaje santo-grial: sin ancho fijo en mobile */
+    #santo-grial-message {
+        max-width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    /* Imágenes de los slots: no desbordar */
+    .game-placeholder img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    /* Botones de apuesta: ancho completo para mejor UX táctil */
+    .game-placeholder button[id^="make-bet-"] {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
