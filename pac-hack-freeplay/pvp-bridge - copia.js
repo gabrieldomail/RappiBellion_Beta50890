@@ -214,26 +214,7 @@
 
     switch(data.type) {
 
-      // ⚡️ NUEVO: Escuchar el nivel de caos del padre
-      case 'CHAOS_LEVEL':
-        const level = data.level;
-        console.log('[PvP Bridge] Ajustando velocidad de caos a: ' + level + '%');
-        
-        // Aquí es donde ocurre la magia: 
-        // Buscamos la variable de velocidad en el motor del juego (Data.js / Init.js)
-        // Normalmente el juego usa un multiplicador. 
-        // El 0% sería velocidad 1.0, el 100% sería velocidad 1.8 aprox.
-        if (window.Data && window.Data.gameSpeed !== undefined) {
-             window.Data.gameSpeed = 1 + (level / 100) * 0.8; 
-        } else if (window.game && window.game.speed !== undefined) {
-             window.game.speed = 1 + (level / 100) * 0.8;
-        }
-        // Si el juego tiene una función de actualización de velocidad, la llamamos
-        if (typeof window.updateGameSpeed === 'function') {
-            window.updateGameSpeed(level);
-        }
-        break;
-
+      // El HUD terminó — congelar juego
       case 'MATCH_ENDED':
         matchEnded = true;
         clearInterval(pollInterval);
@@ -241,15 +222,22 @@
         showMatchResult(data.winner);
         break;
 
+      // El rival usó un boost (podés usarlo para efectos visuales)
       case 'RIVAL_BOOST':
         showRivalBoostWarning(data.boostsRemaining);
         break;
 
+      // El HUD activó el boost manualmente (botón HACK IT)
+      case 'TRIGGER_BOOST':
+        if (!matchEnded) window.PvPBridge.onPowerPellet();
+        break;
+
+      // El rival cambió su score (referencia visual)
       case 'RIVAL_SCORE':
+        // Opcional: mostrar el score rival en algún lugar del canvas
         break;
     }
   });
-
 
   // ── 7. CONGELAR JUEGO AL TERMINAR ──
   function freezeGame() {

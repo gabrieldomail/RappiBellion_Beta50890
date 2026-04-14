@@ -2283,10 +2283,16 @@ document.addEventListener('DOMContentLoaded', function() {
         fpState.timeLeft--;
         fpRenderTimer(fpState.timeLeft);
         if (fpTimerBar) fpTimerBar.style.width = (fpState.timeLeft / fpState.totalTime * 100) + '%';
-        // Chaos en freeplay: sube con el tiempo transcurrido (0% al inicio, 100% al final)
+        // Chaos en freeplay: sube con el tiempo transcurrido (20% al inicio, 100% al final)
         if (!fpState.betMode) {
             var _elapsed   = fpState.totalTime - fpState.timeLeft;
-            var _timeChaos = Math.min(100, Math.floor((_elapsed / fpState.totalTime) * 100));
+            var progression = _elapsed / fpState.totalTime;
+            
+            // MATEMÁTICA: Piso de 20% + curva exponencial hasta llegar a 100%
+            // (20 base + 80 de rango progresivo)
+            var chaosValue = 20 + (Math.pow(progression, 1.5) * 80);
+            var _timeChaos = Math.min(100, Math.floor(chaosValue));
+            
             _fpApplyChaosFreeplay(_timeChaos);
         }
         if (fpState.timeLeft <= 0) { clearInterval(fpState.interval); fpState.ended = true; fpEndPractice(); }
