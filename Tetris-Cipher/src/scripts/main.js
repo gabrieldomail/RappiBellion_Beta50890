@@ -101,9 +101,16 @@ export class Main {
 		// Usar ancho personalizado si está definido, sino usar window.innerWidth
 		const gameWidth = this.customGameWidth || window.innerWidth;
 		
-		// Calculate the board size
+		// PASS 1: Calcular cellSize preliminar para medir el panel NEXT
+		const preliminarCellSize = Math.floor((gameWidth - GRID_PADDING * 2) / 10);
+		const preliminarPanelWidth = preliminarCellSize * 4 + 20; // 4 cells + padding
+		
+		// PASS 2: Ancho disponible restando el panel
+		const availableWidth = gameWidth - GRID_PADDING * 2 - preliminarPanelWidth;
+		
+		// Calculate the board size con el ancho剩余
 		this.board.setSize({
-			width: gameWidth - GRID_PADDING * 2,
+			width: Math.max(availableWidth, 100), // minimo 100px
 			height: window.innerHeight - GRID_PADDING * 2,
 		});
 
