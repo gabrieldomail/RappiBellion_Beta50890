@@ -2947,8 +2947,8 @@ function fpCloseArena() {
                     fpIframe.removeEventListener('load', _tetrisSize);
                     setTimeout(function() {
                         var availableWidth = fpIframe.clientWidth || window.innerWidth;
-                        // Zoom 10% mas grande, centrado
-                        var zoom = 1.1;
+                        // Zoom 20% mas grande, centrado
+                        var zoom = 1.2;
                         var gameWidth = availableWidth * zoom;
                         fpIframe.style.transform = 'scale(' + zoom + ')';
                         fpIframe.style.transformOrigin = 'center center';
