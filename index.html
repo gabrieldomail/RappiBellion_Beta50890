@@ -2941,19 +2941,22 @@ function fpCloseArena() {
             fpIframe.style.transform = '';
             fpIframe.style.transformOrigin = '';
             if (isTetris && window.innerWidth <= 768) {
-                // Escalar el iframe para que el canvas+panel quepan en pantalla.
-                // GRID_PADDING=20, nextPanelWidth~130px. Canvas = screenW-40+130 = screenW+90.
-                // Scale = screenW / (screenW + 90) aprox.
-                fpIframe.addEventListener('load', function _tetrisScale() {
-                    fpIframe.removeEventListener('load', _tetrisScale);
+                // En Tetris mobile, enviar el ancho disponible al juego
+                // El juego ajustara su canvas al ancho del iframe
+                fpIframe.addEventListener('load', function _tetrisSize() {
+                    fpIframe.removeEventListener('load', _tetrisSize);
                     setTimeout(function() {
-                        var sw = window.innerWidth;
-                        var gameW = sw - 40 + 130; // board + next panel estimate
-                        var scale = Math.min(1, sw / gameW);
-                        fpIframe.style.transformOrigin = '0 0';
-                        fpIframe.style.transform = 'scale(' + scale + ')';
-                        fpIframe.style.width = (sw / scale) + 'px';
-                        fpIframe.style.height = (window.innerHeight / scale) + 'px';
+                        var availableWidth = fpIframe.clientWidth || window.innerWidth;
+                        // Zoom 10% mas grande, centrado
+                        var zoom = 1.1;
+                        fpIframe.style.transform = 'scale(' + zoom + ')';
+                        fpIframe.style.transformOrigin = 'center center';
+                        fpIframe.style.width = (availableWidth / zoom) + 'px';
+                        fpIframe.contentWindow.postMessage({ 
+                            type: 'SET_GAME_WIDTH', 
+                            width: availableWidth / zoom 
+                        }, '*');
+                        console.log("[SISTEMA] Tetris: SET_GAME_WIDTH =", availableWidth / zoom, "zoom:", zoom);
                     }, 400);
                 });
             }
@@ -2979,29 +2982,6 @@ function fpCloseArena() {
         // 7. Abrimos la arena
         if (typeof fpOpenArena === 'function') {
             fpOpenArena(null);
-
-            // ── EL TOQUE FINAL: Forzar el redimensionado interno del juego ──
-            // Esperamos a que el iframe cargue y le enviamos la señal de 'resize' 
-            // para que el Canvas del Tetris se ajuste al ancho de 1000px.
-            if (fpIframe) {
-                fpIframe.addEventListener('load', function() {
-                    setTimeout(() => {
-                        try {
-                            fpIframe.contentWindow.dispatchEvent(new Event('resize'));
-                            // Enviar SET_GAME_WIDTH con el ancho disponible en el iframe
-                            var availableWidth = fpIframe.clientWidth || window.innerWidth;
-                            fpIframe.contentWindow.postMessage({ 
-                                type: 'SET_GAME_WIDTH', 
-                                width: availableWidth 
-                            }, '*');
-                            console.log("[SISTEMA] Resize forzado enviado al juego, width:", availableWidth);
-                        } catch(e) {
-                            console.warn("[SISTEMA] Error disparando resize: ", e);
-                        }
-                    }, 500);
-                }, { once: true });
-            }
-
         } else {
             console.error("[ERROR] La función fpOpenArena no existe.");
         }
