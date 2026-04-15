@@ -155,7 +155,7 @@
             // ══════════════════════════════════════════
             const _elapsed    = window._hackerStartTime ? (Date.now() - window._hackerStartTime) / 1000 : 0;
             const _offsetSecs = 240;  // arrancar en el equivalente al minuto 4
-            const _minDiv     = 5;    // velocidad máxima (infierno puro)
+            const _minDiv     = 4;    // velocidad máxima (infierno puro) - aumentado para "DEATH"
             const _maxDiv     = 16;   // velocidad base
             const _rampSecs   = 480;  // 8 minutos de rampa total
             const _progress   = Math.min((_elapsed + _offsetSecs) / _rampSecs, 1);
@@ -166,7 +166,7 @@
 
             // Clamp speed instead of recursing — recursive calls at high chaos
             // caused call-stack growth that made Pacman disappear and freeze the loop.
-            const _speedCap = 4 + (_curveEffective * 4); // progressive cap: 4 at 0% chaos → 8 at 100%
+            const _speedCap = 5 + (_curveEffective * 5); // progressive cap: 5 at 0% chaos → 10 at 100%
             let speed = Math.min(time / _divisor, _speedCap);
 
             // Notificar nivel de caos al HUD padre (~2% de frames)
