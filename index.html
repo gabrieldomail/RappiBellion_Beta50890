@@ -2949,14 +2949,15 @@ function fpCloseArena() {
                         var availableWidth = fpIframe.clientWidth || window.innerWidth;
                         // Zoom 10% mas grande, centrado
                         var zoom = 1.1;
+                        var gameWidth = availableWidth * zoom;
                         fpIframe.style.transform = 'scale(' + zoom + ')';
                         fpIframe.style.transformOrigin = 'center center';
-                        fpIframe.style.width = (availableWidth / zoom) + 'px';
+                        fpIframe.style.width = gameWidth + 'px';
                         fpIframe.contentWindow.postMessage({ 
                             type: 'SET_GAME_WIDTH', 
-                            width: availableWidth / zoom 
+                            width: gameWidth 
                         }, '*');
-                        console.log("[SISTEMA] Tetris: SET_GAME_WIDTH =", availableWidth / zoom, "zoom:", zoom);
+                        console.log("[SISTEMA] Tetris: SET_GAME_WIDTH =", gameWidth, "zoom:", zoom);
                     }, 400);
                 });
             }
