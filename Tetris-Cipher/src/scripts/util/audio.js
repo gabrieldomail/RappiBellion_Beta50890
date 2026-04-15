@@ -3,6 +3,7 @@ import { SoundEffect } from "../enum/sound-effect";
 export class AudioUtils {
 
 	static #cache = {};
+	static #audioContext = null;
 
 	/**
 	 * Resolves and expands an sound effect to absolute path
@@ -15,10 +16,13 @@ export class AudioUtils {
 		return "assets/audio/" + encodeURIComponent(soundFX);
 	}
 
-	/** @return {AudioContext} */
-	static #createAudioContext() {
-		if (window.AudioContext) return new window.AudioContext();
-		else return new window.webkitAudioContext();// eslint-disable-line new-cap
+	/** @return {AudioContext} - Singleton AudioContext */
+	static #getAudioContext() {
+		if (!this.#audioContext) {
+			if (window.AudioContext) this.#audioContext = new window.AudioContext();
+			else this.#audioContext = new window.webkitAudioContext();// eslint-disable-line new-cap
+		}
+		return this.#audioContext;
 	}
 
 	/**
@@ -69,8 +73,8 @@ export class AudioUtils {
 	 * @param {Function} obj.onEnd - Callback, called when end playing
 	 */
 	static async play({ audio, pitch=1, volume=1, loop=false, cache=true, onStart=null, onEnd=null }) {
-		// Create audio context, source and node gain
-		const context = this.#createAudioContext();
+		// Use singleton AudioContext
+		const context = this.#getAudioContext();
 		
 		// Resume AudioContext if suspended (required for auto-play music)
 		if (context.state === 'suspended') {
