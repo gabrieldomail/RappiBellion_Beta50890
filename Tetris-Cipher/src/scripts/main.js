@@ -28,6 +28,7 @@ export class Main {
 
 		// Misc variables
 		this.currentLevelIndex = 0;
+		this.chaosBoostLevel = 0; // boost de nivel por caos (incrementa velocidad)
 
 		// Frame rate variables
 		this.startFrameTime = 0;
@@ -196,7 +197,12 @@ export class Main {
 	 * @return {Level}
 	 */
 	get currentLevel() {
-		return Level.list[this.currentLevelIndex];
+		// chaosBoostLevel aumenta la velocidad de caida sin afectar el indice real
+		const boostedIndex = Math.min(
+			this.currentLevelIndex + (this.chaosBoostLevel || 0),
+			Level.list.length - 1
+		);
+		return Level.list[boostedIndex];
 	}
 
 	/**
@@ -248,6 +254,7 @@ window.addEventListener('message', function(event) {
 	// 1. START MATCH - Iniciar juego
 	if (event.data.type === 'START_MATCH') {
 		console.log('[Tetris] START_MATCH - auto starting');
+		self.chaosBoostLevel = 0; // reset chaos speed al inicio de cada partida
 		self.state = GameStateType.PLAYING;
 		if (self.statePlaying) {
 			self.statePlaying.reset();
@@ -255,7 +262,34 @@ window.addEventListener('message', function(event) {
 		InputUtils.resetAllKeys();
 	}
 
-	// 2. MATCH_ENDED - Forzar Game Over / Veredicto
+	// 2. CHAOS_LEVEL - Aumentar velocidad de caida segun nivel de caos
+	if (event.data.type === 'CHAOS_LEVEL') {
+		var chaosLevel = parseInt(event.data.level) || 0;
+		// Mapeo: 0-19% = +0, 20-39% = +1, 40-59% = +2, 60-79% = +3, 80-99% = +4, 100% = +5
+		self.chaosBoostLevel = Math.floor(chaosLevel / 20);
+		console.log('[Tetris] CHAOS_LEVEL:', chaosLevel, '-> speed boost +' + self.chaosBoostLevel);
+	}
+
+	// 3. UNLOCK_CHAOS - Caos sin tope: velocidad maxima
+	if (event.data.type === 'UNLOCK_CHAOS') {
+		self.chaosBoostLevel = Level.list.length - 1;
+		console.log('[Tetris] UNLOCK_CHAOS - velocidad maxima activada');
+	}
+
+	// 4. CHAOS_DROP - Hard drop forzado (caos intensity)
+	if (event.data.type === 'CHAOS_DROP') {
+		console.log('[Tetris] CHAOS_DROP - forcing hard drops');
+		// Primer hard drop
+		InputUtils.triggerKey('Space', true);
+		setTimeout(function() { InputUtils.triggerKey('Space', false); }, 20);
+		// Segundo hard drop a los 80ms
+		setTimeout(function() {
+			InputUtils.triggerKey('Space', true);
+			setTimeout(function() { InputUtils.triggerKey('Space', false); }, 20);
+		}, 80);
+	}
+
+	// 5. MATCH_ENDED - Forzar Game Over / Veredicto
 	if (event.data.type === 'MATCH_ENDED') {
 		console.log('[Tetris] MATCH_ENDED recibido - forzando veredicto');
 

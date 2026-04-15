@@ -225,6 +225,18 @@ export class InputUtils {
 		this.#pressedKeys = [];
 	}
 
+	/**
+	 * Simular keydown/keyup para triggers externos (CHAOS_DROP)
+	 * @param {string} keyName - Nombre de la tecla (ej: 'Space', 'ArrowDown')
+	 * @param {boolean} isPressed - true para keydown, false para keyup
+	 */
+	static triggerKey(keyName, isPressed) {
+		const key = Key[keyName];
+		if (key) {
+			this.#onKeyInternal(key, isPressed);
+		}
+	}
+
 }
 
 InputUtils.attachListeners();
