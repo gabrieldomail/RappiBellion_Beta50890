@@ -572,7 +572,7 @@
 
         // ── PvP: auto-arrancar cuando está en iframe ──
         // Si viene con ?player=p1 o ?player=p2, saltar el menú
-        // y esperar la señal START_MATCH del padre (o arrancar tras 200ms)
+        // y esperar la señal START_MATCH del padre (o arrancar tras 500ms fallback)
         if (pvpPlayer === "p1" || pvpPlayer === "p2") {
 
             // Escuchar la señal de inicio sincronizado desde el HUD padre
@@ -596,6 +596,14 @@
                     }
                 }
             });
+
+            // Fallback: si no recibe START_MATCH en 500ms, auto-arrancar
+            setTimeout(function() {
+                if (display.isMainScreen() && !window._hackerStartTime) {
+                    window._hackerStartTime = Date.now();
+                    newGame();
+                }
+            }, 500);
         }
     }, false);
     
