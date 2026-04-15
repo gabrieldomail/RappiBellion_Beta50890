@@ -2260,6 +2260,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 fpState._cdRunning = false; // countdown terminado
                 if (fpState.interval) { clearInterval(fpState.interval); fpState.interval = null; }
                 fpState.interval = setInterval(fpTick, 1000);
+                // Caos Tetris: cada 18-23s lanza 2 piezas casi juntas
+                var _isTetrisGame = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+                if (_isTetrisGame) {
+                    (function _scheduleChaosDrop() {
+                        if (!fpState.running || fpState.ended) return;
+                        var delay = 18000 + Math.random() * 5000; // 18-23s
+                        window._fpChaosTetrisTimer = setTimeout(function() {
+                            if (!fpState.running || fpState.ended) return;
+                            if (fpIframe && fpIframe.contentWindow) {
+                                fpIframe.contentWindow.postMessage({ type: 'CHAOS_DROP' }, '*');
+                            }
+                            _scheduleChaosDrop(); // re-schedule
+                        }, delay);
+                    }());
+                }
                 return;
             }
             const s = steps[i];
@@ -2756,10 +2771,17 @@ function fpEndPractice() {
 
 function fpCloseArena() {
         clearInterval(fpState.interval);
+        if (window._fpChaosTetrisTimer) { clearTimeout(window._fpChaosTetrisTimer); window._fpChaosTetrisTimer = null; }
         fpState._cdRunning = false;
         if (fpArena)  fpArena.classList.remove('show');
         if (fpState.betMode) _fpExitFullscreen();
-        if (fpIframe) fpIframe.src = '';
+        if (fpIframe) {
+            fpIframe.src = '';
+            fpIframe.style.transform = '';
+            fpIframe.style.transformOrigin = '';
+            fpIframe.style.width = '100%';
+            fpIframe.style.height = '100%';
+        }
         window._fpPendingGameSrc = null; // limpiar src pendiente por si se cerró antes del countdown
         // Limpiar Skynet bg al cerrar
         document.querySelectorAll('.fp-col-skynet').forEach(function(el) { el.classList.remove('fp-col-skynet'); });
@@ -2889,27 +2911,101 @@ function fpCloseArena() {
     window.fpOpenArenaPreview   = fpOpenArenaPreview;
     window.fpStartWithControl   = fpStartWithControl; // fix: onclick en HTML lo necesita global
     // Cargador de minijuegos freeplay alternativos (Tetris-Cipher, etc.)
+    // Cargador de minijuegos freeplay alternativos (Tetris-Cipher, etc.)
     window.fpOpenFreeGame = function(gameSrc) {
+        console.log("[SISTEMA] Iniciando carga de juego:", gameSrc);
+        
         window._fpNextGameSrc = gameSrc;
-        window._fpLastGameSrc = gameSrc; // guardar para restart
-        // Skynet visual: aplica fondo Cyberdyne a columnas izquierda/derecha solo para Tetris-Cipher
+        window._fpLastGameSrc = gameSrc; 
+        
+        // 1. Definimos isTetris UNA SOLA VEZ
         const isTetris = gameSrc && gameSrc.indexOf('Tetris-Cipher') !== -1;
+
+        // 2. Manejo de la clase de centrado en el contenedor
+        const wrap = document.querySelector('.fp-game-wrap');
+        if (wrap) {
+            if (isTetris) {
+                wrap.classList.add('fp-game-wrap--tetris');
+            } else {
+                wrap.classList.remove('fp-game-wrap--tetris');
+            }
+        }
+
+        // 3. Iframe: siempre 100%/100%. Para Tetris en mobile aplicamos
+        // CSS scale desde el padre despues de que el game carga, para que
+        // el canvas (board+nextPanel) quede visible sin overflow.
+        const fpIframe = document.getElementById('fp-iframe');
+        if (fpIframe) {
+            fpIframe.style.width = '100%';
+            fpIframe.style.height = '100%';
+            fpIframe.style.transform = '';
+            fpIframe.style.transformOrigin = '';
+            if (isTetris && window.innerWidth <= 768) {
+                // Escalar el iframe para que el canvas+panel quepan en pantalla.
+                // GRID_PADDING=20, nextPanelWidth~130px. Canvas = screenW-40+130 = screenW+90.
+                // Scale = screenW / (screenW + 90) aprox.
+                fpIframe.addEventListener('load', function _tetrisScale() {
+                    fpIframe.removeEventListener('load', _tetrisScale);
+                    setTimeout(function() {
+                        var sw = window.innerWidth;
+                        var gameW = sw - 40 + 130; // board + next panel estimate
+                        var scale = Math.min(1, sw / gameW);
+                        fpIframe.style.transformOrigin = '0 0';
+                        fpIframe.style.transform = 'scale(' + scale + ')';
+                        fpIframe.style.width = (sw / scale) + 'px';
+                        fpIframe.style.height = (window.innerHeight / scale) + 'px';
+                    }, 400);
+                });
+            }
+        } 
+
+        // 4. Skynet visual: aplica fondo Cyberdyne a columnas
         const colLeft  = document.querySelector('.fp-col-left');
         const colRight = document.querySelector('.fp-col-right');
         if (colLeft)  colLeft.classList.toggle('fp-col-skynet', isTetris);
         if (colRight) colRight.classList.toggle('fp-col-skynet', isTetris);
-        // Tetris Mobile: ajustar posición del FAQ briefing para que no se corte
+
+        // 5. Ajuste de posición del FAQ briefing en mobile
         if (isTetris && window.innerWidth <= 768) {
             var faqPanel = document.getElementById('fp-faq-panel');
             if (faqPanel) { faqPanel.style.top = 'calc(25% + 80px)'; }
         }
-        // Actualizar header del terminal con el nombre del juego
+
+        // 6. Actualizar header del terminal con el nombre del juego
         window._fpCurrentGameName = isTetris ? 'TETRIS_CIPHER // FREEPLAY' : 'PAC-HACK: DEATH // FREE_PLAY';
         var termHeader = document.querySelector('.fp-game-wrap .terminal-header-caos span:first-child');
         if (termHeader) termHeader.textContent = '[' + window._fpCurrentGameName + ']';
-        fpOpenArena(null);
-    };
 
+        // 7. Abrimos la arena
+        if (typeof fpOpenArena === 'function') {
+            fpOpenArena(null);
+
+            // ── EL TOQUE FINAL: Forzar el redimensionado interno del juego ──
+            // Esperamos a que el iframe cargue y le enviamos la señal de 'resize' 
+            // para que el Canvas del Tetris se ajuste al ancho de 1000px.
+            if (fpIframe) {
+                fpIframe.addEventListener('load', function() {
+                    setTimeout(() => {
+                        try {
+                            fpIframe.contentWindow.dispatchEvent(new Event('resize'));
+                            // Enviar SET_GAME_WIDTH con el ancho disponible en el iframe
+                            var availableWidth = fpIframe.clientWidth || window.innerWidth;
+                            fpIframe.contentWindow.postMessage({ 
+                                type: 'SET_GAME_WIDTH', 
+                                width: availableWidth 
+                            }, '*');
+                            console.log("[SISTEMA] Resize forzado enviado al juego, width:", availableWidth);
+                        } catch(e) {
+                            console.warn("[SISTEMA] Error disparando resize: ", e);
+                        }
+                    }, 500);
+                }, { once: true });
+            }
+
+        } else {
+            console.error("[ERROR] La función fpOpenArena no existe.");
+        }
+    };
     // ── Backdoor: ?arena-preview en la URL abre el arena en modo preview ─────
     if (new URLSearchParams(window.location.search).has('arena-preview')) {
         window.addEventListener('load', function() {

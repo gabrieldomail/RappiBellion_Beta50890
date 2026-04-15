@@ -29,6 +29,7 @@ export class Main {
 		// Misc variables
 		this.currentLevelIndex = 0;
 		this.chaosBoostLevel = 0; // boost de nivel por caos (incrementa velocidad)
+		this.customGameWidth = null; // ancho personalizado desde el parent (para iframe)
 
 		// Frame rate variables
 		this.startFrameTime = 0;
@@ -97,9 +98,12 @@ export class Main {
 	}
 
 	#onResize() {
+		// Usar ancho personalizado si está definido, sino usar window.innerWidth
+		const gameWidth = this.customGameWidth || window.innerWidth;
+		
 		// Calculate the board size
 		this.board.setSize({
-			width: window.innerWidth - GRID_PADDING * 2,
+			width: gameWidth - GRID_PADDING * 2,
 			height: window.innerHeight - GRID_PADDING * 2,
 		});
 
@@ -260,6 +264,15 @@ window.addEventListener('message', function(event) {
 			self.statePlaying.reset();
 		}
 		InputUtils.resetAllKeys();
+	}
+
+	// 1b. SET_GAME_WIDTH - Ancho personalizado desde el parent (para iframe)
+	if (event.data.type === 'SET_GAME_WIDTH') {
+		var newWidth = parseInt(event.data.width) || null;
+		self.customGameWidth = newWidth;
+		console.log('[Tetris] SET_GAME_WIDTH:', newWidth);
+		// Trigger resize event que sera captado por #onResize internamente
+		window.dispatchEvent(new Event('resize'));
 	}
 
 	// 2. CHAOS_LEVEL - Aumentar velocidad de caida segun nivel de caos
