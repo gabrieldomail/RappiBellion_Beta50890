@@ -5,6 +5,9 @@
         score, food, fruit, ghosts, blob,
         animation, startTime, actions, shortcuts,
         soundFiles  = [ "start", "death", "eat1", "eat2", "kill" ],
+        
+        // Page Visibility: optimizar cuando está en background
+        pageVisible = true;
 
         // ── PvP: detectar rol del jugador desde la URL ──
         // P1 juega con WASD | P2 con flechas | standalone usa ambos
@@ -147,6 +150,12 @@
     function requestAnimation() {
         startTime = new Date().getTime();
         animation = window.requestAnimationFrame(() => {
+            // Skip game logic when page is not visible (ahorra recursos)
+            if (!pageVisible) {
+                requestAnimation();
+                return;
+            }
+            
             let time  = new Date().getTime() - startTime;
 
             // ══════════════════════════════════════════
@@ -569,6 +578,15 @@
     // Load the game
     window.addEventListener("load", function() {
         main();
+
+        // ── Page Visibility: optimizar recursos cuando está en background ──
+        function handleVisibility() {
+            pageVisible = !document.hidden;
+        }
+        document.addEventListener("visibilitychange", handleVisibility);
+        document.addEventListener("webkitvisibilitychange", handleVisibility);
+        document.addEventListener("mozvisibilitychange", handleVisibility);
+        document.addEventListener("msvisibilitychange", handleVisibility);
 
         // ── Escuchar START_MATCH siempre (PvP y freeplay) ──
         window.addEventListener("message", function(e) {
