@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Tetris</title><link rel="stylesheet" href="styles/style.min.css"><link rel="icon" href="assets/images/favicon.png"></head>
+<body>
+<div id="wrapper"></div>
+<script>
+// WASD to Arrow keys mapping
+(function() {
+  var originalAddEventListener = document.addEventListener;
+  document.addEventListener = function(type, listener, options) {
+    if (type === 'keydown' || type === 'keyup') {
+      var wrappedListener = function(e) {
+        if (e.code === 'KeyW') { e.preventDefault(); e.stopPropagation(); Object.defineProperty(e, 'code', { value: 'ArrowUp' }); }
+        else if (e.code === 'KeyS') { e.preventDefault(); e.stopPropagation(); Object.defineProperty(e, 'code', { value: 'ArrowDown' }); }
+        else if (e.code === 'KeyA') { e.preventDefault(); e.stopPropagation(); Object.defineProperty(e, 'code', { value: 'ArrowLeft' }); }
+        else if (e.code === 'KeyD') { e.preventDefault(); e.stopPropagation(); Object.defineProperty(e, 'code', { value: 'ArrowRight' }); }
+        listener.call(this, e);
+      };
+      return originalAddEventListener.call(document, type, wrappedListener, options);
+    }
+    return originalAddEventListener.call(document, type, listener, options);
+  };
+})();
+</script>
+<script>
+(function() {
+  var controlMode = 'swipe';
+  var dpadEl = null;
+  var lastScore = 0;
+
+  function injectKeyEvent(key, type) {
+    var evt = new KeyboardEvent(type, { key: key, code: key, bubbles: true, cancelable: true });
+    document.dispatchEvent(evt);
+  }
+
+  function createDpad() {
+    if (dpadEl) return;
+    dpadEl = document.createElement('div');
+    dpadEl.id = 'virtual-dpad';
+    dpadEl.innerHTML = '<div class="dpad-row"><button data-key="ArrowUp">▲</button></div>' +
+      '<div class="dpad-row"><button data-key="ArrowLeft">◀</button><button data-key="ArrowDown">▼</button><button data-key="ArrowRight">▶</button></div>' +
+      '<div class="dpad-row"><button data-key="Space">DROP</button></div>';
+    dpadEl.style.cssText = 'position:fixed;bottom:80px;right:15px;z-index:99999;display:flex;flex-direction:column;align-items:center;gap:5px;';
+    var style = document.createElement('style');
+    style.textContent = '#virtual-dpad button{width:50px;height:50px;background:rgba(0,255,65,0.2);border:2px solid #00ff41;color:#00ff41;font-size:18px;border-radius:8px;cursor:pointer;touch-action:none;}#virtual-dpad .dpad-row{display:flex;gap:5px;}';
+    dpadEl.appendChild(style);
+    document.body.appendChild(dpadEl);
+
+    dpadEl.querySelectorAll('button').forEach(function(btn) {
+      btn.addEventListener('touchstart', function(e) { e.preventDefault(); injectKeyEvent(btn.dataset.key, 'keydown'); });
+      btn.addEventListener('touchend', function(e) { e.preventDefault(); injectKeyEvent(btn.dataset.key, 'keyup'); });
+      btn.addEventListener('mousedown', function(e) { injectKeyEvent(btn.dataset.key, 'keydown'); });
+      btn.addEventListener('mouseup', function(e) { injectKeyEvent(btn.dataset.key, 'keyup'); });
+    });
+  }
+
+  function removeDpad() {
+    if (dpadEl) { dpadEl.remove(); dpadEl = null; }
+  }
+
+  // Score syncing with parent (T2E Arena)
+  function checkScoreSync() {
+    var main = window.main;
+    if (!main) return;
+    var playing = main.currentGameState;
+    if (playing && playing.stats) {
+      var currentScore = playing.stats.score || 0;
+      if (currentScore !== lastScore) {
+        lastScore = currentScore;
+        if (window.parent !== window) {
+          window.parent.postMessage({ type: 'SCORE_UPDATE', score: currentScore }, '*');
+        }
+      }
+    }
+  }
+
+  setInterval(checkScoreSync, 200);
+
+  window.addEventListener('message', function(e) {
+    if (!e.data || !e.data.type) return;
+    
+    var main = window.main;
+    
+    // START_MATCH - Iniciar juego
+    if (e.data.type === 'START_MATCH') {
+      console.log('[Tetris-T2E] START_MATCH - iniciando');
+      if (main) {
+        main.chaosBoostLevel = 0;
+        main.statePlaying && main.statePlaying.reset && main.statePlaying.reset();
+        // Force start - simulate pressing any key
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', code: 'Space' }));
+      }
+    }
+    
+    // MATCH_ENDED - Terminar juego / Game Over
+    if (e.data.type === 'MATCH_ENDED') {
+      console.log('[Tetris-T2E] MATCH_ENDED');
+      if (main) {
+        main.state = 'GAME_OVER'; // or whatever state triggers game over
+        main.currentGameState && main.currentGameState.gameOver && main.currentGameState.gameOver();
+      }
+    }
+    
+    // CHAOS_LEVEL - Aumentar velocidad segun nivel de caos
+    if (e.data.type === 'CHAOS_LEVEL') {
+      var chaosLevel = parseInt(e.data.level) || 0;
+      var boost = Math.floor(chaosLevel / 20); // +1 speed every 20%
+      if (main) {
+        main.chaosBoostLevel = boost;
+        console.log('[Tetris-T2E] CHAOS_LEVEL:', chaosLevel, '-> boost:', boost);
+      }
+    }
+    
+    // UNLOCK_CHAOS - Remover limite de 70%
+    if (e.data.type === 'UNLOCK_CHAOS') {
+      console.log('[Tetris-T2E] UNLOCK_CHAOS');
+      window._chaosUnlocked = true;
+    }
+    
+    // SET_CONTROL - D-PAD
+    if (e.data.type === 'SET_CONTROL') {
+      controlMode = e.data.mode;
+      if (controlMode === 'dpad') {
+        createDpad();
+      } else {
+        removeDpad();
+      }
+    }
+  });
+})();
+</script>
+<script src="scripts/script.min.js"></script></body></html>
