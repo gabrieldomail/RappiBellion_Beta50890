@@ -2107,7 +2107,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpIframe) {
             var gameType = window.T2EIntegration && window.T2EIntegration.currentGameType;
             var gameUrl = (gameType === 'tetris-cipher') 
-                ? 'Tetris-Cipher-T2E/index.html?player=p1'
+                ? 'Tetris-Cipher-T2E/index.html'
                 : 'pac-hack/game.html?player=p1';
             fpIframe.src = gameUrl;
             fpIframe.addEventListener('load', function onPVLoad() {
