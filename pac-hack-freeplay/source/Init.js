@@ -570,33 +570,28 @@
     window.addEventListener("load", function() {
         main();
 
+        // ── Escuchar START_MATCH siempre (PvP y freeplay) ──
+        window.addEventListener("message", function(e) {
+            var d = e.data;
+            if (!d || !d.type) return;
+
+            if (d.type === "START_MATCH") {
+                window._hackerStartTime = Date.now();
+                if (display.isMainScreen()) {
+                    newGame();
+                }
+            }
+            if (d.type === "MATCH_ENDED") {
+                // Solo pausar en PvP (cuando hay player)
+                if ((pvpPlayer === "p1" || pvpPlayer === "p2") && display.isPlaying()) {
+                    display.set("paused");
+                    animations.paused();
+                }
+            }
+        });
+
         // ── PvP: auto-arrancar cuando está en iframe ──
-        // Si viene con ?player=p1 o ?player=p2, saltar el menú
-        // y esperar la señal START_MATCH del padre (o arrancar tras 500ms fallback)
         if (pvpPlayer === "p1" || pvpPlayer === "p2") {
-
-            // Escuchar la señal de inicio sincronizado desde el HUD padre
-            window.addEventListener("message", function(e) {
-                var d = e.data;
-                if (!d || !d.type) return;
-
-                if (d.type === "START_MATCH") {
-                    // Marcar el inicio del timer de caos (sincronizado con el FP timer)
-                    window._hackerStartTime = Date.now();
-                    // Arrancar el juego
-                    if (display.isMainScreen()) {
-                        newGame();
-                    }
-                }
-                if (d.type === "MATCH_ENDED") {
-                    // Pausar cuando termina el tiempo
-                    if (display.isPlaying()) {
-                        display.set("paused");
-                        animations.paused();
-                    }
-                }
-            });
-
             // Fallback: si no recibe START_MATCH en 500ms, auto-arrancar
             setTimeout(function() {
                 if (display.isMainScreen() && !window._hackerStartTime) {
@@ -604,6 +599,14 @@
                     newGame();
                 }
             }, 500);
+        } else {
+            // Freeplay: auto-arrancar inmediatamente
+            setTimeout(function() {
+                if (display.isMainScreen()) {
+                    window._hackerStartTime = Date.now();
+                    newGame();
+                }
+            }, 300);
         }
     }, false);
     
