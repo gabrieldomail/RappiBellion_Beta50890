@@ -5,9 +5,9 @@
         score, food, fruit, ghosts, blob,
         animation, startTime, actions, shortcuts,
         soundFiles  = [ "start", "death", "eat1", "eat2", "kill" ],
-        
+
         // Page Visibility: optimizar cuando está en background
-        pageVisible = true;
+        pageVisible = true,
 
         // ── PvP: detectar rol del jugador desde la URL ──
         // P1 juega con WASD | P2 con flechas | standalone usa ambos
