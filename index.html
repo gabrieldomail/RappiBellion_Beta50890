@@ -2103,9 +2103,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (_chatFabPV) _chatFabPV.style.display = 'none';
         document.body.style.overflow    = 'hidden';
         
-        // Cargar pac-hack REAL (no freeplay) para mostrar la UI completa del T2E
+        // Cargar juego T2E según selección (pac-hack o tetris)
         if (fpIframe) {
-            fpIframe.src = 'pac-hack/game.html?player=p1';
+            var gameType = window.T2EIntegration && window.T2EIntegration.currentGameType;
+            var gameUrl = (gameType === 'tetris-cipher') 
+                ? 'Tetris-Cipher-T2E/index.html?player=p1'
+                : 'pac-hack/game.html?player=p1';
+            fpIframe.src = gameUrl;
             fpIframe.addEventListener('load', function onPVLoad() {
                 fpIframe.removeEventListener('load', onPVLoad);
                 setTimeout(function() { fpIframe.focus(); }, 300);
