@@ -1922,21 +1922,23 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch(e) {}
     }
 
-    function fpOpenArena(betId, gameType) {
-        // REGRESSION FIX: re-entrancy guard - if arena already open for this betId, bail out.
-        // Prevents infinite loop: betAccepted -> fpOpenArena -> _fpSetupBetSync -> Firebase write
-        // -> child_changed -> betAccepted -> fpOpenArena -> ..._
-        if (betId && betId === _fpArenaOpenedForBet && fpArena && fpArena.classList.contains('show')) {
-            console.log('[fpOpenArena] Arena ya abierta para betId:', betId, '- ignorando duplicado.');
-            return;
-        }
-        if (betId) _fpArenaOpenedForBet = betId;
+     function fpOpenArena(betId, gameType) {
+         // REGRESSION FIX: re-entrancy guard - if arena already open for this betId, bail out.
+         if (betId && betId === _fpArenaOpenedForBet && fpArena && fpArena.classList.contains('show')) {
+             console.log('[fpOpenArena] Arena ya abierta para betId:', betId, '- ignorando duplicado.');
+             return;
+         }
+         if (betId) _fpArenaOpenedForBet = betId;
 
-        // Seleccionar juego si se especifica (tetris-cipher o pac-hack por defecto)
-        if (gameType) {
-            window.T2EIntegration = window.T2EIntegration || {};
-            window.T2EIntegration.currentGameType = gameType;
-        }
+         // Resolver gameType: puede venir como argumento o desde la apuesta aceptada guardada
+         if (!gameType && window._currentAcceptedBet && window._currentAcceptedBet.gameType) {
+             gameType = window._currentAcceptedBet.gameType;
+         }
+         // Guardar gameType para la UI / integración
+         if (gameType) {
+             window.T2EIntegration = window.T2EIntegration || {};
+             window.T2EIntegration.currentGameType = gameType;
+         }
 
         const dur = parseInt(fpDurSelect ? fpDurSelect.value : 600);
         fpState = { timeLeft:dur, totalTime:dur, running:false, ended:false, interval:null, score:0, chaosLevel:0,
@@ -1996,33 +1998,53 @@ document.addEventListener('DOMContentLoaded', function() {
                 fpIframe.style.transform  = 'translateZ(0)';
             }
         }
-        // Mostrar topbar + activar header de free play
-        const topbar = document.querySelector('.casino-topbar');
-        if (topbar) topbar.classList.add('visible');
-        // Free play usa _fpNextGameSrc si se indicó, sino pac-hack-freeplay; modo apuesta usa pac-hack original
-        if (fpIframe) {
-            var nextGameSrc = fpState.betMode
-                ? 'pac-hack/game.html?player=p1'
-                : (window._fpNextGameSrc || 'pac-hack-freeplay/game.html?player=p1');
-            var isTetrisGame = nextGameSrc && nextGameSrc.indexOf('Tetris-Cipher') !== -1;
-            var gameName = isTetrisGame ? 'TETRIS_CIPHER // FREE_PLAY' : 'PAC-HACK: DEATH // FREE_PLAY';
-            // Actualizar header del terminal
-            var termHeader = document.querySelector('.fp-game-wrap .terminal-header-caos span:first-child');
-            if (termHeader) termHeader.textContent = '[' + gameName + ']';
-            window._fpNextGameSrc = null; // limpiar para próxima vez
-
-            // Cargar iframe inmediatamente en todos los modos.
-            // START_MATCH se envia al final del countdown para arrancar el juego.
-            fpIframe.src = nextGameSrc;
-            fpIframe.addEventListener('load', function onIframeLoad() {
-                fpIframe.removeEventListener('load', onIframeLoad);
-                // Reenviar START_MATCH si el countdown ya termino (iframe cargo tarde)
-                if (fpState.running && fpCdOverlay && !fpCdOverlay.classList.contains('show')) {
-                    fpIframe.contentWindow.postMessage({ type: 'START_MATCH' }, '*');
-                }
-                setTimeout(function() { fpIframe.focus(); }, 300);
-            });
-        }
+         // Mostrar topbar + activar header de free play
+         const topbar = document.querySelector('.casino-topbar');
+         if (topbar) topbar.classList.add('visible');
+         
+         // Determinar src del iframe según modo y tipo de juego
+         var nextGameSrc;
+         if (fpState.betMode) {
+             // T2E: gameType define qué juego cargar
+             if (gameType) {
+                 if (gameType.toLowerCase().indexOf('tetris') !== -1) {
+                     nextGameSrc = 'Tetris-Cipher-T2E/index.html';
+                 } else {
+                     // Pac-Hack T2E por defecto
+                     nextGameSrc = 'pac-hack/game.html?player=p1';
+                 }
+             } else {
+                 nextGameSrc = 'pac-hack/game.html?player=p1';
+             }
+         } else {
+             // Freeplay
+             nextGameSrc = window._fpNextGameSrc || 'pac-hack-freeplay/game.html?player=p1';
+         }
+         
+         // Registrar juego actual para detección en fpFireBoost (ambos modos)
+         window._fpLastGameSrc = nextGameSrc;
+         
+         // Actualizar header del terminal con nombre del juego
+         var isTetrisGame = nextGameSrc && nextGameSrc.indexOf('Tetris-Cipher') !== -1;
+         var gameName = isTetrisGame ? 'TETRIS_CIPHER // T2E' : 'PAC-HACK: DEATH // T2E';
+         if (!fpState.betMode) {
+             gameName = isTetrisGame ? 'TETRIS_CIPHER // FREE_PLAY' : 'PAC-HACK: DEATH // FREE_PLAY';
+         }
+         var termHeader = document.querySelector('.fp-game-wrap .terminal-header-caos span:first-child');
+         if (termHeader) termHeader.textContent = '[' + gameName + ']';
+         window._fpNextGameSrc = null; // limpiar para próxima vez
+         
+         // Cargar iframe
+         if (fpIframe) {
+             fpIframe.src = nextGameSrc;
+             fpIframe.addEventListener('load', function onIframeLoad() {
+                 fpIframe.removeEventListener('load', onIframeLoad);
+                 if (fpState.running && fpCdOverlay && !fpCdOverlay.classList.contains('show')) {
+                     fpIframe.contentWindow.postMessage({ type: 'START_MATCH' }, '*');
+                 }
+                 setTimeout(function() { fpIframe.focus(); }, 300);
+             });
+         }
 
         // En mobile mostrar selector de control, en desktop ir directo
         if (window.innerWidth <= 768) {
@@ -2761,10 +2783,11 @@ function fpEndPractice() {
     // The BOOST_USED echo from the iframe will re-enable if boosts remain.
     if (btn) btn.disabled = true;
     if (overlayBtn) overlayBtn.disabled = true;
-    // Trigger in iframe
-    if (fpIframe && fpIframe.contentWindow) {
-        fpIframe.contentWindow.postMessage({ type: 'TRIGGER_BOOST' }, '*');
-    }
+     // Trigger in iframe: CHAOS_BOMB para Tetris, TRIGGER_BOOST para Pac-Hack
+     if (fpIframe && fpIframe.contentWindow) {
+         var _isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+         fpIframe.contentWindow.postMessage({ type: _isTetris ? 'CHAOS_BOMB' : 'TRIGGER_BOOST' }, '*');
+     }
     // Visual flash feedback — ambos botones
     if (btn) {
         btn.classList.add('fp-boost-firing');

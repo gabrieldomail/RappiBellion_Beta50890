@@ -72,59 +72,107 @@
     }
   }
 
-  setInterval(checkScoreSync, 200);
+   setInterval(checkScoreSync, 200);
 
-  window.addEventListener('message', function(e) {
-    if (!e.data || !e.data.type) return;
-    
-    var main = window.main;
-    
-    // START_MATCH - Iniciar juego
-    if (e.data.type === 'START_MATCH') {
-      console.log('[Tetris-T2E] START_MATCH - iniciando');
-      if (main) {
-        main.chaosBoostLevel = 0;
-        main.statePlaying && main.statePlaying.reset && main.statePlaying.reset();
-        // Force start - simulate pressing any key
-        window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', code: 'Space' }));
-      }
-    }
-    
-    // MATCH_ENDED - Terminar juego / Game Over
-    if (e.data.type === 'MATCH_ENDED') {
-      console.log('[Tetris-T2E] MATCH_ENDED');
-      if (main) {
-        main.state = 'GAME_OVER'; // or whatever state triggers game over
-        main.currentGameState && main.currentGameState.gameOver && main.currentGameState.gameOver();
-      }
-    }
-    
-    // CHAOS_LEVEL - Aumentar velocidad segun nivel de caos
-    if (e.data.type === 'CHAOS_LEVEL') {
-      var chaosLevel = parseInt(e.data.level) || 0;
-      var boost = Math.floor(chaosLevel / 20); // +1 speed every 20%
-      if (main) {
-        main.chaosBoostLevel = boost;
-        console.log('[Tetris-T2E] CHAOS_LEVEL:', chaosLevel, '-> boost:', boost);
-      }
-    }
-    
-    // UNLOCK_CHAOS - Remover limite de 70%
-    if (e.data.type === 'UNLOCK_CHAOS') {
-      console.log('[Tetris-T2E] UNLOCK_CHAOS');
-      window._chaosUnlocked = true;
-    }
-    
-    // SET_CONTROL - D-PAD
-    if (e.data.type === 'SET_CONTROL') {
-      controlMode = e.data.mode;
-      if (controlMode === 'dpad') {
-        createDpad();
-      } else {
-        removeDpad();
-      }
-    }
-  });
+   window.addEventListener('message', function(e) {
+     if (!e.data || !e.data.type) return;
+
+     var main = window.main;
+
+     // START_MATCH - Iniciar juego
+     if (e.data.type === 'START_MATCH') {
+       console.log('[Tetris-T2E] START_MATCH - iniciando');
+       if (main) {
+         main.chaosBoostLevel = 0;
+         main.statePlaying && main.statePlaying.reset && main.statePlaying.reset();
+         window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', code: 'Space' }));
+       }
+     }
+
+     // MATCH_ENDED - Terminar juego / Game Over
+     if (e.data.type === 'MATCH_ENDED') {
+       console.log('[Tetris-T2E] MATCH_ENDED');
+       if (main) {
+         main.state = 'GAME_OVER';
+         main.currentGameState && main.currentGameState.gameOver && main.currentGameState.gameOver();
+       }
+     }
+
+     // CHAOS_LEVEL - Aumentar velocidad segun nivel de caos
+     if (e.data.type === 'CHAOS_LEVEL') {
+       var chaosLevel = parseInt(e.data.level) || 0;
+       var boost = Math.floor(chaosLevel / 20); // +1 speed every 20%
+       if (main) {
+         main.chaosBoostLevel = boost;
+         console.log('[Tetris-T2E] CHAOS_LEVEL:', chaosLevel, '-> boost:', boost);
+       }
+     }
+
+     // UNLOCK_CHAOS - Remover limite de 70%
+     if (e.data.type === 'UNLOCK_CHAOS') {
+       console.log('[Tetris-T2E] UNLOCK_CHAOS');
+       window._chaosUnlocked = true;
+     }
+
+     // CHAOS_BOMB - Bomba de caos (limpia tablero + 500 puntos)
+     if (e.data.type === 'CHAOS_BOMB') {
+       console.log('[Tetris-T2E] CHAOS_BOMB recibido - ejecutando');
+       if (main && main.currentGameState) {
+         // 1. Limpiar tablero
+         var arena = main.currentGameState.arena;
+         if (arena) {
+           for (var y = 0; y < arena.length; y++) {
+             for (var x = 0; x < arena[y].length; x++) {
+               arena[y][x] = 0;
+             }
+           }
+           // Forzar re-render del tablero
+           var board = main.currentGameState.board;
+           if (board) board.isBufferDirty = true;
+         }
+         // 2. Sumar 500 puntos
+         var stats = main.currentGameState.stats;
+         if (stats) {
+           stats.score += 500;
+           console.log('[Tetris-T2E] Score +500 ->', stats.score);
+           // Enviar score actualizado al padre inmediatamente
+           if (window.parent !== window) {
+             window.parent.postMessage({ type: 'SCORE_UPDATE', score: stats.score }, '*');
+           }
+         }
+       }
+       // 3. Notificar que se usó un boost (para actualizar contador en UI)
+       if (window.parent !== window) {
+         window.parent.postMessage({ type: 'BOOST_USED' }, '*');
+       }
+       // 4. Animación visual de bomba (zoom-in + brillo + zoom-out)
+       try {
+         var bombWrap = document.createElement('div');
+         bombWrap.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;z-index:2147483647;pointer-events:none;overflow:hidden;';
+         var bomb = document.createElement('div');
+         bomb.textContent = '💣';
+         bomb.style.cssText = 'font-size:20vh;line-height:1;transform:scale(0.1);opacity:1;transition:transform 0.25s cubic-bezier(0.25,1,0.5,1), opacity 0.7s ease-out, filter 0.2s;filter:brightness(1.2) drop-shadow(0 0 12px cyan) saturate(1.2);';
+         bombWrap.appendChild(bomb);
+         document.body.appendChild(bombWrap);
+         // Zoom rápido a escala 8x (ocupa pantalla) + cambio de brillo/color
+         setTimeout(function(){ bomb.style.transform = 'scale(8)'; bomb.style.filter = 'brightness(2.5) drop-shadow(0 0 40px magenta) saturate(2)'; }, 20);
+         // Zoom-out + fade
+         setTimeout(function(){ bomb.style.transform = 'scale(10)'; bomb.style.opacity = '0'; }, 350);
+         // Limpiar
+         setTimeout(function(){ bombWrap.remove(); }, 900);
+       } catch (ex) { console.error('[Tetris-T2E] Error anim CHAOS_BOMB:', ex); }
+     }
+
+     // SET_CONTROL - D-PAD
+     if (e.data.type === 'SET_CONTROL') {
+       controlMode = e.data.mode;
+       if (controlMode === 'dpad') {
+         createDpad();
+       } else {
+         removeDpad();
+       }
+     }
+   });
 })();
 </script>
 <script src="scripts/script.min.js"></script></body></html>
