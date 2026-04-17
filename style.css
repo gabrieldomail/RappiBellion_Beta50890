@@ -6200,7 +6200,7 @@ footer::before {
     overflow: hidden;
     border-radius: 12px;
     border: 1px solid rgba(0,255,255,0.6);
-    background: #0a0a0a;
+    background: transparent;
     animation: spaceBorderGlitch 3.5s ease-in-out infinite;
 }
 
@@ -6256,6 +6256,7 @@ footer::before {
     letter-spacing: 3px;
     color: rgba(0,255,255,0.95);
     display: inline-block;
+    white-space: nowrap;
     animation: glitchHard 0.273s steps(1) infinite;
 }
 
