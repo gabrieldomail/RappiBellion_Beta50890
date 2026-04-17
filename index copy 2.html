@@ -984,23 +984,23 @@
   </div>
 </div>
 
-<!-- 🟩 TETRIS-CIPHER — promo widget (siempre visible) -->
-<div id="tetris-promo-window">
-    <div class="tetris-promo-terminal">
-        <div class="tetris-promo-hdr">
-            <span>TETRIS-CIPHER</span>
-            <button onclick="document.getElementById('tetris-promo-window').style.display='none'" style="background:none;border:none;color:rgba(0,255,65,0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
+<!-- 🟩 SPACE-BREAKER — promo widget (siempre visible) -->
+<div id="space-promo-window">
+    <div class="space-promo-terminal">
+        <div class="space-promo-hdr">
+            <span>SPACE-BREAKER</span>
+            <button onclick="document.getElementById('space-promo-window').style.display='none'" style="background:none;border:none;color:rgba(0,255,255,0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
         </div>
-        <div class="tetris-promo-body">
-            <div class="tetris-promo-img-wrap">
-                <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width:100%;height:auto;display:block;opacity:0.85;">
+        <div class="space-promo-body">
+            <div class="space-promo-img-wrap">
+                <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width:100%;height:auto;display:block;opacity:0.85;filter:grayscale(80%) contrast(120%);">
             </div>
-            <p class="tetris-promo-tagline">Organiza el código encriptado<br>antes de que el sistema colapse.</p>
-            <div class="tetris-promo-date-box">
-                <span class="tetris-promo-date-label">DEMO DISPONIBLE</span>
-                <span class="tetris-promo-date">DISPONIBLE</span>
+            <p class="space-promo-tagline">Rompe el espacio, quebranta el código<br>antes que el vacuum te consuma.</p>
+            <div class="space-promo-date-box">
+                <span class="space-promo-date-label">PRÓXIMAMENTE</span>
+                <span class="space-promo-date">EN DESARROLLO</span>
             </div>
-            <p class="tetris-promo-sub">// THINK TO EARN — modo T2E en beta cerrada</p>
+            <p class="space-promo-sub">// THINK TO EARN — circuito T2E expandiéndose</p>
         </div>
     </div>
 </div>
@@ -1950,9 +1950,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const _chatWidget = document.getElementById('gemini-chat-widget');
         if (_chatFab)    _chatFab.style.display = 'none';
         if (_chatWidget) _chatWidget.style.display = 'none';
-        // Ocultar promo Tetris-Cipher y USDT widget para no tapar el timer/score
-        const _tetrisPromo = document.getElementById('tetris-promo-window');
-        if (_tetrisPromo) _tetrisPromo.classList.add('tetris-promo-hidden');
+        // Ocultar promo Space-Breaker y USDT widget para no tapar el timer/score
+        const _spacePromo = document.getElementById('space-promo-window');
+        if (_spacePromo) _spacePromo.classList.add('space-promo-hidden');
         const _usdtPromo = document.getElementById('usdt-promo-window');
         if (_usdtPromo) _usdtPromo.classList.add('usdt-promo-hidden');
         const _mpPromo = document.getElementById('mp-promo-window');
@@ -2103,9 +2103,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (_chatFabPV) _chatFabPV.style.display = 'none';
         document.body.style.overflow    = 'hidden';
         
-        // Cargar pac-hack REAL (no freeplay) para mostrar la UI completa del T2E
+        // Cargar juego según preview o default pac-hack
+        var previewGame = window._fpPreviewGame;
+        var gameSrc = 'pac-hack/game.html?player=p1';
+        if (previewGame === 'tetris' || previewGame === '1') {
+            gameSrc = 'Tetris-Cipher-T2E/index.html';
+        }
         if (fpIframe) {
-            fpIframe.src = 'pac-hack/game.html?player=p1';
+            fpIframe.src = gameSrc;
             fpIframe.addEventListener('load', function onPVLoad() {
                 fpIframe.removeEventListener('load', onPVLoad);
                 setTimeout(function() { fpIframe.focus(); }, 300);
@@ -2260,6 +2265,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 fpState._cdRunning = false; // countdown terminado
                 if (fpState.interval) { clearInterval(fpState.interval); fpState.interval = null; }
                 fpState.interval = setInterval(fpTick, 1000);
+                // Caos Tetris: cada 18-23s lanza 2 piezas casi juntas
+                var _isTetrisGame = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+                if (_isTetrisGame) {
+                    (function _scheduleChaosDrop() {
+                        if (!fpState.running || fpState.ended) return;
+                        var delay = 18000 + Math.random() * 5000; // 18-23s
+                        window._fpChaosTetrisTimer = setTimeout(function() {
+                            if (!fpState.running || fpState.ended) return;
+                            if (fpIframe && fpIframe.contentWindow) {
+                                fpIframe.contentWindow.postMessage({ type: 'CHAOS_DROP' }, '*');
+                            }
+                            _scheduleChaosDrop(); // re-schedule
+                        }, delay);
+                    }());
+                }
                 return;
             }
             const s = steps[i];
@@ -2283,12 +2303,8 @@ document.addEventListener('DOMContentLoaded', function() {
         fpState.timeLeft--;
         fpRenderTimer(fpState.timeLeft);
         if (fpTimerBar) fpTimerBar.style.width = (fpState.timeLeft / fpState.totalTime * 100) + '%';
-        // Chaos en freeplay: sube con el tiempo transcurrido (0% al inicio, 100% al final)
-        if (!fpState.betMode) {
-            var _elapsed   = fpState.totalTime - fpState.timeLeft;
-            var _timeChaos = Math.min(100, Math.floor((_elapsed / fpState.totalTime) * 100));
-            _fpApplyChaosFreeplay(_timeChaos);
-        }
+        // Chaos: el JUEGO calcula su propio nivel y lo envía vía postMessage
+        // Ya NO calculamos aquí para evitar conflicto (el juego usa su fórmula)
         if (fpState.timeLeft <= 0) { clearInterval(fpState.interval); fpState.ended = true; fpEndPractice(); }
     }
 
@@ -2750,10 +2766,17 @@ function fpEndPractice() {
 
 function fpCloseArena() {
         clearInterval(fpState.interval);
+        if (window._fpChaosTetrisTimer) { clearTimeout(window._fpChaosTetrisTimer); window._fpChaosTetrisTimer = null; }
         fpState._cdRunning = false;
         if (fpArena)  fpArena.classList.remove('show');
         if (fpState.betMode) _fpExitFullscreen();
-        if (fpIframe) fpIframe.src = '';
+        if (fpIframe) {
+            fpIframe.src = '';
+            fpIframe.style.transform = '';
+            fpIframe.style.transformOrigin = '';
+            fpIframe.style.width = '100%';
+            fpIframe.style.height = '100%';
+        }
         window._fpPendingGameSrc = null; // limpiar src pendiente por si se cerró antes del countdown
         // Limpiar Skynet bg al cerrar
         document.querySelectorAll('.fp-col-skynet').forEach(function(el) { el.classList.remove('fp-col-skynet'); });
@@ -2802,9 +2825,9 @@ function fpCloseArena() {
                 }
             });
         }
-        // Restaurar promo Tetris-Cipher y USDT widget
-        const _tetrisPromoClose = document.getElementById('tetris-promo-window');
-        if (_tetrisPromoClose) _tetrisPromoClose.classList.remove('tetris-promo-hidden');
+        // Restaurar promo Space-Breaker y USDT widget
+        const _spacePromoClose = document.getElementById('space-promo-window');
+        if (_spacePromoClose) _spacePromoClose.classList.remove('space-promo-hidden');
         const _usdtPromoClose = document.getElementById('usdt-promo-window');
         if (_usdtPromoClose) _usdtPromoClose.classList.remove('usdt-promo-hidden');
         const _mpPromoClose = document.getElementById('mp-promo-window');
@@ -2883,33 +2906,93 @@ function fpCloseArena() {
     window.fpOpenArenaPreview   = fpOpenArenaPreview;
     window.fpStartWithControl   = fpStartWithControl; // fix: onclick en HTML lo necesita global
     // Cargador de minijuegos freeplay alternativos (Tetris-Cipher, etc.)
+    // Cargador de minijuegos freeplay alternativos (Tetris-Cipher, etc.)
     window.fpOpenFreeGame = function(gameSrc) {
+        console.log("[SISTEMA] Iniciando carga de juego:", gameSrc);
+        
         window._fpNextGameSrc = gameSrc;
-        window._fpLastGameSrc = gameSrc; // guardar para restart
-        // Skynet visual: aplica fondo Cyberdyne a columnas izquierda/derecha solo para Tetris-Cipher
+        window._fpLastGameSrc = gameSrc; 
+        
+        // 1. Definimos isTetris UNA SOLA VEZ
         const isTetris = gameSrc && gameSrc.indexOf('Tetris-Cipher') !== -1;
+
+        // 2. Manejo de la clase de centrado en el contenedor
+        const wrap = document.querySelector('.fp-game-wrap');
+        if (wrap) {
+            if (isTetris) {
+                wrap.classList.add('fp-game-wrap--tetris');
+            } else {
+                wrap.classList.remove('fp-game-wrap--tetris');
+            }
+        }
+
+        // 3. Iframe: siempre 100%/100%. Para Tetris en mobile aplicamos
+        // CSS scale desde el padre despues de que el game carga, para que
+        // el canvas (board+nextPanel) quede visible sin overflow.
+        const fpIframe = document.getElementById('fp-iframe');
+        if (fpIframe) {
+            fpIframe.style.width = '100%';
+            fpIframe.style.height = '100%';
+            fpIframe.style.transform = '';
+            fpIframe.style.transformOrigin = '';
+            if (isTetris && window.innerWidth <= 768) {
+                // En Tetris mobile, enviar el ancho disponible al juego
+                // El juego ajustara su canvas al ancho del iframe
+                fpIframe.addEventListener('load', function _tetrisSize() {
+                    fpIframe.removeEventListener('load', _tetrisSize);
+                    setTimeout(function() {
+                        var availableWidth = fpIframe.clientWidth || window.innerWidth;
+                        // Zoom 20% mas grande, centrado
+                        var zoom = 1.3;
+                        var gameWidth = availableWidth * zoom;
+                        fpIframe.style.transform = 'scale(' + zoom + ')';
+                        fpIframe.style.transformOrigin = 'center center';
+                        fpIframe.style.width = gameWidth + 'px';
+                        fpIframe.contentWindow.postMessage({ 
+                            type: 'SET_GAME_WIDTH', 
+                            width: gameWidth 
+                        }, '*');
+                        console.log("[SISTEMA] Tetris: SET_GAME_WIDTH =", gameWidth, "zoom:", zoom);
+                    }, 400);
+                });
+            }
+        } 
+
+        // 4. Skynet visual: aplica fondo Cyberdyne a columnas
         const colLeft  = document.querySelector('.fp-col-left');
         const colRight = document.querySelector('.fp-col-right');
         if (colLeft)  colLeft.classList.toggle('fp-col-skynet', isTetris);
         if (colRight) colRight.classList.toggle('fp-col-skynet', isTetris);
-        // Tetris Mobile: ajustar posición del FAQ briefing para que no se corte
+
+        // 5. Ajuste de posición del FAQ briefing en mobile
         if (isTetris && window.innerWidth <= 768) {
             var faqPanel = document.getElementById('fp-faq-panel');
             if (faqPanel) { faqPanel.style.top = 'calc(25% + 80px)'; }
         }
-        // Actualizar header del terminal con el nombre del juego
+
+        // 6. Actualizar header del terminal con el nombre del juego
         window._fpCurrentGameName = isTetris ? 'TETRIS_CIPHER // FREEPLAY' : 'PAC-HACK: DEATH // FREE_PLAY';
         var termHeader = document.querySelector('.fp-game-wrap .terminal-header-caos span:first-child');
         if (termHeader) termHeader.textContent = '[' + window._fpCurrentGameName + ']';
-        fpOpenArena(null);
-    };
 
-    // ── Backdoor: ?arena-preview en la URL abre el arena en modo preview ─────
-    if (new URLSearchParams(window.location.search).has('arena-preview')) {
-        window.addEventListener('load', function() {
-            setTimeout(fpOpenArenaPreview, 600);
-        });
-    }
+        // 7. Abrimos la arena
+        if (typeof fpOpenArena === 'function') {
+            fpOpenArena(null);
+        } else {
+            console.error("[ERROR] La función fpOpenArena no existe.");
+        }
+    };
+    // ── Backdoor: ?arena-preview o ?preview en la URL abre el arena en modo preview ─────
+    (function() {
+        var params = new URLSearchParams(window.location.search);
+        var isPreview = params.has('arena-preview') || params.has('preview');
+        if (isPreview) {
+            window._fpPreviewGame = params.get('game') || params.get('preview') || '';
+            window.addEventListener('load', function() {
+                setTimeout(fpOpenArenaPreview, 600);
+            });
+        }
+    })();
     window.addEventListener('message', function(e) {
         const d = e.data;
         if (!d || !d.type) return;
@@ -4353,7 +4436,7 @@ btn.addEventListener('click', toggleMutePlay);
                         <button class="cta-button" id="make-bet-pachack" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa);">
                             ¡MAKE YOUR BET!
                         </button>
-                        <button class="cta-button discord" id="play-pacman-demo-lobby" onclick="window.fpOpenFreeGame('pac-hack-freeplay/game.html')" style="margin-top: 5px;">
+                        <button class="cta-button discord" id="play-pacman-demo-lobby" onclick="window.fpOpenFreeGame('pac-hack-freeplay/game.html')" style="margin-top: 5px; font-family: 'Courier New', monospace; letter-spacing: 2px;">
                         &gt; EJECUTAR_PACKHACK_DEATH.exe      
                         </button>
                     </div>
@@ -7256,9 +7339,10 @@ btn.addEventListener('click', toggleMutePlay);
                 align-items: flex-start !important;
                 justify-content: flex-start !important;
                 padding: 10px 12px !important;
-                background: rgba(3,10,6,0.60) !important;
-                backdrop-filter: blur(6px) !important;
-                -webkit-backdrop-filter: blur(6px) !important;
+                background: transparent !important;
+                background-image: none !important;
+                backdrop-filter: blur(1px) !important;
+                -webkit-backdrop-filter: blur(1px) !important;
                 border: none !important;
                 border-bottom: 1px solid rgba(255,0,255,0.35) !important;
                 overflow: visible !important;
@@ -7287,9 +7371,10 @@ btn.addEventListener('click', toggleMutePlay);
                 align-items: flex-start !important;
                 justify-content: flex-start !important;
                 padding: 10px 12px !important;
-                background: rgba(13,10,20,0.60) !important;
-                backdrop-filter: blur(6px) !important;
-                -webkit-backdrop-filter: blur(6px) !important;
+                background: transparent !important;
+                background-image: none !important;
+                backdrop-filter: blur(1px) !important;
+                -webkit-backdrop-filter: blur(1px) !important;
                 border: none !important;
                 border-bottom: 1px solid rgba(255,60,94,0.35) !important;
                 overflow: visible !important;
@@ -9356,10 +9441,10 @@ window.addEventListener('load', function() { loadLeaderboard(); });
 var _duelWallet = null;
 var _duelPoll   = null;
 
-function toggleTetrisPromo() {
-    var w = document.getElementById('tetris-promo-window');
+function toggleSpacePromo() {
+    var w = document.getElementById('space-promo-window');
     if (!w) return;
-    w.classList.toggle('tetris-promo-hidden');
+    w.classList.toggle('space-promo-hidden');
 }
 
 function toggleDuelInbox() {

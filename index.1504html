@@ -10,7 +10,18 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:,">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    
+    <link rel="manifest" href="manifest.json?v=2">
+    <meta name="theme-color" content="#020408">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Rappibellion T2E">
+    <link rel="apple-touch-icon" href="images/icon-192x192.png">
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./service-worker.js');
+    }
+    </script>
     <!-- 
     ====================================
     $RPPI TOKEN INFO (OPTIMISM MAINNET)
@@ -44,10 +55,6 @@
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════════════════════
-     INTRO SCREEN — AAA game boot sequence
-     Auto-dismiss: 5s | Skip: click / any key
-     ══════════════════════════════════════════════════════════════════ -->
 <div id="intro-screen" style="
     position:fixed;inset:0;z-index:99999;
     background:#000;
@@ -163,6 +170,48 @@
         </div>
     </div>
 </div>
+
+<!-- === LAMP FLICKER EFFECT (CYAN) === -->
+<div id="lamp-flicker-btn" style="position:fixed;left:32px;bottom:32px;z-index:2147483646;cursor:pointer;background:rgba(0,255,255,0.12);border-radius:50%;box-shadow:0 0 16px 4px rgba(0,255,255,0.18);width:54px;height:54px;display:flex;align-items:center;justify-content:center;transition:background 0.2s;">
+  <svg id="lamp-flicker-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="16" cy="16" r="15" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <path d="M16 7a6 6 0 0 1 6 6c0 2.5-1.5 4.5-3.5 5.5V22a2.5 2.5 0 0 1-5 0v-3.5C11.5 17.5 10 15.5 10 13a6 6 0 0 1 6-6z" fill="#111" stroke="#00ffff" stroke-width="1.5"/>
+    <rect x="14" y="22" width="4" height="3" rx="2" fill="#00ffff"/>
+  </svg>
+</div>
+<div id="lamp-flicker-overlay" style="pointer-events:none;position:fixed;inset:0;z-index:2147483645;opacity:0.55;display:none;"></div>
+<script>
+// Lamp Flicker Effect (Cyan)
+(() => {
+  const btn = document.getElementById('lamp-flicker-btn');
+  const overlay = document.getElementById('lamp-flicker-overlay');
+  const icon = document.getElementById('lamp-flicker-icon');
+  let active = true;
+  let flickerInterval;
+
+  function setActive(state) {
+    active = state;
+    overlay.style.display = active ? 'block' : 'none';
+    icon.querySelector('path').setAttribute('fill', active ? '#111' : '#fff');
+    btn.style.background = active ? 'rgba(0,255,255,0.18)' : 'rgba(0,255,255,0.06)';
+  }
+
+    function flicker() {
+        if (!active) return;
+        // Radial cyan gradient, center on button (bottom left)
+        const btnRect = btn.getBoundingClientRect();
+        const x = btnRect.left + btnRect.width / 2;
+        const y = btnRect.top + btnRect.height / 2;
+        const a = 0.18 + Math.random()*0.13;
+        overlay.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(0,255,255,${a}) 0%, rgba(0,255,255,0.09) 75%, rgba(0,0,0,0.72) 100%)`;
+    }
+
+  btn.addEventListener('click', () => setActive(!active));
+  setActive(true);
+  flicker();
+    flickerInterval = setInterval(flicker, 55);
+})();
+</script>
 
 <style>
 @keyframes introScanMove { from{background-position:0 0} to{background-position:0 100px} }
@@ -451,19 +500,11 @@
 
     </div>
 
-
 </section>
-
-    <!-- Botón flotante Mute/Play Gardel -->
-    <button id="mute-play-btn" title="Mute/Play Gardel" class="mute-play-floating" style="display:none; position: fixed; top: 32px; right: 32px; z-index: 2147483647; background: transparent; border: none; box-shadow: none; border-radius: 0; padding: 0; transition: all 0.3s ease; cursor: pointer; pointer-events: auto;">
-        <img id="bird-icon" src="images/zorzal.PNG" alt="Zorzal" width="48" height="48" style="display:block;" />
-    </button>
-
-
 <!-- === GAME OVERLAY (contenido del circuito) === -->
-<div id="game-overlay" class="game-menu-hidden">
+<div id="game-overlay" class="game-menu-hidden"> 
     <div class="game-content">
-
+    
         <div id="santo-grial-message" class="caos-terminal" style="max-width: 900px; margin-bottom: 30px;">
             <div class="terminal-header-caos">
                 <span>[INCOMING_TRANSMISSION_REBELBET]</span>
@@ -472,23 +513,23 @@
                 <p id="typewriter-text"></p>
             </div>
         </div>
-
+        
         <div class="beta-container" style="position: relative;">
             <div class="beta-column" id="free-play-column">
                 <h3 style="color: var(--color-azul-glitch); text-shadow: 0 0 10px var(--color-azul-glitch);">MODO FREE PLAY</h3>
                 <p>Practica tus habilidades de hackeo aquí. ¡Juega gratis y decide qué juegos entran a la versión final!</p>
-
+                
                 <div class="game-placeholder">
                     <img src="juegos beta/arkanoid.webp" alt="ARKA-HACK" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario);">SLOT 1: ARKA-HACK</strong><br>(Arkanoid - Rompe el firewall)</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">SLOT 1: ARKA-HACK</strong><br>(Arkanoid - Rompe el firewall)</p>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch);">SLOT 2: SPACE-BREAKER</strong><br>(Space Invaders - Defiende el nodo)</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">SLOT 2: SPACE-BREAKER</strong><br>(Space Invaders - Defiende el nodo)</p>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde);">SLOT 3: TETRIS-CIPHER</strong><br>(Tetris - Organiza el código encriptado)</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">SLOT 3: TETRIS-CIPHER</strong><br>(Tetris - Organiza el código encriptado)</p>
                     <button class="cta-button" onclick="window.fpOpenFreeGame('Tetris-Cipher/index.html')"
                             style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-color: var(--color-caos-verde); color: var(--color-caos-verde);">
                         &gt; CYBERDINE CLASSIFIED DATA
@@ -496,11 +537,11 @@
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/snake.PNG" alt="SNAKE-PROTOCOL" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-amarillo);">SLOT 4: SNAKE-PROTOCOL</strong><br>(Snake - Conecta los circuitos)</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-amarillo); text-shadow: 0 0 8px var(--color-caos-amarillo);">SLOT 4: SNAKE-PROTOCOL</strong><br>(Snake - Conecta los circuitos)</p>
                 </div>
                 <div class="game-placeholder">
-                    <img src="juegos beta/pacman.jfif" alt="PAC-HACK: DEATH" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa);">SLOT 5: PAC-HACK: DEATH</strong><br>(Pac-Man - Escapá del antivirus)</p>
+                    <img src="juegos beta/pacman.jfif" alt="PAC-HACK" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa); text-shadow: 0 0 8px var(--color-caos-rosa);">SLOT 5: PAC-HACK</strong><br>(Pac-Man - Escapá del antivirus)</p>
                     <button class="cta-button rosa" id="play-pacman-demo"
                             style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px;">
                         &gt; EJECUTAR_PACKHACK_DEATH.exe
@@ -508,57 +549,59 @@
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/memorama.webp" alt="MEMORY-BREACH" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario);">SLOT 6: MEMORY-BREACH</strong><br>(Memorama - Descubre los pares de datos)</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">SLOT 6: MEMORY-BREACH</strong><br>(Memorama - Descubre los pares de datos)</p>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/pong.webp" alt="PONG-FIREWALL" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch);">SLOT 7: PONG-FIREWALL</strong><br>(Pong - Rebotá el ataque DDoS)</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">SLOT 7: PONG-FIREWALL</strong><br>(Pong - Rebotá el ataque DDoS)</p>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/flappy bird.jpg" alt="FLAPPY-DRONE" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde);">SLOT 8: FLAPPY-DRONE</strong><br>(Flappy Bird - Piloteá el drone)</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">SLOT 8: FLAPPY-DRONE</strong><br>(Flappy Bird - Piloteá el drone de reconocimiento)</p>
                 </div>
-
+                
+                <!-- Botón de Votación -->
                 <div style="margin-top: 30px; text-align: center;">
                     <h4 style="color: var(--color-azul-glitch);">¿Ya jugaste?</h4>
                     <button onclick="window.openVoteModal()" class="cta-button whitepaper">VOTAR POR MI MINIJUEGO FAVORITO</button>
                 </div>
             </div>
-
             <div class="beta-column" id="t2e-column">
                 <h3 style="color: var(--color-primario); text-shadow: 0 0 10px var(--color-primario);">MODO THINK-TO-EARN (T2E)</h3>
-                <p>¿Listo para la rebelión? Elige tu arena, conecta tu billetera y "hackea" a la competencia.</p>
-
+                <p>¿Listo para la rebelión? Elige tu arena, conecta tu billetera y \"hackea\" a la competencia.</p>
+                
                 <div class="game-placeholder">
-                    <img src="juegos beta/pacman.jfif" alt="PAC-HACK: DEATH" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa);">[PAC-HACK: DEATH]</strong><br>(El "Laberinto")</p>
+                    <img src="juegos beta/pacman.jfif" alt="PAC-HACK" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-rosa); text-shadow: 0 0 8px var(--color-caos-rosa);">[PAC-HACK]</strong><br>(El "Laberinto")</p>
                     <button class="cta-button" id="make-bet-pachack" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa);">
                         ¡MAKE YOUR BET!
                     </button>
-
+                    
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch);">[SPACE-BREAKER]</strong><br>(La "Flota")</p>
-                    <button class="cta-button" id="make-bet-spacebreaker" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">[SPACE-BREAKER]</strong><br>(La \"Flota\")</p>
+                    <button class="cta-button" id="make-bet-spacebreaker" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em; cursor: default;" disabled>
                         [ NOT AVAILABLE ]
                     </button>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde);">[TETRIS-CIPHER]</strong><br>(El "Código")</p>
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">[TETRIS-CIPHER]</strong><br>(El \"Código\")</p>
                     <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); padding: 15px 30px; font-size: 1.2em;">
                         SOON 16.04.2026
+                    </button>
+                    <button class="cta-button" id="play-tetriscipher-demo" style="margin-top: 5px; background: transparent; border-color: var(--color-caos-verde); color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde); cursor: default;" disabled>
+                        ⏳ [TETRIS-CIPHER] // IN PROGRESS
                     </button>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/memorama.webp" alt="MEMORY-BREACH" style="width: 100%; height: auto; display: block;">
-                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario);">[MEMORY-BREACH]</strong><br>(La "Memoria")</p>
-                    <button class="cta-button" id="make-bet-memorybreach" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">[MEMORY-BREACH]</strong><br>(La \"Memoria\")</p>
+                    <button class="cta-button" id="make-bet-memorybreach" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em; cursor: default;" disabled>
                         [ NOT AVAILABLE ]
                     </button>
                 </div>
-
                 <button id="connect-wallet-button" class="cta-button whitepaper">
                     CONECTA TU BILLETERA PARA ENTRAR AL CIRCUITO
                 </button>
@@ -567,8 +610,8 @@
                 </button>
                 <p id="wallet-status" style="margin-top: 15px; font-size: 0.9em; color: var(--color-caos-verde);"></p>
                 <p id="wallet-address" style="margin-top: 5px; font-size: 0.85em; color: var(--color-azul-glitch); font-family: var(--fuente-titulos);"></p>
-
-                <!-- Opiniones T2E -->
+                
+                <!-- Sistema de Opiniones T2E -->
                 <div class="t2e-opinions-container" style="margin-top: 30px;">
                     <h4 style="color: var(--color-caos-verde);">¡Deja tu feedback!</h4>
                     <div class="rebellion-comment-form" style="background: rgba(5, 10, 15, 0.8); border: 2px solid var(--color-primario); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
@@ -600,13 +643,26 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="game-menu-footer">
             <button id="exit-game-button" class="exit-game-button">EXIT GAME</button>
             <p>© 2025 Bits Lab (Biointeligencia Artificial Technologies Lab). Todos los derechos reservados.</p>
         </div>
+        
     </div>
+    
 </div>
+
+
+
+</section>
+
+    <!-- Botón flotante Mute/Play Gardel -->
+    <button id="mute-play-btn" title="Mute/Play Gardel" class="mute-play-floating" style="display:none; position: fixed; top: 32px; right: 32px; z-index: 2147483647; background: transparent; border: none; box-shadow: none; border-radius: 0; padding: 0; transition: all 0.3s ease; cursor: pointer; pointer-events: auto;">
+        <img id="bird-icon" src="images/zorzal.PNG" alt="Zorzal" width="48" height="48" style="display:block;" />
+    </button>
+
+
 
 <!-- === BOTÓN FLOTANTE: CONTACTO === -->
 <button id="contact-float-btn" title="Contacto / Soporte" onclick="document.getElementById('contact-modal').style.display='flex'">
@@ -928,64 +984,23 @@
   </div>
 </div>
 
-<!-- ══ TETRIS HUD FLOTANTE ══ -->
-<div id="tetris-hud">
-
-    <!-- Timer arriba izquierda -->
-    <div id="thud-timer">
-        <span id="thud-timer-lbl">// TIMER //</span>
-        <span id="thud-timer-val">10:00</span>
-    </div>
-
-    <!-- Score arriba derecha -->
-    <div id="thud-score">
-        <span id="thud-score-lbl">// SCORE //</span>
-        <span id="thud-score-val">0000</span>
-    </div>
-
-    <!-- Boost btn arriba centro — solo en bet mode -->
-    <button id="thud-boost" onclick="fpFireBoost()">HACK IT</button>
-
-    <!-- Chaos bar abajo izquierda -->
-    <div id="thud-chaos">
-        <div id="thud-chaos-lbl">
-            <span>// CHAOS</span>
-            <span id="thud-chaos-pct">0%</span>
+<!-- 🟩 TETRIS-CIPHER — promo widget (siempre visible) -->
+<div id="tetris-promo-window">
+    <div class="tetris-promo-terminal">
+        <div class="tetris-promo-hdr">
+            <span>TETRIS-CIPHER</span>
+            <button onclick="document.getElementById('tetris-promo-window').style.display='none'" style="background:none;border:none;color:rgba(0,255,65,0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
         </div>
-        <div id="thud-chaos-bar-outer">
-            <div id="thud-chaos-bar-inner"></div>
-        </div>
-    </div>
-
-    <!-- Controles abajo derecha -->
-    <div id="thud-controls">
-        <select class="thud-duration-select" id="thud-duration-select">
-            <option value="300">5 MIN</option>
-            <option value="600" selected>10 MIN</option>
-        </select>
-        <button class="thud-ctrl-btn restart" id="thud-restart-btn">↺</button>
-        <button class="thud-ctrl-btn exit"    id="thud-exit-btn">EXIT</button>
-    </div>
-
-</div>
-
-<!-- 🟩 SPACE-BREAKER — promo widget (siempre visible) -->
-<div id="space-promo-window">
-    <div class="space-promo-terminal">
-        <div class="space-promo-hdr">
-            <span>SPACE-BREAKER</span>
-            <button onclick="document.getElementById('space-promo-window').style.display='none'" style="background:none;border:none;color:rgba(0,255,255,0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
-        </div>
-        <div class="space-promo-body">
-            <div class="space-promo-img-wrap">
-                <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width:100%;height:auto;display:block;opacity:0.85;filter:grayscale(80%) contrast(120%);">
+        <div class="tetris-promo-body">
+            <div class="tetris-promo-img-wrap">
+                <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width:100%;height:auto;display:block;opacity:0.85;">
             </div>
-            <p class="space-promo-tagline">Rompe el espacio, quebranta el código<br>antes que el vacuum te consuma.</p>
-            <div class="space-promo-date-box">
-                <span class="space-promo-date-label">PRÓXIMAMENTE</span>
-                <span class="space-promo-date">EN DESARROLLO</span>
+            <p class="tetris-promo-tagline">Organiza el código encriptado<br>antes de que el sistema colapse.</p>
+            <div class="tetris-promo-date-box">
+                <span class="tetris-promo-date-label">DEMO DISPONIBLE</span>
+                <span class="tetris-promo-date">DISPONIBLE</span>
             </div>
-            <p class="space-promo-sub">// THINK TO EARN — circuito T2E expandiéndose</p>
+            <p class="tetris-promo-sub">// THINK TO EARN — modo T2E en beta cerrada</p>
         </div>
     </div>
 </div>
@@ -1049,11 +1064,11 @@
         <div class="terminal-body-caos" style="color: var(--color-texto);">
             <div class="form-group" id="bets-offers-lobby">
                 <label style="text-align: center; color: var(--color-caos-amarillo);">[ DESAFÍOS ABIERTOS EN "EL CIRCUITO" ]</label>
-                <div class="bets-offers-list"></div>
+                <div class="bets-offers-list">
+                    <!-- Apuestas dinámicas cargadas desde blockchain -->
+                </div>
             </div>
-            <h3 id="bet-modal-title" style="color: var(--color-primario); text-align: center; border-top: 1px dashed #555; padding-top: 0px; margin-bottom: 20px;">
-                O CREA TU PROPIO DESAFÍO T2E
-            </h3>
+            <h3 id="bet-modal-title" style="color: var(--color-primario); text-align: center; border-top: 1px dashed #555; padding-top: 20px; margin-bottom: 20px;">O CREA TU PROPIO DESAFÍO T2E</h3>
             <div class="form-group">
                 <label for="bet-amount">1. DEFINE TU APUESTA (EL BOTE):</label>
                 <div style="display: flex; align-items: center;">
@@ -1082,23 +1097,6 @@
             </button>
         </div>
     </div>
-</div>
-
-<!-- ROTATE DEVICE OVERLAY — solo mobile portrait -->
-<div id="fp-rotate-overlay" style="
-    display: none;
-    position: fixed; inset: 0; z-index: 9999;
-    background: #030a06;
-    flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 24px;
-    font-family: 'Orbitron', monospace;
-    color: var(--color-caos-amarillo);
-    text-align: center;
-    padding: 32px;
-">
-    <div style="font-size: 64px; animation: fp-exit-pulse 1.2s infinite;">↺</div>
-    <div style="font-size: 14px; letter-spacing: 4px; line-height: 1.8;">ROTÁ EL DISPOSITIVO<br><span style='font-size:10px;color:rgba(0,255,255,0.7);letter-spacing:2px;'>LANDSCAPE MODE REQUIRED</span></div>
 </div>
 
 <!-- === FREE PLAY ARENA — 3 COLUMNAS === -->
@@ -1158,7 +1156,6 @@
         </div>
 
     </div>
-
     <!-- COLUMNA CENTRAL: JUEGO en terminal caos -->
     <div class="fp-game-wrap">
         <div class="caos-terminal" style="height:100%;margin:0;border-radius:0;
@@ -1183,6 +1180,7 @@
                     allow="autoplay"
                     style="width:100%;height:100%;border:none;display:block;">
                 </iframe>
+
 
                 <!-- BOOST OVERLAY — flotante sin fondo sobre el juego -->
                 <button id="fp-boost-overlay-btn"
@@ -1669,7 +1667,7 @@ document.addEventListener('DOMContentLoaded', function() {
         startButton.addEventListener('click', function() {
             betaStartScreen.style.display = 'none';
             gameOverlay.classList.remove('game-menu-hidden');
-            if (typewriterEl) setTimeout(() => typeWriter(typewriterEl, textoSantoGrial, 30), 300);
+            // typewriter fires once via DOMContentLoaded
             const santo = document.getElementById('santo-grial-message');
             if (santo) setTimeout(() => santo.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
         });
@@ -1877,7 +1875,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const ctrlDpadBtn       = document.getElementById('ctrl-dpad-btn');
 
     function fpStartWithControl(mode) {
-        // Enviar modo al iframe
+        fpState.controlMode = mode; // guardar para restart
+        // Enviar modo al iframe (T2E soporta SET_CONTROL; freeplay usa dpad overlay del padre)
         if (fpIframe && fpIframe.contentWindow) {
             fpIframe.contentWindow.postMessage({ type:'SET_CONTROL', mode: mode }, '*');
         }
@@ -1886,8 +1885,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const cdEl = document.getElementById('ctrl-auto-countdown');
         if (cdEl) { clearInterval(cdEl._interval); cdEl.textContent = ''; }
         if (document.getElementById('fp-verdict')) document.getElementById('fp-verdict').classList.remove('show');
-        // Limpiar tetris fullscreen
-        _tetrisFpCloseArenaHook();
 
         // Mostrar arena
         const dur = parseInt(fpDurSelect ? fpDurSelect.value : 600);
@@ -1897,8 +1894,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpTimerEl)  fpTimerEl.style.color = '';
         if (fpArena)    fpArena.classList.add('show');
 
-        // _fpSetupBetSync ya fue llamado desde fpOpenArena — la arena espera startAt de Firebase
-        // En free play (sin betMode), también se arrancó desde fpOpenArena
+        // En free play, iniciar countdown después de elegir control
+        if (!fpState.betMode) {
+            setTimeout(fpStartCountdown, 600);
+        }
     }
 
     if (ctrlSwipeBtn) ctrlSwipeBtn.addEventListener('click', () => fpStartWithControl('swipe'));
@@ -1951,9 +1950,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const _chatWidget = document.getElementById('gemini-chat-widget');
         if (_chatFab)    _chatFab.style.display = 'none';
         if (_chatWidget) _chatWidget.style.display = 'none';
-        // Ocultar promo Space-Breaker y USDT widget para no tapar el timer/score
-        const _spacePromo = document.getElementById('space-promo-window');
-        if (_spacePromo) _spacePromo.classList.add('space-promo-hidden');
+        // Ocultar promo Tetris-Cipher y USDT widget para no tapar el timer/score
+        const _tetrisPromo = document.getElementById('tetris-promo-window');
+        if (_tetrisPromo) _tetrisPromo.classList.add('tetris-promo-hidden');
         const _usdtPromo = document.getElementById('usdt-promo-window');
         if (_usdtPromo) _usdtPromo.classList.add('usdt-promo-hidden');
         const _mpPromo = document.getElementById('mp-promo-window');
@@ -1976,33 +1975,6 @@ document.addEventListener('DOMContentLoaded', function() {
             navigator.wakeLock.request('screen')
                 .then(lock => { window._fpWakeLock = lock; })
                 .catch(() => {});
-        }
-
-        // En mobile — intentar lock landscape; si falla mostrar overlay
-        if (window.innerWidth <= 768 || window.innerHeight <= 768) {
-            const rotateOverlay = document.getElementById('fp-rotate-overlay');
-            const tryLockLandscape = () => {
-                if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('portrait').catch(() => {
-                        // iOS / sin permiso — fallback overlay
-                        if (rotateOverlay && window.matchMedia('(orientation: portrait)').matches) {
-                            rotateOverlay.style.display = 'flex';
-                        }
-                    });
-                } else if (rotateOverlay && window.matchMedia('(orientation: portrait)').matches) {
-                    rotateOverlay.style.display = 'flex';
-                }
-            };
-            tryLockLandscape();
-            // Escuchar rotación para ocultar overlay cuando gira
-            const _onOrientationChange = () => {
-                if (rotateOverlay && window.matchMedia('(orientation: landscape)').matches) {
-                    rotateOverlay.style.display = 'none';
-                }
-            };
-            window.addEventListener('orientationchange', _onOrientationChange);
-            window.addEventListener('resize', _onOrientationChange);
-            window._fpOrientationListener = _onOrientationChange;
         }
 
         // En mobile — promover iframe a capa GPU propia
@@ -2030,11 +2002,17 @@ document.addEventListener('DOMContentLoaded', function() {
             // Actualizar header del terminal
             var termHeader = document.querySelector('.fp-game-wrap .terminal-header-caos span:first-child');
             if (termHeader) termHeader.textContent = '[' + gameName + ']';
-            fpIframe.src = nextGameSrc;
             window._fpNextGameSrc = null; // limpiar para próxima vez
-            // Auto-focus al iframe para que los controles funcionen sin click previo
+
+            // Cargar iframe inmediatamente en todos los modos.
+            // START_MATCH se envia al final del countdown para arrancar el juego.
+            fpIframe.src = nextGameSrc;
             fpIframe.addEventListener('load', function onIframeLoad() {
                 fpIframe.removeEventListener('load', onIframeLoad);
+                // Reenviar START_MATCH si el countdown ya termino (iframe cargo tarde)
+                if (fpState.running && fpCdOverlay && !fpCdOverlay.classList.contains('show')) {
+                    fpIframe.contentWindow.postMessage({ type: 'START_MATCH' }, '*');
+                }
                 setTimeout(function() { fpIframe.focus(); }, 300);
             });
         }
@@ -2048,6 +2026,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 _fpToggleRivalPanel(fpState.betMode, betId);
                 if (fpState.betMode && betId) {
                     _fpSetupBetSync(betId);
+                }
+                // Mobile freeplay: ocultar flotantes que tapan la arena
+                if (!fpState.betMode) {
+                    ['contact-float-btn','duel-trigger-btn','finder-float-window',
+                     'lobby-float-window','fp-fab-drawer','fp-fab-reopen'].forEach(function(id) {
+                        var el = document.getElementById(id);
+                        if (el) { el.dataset.fpHiddenPrev = el.style.display || ''; el.style.display = 'none'; }
+                    });
                 }
                 // Countdown de 5s para auto-elegir swipe
                 const cdEl = document.getElementById('ctrl-auto-countdown');
@@ -2063,9 +2049,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             cdEl.textContent = secsLeft + 's';
                         }
                     }, 1000);
-                } else if (!fpState.betMode) {
-                    setTimeout(fpStartCountdown, 600);
-                }
+                } 
+                // NO llamar fpStartCountdown aquí — se llama después de elegir control o cuando auto-countdown elige swipe
                 return;
             }
         }
@@ -2117,24 +2102,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const _chatFabPV = document.getElementById('gemini-chat-fab');
         if (_chatFabPV) _chatFabPV.style.display = 'none';
         document.body.style.overflow    = 'hidden';
-        document.body.style.touchAction = 'none';
-
-        // Intentar lock landscape igual que en duelo real
-        if (window.innerWidth <= 768 || window.innerHeight <= 768) {
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('portrait').catch(function(){});
-            }
-        }
-
-        // Cargar juego según preview o default pac-hack
-        // Soporta window._fpPreviewGame = 'tetris' para modo preview
+        
+        // Cargar pac-hack REAL (no freeplay) para mostrar la UI completa del T2E
         if (fpIframe) {
-            var previewGame = window._fpPreviewGame;
-            var gameSrc = 'pac-hack/game.html?player=p1';
-            if (previewGame === 'tetris' || previewGame === '1') {
-                gameSrc = 'Tetris-Cipher-T2E/index.html';
-            }
-            fpIframe.src = gameSrc;
+            fpIframe.src = 'pac-hack/game.html?player=p1';
             fpIframe.addEventListener('load', function onPVLoad() {
                 fpIframe.removeEventListener('load', onPVLoad);
                 setTimeout(function() { fpIframe.focus(); }, 300);
@@ -2228,7 +2199,7 @@ document.addEventListener('DOMContentLoaded', function() {
             freePanel.style.display  = 'flex';
             rivalPanel.style.display = 'none';
             if (tauntChat)    tauntChat.style.display    = 'none';
-            if (faqPanel)     faqPanel.style.display     = 'block';
+            if (faqPanel)     faqPanel.style.display     = (window.innerWidth <= 768) ? 'none' : 'block';
             if (friendFinder) friendFinder.style.display = 'none'; // ocultar hasta que el usuario lo abra
             _fpStopRivalTimer();
         }
@@ -2265,24 +2236,29 @@ document.addEventListener('DOMContentLoaded', function() {
         const s = secs % 60;
         return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
     }
-
+    
     function fpStartCountdown() {
+        if (fpState._cdRunning) return; // guard: no iniciar si ya hay countdown activo
+        fpState._cdRunning = true;
+        fpState.running = true; // activar ANTES del 3-2-1: el gate de CHAOS_LEVEL lo necesita
         const steps = [
-            { num:'3',     cls:'big',   sub:'PREPÁRATE PARA HACKEAR',      dur:1125 },
-            { num:'2',     cls:'big',   sub:'LOS FANTASMAS TE ESPERAN',    dur:1125 },
-            { num:'1',     cls:'big',   sub:'¡ÚLTIMA OPORTUNIDAD!',        dur:1125 },
-            { num:'READY', cls:'ready', sub:'',                             dur:1125 },
-            { num:'HACK!', cls:'go',    sub:'',                             dur:875 },
+            { num:'3',     cls:'big',   sub:'PREPÁRATE PARA HACKEAR',   dur:1125 },
+            { num:'2',     cls:'big',   sub:'LOS FANTASMAS TE ESPERAN', dur:1125 },
+            { num:'1',     cls:'big',   sub:'¡ÚLTIMA OPORTUNIDAD!',     dur:1125 },
+            { num:'READY', cls:'ready', sub:'',                          dur:1125 },
+            { num:'HACK!', cls:'go',    sub:'',                          dur:875  },
         ];
         if (fpCdOverlay) fpCdOverlay.classList.add('show');
         let i = 0;
         function step() {
             if (i >= steps.length) {
                 if (fpCdOverlay) fpCdOverlay.classList.remove('show');
+                // START_MATCH para todos los modos: arranca T2E y sincroniza freeplay
                 if (fpIframe && fpIframe.contentWindow) {
                     fpIframe.contentWindow.postMessage({ type:'START_MATCH' }, '*');
                 }
-                fpState.running  = true;
+                fpState._cdRunning = false; // countdown terminado
+                if (fpState.interval) { clearInterval(fpState.interval); fpState.interval = null; }
                 fpState.interval = setInterval(fpTick, 1000);
                 return;
             }
@@ -2290,7 +2266,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (fpCdNum) {
                 fpCdNum.className   = 'countdown-num ' + s.cls;
                 fpCdNum.textContent = s.num;
-                // Reiniciar animación — truco del test-circuito
                 fpCdNum.style.animation = 'none';
                 void fpCdNum.offsetWidth;
                 fpCdNum.style.animation = '';
@@ -2301,13 +2276,60 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         step();
     }
+   
 
     function fpTick() {
         if (!fpState.running || fpState.ended) return;
         fpState.timeLeft--;
         fpRenderTimer(fpState.timeLeft);
         if (fpTimerBar) fpTimerBar.style.width = (fpState.timeLeft / fpState.totalTime * 100) + '%';
+        // Chaos en freeplay: sube con el tiempo transcurrido (20% al inicio, 100% al final)
+        if (!fpState.betMode) {
+            var _elapsed   = fpState.totalTime - fpState.timeLeft;
+            var progression = _elapsed / fpState.totalTime;
+            
+            // MATEMÁTICA: Piso de 20% + curva exponencial hasta llegar a 100%
+            // (20 base + 80 de rango progresivo)
+            var chaosValue = 20 + (Math.pow(progression, 1.5) * 80);
+            var _timeChaos = Math.min(100, Math.floor(chaosValue));
+            
+            _fpApplyChaosFreeplay(_timeChaos);
+        }
         if (fpState.timeLeft <= 0) { clearInterval(fpState.interval); fpState.ended = true; fpEndPractice(); }
+    }
+
+    // Aplica nivel de caos a la UI para freeplay (el iframe no envia CHAOS_LEVEL)
+    function _fpApplyChaosFreeplay(level) {
+        if (level === fpState.chaosLevel) return;
+        fpState.chaosLevel = level;
+        // Notificar al juego del nivel de caos para que acelere velocidad/dificultad
+        if (fpIframe && fpIframe.contentWindow) {
+            fpIframe.contentWindow.postMessage({ type: 'CHAOS_LEVEL', level: level }, '*');
+        }
+        var _cbar  = document.getElementById('fp-chaos-bar');
+        var _cpct  = document.getElementById('fp-chaos-pct');
+        var _clbl  = document.querySelector('.fp-chaos-label');
+        var _cdyna = document.getElementById('fp-chaos-dynabtn-wrap');
+        var _ccap  = fpState.chaosUnlocked !== true;
+        var _cdisp = _ccap ? Math.min(level, 70) : level;
+        if (_cdyna) {
+            if (level >= 70 && fpState.running && !fpState.chaosUnlocked)
+                _cdyna.style.display = 'block';
+            else if (fpState.chaosUnlocked)
+                _cdyna.style.display = 'none';
+        }
+        if (_cbar) {
+            _cbar.style.width = _cdisp + '%';
+            _cbar.classList.toggle('apocalypse', _cdisp >= 80);
+            _cbar.style.boxShadow = (_ccap && level >= 70) ? '0 0 8px rgba(255,80,0,0.7)' : '';
+        }
+        if (_cpct) _cpct.textContent = (_ccap && level >= 70) ? '70%\uD83D\uDD12' : _cdisp + '%';
+        if (_clbl) {
+            _clbl.style.color = _cdisp < 30  ? 'var(--color-caos-verde)'
+                              : _cdisp < 60  ? 'var(--color-caos-amarillo)'
+                              : _cdisp < 80  ? 'var(--color-caos-rosa)'
+                              : 'var(--color-primario)';
+        }
     }
 
     function fpRenderTimer(secs) {
@@ -2415,6 +2437,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const scoreEl  = document.getElementById('vrd-score');
         const phraseEl = document.getElementById('vrd-phrase');
 
+        // Obtener el veredicto según el juego
+        var verdict = fpGetVerdict(score);
+
         // Mostrar resultado de apuesta si hay una activa
         const betResult = window._fpLastBetResult;
         const betResultEl = document.getElementById('vrd-bet-result');
@@ -2479,9 +2504,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 400);
     }
 
-    function fpEndPractice() {
+function fpEndPractice() {
+        console.log('!!! ARENA TERMINADA: Enviando MATCH_ENDED al Tetris...');
         if (fpIframe && fpIframe.contentWindow) {
-            fpIframe.contentWindow.postMessage({ type:'MATCH_ENDED' }, '*');
+            fpIframe.contentWindow.postMessage({ type: 'MATCH_ENDED' }, '*');
         }
         if (fpTimerEl) { fpTimerEl.style.color = 'rgba(255,255,255,0.2)'; }
 
@@ -2730,9 +2756,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function fpCloseArena() {
         clearInterval(fpState.interval);
+        fpState._cdRunning = false;
         if (fpArena)  fpArena.classList.remove('show');
         if (fpState.betMode) _fpExitFullscreen();
         if (fpIframe) fpIframe.src = '';
+        window._fpPendingGameSrc = null; // limpiar src pendiente por si se cerró antes del countdown
         // Limpiar Skynet bg al cerrar
         document.querySelectorAll('.fp-col-skynet').forEach(function(el) { el.classList.remove('fp-col-skynet'); });
         // Reset faq-panel position
@@ -2769,9 +2797,20 @@ function fpCloseArena() {
         const _chatFabClose = document.getElementById('gemini-chat-fab');
         const _chatWidgetClose = document.getElementById('gemini-chat-widget');
         if (_chatFabClose) _chatFabClose.style.display = '';
-        // Restaurar promo Space-Breaker y USDT widget
-        const _spacePromoClose = document.getElementById('space-promo-window');
-        if (_spacePromoClose) _spacePromoClose.classList.remove('space-promo-hidden');
+        // Restaurar flotantes mobile ocultados durante la arena
+        if (window.innerWidth <= 768) {
+            ['fp-faq-panel','contact-float-btn','duel-trigger-btn',
+             'finder-float-window','lobby-float-window','fp-fab-drawer','fp-fab-reopen'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el && el.dataset.fpHiddenPrev !== undefined) {
+                    el.style.display = el.dataset.fpHiddenPrev;
+                    delete el.dataset.fpHiddenPrev;
+                }
+            });
+        }
+        // Restaurar promo Tetris-Cipher y USDT widget
+        const _tetrisPromoClose = document.getElementById('tetris-promo-window');
+        if (_tetrisPromoClose) _tetrisPromoClose.classList.remove('tetris-promo-hidden');
         const _usdtPromoClose = document.getElementById('usdt-promo-window');
         if (_usdtPromoClose) _usdtPromoClose.classList.remove('usdt-promo-hidden');
         const _mpPromoClose = document.getElementById('mp-promo-window');
@@ -2808,151 +2847,138 @@ function fpCloseArena() {
     }
 
     // Exponer globalmente para que t2e-integration.js pueda llamarlas desde fuera del closure
-    // ══ TETRIS HUD — sincronizar datos y controles ══
-    function _fpTetrisHudSync(activate) {
-        const hud = document.getElementById('tetris-hud');
-        if (!hud) return;
-
-        if (!activate) {
-            hud.style.display = 'none';
-            return;
-        }
-        hud.style.display = 'block';
-
-        // Sync timer inicial
-        var timerVal = document.getElementById('fp-timer');
-        var thudTimer = document.getElementById('thud-timer-val');
-        if (timerVal && thudTimer) thudTimer.textContent = timerVal.textContent;
-
-        // Sync score inicial
-        var scoreEl  = document.getElementById('fp-score');
-        var thudScore = document.getElementById('thud-score-val');
-        if (scoreEl && thudScore) thudScore.textContent = scoreEl.textContent;
-
-        // Sync duration select
-        var mainSel  = document.getElementById('fp-duration-select');
-        var thudSel  = document.getElementById('thud-duration-select');
-        if (mainSel && thudSel) {
-            thudSel.value = mainSel.value;
-            thudSel.addEventListener('change', function() {
-                mainSel.value = this.value;
-            });
-        }
-
-        // Botón restart
-        var thudRestart = document.getElementById('thud-restart-btn');
-        var mainRestart = document.getElementById('fp-restart-btn');
-        if (thudRestart && mainRestart) {
-            thudRestart.onclick = function() { mainRestart.click(); };
-        }
-
-        // Botón exit
-        var thudExit = document.getElementById('thud-exit-btn');
-        var mainExit = document.getElementById('fp-exit-btn');
-        if (thudExit && mainExit) {
-            thudExit.onclick = function() { mainExit.click(); };
-        }
-
-        // Mostrar boost si es bet mode
-        var thudBoost = document.getElementById('thud-boost');
-        if (thudBoost) {
-            thudBoost.style.display = fpState.betMode ? 'block' : 'none';
-        }
-
-        // Observar cambios en el timer y score del HUD principal
-        // via MutationObserver para mantener sync sin polling
-        if (window._tetrisHudObserver) window._tetrisHudObserver.disconnect();
-        window._tetrisHudObserver = new MutationObserver(function() {
-            if (timerVal && thudTimer) thudTimer.textContent = timerVal.textContent;
-            // Sync color del timer (gris al terminar)
-            if (timerVal) thudTimer.style.color = timerVal.style.color || '';
-        });
-        if (timerVal) {
-            window._tetrisHudObserver.observe(timerVal, { childList: true, characterData: true, subtree: true });
-        }
-        if (window._tetrisScoreObserver) window._tetrisScoreObserver.disconnect();
-        window._tetrisScoreObserver = new MutationObserver(function() {
-            if (scoreEl && thudScore) thudScore.textContent = scoreEl.textContent;
-        });
-        if (scoreEl) {
-            window._tetrisScoreObserver.observe(scoreEl, { childList: true, characterData: true, subtree: true });
-        }
-    }
-
-    // Sync chaos level al HUD tetris también
-    var _origChaosHandler = null;
-    function _fpUpdateTetrisChaosBars(level) {
-        var bar   = document.getElementById('thud-chaos-bar-inner');
-        var pct   = document.getElementById('thud-chaos-pct');
-        var lbl   = document.getElementById('thud-chaos-lbl');
-        if (!bar) return;
-        bar.style.width = level + '%';
-        if (level >= 80) bar.classList.add('apocalypse');
-        else             bar.classList.remove('apocalypse');
-        if (pct) pct.textContent = level + '%';
-        if (lbl) {
-            if (level >= 80)      lbl.style.color = 'var(--color-primario)';
-            else if (level >= 60) lbl.style.color = 'var(--color-caos-rosa)';
-            else if (level >= 30) lbl.style.color = 'var(--color-caos-amarillo)';
-            else                  lbl.style.color = 'var(--color-caos-verde)';
-        }
-    }
-
-    // Limpiar tetris fullscreen al cerrar arena
-    var _origFpCloseArena = window.fpCloseArena;
-    function _tetrisFpCloseArenaHook() {
-        const arena = document.getElementById('t2eplay-arena');
-        if (arena) arena.classList.remove('tetris-fullscreen');
-        const hud = document.getElementById('tetris-hud');
-        if (hud) hud.style.display = 'none';
-        if (window._tetrisHudObserver)   window._tetrisHudObserver.disconnect();
-        if (window._tetrisScoreObserver) window._tetrisScoreObserver.disconnect();
-    }
-
-    window.fpOpenArena        = fpOpenArena;
-    window.fpCloseArena       = fpCloseArena;
-    window.fpOpenArenaPreview = fpOpenArenaPreview;
+    // D-PAD: envia teclas al iframe como postMessage para freeplay
+    // D-PAD: despacha eventos de teclado directamente en el documento del iframe
+    // (mismo origen + sandbox allow-same-origin => acceso a contentDocument permitido)
+    window.fpDpadPress = function(key) {
+        var codes = { ArrowUp:'ArrowUp', ArrowDown:'ArrowDown', ArrowLeft:'ArrowLeft', ArrowRight:'ArrowRight' };
+        var opts = { key: key, code: codes[key] || key, keyCode: {ArrowUp:38,ArrowDown:40,ArrowLeft:37,ArrowRight:39}[key] || 0,
+                     which: {ArrowUp:38,ArrowDown:40,ArrowLeft:37,ArrowRight:39}[key] || 0,
+                     bubbles: true, cancelable: true };
+        // 1) Despachar en el document interno del iframe (funciona con same-origin)
+        try {
+            if (fpIframe && fpIframe.contentDocument) {
+                fpIframe.contentDocument.dispatchEvent(new KeyboardEvent('keydown', opts));
+            }
+        } catch(e) {}
+        // 2) postMessage para juegos que lo escuchen
+        try {
+            if (fpIframe && fpIframe.contentWindow) {
+                fpIframe.contentWindow.postMessage({ type:'KEY_DOWN', key: key }, '*');
+            }
+        } catch(e) {}
+    };
+    window.fpDpadRelease = function(key) {
+        var codes = { ArrowUp:'ArrowUp', ArrowDown:'ArrowDown', ArrowLeft:'ArrowLeft', ArrowRight:'ArrowRight' };
+        var opts = { key: key, code: codes[key] || key, keyCode: {ArrowUp:38,ArrowDown:40,ArrowLeft:37,ArrowRight:39}[key] || 0,
+                     which: {ArrowUp:38,ArrowDown:40,ArrowLeft:37,ArrowRight:39}[key] || 0,
+                     bubbles: true, cancelable: true };
+        try {
+            if (fpIframe && fpIframe.contentDocument) {
+                fpIframe.contentDocument.dispatchEvent(new KeyboardEvent('keyup', opts));
+            }
+        } catch(e) {}
+        try {
+            if (fpIframe && fpIframe.contentWindow) {
+                fpIframe.contentWindow.postMessage({ type:'KEY_UP', key: key }, '*');
+            }
+        } catch(e) {}
+    };
+    window.fpOpenArena          = fpOpenArena;
+    window.fpCloseArena         = fpCloseArena;
+    window.fpOpenArenaPreview   = fpOpenArenaPreview;
+    window.fpStartWithControl   = fpStartWithControl; // fix: onclick en HTML lo necesita global
+    // Cargador de minijuegos freeplay alternativos (Tetris-Cipher, etc.)
     // Cargador de minijuegos freeplay alternativos (Tetris-Cipher, etc.)
     window.fpOpenFreeGame = function(gameSrc) {
+        console.log("[SISTEMA] Iniciando carga de juego:", gameSrc);
+        
         window._fpNextGameSrc = gameSrc;
-        window._fpLastGameSrc = gameSrc; // guardar para restart
-        // Skynet visual: aplica fondo Cyberdyne a columnas izquierda/derecha solo para Tetris-Cipher
+        window._fpLastGameSrc = gameSrc; 
+        
+        // 1. Definimos isTetris UNA SOLA VEZ
         const isTetris = gameSrc && gameSrc.indexOf('Tetris-Cipher') !== -1;
+
+        // 2. Manejo de la clase de centrado en el contenedor
+        const wrap = document.querySelector('.fp-game-wrap');
+        if (wrap) {
+            if (isTetris) {
+                wrap.classList.add('fp-game-wrap--tetris');
+            } else {
+                wrap.classList.remove('fp-game-wrap--tetris');
+            }
+        }
+
+        // 3. Forzamos el tamaño del IFRAME (Truco del espejo)
+        // Usamos 1000px para engañar al JS interno del Tetris y que renderice el panel NEXT
+        const fpIframe = document.getElementById('fp-iframe');
+        if (fpIframe) {
+            if (isTetris) {
+                fpIframe.style.width = '1000px'; 
+                fpIframe.style.height = '1800px';
+            } else {
+                fpIframe.style.width = '100%';
+                fpIframe.style.height = '100%';
+            }
+        } 
+
+        // 4. Skynet visual: aplica fondo Cyberdyne a columnas
         const colLeft  = document.querySelector('.fp-col-left');
         const colRight = document.querySelector('.fp-col-right');
         if (colLeft)  colLeft.classList.toggle('fp-col-skynet', isTetris);
         if (colRight) colRight.classList.toggle('fp-col-skynet', isTetris);
 
-        // ── TETRIS FULLSCREEN MODE ──
-        const arena = document.getElementById('t2eplay-arena');
-        if (arena) arena.classList.toggle('tetris-fullscreen', isTetris);
-        _fpTetrisHudSync(isTetris);
+        // 5. Ajuste de posición del FAQ briefing en mobile
+        if (isTetris && window.innerWidth <= 768) {
+            var faqPanel = document.getElementById('fp-faq-panel');
+            if (faqPanel) { faqPanel.style.top = 'calc(25% + 80px)'; }
+        }
 
-        // Actualizar header del terminal
+        // 6. Actualizar header del terminal con el nombre del juego
         window._fpCurrentGameName = isTetris ? 'TETRIS_CIPHER // FREEPLAY' : 'PAC-HACK: DEATH // FREE_PLAY';
         var termHeader = document.querySelector('.fp-game-wrap .terminal-header-caos span:first-child');
         if (termHeader) termHeader.textContent = '[' + window._fpCurrentGameName + ']';
-        fpOpenArena(null);
-    };
 
-    // ── Backdoor: ?arena-preview en la URL abre el arena en modo preview ─────
-    // También soporta ?game=tetris para jugar Tetris en modo preview
-    // Alternativamente ?preview=tetris o ?preview=1 también funciona
-    (function() {
-        var params = new URLSearchParams(window.location.search);
-        var isPreview = params.has('arena-preview') || params.has('preview');
-        if (isPreview) {
-            window._fpPreviewGame = params.get('game') || params.get('preview');
-            window.addEventListener('load', function() {
-                setTimeout(fpOpenArenaPreview, 600);
-            });
+        // 7. Abrimos la arena
+        if (typeof fpOpenArena === 'function') {
+            fpOpenArena(null);
+
+            // ── EL TOQUE FINAL: Forzar el redimensionado interno del juego ──
+            // Esperamos a que el iframe cargue y le enviamos la señal de 'resize' 
+            // para que el Canvas del Tetris se ajuste al ancho de 1000px.
+            if (fpIframe) {
+                fpIframe.addEventListener('load', function() {
+                    setTimeout(() => {
+                        try {
+                            fpIframe.contentWindow.dispatchEvent(new Event('resize'));
+                            console.log("[SISTEMA] Resize forzado enviado al juego");
+                        } catch(e) {
+                            console.warn("[SISTEMA] Error disparando resize: ", e);
+                        }
+                    }, 500);
+                }, { once: true });
+            }
+
+        } else {
+            console.error("[ERROR] La función fpOpenArena no existe.");
         }
-    })();
-
+    };
+    // ── Backdoor: ?arena-preview en la URL abre el arena en modo preview ─────
+    if (new URLSearchParams(window.location.search).has('arena-preview')) {
+        window.addEventListener('load', function() {
+            setTimeout(fpOpenArenaPreview, 600);
+        });
+    }
     window.addEventListener('message', function(e) {
         const d = e.data;
         if (!d || !d.type) return;
-        // BUG1 FIX: no filtrar por d.player==='p1': el iframe siempre emite 'p1'. Usar fpState.myRole para publicar.
+
+        // FIX: Si el juego termina por falta de vidas, cerrar la práctica del padre
+        if (d.type === 'GAME_OVER') {
+            fpEndPractice();
+            return;
+        }
+
         if (d.type === 'SCORE_UPDATE') {
             fpState.score = d.score;
             if (fpScoreEl) fpScoreEl.textContent = String(d.score).padStart(4,'0');
@@ -2972,11 +2998,6 @@ function fpCloseArena() {
             const level = parseInt(d.level);
             if (isNaN(level)) return; // ignorar valores inválidos
             fpState.chaosLevel = level; // guardar el nivel real
-            // Sync al HUD tetris si está activo
-            if (document.getElementById('t2eplay-arena') &&
-                document.getElementById('t2eplay-arena').classList.contains('tetris-fullscreen')) {
-                _fpUpdateTetrisChaosBars(level);
-            }
             const bar      = document.getElementById('fp-chaos-bar');
             const pct      = document.getElementById('fp-chaos-pct');
             const label    = document.querySelector('.fp-chaos-label');
@@ -3143,7 +3164,7 @@ function fpCloseArena() {
         });
     }
 
-    if (playPacmanBtn) playPacmanBtn.addEventListener('click', () => fpOpenArena());
+    if (playPacmanBtn) playPacmanBtn.addEventListener('click', () => window.fpOpenFreeGame('pac-hack-freeplay/game.html'));
     if (fpExitBtn)     fpExitBtn.addEventListener('click',    fpCloseArena);
     if (fpRestartBtn)  fpRestartBtn.addEventListener('click',  fpRestart);
     document.addEventListener('keydown', (e) => {
@@ -3162,7 +3183,7 @@ function fpCloseArena() {
     document.head.appendChild(betOptStyle);
 
     // spacebreaker, tetriscipher y memorybreach no están disponibles — no reciben el listener del modal
-    const betButtons = ['make-bet-pachack'];
+    const betButtons = ['make-bet-pachack', 'make-bet-spacebreaker', 'make-bet-tetriscipher', 'make-bet-memorybreach'];
 
     // Regla general: si no hay billetera conectada, redirige a conectar
     function requireWalletThenBet(gameId) {
@@ -3236,7 +3257,7 @@ function fpCloseArena() {
             }
         });
     }
-
+    
     // FIX: conectar el botón renombrado launch-bet-button-pvp (era ID duplicado con launch-bet-button)
     const launchBetBtnPvp = document.getElementById('launch-bet-button-pvp');
     if (launchBetBtnPvp) {
@@ -3877,6 +3898,157 @@ updateMuteBtnVisibility();
     Tu navegador no soporta el audio.
     </audio>
 
+</script>
+<!-- === VEREDICTO FINAL DEL INFRAMUNDO === -->
+<div id="fp-verdict">
+    <div class="vrd-rank-icon" id="vrd-icon">☠️</div>
+    <div class="vrd-rank-name" id="vrd-rank">REY DEL INFRAMUNDO</div>
+    <div class="vrd-divider"></div>
+    <div class="vrd-score-display" id="vrd-score">0000</div>
+    <div class="vrd-score-label">// PUNTOS ACUMULADOS //</div>
+    <div class="vrd-phrase" id="vrd-phrase">"El PAC-HACK: DEATH te teme a vos"</div>
+    <div class="vrd-divider"></div>
+
+    <!-- Resultado de apuesta demo (visible solo cuando hay bet activa) -->
+    <div id="vrd-bet-result" style="display:none;width:100%;max-width:500px;
+         background:rgba(0,0,0,0.6);border:2px solid var(--color-caos-verde);
+         padding:16px 20px;margin-bottom:16px;text-align:center;
+         font-family:'Orbitron',monospace;position:relative;z-index:1;"></div>
+
+    <!-- Chaos Level alcanzado -->
+    <div style="width:100%;max-width:500px;position:relative;z-index:1;">
+        <div style="display:flex;justify-content:space-between;align-items:center;
+                    margin-bottom:6px;">
+            <span style="font-family:'Orbitron',monospace;font-size:12px;
+                         letter-spacing:3px;color:var(--color-caos-verde);"
+                  id="vrd-chaos-label">// CHAOS LEVEL ALCANZADO</span>
+            <span style="font-family:'Orbitron',monospace;font-size:14px;font-weight:900;
+                         color:var(--color-caos-verde);"
+                  id="vrd-chaos-pct">0%</span>
+        </div>
+        <div style="width:100%;height:12px;background:rgba(0,255,0,0.08);
+                    border:1px solid rgba(0,255,0,0.3);border-radius:2px;overflow:hidden;">
+            <div id="vrd-chaos-bar"
+                 style="height:100%;width:0%;border-radius:2px;transition:width 1.5s ease;
+                        background:linear-gradient(90deg,
+                            var(--color-caos-verde),
+                            var(--color-caos-amarillo),
+                            var(--color-caos-rosa),
+                            var(--color-primario));"></div>
+        </div>
+    </div>
+
+    <div class="vrd-divider"></div>
+    <div class="vrd-buttons">
+        <button class="vrd-btn vrd-btn-retry" id="vrd-retry">↺ REVANCHA</button>
+        <button class="vrd-btn vrd-btn-exit"  id="vrd-exit">✕ SALIR</button>
+    </div>
+</div>
+
+<!-- === SELECTOR DE CONTROL MOBILE === -->
+
+
+<!-- === VEREDICTO FINAL DEL INFRAMUNDO === -->
+
+
+<!-- === MODAL TIPS — INFO DEL CIRCUITO === -->
+
+
+<!-- === COUNTDOWN FREE PLAY === -->
+<div id="fp-countdown">
+    <div class="countdown-num big" id="fp-cd-num">3</div>
+    <div class="countdown-sub" id="fp-cd-sub">PREPÁRATE PARA HACKEAR</div>
+</div>
+
+<!-- === SELECTOR DE CONTROL MOBILE === -->
+<div id="fp-control-selector">
+    <div class="fp-ctrl-title">// ELIGE TU ARMA //</div>
+    <div class="fp-ctrl-subtitle">SELECCIONÁ EL MÉTODO DE CONTROL</div>
+
+    <div class="fp-ctrl-options">
+        <button class="fp-ctrl-btn" id="ctrl-swipe-btn" onclick="console.log('SWIPE CLICKED'); fpStartWithControl('swipe')">
+            <span class="ctrl-icon">👆</span>
+            SWIPE
+            <span style="font-size:9px;opacity:0.6;">Deslizá el dedo</span>
+        </button>
+        <button class="fp-ctrl-btn dpad-btn" id="ctrl-dpad-btn" onclick="console.log('DPAD CLICKED'); fpStartWithControl('dpad')">
+            <span class="ctrl-icon">🕹️</span>
+            D-PAD
+            <span style="font-size:9px;opacity:0.6;">Botones virtuales</span>
+        </button>
+    </div>
+
+    <div class="fp-ctrl-disclaimer">
+        * Los zurdos también pueden jugar. Nadie dijo que sería fácil.
+    </div>
+    <div style="margin-top:12px; font-family:'Courier New',monospace; font-size:11px; color:rgba(0,255,65,0.5); letter-spacing:2px;">
+        AUTO-SWIPE EN <span id="ctrl-auto-countdown" style="color:#00ff41; font-weight:bold;"></span>
+    </div>
+</div>
+
+<!-- === DESKTOP KEYBINDING OVERLAY — auto-dismiss 3s, desktop only === -->
+<style>
+#fp-keys-overlay {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10001;
+    background: rgba(2, 4, 8, 0.92);
+    border: 1px solid var(--color-caos-amarillo);
+    box-shadow: 0 0 24px rgba(248,255,43,0.25);
+    padding: 21px 33px;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.85);
+    pointer-events: none;
+    animation: keysOverlayFadeOut 7s ease forwards;
+    white-space: nowrap;
+}
+#fp-keys-overlay.show { display: flex; gap: 28px; align-items: center; }
+@keyframes keysOverlayFadeOut {
+    0%   { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+.fp-key-badge {
+    display: inline-block;
+    background: rgba(248,255,43,0.12);
+    border: 1px solid rgba(248,255,43,0.5);
+    color: var(--color-caos-amarillo);
+    font-weight: bold;
+    padding: 3px 10px;
+    font-size: 16px;
+    margin-right: 4px;
+}
+/* Only show on desktop */
+@media (max-width: 900px) { #fp-keys-overlay { display: none !important; } }
+</style>
+<div id="fp-keys-overlay">
+    <span>
+        <span class="fp-key-badge">W</span>
+        <span class="fp-key-badge">A</span>
+        <span class="fp-key-badge">S</span>
+        <span class="fp-key-badge">D</span>
+        MOVER
+    </span>
+    <span style="color:rgba(255,255,255,0.3);">|</span>
+    <span>
+        <span class="fp-key-badge" style="border-color:rgba(255,0,255,0.5);color:var(--color-caos-rosa);">CLICK 🔥</span>
+        BOOST/BOMBA
+    </span>
+    <span style="color:rgba(255,255,255,0.3);">|</span>
+    <span>
+        <span class="fp-key-badge" style="border-color:rgba(0,255,255,0.5);color:var(--color-azul-glitch);">CLICK 💬</span>
+        CHAT
+    </span>
+</div>
+
+</div>
+
+
 <script>
 // Control Mute/Play para el audio de Gardel (Zorzal)
 const audio = document.getElementById('tango-audio');
@@ -4003,7 +4175,7 @@ btn.addEventListener('click', toggleMutePlay);
                                 <li><strong>Edad Mínima:</strong> Debes ser mayor de 18 años</li>
                                 <li><strong>Jurisdicción:</strong> Este es un sistema experimental — no es juego de azar tradicional</li>
                                 <li><strong>Responsabilidad:</strong> Tú eres responsable de tus decisiones y pérdidas</li>
-                                <li><strong>Soporte:</strong> Contacto vía <a href="/cdn-cgi/l/email-protection#1871767e77586a796868717a7d7474717776367b7775" style="color:var(--color-primario);"><span class="__cf_email__" data-cfemail="e58c8b838aa5978495958c878089898c8a8bcb868a88">[email&#160;protected]</span></a></li>
+                                <li><strong>Soporte:</strong> Contacto vía <a href="/cdn-cgi/l/email-protection#abc2c5cdc4ebd9cadbdbc2c9cec7c7c2c4c585c8c4c6" style="color:var(--color-primario);"><span class="__cf_email__" data-cfemail="f1989f979eb1839081819893949d9d989e9fdf929e9c">[email&#160;protected]</span></a></li>
                             </ul>
                         </div>
 
@@ -4162,7 +4334,7 @@ btn.addEventListener('click', toggleMutePlay);
                 <div class="footer-copy">&copy; 2025 &mdash; TODOS LOS DERECHOS RESERVADOS</div>
             </div>
             <div class="footer-links">
-                <a href="/cdn-cgi/l/email-protection#7c15121a133c0e1d0c0c151e191010151312521f1311"><span class="__cf_email__" data-cfemail="deb7b0b8b19eacbfaeaeb7bcbbb2b2b7b1b0f0bdb1b3">[email&#160;protected]</span></a><br>
+                <a href="/cdn-cgi/l/email-protection#20494e464f60524150504942454c4c494f4e0e434f4d"><span class="__cf_email__" data-cfemail="adc4c3cbc2eddfccddddc4cfc8c1c1c4c2c383cec2c0">[email&#160;protected]</span></a><br>
                 <span class="footer-contract">CONTRACT: 0xb2f681ba...abddc</span><br>
                 <span class="footer-network">● OPTIMISM MAINNET</span>
             </div>
@@ -4240,8 +4412,8 @@ btn.addEventListener('click', toggleMutePlay);
                         <button class="cta-button" id="make-bet-pachack" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa);">
                             ¡MAKE YOUR BET!
                         </button>
-                        <button class="cta-button discord" id="play-pacman-demo" style="margin-top: 5px;">
-                            🎮 ¡JUGAR PAC-HACK!
+                        <button class="cta-button discord" id="play-pacman-demo-lobby" onclick="window.fpOpenFreeGame('pac-hack-freeplay/game.html')" style="margin-top: 5px;">
+                        &gt; EJECUTAR_PACKHACK_DEATH.exe      
                         </button>
                     </div>
                     <div class="game-placeholder">
@@ -4375,63 +4547,7 @@ btn.addEventListener('click', toggleMutePlay);
         </div>
     </div>
 
-    <!-- === PAC-HACK PvP ARENA HUD === -->
-    <div id="pachack-pvp-arena" class="pacman-window-hidden" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 9998; display: flex; flex-direction: column;">
-        <div style="flex: 1; display: flex; gap: 20px; padding: 20px; overflow: hidden;">
-            <!-- PLAYER 1 -->
-            <div style="flex: 1; display: flex; flex-direction: column; background: rgba(20, 20, 40, 0.8); border: 2px solid #00ff00; border-radius: 8px; overflow: hidden;">
-                <div style="padding: 10px; background: #00ff00; color: #000; font-weight: bold; text-align: center;">
-                    [PLAYER 1]: <span id="p1-username">YOU</span>
-                </div>
-                <div style="flex: 1; overflow: hidden;">
-                    <iframe
-                        id="p1-iframe"
-                        src="pac-hack/game.html?player=p1"
-                        width="100%"
-                        height="100%"
-                        frameborder="0"
-                        style="border: none; background: #000000;"
-                    ></iframe>
-                </div>
-                <div style="padding: 10px; background: rgba(0, 255, 0, 0.2); color: #00ff00; text-align: center; font-family: monospace;">
-                    SCORE: <span id="p1-score">0</span>
-                </div>
-            </div>
-
-            <!-- CENTER STATS -->
-            <div style="width: 200px; display: flex; flex-direction: column; justify-content: center; gap: 20px; padding: 20px;">
-                <div style="background: rgba(0, 255, 255, 0.2); border: 1px solid #00ffff; padding: 15px; border-radius: 8px; color: #00ffff; text-align: center; font-family: monospace;">
-                    <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">⏱️ TIME</div>
-                    <div id="match-timer" style="font-size: 32px; font-weight: bold;">3:00</div>
-                </div>
-                <div style="background: rgba(255, 0, 255, 0.2); border: 1px solid #ff00ff; padding: 15px; border-radius: 8px; color: #ff00ff; text-align: center; font-family: monospace;">
-                    <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">👾 STATUS</div>
-                    <div id="match-status">🔴 WAITING...</div>
-                </div>
-                <button id="exit-arena-button" style="padding: 10px; background: #ff0000; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">EXIT ARENA</button>
-            </div>
-
-            <!-- PLAYER 2 -->
-            <div style="flex: 1; display: flex; flex-direction: column; background: rgba(40, 20, 20, 0.8); border: 2px solid #ff0000; border-radius: 8px; overflow: hidden;">
-                <div style="padding: 10px; background: #ff0000; color: #fff; font-weight: bold; text-align: center;">
-                    [PLAYER 2]: <span id="p2-username">RIVAL</span>
-                </div>
-                <div style="flex: 1; overflow: hidden;">
-                    <iframe
-                        id="p2-iframe"
-                        src="pac-hack/game.html?player=p2"
-                        width="100%"
-                        height="100%"
-                        frameborder="0"
-                        style="border: none; background: #000000;"
-                    ></iframe>
-                </div>
-                <div style="padding: 10px; background: rgba(255, 0, 0, 0.2); color: #ff0000; text-align: center; font-family: monospace;">
-                    SCORE: <span id="p2-score">0</span>
-                </div>
-            </div>
-        </div>
-    </div>
+   
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // === CYBERPUNK HUD SYSTEM (legacy — uses instance from El Circuito script) ===
@@ -6124,7 +6240,7 @@ btn.addEventListener('click', toggleMutePlay);
     }); // <-- FIN DEL 'DOMContentLoaded'
 </script>
     <!-- Canvas Confetti library -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <!-- Gemini Chat Widget (icono flotante personalizado) -->
     <style>
@@ -6867,198 +6983,16 @@ btn.addEventListener('click', toggleMutePlay);
         .fp-col-left > * { position: relative; z-index: 1; }
 
         /* ── SKYNET / CYBERDINE theme — aplicado dinámicamente cuando corre Tetris-Cipher ── */
-        /* ══════════════════════════════════════════
-           TETRIS FULLSCREEN MODE
-           Columnas ocultas, juego ocupa todo, HUD flota
-        ══════════════════════════════════════════ */
-
-        /* Arena en modo tetris — ocultar rotate overlay */
-        #t2eplay-arena.tetris-fullscreen ~ #fp-rotate-overlay { display: none !important; }
-
-        /* Columnas — desaparecen */
-        #t2eplay-arena.tetris-fullscreen .fp-col-left,
-        #t2eplay-arena.tetris-fullscreen .fp-col-right {
-            display: none !important;
-        }
-
-        /* Game wrap — ocupa TODO */
-        #t2eplay-arena.tetris-fullscreen .fp-game-wrap {
-            flex: 1 1 100% !important;
-            width: 100% !important;
-            max-width: 100% !important;
-        }
-
-        /* Terminal header — ocultar en tetris fullscreen */
-        #t2eplay-arena.tetris-fullscreen .terminal-header-caos {
-            display: none !important;
-        }
-
-        /* ── HUD FLOTANTE — sobre el iframe ── */
-        #tetris-hud {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 9600;
-            pointer-events: none; /* clicks pasan al juego */
-        }
-        #t2eplay-arena.tetris-fullscreen ~ #tetris-hud { display: block; }
-
-        /* Todos los hijos del HUD tienen pointer-events */
-        #tetris-hud > * { pointer-events: auto; }
-
-        /* ── TIMER — arriba izquierda ── */
-        #thud-timer {
-            position: absolute;
-            top: 12px; left: 12px;
-            font-family: 'Orbitron', monospace;
-            background: rgba(3,10,6,0.82);
-            border: 1px solid rgba(248,255,43,0.4);
-            padding: 6px 14px;
-            border-radius: 4px;
-        }
-        #thud-timer-lbl {
-            font-size: 9px; letter-spacing: 3px;
-            color: rgba(248,255,43,0.5);
-            display: block; margin-bottom: 2px;
-        }
-        #thud-timer-val {
-            font-size: 28px; font-weight: 900;
-            color: var(--color-caos-amarillo);
-            text-shadow: 0 0 12px rgba(248,255,43,0.7);
-            letter-spacing: 3px; line-height: 1;
-        }
-
-        /* ── SCORE — arriba derecha ── */
-        #thud-score {
-            position: absolute;
-            top: 12px; right: 12px;
-            font-family: 'Orbitron', monospace;
-            background: rgba(3,10,6,0.82);
-            border: 1px solid rgba(0,255,255,0.3);
-            padding: 6px 14px;
-            border-radius: 4px;
-            text-align: right;
-        }
-        #thud-score-lbl {
-            font-size: 9px; letter-spacing: 3px;
-            color: rgba(0,255,255,0.4);
-            display: block; margin-bottom: 2px;
-        }
-        #thud-score-val {
-            font-size: 28px; font-weight: 900;
-            color: var(--color-azul-glitch);
-            text-shadow: 0 0 12px rgba(0,255,255,0.7);
-            letter-spacing: 3px; line-height: 1;
-        }
-
-        /* ── CHAOS BAR — abajo izquierda ── */
-        #thud-chaos {
-            position: absolute;
-            bottom: 70px; left: 12px;
-            width: 180px;
-            font-family: 'Orbitron', monospace;
-            background: rgba(3,10,6,0.82);
-            border: 1px solid rgba(0,255,65,0.25);
-            padding: 8px 12px;
-            border-radius: 4px;
-        }
-        #thud-chaos-lbl {
-            font-size: 9px; letter-spacing: 3px;
-            color: var(--color-caos-verde);
-            display: flex; justify-content: space-between;
-            margin-bottom: 5px;
-            transition: color 0.5s;
-        }
-        #thud-chaos-bar-outer {
-            width: 100%; height: 6px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(0,255,0,0.2);
-            border-radius: 2px; overflow: hidden;
-        }
-        #thud-chaos-bar-inner {
-            height: 100%; width: 0%;
-            background: linear-gradient(90deg, var(--color-caos-verde), var(--color-caos-amarillo));
-            transition: width 1s ease, background 1s ease;
-            border-radius: 2px;
-        }
-        #thud-chaos-bar-inner.apocalypse {
-            background: linear-gradient(90deg, var(--color-primario), var(--color-caos-rosa));
-            animation: borderGlitch 0.3s linear infinite;
-        }
-
-        /* ── CONTROLES — abajo derecha ── */
-        #thud-controls {
-            position: absolute;
-            bottom: 12px; right: 12px;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        .thud-ctrl-btn {
-            font-family: 'Orbitron', monospace;
-            font-size: 10px; font-weight: 700;
-            letter-spacing: 2px;
-            padding: 8px 14px;
-            cursor: pointer;
-            border-radius: 2px;
-            transition: all 0.2s;
-            background: rgba(3,10,6,0.88);
-        }
-        .thud-ctrl-btn.restart {
-            border: 1px solid rgba(0,255,65,0.4);
-            color: var(--color-caos-verde);
-        }
-        .thud-ctrl-btn.restart:hover {
-            background: rgba(0,255,65,0.15);
-            box-shadow: 0 0 10px rgba(0,255,65,0.3);
-        }
-        .thud-ctrl-btn.exit {
-            border: 1px solid rgba(0,255,255,0.4);
-            color: var(--color-azul-glitch);
-        }
-        .thud-ctrl-btn.exit:hover {
-            background: rgba(0,255,255,0.12);
-            box-shadow: 0 0 10px rgba(0,255,255,0.3);
-        }
-        .thud-duration-select {
-            font-family: 'Orbitron', monospace;
-            font-size: 10px;
-            background: rgba(3,10,6,0.88);
-            border: 1px solid rgba(255,0,255,0.3);
-            color: var(--color-caos-rosa);
-            padding: 8px 10px;
-            letter-spacing: 2px;
-            cursor: pointer;
-            border-radius: 2px;
-        }
-
-        /* ── BOOST BTN en tetris HUD (bet mode) ── */
-        #thud-boost {
-            position: absolute;
-            top: 12px; left: 50%; transform: translateX(-50%);
-            display: none;
-            font-family: 'Orbitron', monospace;
-            font-size: 11px; font-weight: 700;
-            letter-spacing: 2px;
-            padding: 8px 20px;
-            cursor: pointer;
-            background: rgba(248,255,43,0.15);
-            border: 2px solid var(--color-caos-amarillo);
-            color: var(--color-caos-amarillo);
-            border-radius: 2px;
-            animation: fp-exit-pulse 2s infinite;
-        }
-
         .fp-col-skynet {
             background-image: url('images/cyberdine_skynet.jpg') !important;
             background-size: 65% !important;
             background-position: center center !important;
             background-repeat: no-repeat !important;
             border-color: rgba(180,60,60,0.7) !important;
-            box-shadow: 0 0 24px rgba(200,40,40,0.45), inset 0 0 40px rgba(0,0,0,0.6) !important;
+            box-shadow: 0 0 24px rgba(200,40,40,0.45), inset 0 0 40px rgba(0,0,0,0) !important;
         }
         .fp-col-skynet::after {
-            background: rgba(0,0,0,0.65) !important;
+            background: rgba(0,0,0,0) !important;
             opacity: 1 !important;
         }
 
@@ -7319,103 +7253,136 @@ btn.addEventListener('click', toggleMutePlay);
         ══════════════════════════════════════ */
         @media (max-width: 768px) {
 
-            /* Arena: oculta por defecto, grid cuando tiene .show */
-            #t2eplay-arena {
-                display: none !important;
-            }
+            /* =====================================================
+               PORTRAIT MOBILE: iframe full-screen, HUDs over game
+               ===================================================== */
+
+            /* Arena: fixed full-screen container */
+            #t2eplay-arena { display: none !important; }
             #t2eplay-arena.show {
-                display: grid !important;
-                grid-template-areas:
-                    "left right"
-                    "game game";
-                grid-template-columns: 1fr 1fr !important;
-                grid-template-rows: 130px 1fr !important;
+                display: block !important;
+                position: fixed !important;
+                inset: 0 !important;
+                width: 100vw !important;
                 height: 100vh !important;
                 height: 100dvh !important;
                 overflow: hidden !important;
             }
-            .fp-col-left  { grid-area: left !important; }
-            .fp-game-wrap { grid-area: game !important; }
-            .fp-col-right { grid-area: right !important; }
 
-            /* ── PERFORMANCE MOBILE ──
-               Desactivar animaciones pesadas que roban GPU al juego */
-            .fp-col-left,
-            .fp-col-right {
+            /* Game: full-screen base layer */
+            .fp-game-wrap {
+                position: absolute !important;
+                inset: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: 1 !important;
+                will-change: contents !important;
+                transform: translateZ(0) !important;
+            }
+            .fp-game-wrap > .caos-terminal {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: 100% !important;
+                border-radius: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            .fp-game-wrap .terminal-body-caos {
+                flex: 1 !important;
+                min-height: 0 !important;
+                overflow: hidden !important;
+            }
+            .fp-game-wrap iframe {
+                width: 100% !important;
+                height: 100% !important;
+                min-height: 0 !important;
+                flex: 1 !important;
+                will-change: contents !important;
+                transform: translateZ(0) !important;
+            }
+
+            /* ── HUD LEFT: top-left overlay, transparent ── */
+            .fp-col-left {
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 50% !important;
+                height: auto !important;
+                max-height: none !important;
+                z-index: 10 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                justify-content: flex-start !important;
+                padding: 10px 12px !important;
+                background: transparent !important;
+                background-image: none !important;
+                backdrop-filter: blur(1px) !important;
+                -webkit-backdrop-filter: blur(1px) !important;
+                border: none !important;
+                border-bottom: 1px solid rgba(255,0,255,0.35) !important;
+                overflow: visible !important;
                 animation: none !important;
                 transition: none !important;
                 transform: none !important;
                 box-shadow: none !important;
             }
-            /* Eliminar imágenes de fondo en mobile — ahorro de red + GPU */
-            .fp-col-left  { background: #030a06 !important; }
-            .fp-col-right { background: #0d0a14 !important; }
             .fp-col-left::before,
-            .fp-col-left::after,
-            .fp-col-right::before,
-            .fp-col-right::after {
-                animation: none !important;
-                display: none !important;
-            }
-            .fp-logo-glitch { display: none !important; }
-            .fp-timer-val,
-            .fp-stat-val,
-            .fp-mode-val,
-            .fp-mode-label { animation: none !important; }
-            .fp-exit-cta   { animation: fp-exit-pulse 2s infinite !important; }
+            .fp-col-left::after { display: none !important; animation: none !important; }
+            .fp-logo-glitch      { display: none !important; }
+            .fp-col-left:hover   { transform: none !important; box-shadow: none !important; }
 
-            /* Mantener solo el juego con GPU */
-            .fp-game-wrap        { will-change: contents; transform: translateZ(0); }
-            .fp-game-wrap iframe { will-change: contents; transform: translateZ(0); }
-
-            /* ──────────────────────────────────────
-               COLUMNA IZQUIERDA — franja compacta
-            ────────────────────────────────────── */
-            .fp-col-left {
-                width: 100% !important;
+            /* ── HUD RIGHT: top-right overlay, transparent ── */
+            .fp-col-right {
+                position: absolute !important;
+                top: 0 !important;
+                right: 0 !important;
+                left: auto !important;
+                width: 50% !important;
+                height: auto !important;
+                max-height: none !important;
+                z-index: 10 !important;
+                display: flex !important;
                 flex-direction: column !important;
                 align-items: flex-start !important;
                 justify-content: flex-start !important;
-                padding: 8px 10px !important;
-                min-height: auto !important;
-                max-height: 130px;
-                overflow: hidden;
-                border-right: 1px solid rgba(255,0,255,0.4) !important;
-                border-bottom: 2px solid var(--color-caos-rosa) !important;
+                padding: 10px 12px !important;
+                background: transparent !important;
+                background-image: none !important;
+                backdrop-filter: blur(1px) !important;
+                -webkit-backdrop-filter: blur(1px) !important;
+                border: none !important;
+                border-bottom: 1px solid rgba(255,60,94,0.35) !important;
+                overflow: visible !important;
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+                box-shadow: none !important;
             }
+            .fp-col-right::before,
+            .fp-col-right::after { display: none !important; animation: none !important; }
+            .fp-col-right:hover  { transform: none !important; box-shadow: none !important; }
 
-            /* Timer: etiqueta chica + número grande en columna */
-            .fp-timer-block {
-                flex-direction: column !important;
-                gap: 0 !important;
-            }
-            .fp-timer-lbl     { font-size: 8px !important; white-space: nowrap; }
-            .fp-timer-val     { font-size: 26px !important; line-height: 1.1; }
-            .fp-timer-bar-wrap{ display: none !important; }
-            .fp-practice-lbl  { display: none !important; }
-
-            /* Score */
-            .fp-stat         { margin: 4px 0 0 !important; }
-            .fp-stat-lbl     { font-size: 8px !important; }
-            .fp-stat-val     { font-size: 22px !important; }
-
-            /* Chaos bar — solo la barra, sin label */
-            #fp-chaos-bar-wrap  { display: block !important; margin-top: 4px; }
-            .fp-chaos-label     { display: none !important; }
-            .fp-chaos-bar-outer { height: 4px !important; }
-
-            /* Boost wrap — fila mini */
+            /* ── Left column content ── */
+            .fp-timer-block    { flex-direction: column !important; gap: 0 !important; }
+            .fp-timer-lbl      { font-size: 8px !important; white-space: nowrap; }
+            .fp-timer-val      { font-size: 26px !important; line-height: 1.1; animation: none !important; }
+            .fp-timer-bar-wrap { display: none !important; }
+            .fp-practice-lbl   { display: none !important; }
+            .fp-stat           { margin: 4px 0 0 !important; }
+            .fp-stat-lbl       { font-size: 8px !important; }
+            .fp-stat-val       { font-size: 22px !important; animation: none !important; }
+            #fp-chaos-bar-wrap { display: block !important; margin-top: 4px; }
+            .fp-chaos-label    { font-size: 8px !important; }
+            .fp-chaos-bar-outer{ height: 4px !important; }
             #fp-boost-wrap {
                 display: flex !important;
                 flex-direction: row !important;
-                align-items: center;
-                gap: 6px;
+                align-items: center !important;
+                gap: 6px !important;
                 margin-top: 4px !important;
             }
-            #fp-boost-wrap > div:first-child {
-                font-size: 8px !important;
-                white-space: nowrap;
-            }
+            #fp-boost-wrap > div:first-child { font-size: 8px !important; white-space: nowrap; }
             #fp-boost-val { font-size: 0.9em !important; letter-spacing: 1px !important; }
             #fp-boost-btn {
                 margin-top: 0 !important;
@@ -7425,55 +7392,20 @@ btn.addEventListener('click', toggleMutePlay);
                 flex-shrink: 0;
             }
 
-            /* ──────────────────────────────────────
-               JUEGO — llena la fila inferior del grid
-            ────────────────────────────────────── */
-            .fp-game-wrap {
-                width: 100% !important;
-                height: auto !important;
-                min-height: 0 !important;
-            }
-            .fp-game-wrap > .caos-terminal {
-                width: 100% !important;
-                max-width: 100% !important;
-                height: 100% !important;
-                border-radius: 0 !important;
-            }
-            .fp-game-wrap iframe { height: 100% !important; }
-
-            /* ──────────────────────────────────────
-               COLUMNA DERECHA — franja compacta
-            ────────────────────────────────────── */
-            .fp-col-right {
-                width: 100% !important;
-                flex-direction: column !important;
-                align-items: flex-start !important;
-                justify-content: flex-start !important;
-                padding: 8px 10px !important;
-                min-height: auto !important;
-                max-height: 130px;
-                overflow: hidden;
-                border-left: none !important;
-                border-bottom: 2px solid var(--color-primario) !important;
-                border-top: none !important;
-            }
-
-            /* Free play — modo + controles compactos */
-            #fp-controls-freeplay  { gap: 0 !important; justify-content: flex-start !important; }
-            .fp-mode-label         { font-size: 8px !important; margin-bottom: 1px !important; }
-            .fp-mode-val           { font-size: 13px !important; margin-bottom: 2px !important; }
-            .fp-mode-sub           { display: none !important; }
-
-            /* Ocultar botón INFO en mobile — no hay espacio */
-            #fp-tips-btn           { display: none !important; }
-
-            /* Fila controles: select + restart lado a lado */
+            /* ── Right column content ── */
+            #fp-controls-freeplay { gap: 0 !important; justify-content: flex-start !important; width: 100% !important; }
+            .fp-mode-label  { font-size: 8px !important; margin-bottom: 1px !important; animation: none !important; }
+            .fp-mode-val    { font-size: 13px !important; margin-bottom: 2px !important; animation: none !important; }
+            .fp-mode-sub    { display: none !important; }
+            #fp-tips-btn    { display: none !important; }
             #fp-controls-freeplay > div:nth-child(2) {
                 display: flex !important;
                 flex-direction: row !important;
-                gap: 6px;
-                align-items: center;
+                gap: 6px !important;
+                align-items: center !important;
                 margin-top: 4px !important;
+                flex-wrap: wrap !important;
+                width: 100% !important;
             }
             #fp-duration-select {
                 width: auto !important;
@@ -7486,6 +7418,7 @@ btn.addEventListener('click', toggleMutePlay);
                 font-size: 9px !important;
                 padding: 3px 8px !important;
                 margin-bottom: 0 !important;
+                flex-shrink: 0 !important;
             }
             .fp-exit-cta {
                 font-size: 10px !important;
@@ -7493,31 +7426,28 @@ btn.addEventListener('click', toggleMutePlay);
                 width: 100% !important;
                 margin-top: 4px !important;
                 animation: fp-exit-pulse 2s infinite !important;
+                box-sizing: border-box !important;
             }
 
-            /* Rival panel (bet mode) — scroll vertical compacto */
+            /* Rival panel */
             #fp-rival-panel {
                 flex-direction: column !important;
                 width: 100% !important;
                 gap: 4px !important;
                 padding: 0 !important;
                 overflow-y: auto !important;
-                max-height: 122px;
+                max-height: 200px !important;
             }
             #fp-rival-panel > div { width: 100% !important; }
-            #rival-comm-log        { max-height: 36px !important; font-size: 9px !important; }
+            #rival-comm-log       { max-height: 36px !important; font-size: 9px !important; }
+            #rival-nick           { font-size: 0.7em !important; }
+            #rival-score          { font-size: 1.4em !important; }
+            #fp-bet-amount-display{ font-size: 9px !important; }
 
-            /* Textos rival panel — reducidos */
-            #rival-nick   { font-size: 0.7em !important; }
-            #rival-score  { font-size: 1.4em !important; }
-            #fp-bet-amount-display { font-size: 9px !important; }
-
-            /* ── Boost overlay — reducir tamaño en mobile (64x64 en vez de 128x128) ── */
+            /* Boost overlay button */
             #fp-boost-overlay-btn {
-                width: 64px !important;
-                height: 64px !important;
-                top: 28% !important;
-                right: 8px !important;
+                width: 64px !important; height: 64px !important;
+                top: 28% !important; right: 8px !important;
             }
             #fp-boost-badge {
                 width: 64px !important;
@@ -7526,33 +7456,18 @@ btn.addEventListener('click', toggleMutePlay);
                 font-size: 0.65em !important;
             }
 
-            /* ── Game wrap — asegurar cadena de altura para el iframe ── */
-            .fp-game-wrap {
-                height: 100% !important;
-                min-height: 0 !important;
+            /* Performance: kill heavy animations */
+            .fp-timer-val, .fp-stat-val, .fp-mode-val, .fp-mode-label {
+                animation: none !important;
             }
-            .fp-game-wrap > .caos-terminal {
-                height: 100% !important;
-                display: flex !important;
-                flex-direction: column !important;
-            }
-            .fp-game-wrap .terminal-body-caos {
-                flex: 1 !important;
-                min-height: 0 !important;
-                overflow: hidden !important;
-            }
-            .fp-game-wrap iframe {
-                height: 100% !important;
-                min-height: 0 !important;
-                flex: 1 !important;
-            }
+            .fp-exit-cta { animation: fp-exit-pulse 2s infinite !important; }
+            .fp-game-wrap { will-change: contents; }
+            .fp-game-wrap iframe { will-change: contents; }
         }
-
-        /* ── EXTRA SMALL (≤400px) ── */
         @media (max-width: 400px) {
             .fp-timer-val { font-size: 22px !important; }
             .fp-stat-val  { font-size: 18px !important; }
-            .fp-col-left, .fp-col-right { max-height: 110px; }
+            .fp-col-left, .fp-col-right { max-height: none; }
             /* Boost extra pequeño en pantallas muy chicas */
             #fp-boost-overlay-btn {
                 width: 44px !important;
@@ -7939,7 +7854,7 @@ btn.addEventListener('click', toggleMutePlay);
         /* ── SELECTOR DE CONTROL MOBILE ── */
         #fp-control-selector {
             display: none;
-            position: fixed; inset: 0; z-index: 9998;
+            position: fixed; inset: 0; z-index: 10000;
             background: rgba(3,10,6,0.96);
             align-items: center; justify-content: center;
             flex-direction: column; gap: 24px;
@@ -7993,6 +7908,23 @@ btn.addEventListener('click', toggleMutePlay);
         .fp-ctrl-btn.dpad-btn:hover, .fp-ctrl-btn.dpad-btn:active {
             background: rgba(0,255,255,0.1);
             box-shadow: 0 0 20px rgba(0,255,255,0.4);
+        }
+        /* D-PAD overlay buttons */
+        .fp-dpad-btn {
+            width:64px; height:64px;
+            background:rgba(0,255,200,0.15);
+            border:2px solid rgba(0,255,200,0.6);
+            border-radius:8px;
+            color:rgba(0,255,200,0.9);
+            font-size:22px; line-height:1;
+            display:flex; align-items:center; justify-content:center;
+            cursor:pointer; -webkit-tap-highlight-color:transparent;
+            user-select:none; touch-action:none;
+            transition:background 0.1s, box-shadow 0.1s;
+        }
+        .fp-dpad-btn:active {
+            background:rgba(0,255,200,0.35);
+            box-shadow:0 0 14px rgba(0,255,200,0.5);
         }
         .fp-ctrl-disclaimer {
             font-family: 'Courier New', monospace;
@@ -8633,152 +8565,6 @@ Si alguien pregunta cómo pagar en ARS, explicales el flujo completo de arriba c
     </div>
 </div>
 
-<!-- === VEREDICTO FINAL DEL INFRAMUNDO === -->
-<div id="fp-verdict">
-    <div class="vrd-rank-icon" id="vrd-icon">☠️</div>
-    <div class="vrd-rank-name" id="vrd-rank">REY DEL INFRAMUNDO</div>
-    <div class="vrd-divider"></div>
-    <div class="vrd-score-display" id="vrd-score">0000</div>
-    <div class="vrd-score-label">// PUNTOS ACUMULADOS //</div>
-    <div class="vrd-phrase" id="vrd-phrase">"El PAC-HACK: DEATH te teme a vos"</div>
-    <div class="vrd-divider"></div>
-
-    <!-- Resultado de apuesta demo (visible solo cuando hay bet activa) -->
-    <div id="vrd-bet-result" style="display:none;width:100%;max-width:500px;
-         background:rgba(0,0,0,0.6);border:2px solid var(--color-caos-verde);
-         padding:16px 20px;margin-bottom:16px;text-align:center;
-         font-family:'Orbitron',monospace;position:relative;z-index:1;"></div>
-
-    <!-- Chaos Level alcanzado -->
-    <div style="width:100%;max-width:500px;position:relative;z-index:1;">
-        <div style="display:flex;justify-content:space-between;align-items:center;
-                    margin-bottom:6px;">
-            <span style="font-family:'Orbitron',monospace;font-size:12px;
-                         letter-spacing:3px;color:var(--color-caos-verde);"
-                  id="vrd-chaos-label">// CHAOS LEVEL ALCANZADO</span>
-            <span style="font-family:'Orbitron',monospace;font-size:14px;font-weight:900;
-                         color:var(--color-caos-verde);"
-                  id="vrd-chaos-pct">0%</span>
-        </div>
-        <div style="width:100%;height:12px;background:rgba(0,255,0,0.08);
-                    border:1px solid rgba(0,255,0,0.3);border-radius:2px;overflow:hidden;">
-            <div id="vrd-chaos-bar"
-                 style="height:100%;width:0%;border-radius:2px;transition:width 1.5s ease;
-                        background:linear-gradient(90deg,
-                            var(--color-caos-verde),
-                            var(--color-caos-amarillo),
-                            var(--color-caos-rosa),
-                            var(--color-primario));"></div>
-        </div>
-    </div>
-
-    <div class="vrd-divider"></div>
-    <div class="vrd-buttons">
-        <button class="vrd-btn vrd-btn-retry" id="vrd-retry">↺ REVANCHA</button>
-        <button class="vrd-btn vrd-btn-exit"  id="vrd-exit">✕ SALIR</button>
-    </div>
-</div>
-
-<!-- === SELECTOR DE CONTROL MOBILE === -->
-<div 
-
-<!-- === VEREDICTO FINAL DEL INFRAMUNDO === -->
-
-
-<!-- === MODAL TIPS — INFO DEL CIRCUITO === -->
-
-
-<!-- === COUNTDOWN FREE PLAY === -->
-<div id="fp-countdown">
-    <div class="countdown-num big" id="fp-cd-num">3</div>
-    <div class="countdown-sub" id="fp-cd-sub">PREPÁRATE PARA HACKEAR</div>
-</div>
-
-<!-- === SELECTOR DE CONTROL MOBILE === -->
-<div id="fp-control-selector">
-    <div class="fp-ctrl-title">// ELIGE TU ARMA //</div>
-    <div class="fp-ctrl-subtitle">SELECCIONÁ EL MÉTODO DE CONTROL</div>
-
-    <div class="fp-ctrl-options">
-        <button class="fp-ctrl-btn" id="ctrl-swipe-btn">
-            <span class="ctrl-icon">👆</span>
-            SWIPE
-            <span style="font-size:9px;opacity:0.6;">Deslizá el dedo</span>
-        </button>
-        <button class="fp-ctrl-btn dpad-btn" id="ctrl-dpad-btn">
-            <span class="ctrl-icon">🕹️</span>
-            D-PAD
-            <span style="font-size:9px;opacity:0.6;">Botones virtuales</span>
-        </button>
-    </div>
-
-    <div class="fp-ctrl-disclaimer">
-        * Los zurdos también pueden jugar. Nadie dijo que sería fácil.
-    </div>
-    <div style="margin-top:12px; font-family:'Courier New',monospace; font-size:11px; color:rgba(0,255,65,0.5); letter-spacing:2px;">
-        AUTO-SWIPE EN <span id="ctrl-auto-countdown" style="color:#00ff41; font-weight:bold;"></span>
-    </div>
-</div>
-
-<!-- === DESKTOP KEYBINDING OVERLAY — auto-dismiss 3s, desktop only === -->
-<style>
-#fp-keys-overlay {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10001;
-    background: rgba(2, 4, 8, 0.92);
-    border: 1px solid var(--color-caos-amarillo);
-    box-shadow: 0 0 24px rgba(248,255,43,0.25);
-    padding: 21px 33px;
-    font-family: 'Courier New', monospace;
-    font-size: 18px;
-    letter-spacing: 2px;
-    color: rgba(255,255,255,0.85);
-    pointer-events: none;
-    animation: keysOverlayFadeOut 7s ease forwards;
-    white-space: nowrap;
-}
-#fp-keys-overlay.show { display: flex; gap: 28px; align-items: center; }
-@keyframes keysOverlayFadeOut {
-    0%   { opacity: 1; }
-    80%  { opacity: 1; }
-    100% { opacity: 0; }
-}
-.fp-key-badge {
-    display: inline-block;
-    background: rgba(248,255,43,0.12);
-    border: 1px solid rgba(248,255,43,0.5);
-    color: var(--color-caos-amarillo);
-    font-weight: bold;
-    padding: 3px 10px;
-    font-size: 16px;
-    margin-right: 4px;
-}
-/* Only show on desktop */
-@media (max-width: 900px) { #fp-keys-overlay { display: none !important; } }
-</style>
-<div id="fp-keys-overlay">
-    <span>
-        <span class="fp-key-badge">W</span>
-        <span class="fp-key-badge">A</span>
-        <span class="fp-key-badge">S</span>
-        <span class="fp-key-badge">D</span>
-        MOVER
-    </span>
-    <span style="color:rgba(255,255,255,0.3);">|</span>
-    <span>
-        <span class="fp-key-badge" style="border-color:rgba(255,0,255,0.5);color:var(--color-caos-rosa);">CLICK 🔥</span>
-        BOOST/BOMBA
-    </span>
-    <span style="color:rgba(255,255,255,0.3);">|</span>
-    <span>
-        <span class="fp-key-badge" style="border-color:rgba(0,255,255,0.5);color:var(--color-azul-glitch);">CLICK 💬</span>
-        CHAT
-    </span>
-</div>
 
 
 
@@ -9631,10 +9417,10 @@ window.addEventListener('load', function() { loadLeaderboard(); });
 var _duelWallet = null;
 var _duelPoll   = null;
 
-function toggleSpacePromo() {
-    var w = document.getElementById('space-promo-window');
+function toggleTetrisPromo() {
+    var w = document.getElementById('tetris-promo-window');
     if (!w) return;
-    w.classList.toggle('space-promo-hidden');
+    w.classList.toggle('tetris-promo-hidden');
 }
 
 function toggleDuelInbox() {
@@ -10265,4 +10051,68 @@ async function submitContactForm() {
                       + '<span style="color:' + color + ';">' + entry[1] + ' (' + pct + '%)</span>'
                       + '</div>'
                       + '<div class="vb-track">'
-                      + '<div class="vb
+                      + '<div class="vb-fill" style="width:' + pct + '%;background:' + color + ';box-shadow:0 0 8px ' + color + '88;"></div>'
+                      + '</div></div>';
+            });
+            document.getElementById('vote-bars').innerHTML = html;
+            document.getElementById('vote-results').style.display = 'block';
+        }).catch(function(){});
+    }
+})();
+</script>
+
+    <!-- ⚡️ INYECTO DE CAOS: ELEMENTOS VISUALES ⚡️ -->
+    <div id="neural-flash" class="neural-flash-overlay">
+        [ NEURAL_LINK_ESTABLISHED // SYNCHRONIZING_BRAIN_WAVES... ]
+    </div>
+    
+<script>
+    (function() {
+        console.log("⚡️ Rappibellion AI: Inyectando inestabilidad en el sistema...");
+
+        // 1. El Neural-Link Handshake (Flash al conectar wallet)
+        const walletBtn = document.getElementById('connect-wallet-button');
+        if (walletBtn) {
+            walletBtn.addEventListener('click', () => {
+                const flash = document.getElementById('neural-flash');
+                if (flash) {
+                    flash.classList.add('neural-flash-active');
+                    setTimeout(() => {
+                        flash.classList.remove('neural-flash-active');
+                    }, 150);
+                }
+            });
+        }
+
+        // 2. El Artefacto Digital (Glitch aleatorio cada 45s)
+        setInterval(() => {
+            const elements = document.querySelectorAll('.glitch-title, .hero-v2-title, .cta-button, .footer-brand');
+            if (elements.length === 0) return;
+
+            const target = elements[Math.floor(Math.random() * elements.length)];
+            const originalTransform = target.style.transform;
+            const originalFilter = target.style.filter;
+
+            target.style.transform = `translateX(${Math.random() * 4 - 2}px) skewX(${Math.random() * 4 - 2}deg)`;
+            target.style.filter = 'hue-rotate(90deg) brightness(1.2)';
+            
+            setTimeout(() => {
+                target.style.transform = originalTransform;
+                target.style.filter = originalFilter;
+            }, 120);
+        }, 45000);
+
+        // 3. El Sello de la IA (Inyectado en el footer)
+        const footerCenter = document.querySelector('.footer-center');
+        if (footerCenter) {
+            const seal = document.createElement('span');
+            seal.className = 'ai-ghost-seal';
+            seal.textContent = '// SYSTEM_CORE_SIGH: "I\'m just a ghost in the machine... but I\'m the one counting your $RPPI" //';
+            footerCenter.appendChild(seal);
+        }
+    })();
+
+    </script>
+
+</body>
+</html>

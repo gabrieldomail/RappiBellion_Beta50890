@@ -984,23 +984,23 @@
   </div>
 </div>
 
-<!-- 🟩 TETRIS-CIPHER — promo widget (siempre visible) -->
-<div id="tetris-promo-window">
-    <div class="tetris-promo-terminal">
-        <div class="tetris-promo-hdr">
-            <span>TETRIS-CIPHER</span>
-            <button onclick="document.getElementById('tetris-promo-window').style.display='none'" style="background:none;border:none;color:rgba(0,255,65,0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
+<!-- 🟩 SPACE-BREAKER — promo widget (siempre visible) -->
+<div id="space-promo-window">
+    <div class="space-promo-terminal">
+        <div class="space-promo-hdr">
+            <span>SPACE-BREAKER</span>
+            <button onclick="document.getElementById('space-promo-window').style.display='none'" style="background:none;border:none;color:rgba(0,255,255,0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
         </div>
-        <div class="tetris-promo-body">
-            <div class="tetris-promo-img-wrap">
-                <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width:100%;height:auto;display:block;opacity:0.85;">
+        <div class="space-promo-body">
+            <div class="space-promo-img-wrap">
+                <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width:100%;height:auto;display:block;opacity:0.85;filter:grayscale(80%) contrast(120%);">
             </div>
-            <p class="tetris-promo-tagline">Organiza el código encriptado<br>antes de que el sistema colapse.</p>
-            <div class="tetris-promo-date-box">
-                <span class="tetris-promo-date-label">DEMO DISPONIBLE</span>
-                <span class="tetris-promo-date">DISPONIBLE</span>
+            <p class="space-promo-tagline">Rompe el espacio, quebranta el código<br>antes que el vacuum te consuma.</p>
+            <div class="space-promo-date-box">
+                <span class="space-promo-date-label">PRÓXIMAMENTE</span>
+                <span class="space-promo-date">EN DESARROLLO</span>
             </div>
-            <p class="tetris-promo-sub">// THINK TO EARN — modo T2E en beta cerrada</p>
+            <p class="space-promo-sub">// THINK TO EARN — circuito T2E expandiéndose</p>
         </div>
     </div>
 </div>
@@ -1950,9 +1950,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const _chatWidget = document.getElementById('gemini-chat-widget');
         if (_chatFab)    _chatFab.style.display = 'none';
         if (_chatWidget) _chatWidget.style.display = 'none';
-        // Ocultar promo Tetris-Cipher y USDT widget para no tapar el timer/score
-        const _tetrisPromo = document.getElementById('tetris-promo-window');
-        if (_tetrisPromo) _tetrisPromo.classList.add('tetris-promo-hidden');
+        // Ocultar promo Space-Breaker y USDT widget para no tapar el timer/score
+        const _spacePromo = document.getElementById('space-promo-window');
+        if (_spacePromo) _spacePromo.classList.add('space-promo-hidden');
         const _usdtPromo = document.getElementById('usdt-promo-window');
         if (_usdtPromo) _usdtPromo.classList.add('usdt-promo-hidden');
         const _mpPromo = document.getElementById('mp-promo-window');
@@ -2104,11 +2104,20 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow    = 'hidden';
         
         // Cargar juego T2E según selección (pac-hack o tetris)
+        // Soporta window._fpPreviewGame = 'tetris' para modo preview
+        console.log('[PREVIEW] Loading game, _fpPreviewGame:', window._fpPreviewGame, 'gameType:', window.T2EIntegration && window.T2EIntegration.currentGameType);
         if (fpIframe) {
             var gameType = window.T2EIntegration && window.T2EIntegration.currentGameType;
+            // Override con preview game
+            var previewGame = window._fpPreviewGame;
+            if (previewGame === 'tetris' || previewGame === '1') {
+                gameType = 'tetris-cipher';
+                console.log('[PREVIEW] Using tetris-cipher');
+            }
             var gameUrl = (gameType === 'tetris-cipher') 
                 ? 'Tetris-Cipher-T2E/index.html'
                 : 'pac-hack/game.html?player=p1';
+            console.log('[PREVIEW] gameUrl:', gameUrl);
             fpIframe.src = gameUrl;
             fpIframe.addEventListener('load', function onPVLoad() {
                 fpIframe.removeEventListener('load', onPVLoad);
@@ -2824,9 +2833,9 @@ function fpCloseArena() {
                 }
             });
         }
-        // Restaurar promo Tetris-Cipher y USDT widget
-        const _tetrisPromoClose = document.getElementById('tetris-promo-window');
-        if (_tetrisPromoClose) _tetrisPromoClose.classList.remove('tetris-promo-hidden');
+        // Restaurar promo Space-Breaker y USDT widget
+        const _spacePromoClose = document.getElementById('space-promo-window');
+        if (_spacePromoClose) _spacePromoClose.classList.remove('space-promo-hidden');
         const _usdtPromoClose = document.getElementById('usdt-promo-window');
         if (_usdtPromoClose) _usdtPromoClose.classList.remove('usdt-promo-hidden');
         const _mpPromoClose = document.getElementById('mp-promo-window');
@@ -2982,11 +2991,21 @@ function fpCloseArena() {
         }
     };
     // ── Backdoor: ?arena-preview en la URL abre el arena en modo preview ─────
-    if (new URLSearchParams(window.location.search).has('arena-preview')) {
-        window.addEventListener('load', function() {
-            setTimeout(fpOpenArenaPreview, 600);
-        });
-    }
+    // También soporta ?game=tetris para jugar Tetris en modo preview
+    // Alternativamente ?preview=tetris o ?preview=1 también funciona
+    (function() {
+        var params = new URLSearchParams(window.location.search);
+        var isPreview = params.has('arena-preview') || params.has('preview');
+        var gameParam = params.get('game') || params.get('preview') || '';
+        window._fpPreviewGame = gameParam;
+        console.log('[PREVIEW] URL check - search:', window.location.search, 'isPreview:', isPreview, 'gameParam:', gameParam);
+        if (isPreview) {
+            window.addEventListener('load', function() {
+                console.log('[PREVIEW] Window loaded, calling fpOpenArenaPreview...');
+                setTimeout(fpOpenArenaPreview, 600);
+            });
+        }
+    })();
     window.addEventListener('message', function(e) {
         const d = e.data;
         if (!d || !d.type) return;
@@ -9435,10 +9454,10 @@ window.addEventListener('load', function() { loadLeaderboard(); });
 var _duelWallet = null;
 var _duelPoll   = null;
 
-function toggleTetrisPromo() {
-    var w = document.getElementById('tetris-promo-window');
+function toggleSpacePromo() {
+    var w = document.getElementById('space-promo-window');
     if (!w) return;
-    w.classList.toggle('tetris-promo-hidden');
+    w.classList.toggle('space-promo-hidden');
 }
 
 function toggleDuelInbox() {

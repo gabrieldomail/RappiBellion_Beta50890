@@ -434,7 +434,6 @@ a {
 .section-separator {
     position: relative;
     padding-bottom: 80px;
-    z-index: 50;
 }
 
 .section-separator::after {
@@ -6167,7 +6166,7 @@ footer::before {
    ══════════════════════════════════════════════ */
 
 /* Botón flotante — por encima del de DUELOS */
-#space-promo-btn {
+#tetris-promo-btn {
     position: fixed;
     bottom: calc(63vh + 160px);
     left: 14px;
@@ -6185,12 +6184,12 @@ footer::before {
     animation: glitchCyan 1s linear infinite;
     box-shadow: none;
 }
-#space-promo-btn:hover { opacity: 0.8; }
+#tetris-promo-btn:hover { opacity: 0.8; }
 
 /* Panel promo */
-.space-promo-hidden { display: none !important; }
+.tetris-promo-hidden { display: none !important; }
 
-#space-promo-window {
+#tetris-promo-window {
     position: fixed;
     top: calc(30vh - 160px);
     left: 14px;
@@ -6199,24 +6198,24 @@ footer::before {
     font-family: 'Orbitron', monospace;
 }
 
-.space-promo-terminal {
-    background: #0a0a0a;
+.tetris-promo-terminal {
+    background: #040f04;
     border: 1px solid var(--color-caos-verde);
     box-shadow:
-        0 0 12px rgba(0,255,255,0.35),
-        0 0 30px rgba(0,255,255,0.12),
-        inset 0 0 20px rgba(0,0,0,0.9);
+        0 0 12px rgba(0,255,65,0.35),
+        0 0 30px rgba(0,255,65,0.12),
+        inset 0 0 20px rgba(0,0,0,0.7);
 }
 
-.space-promo-hdr {
-    background: rgba(0,255,255,0.12);
-    border-bottom: 1px solid rgba(0,255,255,0.25);
+.tetris-promo-hdr {
+    background: rgba(0,255,65,0.12);
+    border-bottom: 1px solid rgba(0,255,65,0.25);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 9px 11px;
 }
-.space-promo-hdr span {
+.tetris-promo-hdr span {
     font-family: 'Orbitron', monospace;
     font-size: 1.275em;
     letter-spacing: 3px;
@@ -6225,18 +6224,17 @@ footer::before {
     animation: glitchHard 0.273s steps(1) infinite;
 }
 
-.space-promo-body {
+.tetris-promo-body {
     padding: 12px 14px 14px;
 }
 
-.space-promo-img-wrap {
-    border: 1px solid rgba(0,255,255,0.2);
+.tetris-promo-img-wrap {
+    border: 1px solid rgba(0,255,65,0.2);
     margin-bottom: 10px;
-    box-shadow: 0 0 10px rgba(0,255,255,0.15);
-    filter: grayscale(80%) contrast(120%);
+    box-shadow: 0 0 10px rgba(0,255,65,0.15);
 }
 
-.space-promo-tagline {
+.tetris-promo-tagline {
     font-size: 0.6em;
     letter-spacing: 2px;
     color: rgba(255,255,255,0.75);
@@ -6245,24 +6243,24 @@ footer::before {
     text-align: center;
 }
 
-.space-promo-date-box {
+.tetris-promo-date-box {
     border: 1px solid var(--color-caos-verde);
-    background: rgba(0,255,255,0.06);
+    background: rgba(0,255,65,0.06);
     padding: 10px;
     text-align: center;
     margin-bottom: 10px;
-    box-shadow: 0 0 12px rgba(0,255,255,0.2);
+    box-shadow: 0 0 12px rgba(0,255,65,0.2);
 }
 
-.space-promo-date-label {
+.tetris-promo-date-label {
     display: block;
     font-size: 0.52em;
     letter-spacing: 4px;
-    color: rgba(0,255,255,0.6);
+    color: rgba(0,255,65,0.6);
     margin-bottom: 5px;
 }
 
-.space-promo-date {
+.tetris-promo-date {
     display: block;
     font-size: 1.4em;
     letter-spacing: 4px;
@@ -6275,10 +6273,10 @@ footer::before {
     animation: glitchHard 0.328s steps(1) infinite;
 }
 
-.space-promo-sub {
+.tetris-promo-sub {
     font-size: 0.5em;
     letter-spacing: 2px;
-    color: rgba(0,255,255,0.4);
+    color: rgba(0,255,65,0.4);
     text-align: center;
     margin: 0;
 }
@@ -7080,85 +7078,5 @@ footer::before {
     .game-placeholder button[id^="make-bet-"] {
         width: 100%;
         box-sizing: border-box;
-    }
-}
-
-/* ══════════════════════════════════════════════════
-   PAC-HACK free play button — texto largo en mobile
-   ══════════════════════════════════════════════════ */
-@media (max-width: 767px) {
-    #play-pacman-demo {
-        letter-spacing: 0.5px !important;
-        font-size: 0.72em !important;
-        white-space: normal !important;
-        word-break: break-all !important;
-        line-height: 1.3 !important;
-        padding: 10px 6px !important;
-    }
-}
-
-/* ======================================================
-   ARENA PORTRAIT MOBILE (browser normal, no standalone)
-   HUD columns: absolutely positioned over the game,
-   semitransparent. Scroll vertical si el contenido
-   no cabe en el 44% reservado.
-   ====================================================== */
-@media (max-width: 768px) and (orientation: portrait) {
-
-    /* Timer labels un poco mas grandes ahora que hay espacio */
-    .fp-timer-lbl  { font-size: 9px !important; }
-    .fp-timer-val  { font-size: 28px !important; }
-    .fp-stat-lbl   { font-size: 9px !important; }
-    .fp-stat-val   { font-size: 24px !important; }
-    .fp-chaos-label { font-size: 8px !important; }
-
-    /* Chaos bar: mostrar el porcentaje ahora que hay espacio */
-    .fp-chaos-label { display: flex !important; }
-    #fp-chaos-bar-wrap { margin-top: 6px !important; }
-
-    /* Botones en columna derecha: touch-friendly */
-    .fp-exit-cta {
-        padding: 8px 12px !important;
-        font-size: 11px !important;
-        width: 100% !important;
-    }
-    .fp-btn {
-        font-size: 10px !important;
-        padding: 5px 10px !important;
-    }
-}
-/* ── FIX FINAL TETRIS MOBILE (SISTEMA DE MÁSCARA) ── */
-@media (max-width: 768px) {
-    .fp-game-wrap--tetris .caos-terminal {
-        width: 460px !important;      /* Lo que el usuario ve */
-        height: 850px !important;
-        position: absolute !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        overflow: hidden !important;  /* CORTA el iframe gigante para que no se salga */
-        border: 2px solid var(--color-caos-amarillo) !important;
-        background: #000 !important;
-        display: block !important;
-    }
-
-    .fp-game-wrap--tetris iframe {
-        /* 1. Le damos un ancho enorme para que el juego interno renderice el panel NEXT */
-        width: 1000px !important; 
-        height: 1800px !important;
-        
-        /* 2. Posicionamiento absoluto */
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        
-        /* 3. ZOOM OUT AGRESIVO: 460px (ventana) / 1000px (iframe) = 0.46 */
-        transform: scale(0.46) !important; 
-        
-        /* 4. Alineamos la escala al centro superior */
-        transform-origin: top left !important; 
-        
-        border: none !important;
-        display: block !important;
     }
 }

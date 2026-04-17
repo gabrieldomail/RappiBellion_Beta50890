@@ -928,64 +928,23 @@
   </div>
 </div>
 
-<!-- ══ TETRIS HUD FLOTANTE ══ -->
-<div id="tetris-hud">
-
-    <!-- Timer arriba izquierda -->
-    <div id="thud-timer">
-        <span id="thud-timer-lbl">// TIMER //</span>
-        <span id="thud-timer-val">10:00</span>
-    </div>
-
-    <!-- Score arriba derecha -->
-    <div id="thud-score">
-        <span id="thud-score-lbl">// SCORE //</span>
-        <span id="thud-score-val">0000</span>
-    </div>
-
-    <!-- Boost btn arriba centro — solo en bet mode -->
-    <button id="thud-boost" onclick="fpFireBoost()">HACK IT</button>
-
-    <!-- Chaos bar abajo izquierda -->
-    <div id="thud-chaos">
-        <div id="thud-chaos-lbl">
-            <span>// CHAOS</span>
-            <span id="thud-chaos-pct">0%</span>
+<!-- 🟩 TETRIS-CIPHER — promo widget (siempre visible) -->
+<div id="tetris-promo-window">
+    <div class="tetris-promo-terminal">
+        <div class="tetris-promo-hdr">
+            <span>TETRIS-CIPHER</span>
+            <button onclick="document.getElementById('tetris-promo-window').style.display='none'" style="background:none;border:none;color:rgba(0,255,65,0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
         </div>
-        <div id="thud-chaos-bar-outer">
-            <div id="thud-chaos-bar-inner"></div>
-        </div>
-    </div>
-
-    <!-- Controles abajo derecha -->
-    <div id="thud-controls">
-        <select class="thud-duration-select" id="thud-duration-select">
-            <option value="300">5 MIN</option>
-            <option value="600" selected>10 MIN</option>
-        </select>
-        <button class="thud-ctrl-btn restart" id="thud-restart-btn">↺</button>
-        <button class="thud-ctrl-btn exit"    id="thud-exit-btn">EXIT</button>
-    </div>
-
-</div>
-
-<!-- 🟩 SPACE-BREAKER — promo widget (siempre visible) -->
-<div id="space-promo-window">
-    <div class="space-promo-terminal">
-        <div class="space-promo-hdr">
-            <span>SPACE-BREAKER</span>
-            <button onclick="document.getElementById('space-promo-window').style.display='none'" style="background:none;border:none;color:rgba(0,255,255,0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
-        </div>
-        <div class="space-promo-body">
-            <div class="space-promo-img-wrap">
-                <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width:100%;height:auto;display:block;opacity:0.85;filter:grayscale(80%) contrast(120%);">
+        <div class="tetris-promo-body">
+            <div class="tetris-promo-img-wrap">
+                <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width:100%;height:auto;display:block;opacity:0.85;">
             </div>
-            <p class="space-promo-tagline">Rompe el espacio, quebranta el código<br>antes que el vacuum te consuma.</p>
-            <div class="space-promo-date-box">
-                <span class="space-promo-date-label">PRÓXIMAMENTE</span>
-                <span class="space-promo-date">EN DESARROLLO</span>
+            <p class="tetris-promo-tagline">Organiza el código encriptado<br>antes de que el sistema colapse.</p>
+            <div class="tetris-promo-date-box">
+                <span class="tetris-promo-date-label">DEMO DISPONIBLE</span>
+                <span class="tetris-promo-date">DISPONIBLE</span>
             </div>
-            <p class="space-promo-sub">// THINK TO EARN — circuito T2E expandiéndose</p>
+            <p class="tetris-promo-sub">// THINK TO EARN — modo T2E en beta cerrada</p>
         </div>
     </div>
 </div>
@@ -1886,8 +1845,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const cdEl = document.getElementById('ctrl-auto-countdown');
         if (cdEl) { clearInterval(cdEl._interval); cdEl.textContent = ''; }
         if (document.getElementById('fp-verdict')) document.getElementById('fp-verdict').classList.remove('show');
-        // Limpiar tetris fullscreen
-        _tetrisFpCloseArenaHook();
 
         // Mostrar arena
         const dur = parseInt(fpDurSelect ? fpDurSelect.value : 600);
@@ -1897,8 +1854,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpTimerEl)  fpTimerEl.style.color = '';
         if (fpArena)    fpArena.classList.add('show');
 
-        // _fpSetupBetSync ya fue llamado desde fpOpenArena — la arena espera startAt de Firebase
-        // En free play (sin betMode), también se arrancó desde fpOpenArena
+        // En free play arrancar el countdown ahora que el usuario eligió el control
+        if (!fpState.betMode) {
+            setTimeout(fpStartCountdown, 400);
+        }
+        // En bet mode: _fpSetupBetSync ya fue llamado — la arena espera startAt de Firebase
     }
 
     if (ctrlSwipeBtn) ctrlSwipeBtn.addEventListener('click', () => fpStartWithControl('swipe'));
@@ -1951,9 +1911,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const _chatWidget = document.getElementById('gemini-chat-widget');
         if (_chatFab)    _chatFab.style.display = 'none';
         if (_chatWidget) _chatWidget.style.display = 'none';
-        // Ocultar promo Space-Breaker y USDT widget para no tapar el timer/score
-        const _spacePromo = document.getElementById('space-promo-window');
-        if (_spacePromo) _spacePromo.classList.add('space-promo-hidden');
+        // Ocultar promo Tetris-Cipher y USDT widget para no tapar el timer/score
+        const _tetrisPromo = document.getElementById('tetris-promo-window');
+        if (_tetrisPromo) _tetrisPromo.classList.add('tetris-promo-hidden');
         const _usdtPromo = document.getElementById('usdt-promo-window');
         if (_usdtPromo) _usdtPromo.classList.add('usdt-promo-hidden');
         const _mpPromo = document.getElementById('mp-promo-window');
@@ -1983,7 +1943,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const rotateOverlay = document.getElementById('fp-rotate-overlay');
             const tryLockLandscape = () => {
                 if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('portrait').catch(() => {
+                    screen.orientation.lock('landscape').catch(() => {
                         // iOS / sin permiso — fallback overlay
                         if (rotateOverlay && window.matchMedia('(orientation: portrait)').matches) {
                             rotateOverlay.style.display = 'flex';
@@ -2064,7 +2024,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }, 1000);
                 } else if (!fpState.betMode) {
-                    setTimeout(fpStartCountdown, 600);
+                    // NO arrancar countdown aquí — el usuario tiene que elegir el control primero
+                    // fpStartWithControl() arranca el countdown cuando el usuario elige
+                    // (o el auto-countdown de 5s lo hace automáticamente)
                 }
                 return;
             }
@@ -2122,19 +2084,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Intentar lock landscape igual que en duelo real
         if (window.innerWidth <= 768 || window.innerHeight <= 768) {
             if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('portrait').catch(function(){});
+                screen.orientation.lock('landscape').catch(function(){});
             }
         }
 
-        // Cargar juego según preview o default pac-hack
-        // Soporta window._fpPreviewGame = 'tetris' para modo preview
+        // Cargar pac-hack REAL (no freeplay) para mostrar la UI completa del T2E
         if (fpIframe) {
-            var previewGame = window._fpPreviewGame;
-            var gameSrc = 'pac-hack/game.html?player=p1';
-            if (previewGame === 'tetris' || previewGame === '1') {
-                gameSrc = 'Tetris-Cipher-T2E/index.html';
-            }
-            fpIframe.src = gameSrc;
+            fpIframe.src = 'pac-hack/game.html?player=p1';
             fpIframe.addEventListener('load', function onPVLoad() {
                 fpIframe.removeEventListener('load', onPVLoad);
                 setTimeout(function() { fpIframe.focus(); }, 300);
@@ -2769,9 +2725,9 @@ function fpCloseArena() {
         const _chatFabClose = document.getElementById('gemini-chat-fab');
         const _chatWidgetClose = document.getElementById('gemini-chat-widget');
         if (_chatFabClose) _chatFabClose.style.display = '';
-        // Restaurar promo Space-Breaker y USDT widget
-        const _spacePromoClose = document.getElementById('space-promo-window');
-        if (_spacePromoClose) _spacePromoClose.classList.remove('space-promo-hidden');
+        // Restaurar promo Tetris-Cipher y USDT widget
+        const _tetrisPromoClose = document.getElementById('tetris-promo-window');
+        if (_tetrisPromoClose) _tetrisPromoClose.classList.remove('tetris-promo-hidden');
         const _usdtPromoClose = document.getElementById('usdt-promo-window');
         if (_usdtPromoClose) _usdtPromoClose.classList.remove('usdt-promo-hidden');
         const _mpPromoClose = document.getElementById('mp-promo-window');
@@ -2808,107 +2764,6 @@ function fpCloseArena() {
     }
 
     // Exponer globalmente para que t2e-integration.js pueda llamarlas desde fuera del closure
-    // ══ TETRIS HUD — sincronizar datos y controles ══
-    function _fpTetrisHudSync(activate) {
-        const hud = document.getElementById('tetris-hud');
-        if (!hud) return;
-
-        if (!activate) {
-            hud.style.display = 'none';
-            return;
-        }
-        hud.style.display = 'block';
-
-        // Sync timer inicial
-        var timerVal = document.getElementById('fp-timer');
-        var thudTimer = document.getElementById('thud-timer-val');
-        if (timerVal && thudTimer) thudTimer.textContent = timerVal.textContent;
-
-        // Sync score inicial
-        var scoreEl  = document.getElementById('fp-score');
-        var thudScore = document.getElementById('thud-score-val');
-        if (scoreEl && thudScore) thudScore.textContent = scoreEl.textContent;
-
-        // Sync duration select
-        var mainSel  = document.getElementById('fp-duration-select');
-        var thudSel  = document.getElementById('thud-duration-select');
-        if (mainSel && thudSel) {
-            thudSel.value = mainSel.value;
-            thudSel.addEventListener('change', function() {
-                mainSel.value = this.value;
-            });
-        }
-
-        // Botón restart
-        var thudRestart = document.getElementById('thud-restart-btn');
-        var mainRestart = document.getElementById('fp-restart-btn');
-        if (thudRestart && mainRestart) {
-            thudRestart.onclick = function() { mainRestart.click(); };
-        }
-
-        // Botón exit
-        var thudExit = document.getElementById('thud-exit-btn');
-        var mainExit = document.getElementById('fp-exit-btn');
-        if (thudExit && mainExit) {
-            thudExit.onclick = function() { mainExit.click(); };
-        }
-
-        // Mostrar boost si es bet mode
-        var thudBoost = document.getElementById('thud-boost');
-        if (thudBoost) {
-            thudBoost.style.display = fpState.betMode ? 'block' : 'none';
-        }
-
-        // Observar cambios en el timer y score del HUD principal
-        // via MutationObserver para mantener sync sin polling
-        if (window._tetrisHudObserver) window._tetrisHudObserver.disconnect();
-        window._tetrisHudObserver = new MutationObserver(function() {
-            if (timerVal && thudTimer) thudTimer.textContent = timerVal.textContent;
-            // Sync color del timer (gris al terminar)
-            if (timerVal) thudTimer.style.color = timerVal.style.color || '';
-        });
-        if (timerVal) {
-            window._tetrisHudObserver.observe(timerVal, { childList: true, characterData: true, subtree: true });
-        }
-        if (window._tetrisScoreObserver) window._tetrisScoreObserver.disconnect();
-        window._tetrisScoreObserver = new MutationObserver(function() {
-            if (scoreEl && thudScore) thudScore.textContent = scoreEl.textContent;
-        });
-        if (scoreEl) {
-            window._tetrisScoreObserver.observe(scoreEl, { childList: true, characterData: true, subtree: true });
-        }
-    }
-
-    // Sync chaos level al HUD tetris también
-    var _origChaosHandler = null;
-    function _fpUpdateTetrisChaosBars(level) {
-        var bar   = document.getElementById('thud-chaos-bar-inner');
-        var pct   = document.getElementById('thud-chaos-pct');
-        var lbl   = document.getElementById('thud-chaos-lbl');
-        if (!bar) return;
-        bar.style.width = level + '%';
-        if (level >= 80) bar.classList.add('apocalypse');
-        else             bar.classList.remove('apocalypse');
-        if (pct) pct.textContent = level + '%';
-        if (lbl) {
-            if (level >= 80)      lbl.style.color = 'var(--color-primario)';
-            else if (level >= 60) lbl.style.color = 'var(--color-caos-rosa)';
-            else if (level >= 30) lbl.style.color = 'var(--color-caos-amarillo)';
-            else                  lbl.style.color = 'var(--color-caos-verde)';
-        }
-    }
-
-    // Limpiar tetris fullscreen al cerrar arena
-    var _origFpCloseArena = window.fpCloseArena;
-    function _tetrisFpCloseArenaHook() {
-        const arena = document.getElementById('t2eplay-arena');
-        if (arena) arena.classList.remove('tetris-fullscreen');
-        const hud = document.getElementById('tetris-hud');
-        if (hud) hud.style.display = 'none';
-        if (window._tetrisHudObserver)   window._tetrisHudObserver.disconnect();
-        if (window._tetrisScoreObserver) window._tetrisScoreObserver.disconnect();
-    }
-
     window.fpOpenArena        = fpOpenArena;
     window.fpCloseArena       = fpCloseArena;
     window.fpOpenArenaPreview = fpOpenArenaPreview;
@@ -2922,13 +2777,12 @@ function fpCloseArena() {
         const colRight = document.querySelector('.fp-col-right');
         if (colLeft)  colLeft.classList.toggle('fp-col-skynet', isTetris);
         if (colRight) colRight.classList.toggle('fp-col-skynet', isTetris);
-
-        // ── TETRIS FULLSCREEN MODE ──
-        const arena = document.getElementById('t2eplay-arena');
-        if (arena) arena.classList.toggle('tetris-fullscreen', isTetris);
-        _fpTetrisHudSync(isTetris);
-
-        // Actualizar header del terminal
+        // Tetris Mobile: ajustar posición del FAQ briefing para que no se corte
+        if (isTetris && window.innerWidth <= 768) {
+            var faqPanel = document.getElementById('fp-faq-panel');
+            if (faqPanel) { faqPanel.style.top = 'calc(25% + 80px)'; }
+        }
+        // Actualizar header del terminal con el nombre del juego
         window._fpCurrentGameName = isTetris ? 'TETRIS_CIPHER // FREEPLAY' : 'PAC-HACK: DEATH // FREE_PLAY';
         var termHeader = document.querySelector('.fp-game-wrap .terminal-header-caos span:first-child');
         if (termHeader) termHeader.textContent = '[' + window._fpCurrentGameName + ']';
@@ -2936,18 +2790,11 @@ function fpCloseArena() {
     };
 
     // ── Backdoor: ?arena-preview en la URL abre el arena en modo preview ─────
-    // También soporta ?game=tetris para jugar Tetris en modo preview
-    // Alternativamente ?preview=tetris o ?preview=1 también funciona
-    (function() {
-        var params = new URLSearchParams(window.location.search);
-        var isPreview = params.has('arena-preview') || params.has('preview');
-        if (isPreview) {
-            window._fpPreviewGame = params.get('game') || params.get('preview');
-            window.addEventListener('load', function() {
-                setTimeout(fpOpenArenaPreview, 600);
-            });
-        }
-    })();
+    if (new URLSearchParams(window.location.search).has('arena-preview')) {
+        window.addEventListener('load', function() {
+            setTimeout(fpOpenArenaPreview, 600);
+        });
+    }
 
     window.addEventListener('message', function(e) {
         const d = e.data;
@@ -2972,11 +2819,6 @@ function fpCloseArena() {
             const level = parseInt(d.level);
             if (isNaN(level)) return; // ignorar valores inválidos
             fpState.chaosLevel = level; // guardar el nivel real
-            // Sync al HUD tetris si está activo
-            if (document.getElementById('t2eplay-arena') &&
-                document.getElementById('t2eplay-arena').classList.contains('tetris-fullscreen')) {
-                _fpUpdateTetrisChaosBars(level);
-            }
             const bar      = document.getElementById('fp-chaos-bar');
             const pct      = document.getElementById('fp-chaos-pct');
             const label    = document.querySelector('.fp-chaos-label');
@@ -4003,7 +3845,7 @@ btn.addEventListener('click', toggleMutePlay);
                                 <li><strong>Edad Mínima:</strong> Debes ser mayor de 18 años</li>
                                 <li><strong>Jurisdicción:</strong> Este es un sistema experimental — no es juego de azar tradicional</li>
                                 <li><strong>Responsabilidad:</strong> Tú eres responsable de tus decisiones y pérdidas</li>
-                                <li><strong>Soporte:</strong> Contacto vía <a href="/cdn-cgi/l/email-protection#1871767e77586a796868717a7d7474717776367b7775" style="color:var(--color-primario);"><span class="__cf_email__" data-cfemail="e58c8b838aa5978495958c878089898c8a8bcb868a88">[email&#160;protected]</span></a></li>
+                                <li><strong>Soporte:</strong> Contacto vía <a href="/cdn-cgi/l/email-protection#523b3c343d12203322223b30373e3e3b3d3c7c313d3f" style="color:var(--color-primario);"><span class="__cf_email__" data-cfemail="b6dfd8d0d9f6c4d7c6c6dfd4d3dadadfd9d898d5d9db">[email&#160;protected]</span></a></li>
                             </ul>
                         </div>
 
@@ -4162,7 +4004,7 @@ btn.addEventListener('click', toggleMutePlay);
                 <div class="footer-copy">&copy; 2025 &mdash; TODOS LOS DERECHOS RESERVADOS</div>
             </div>
             <div class="footer-links">
-                <a href="/cdn-cgi/l/email-protection#7c15121a133c0e1d0c0c151e191010151312521f1311"><span class="__cf_email__" data-cfemail="deb7b0b8b19eacbfaeaeb7bcbbb2b2b7b1b0f0bdb1b3">[email&#160;protected]</span></a><br>
+                <a href="/cdn-cgi/l/email-protection#b9d0d7dfd6f9cbd8c9c9d0dbdcd5d5d0d6d797dad6d4"><span class="__cf_email__" data-cfemail="fe97909891be8c9f8e8e979c9b9292979190d09d9193">[email&#160;protected]</span></a><br>
                 <span class="footer-contract">CONTRACT: 0xb2f681ba...abddc</span><br>
                 <span class="footer-network">● OPTIMISM MAINNET</span>
             </div>
@@ -6867,188 +6709,6 @@ btn.addEventListener('click', toggleMutePlay);
         .fp-col-left > * { position: relative; z-index: 1; }
 
         /* ── SKYNET / CYBERDINE theme — aplicado dinámicamente cuando corre Tetris-Cipher ── */
-        /* ══════════════════════════════════════════
-           TETRIS FULLSCREEN MODE
-           Columnas ocultas, juego ocupa todo, HUD flota
-        ══════════════════════════════════════════ */
-
-        /* Arena en modo tetris — ocultar rotate overlay */
-        #t2eplay-arena.tetris-fullscreen ~ #fp-rotate-overlay { display: none !important; }
-
-        /* Columnas — desaparecen */
-        #t2eplay-arena.tetris-fullscreen .fp-col-left,
-        #t2eplay-arena.tetris-fullscreen .fp-col-right {
-            display: none !important;
-        }
-
-        /* Game wrap — ocupa TODO */
-        #t2eplay-arena.tetris-fullscreen .fp-game-wrap {
-            flex: 1 1 100% !important;
-            width: 100% !important;
-            max-width: 100% !important;
-        }
-
-        /* Terminal header — ocultar en tetris fullscreen */
-        #t2eplay-arena.tetris-fullscreen .terminal-header-caos {
-            display: none !important;
-        }
-
-        /* ── HUD FLOTANTE — sobre el iframe ── */
-        #tetris-hud {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 9600;
-            pointer-events: none; /* clicks pasan al juego */
-        }
-        #t2eplay-arena.tetris-fullscreen ~ #tetris-hud { display: block; }
-
-        /* Todos los hijos del HUD tienen pointer-events */
-        #tetris-hud > * { pointer-events: auto; }
-
-        /* ── TIMER — arriba izquierda ── */
-        #thud-timer {
-            position: absolute;
-            top: 12px; left: 12px;
-            font-family: 'Orbitron', monospace;
-            background: rgba(3,10,6,0.82);
-            border: 1px solid rgba(248,255,43,0.4);
-            padding: 6px 14px;
-            border-radius: 4px;
-        }
-        #thud-timer-lbl {
-            font-size: 9px; letter-spacing: 3px;
-            color: rgba(248,255,43,0.5);
-            display: block; margin-bottom: 2px;
-        }
-        #thud-timer-val {
-            font-size: 28px; font-weight: 900;
-            color: var(--color-caos-amarillo);
-            text-shadow: 0 0 12px rgba(248,255,43,0.7);
-            letter-spacing: 3px; line-height: 1;
-        }
-
-        /* ── SCORE — arriba derecha ── */
-        #thud-score {
-            position: absolute;
-            top: 12px; right: 12px;
-            font-family: 'Orbitron', monospace;
-            background: rgba(3,10,6,0.82);
-            border: 1px solid rgba(0,255,255,0.3);
-            padding: 6px 14px;
-            border-radius: 4px;
-            text-align: right;
-        }
-        #thud-score-lbl {
-            font-size: 9px; letter-spacing: 3px;
-            color: rgba(0,255,255,0.4);
-            display: block; margin-bottom: 2px;
-        }
-        #thud-score-val {
-            font-size: 28px; font-weight: 900;
-            color: var(--color-azul-glitch);
-            text-shadow: 0 0 12px rgba(0,255,255,0.7);
-            letter-spacing: 3px; line-height: 1;
-        }
-
-        /* ── CHAOS BAR — abajo izquierda ── */
-        #thud-chaos {
-            position: absolute;
-            bottom: 70px; left: 12px;
-            width: 180px;
-            font-family: 'Orbitron', monospace;
-            background: rgba(3,10,6,0.82);
-            border: 1px solid rgba(0,255,65,0.25);
-            padding: 8px 12px;
-            border-radius: 4px;
-        }
-        #thud-chaos-lbl {
-            font-size: 9px; letter-spacing: 3px;
-            color: var(--color-caos-verde);
-            display: flex; justify-content: space-between;
-            margin-bottom: 5px;
-            transition: color 0.5s;
-        }
-        #thud-chaos-bar-outer {
-            width: 100%; height: 6px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(0,255,0,0.2);
-            border-radius: 2px; overflow: hidden;
-        }
-        #thud-chaos-bar-inner {
-            height: 100%; width: 0%;
-            background: linear-gradient(90deg, var(--color-caos-verde), var(--color-caos-amarillo));
-            transition: width 1s ease, background 1s ease;
-            border-radius: 2px;
-        }
-        #thud-chaos-bar-inner.apocalypse {
-            background: linear-gradient(90deg, var(--color-primario), var(--color-caos-rosa));
-            animation: borderGlitch 0.3s linear infinite;
-        }
-
-        /* ── CONTROLES — abajo derecha ── */
-        #thud-controls {
-            position: absolute;
-            bottom: 12px; right: 12px;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        .thud-ctrl-btn {
-            font-family: 'Orbitron', monospace;
-            font-size: 10px; font-weight: 700;
-            letter-spacing: 2px;
-            padding: 8px 14px;
-            cursor: pointer;
-            border-radius: 2px;
-            transition: all 0.2s;
-            background: rgba(3,10,6,0.88);
-        }
-        .thud-ctrl-btn.restart {
-            border: 1px solid rgba(0,255,65,0.4);
-            color: var(--color-caos-verde);
-        }
-        .thud-ctrl-btn.restart:hover {
-            background: rgba(0,255,65,0.15);
-            box-shadow: 0 0 10px rgba(0,255,65,0.3);
-        }
-        .thud-ctrl-btn.exit {
-            border: 1px solid rgba(0,255,255,0.4);
-            color: var(--color-azul-glitch);
-        }
-        .thud-ctrl-btn.exit:hover {
-            background: rgba(0,255,255,0.12);
-            box-shadow: 0 0 10px rgba(0,255,255,0.3);
-        }
-        .thud-duration-select {
-            font-family: 'Orbitron', monospace;
-            font-size: 10px;
-            background: rgba(3,10,6,0.88);
-            border: 1px solid rgba(255,0,255,0.3);
-            color: var(--color-caos-rosa);
-            padding: 8px 10px;
-            letter-spacing: 2px;
-            cursor: pointer;
-            border-radius: 2px;
-        }
-
-        /* ── BOOST BTN en tetris HUD (bet mode) ── */
-        #thud-boost {
-            position: absolute;
-            top: 12px; left: 50%; transform: translateX(-50%);
-            display: none;
-            font-family: 'Orbitron', monospace;
-            font-size: 11px; font-weight: 700;
-            letter-spacing: 2px;
-            padding: 8px 20px;
-            cursor: pointer;
-            background: rgba(248,255,43,0.15);
-            border: 2px solid var(--color-caos-amarillo);
-            color: var(--color-caos-amarillo);
-            border-radius: 2px;
-            animation: fp-exit-pulse 2s infinite;
-        }
-
         .fp-col-skynet {
             background-image: url('images/cyberdine_skynet.jpg') !important;
             background-size: 65% !important;
@@ -9631,10 +9291,10 @@ window.addEventListener('load', function() { loadLeaderboard(); });
 var _duelWallet = null;
 var _duelPoll   = null;
 
-function toggleSpacePromo() {
-    var w = document.getElementById('space-promo-window');
+function toggleTetrisPromo() {
+    var w = document.getElementById('tetris-promo-window');
     if (!w) return;
-    w.classList.toggle('space-promo-hidden');
+    w.classList.toggle('tetris-promo-hidden');
 }
 
 function toggleDuelInbox() {
