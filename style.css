@@ -6201,7 +6201,7 @@ footer::before {
     border-radius: 12px;
     border: 1px solid rgba(0,255,255,0.6);
     background: transparent;
-    animation: spaceBorderGlitch 3.5s ease-in-out infinite;
+    animation: spaceBorderGlitch 3.5s ease-in-out infinite, spaceWindowGlitch 4s ease-in-out infinite;
 }
 
 /* Grid cyan pulsante */
@@ -7209,9 +7209,77 @@ footer::before {
         transform: scale(0.46) !important; 
         
         /* 4. Alineamos la escala al centro superior */
-        transform-origin: top left !important; 
+        transform-origin: top left !important;
         
         border: none !important;
         display: block !important;
+    }
+}
+
+/* ── Glitch de ventana completa — Space-Breaker (inspirado en iconGlitchDistort) ── */
+@keyframes spaceWindowGlitch {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+        filter: none;
+    }
+    5% {
+        transform: translate(-2px, 2px) rotate(-0.5deg);
+        filter: hue-rotate(80deg) saturate(1.2);
+    }
+    10% {
+        transform: translate(2px, -2px) rotate(0.5deg);
+        filter: none;
+    }
+    15% {
+        transform: translate(-1px, -1px) rotate(-0.5deg);
+        filter: contrast(120%);
+    }
+    20% {
+        transform: translate(1px, 1px) rotate(0.5deg);
+        filter: none;
+    }
+    25% {
+        transform: translate(0, 0) rotate(0deg) scaleX(1.02);
+        filter: invert(0.05);
+    }
+    30% {
+        transform: translate(0, 0) rotate(0deg);
+        filter: none;
+    }
+    50% {
+        transform: translate(0, 0) rotate(0deg);
+        filter: none;
+    }
+    55% {
+        transform: translate(-1px, 1px) rotate(-0.3deg);
+        filter: hue-rotate(120deg);
+    }
+    60% {
+        transform: translate(1px, -1px) rotate(0.3deg);
+        filter: none;
+    }
+    65% {
+        transform: translate(0, 0) rotate(0deg);
+        filter: contrast(110%);
+    }
+    70% {
+        transform: translate(0, 0) rotate(0deg);
+        filter: none;
+    }
+    85% {
+        transform: translate(1px, 0) rotate(0deg);
+        filter: brightness(1.1);
+    }
+    90% {
+        transform: translate(-1px, 0) rotate(0deg);
+        filter: none;
+    }
+    95% {
+        transform: translate(0, 0) rotate(0deg) scaleX(1.01);
+        filter: opacity(0.95);
+    }
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+        filter: none;
     }
 }
