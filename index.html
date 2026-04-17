@@ -3297,28 +3297,25 @@ function fpCloseArena() {
     betButtons.forEach(buttonId => {
         const btn = document.getElementById(buttonId);
         if (btn) {
-            if (buttonId === 'make-bet-tetriscipher') {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    // Ocultar drawer PAC-HACK y su botón reopen
-                    const pacDrawer = document.getElementById('fp-fab-drawer');
-                    const pacReopen = document.getElementById('fp-fab-reopen');
-                    if (pacDrawer) pacDrawer.style.display = 'none';
-                    if (pacReopen) pacReopen.style.display = 'none';
-                    // Mostrar drawer Tetris
-                    const tetrisDrawer = document.getElementById('fp-fab-drawer-tetris');
-                    if (tetrisDrawer) {
-                        tetrisDrawer.style.display = 'flex';
-                        // Ocultar botón reopen Tetris si está visible
-                        const tetrisReopen = document.getElementById('fp-fab-reopen-tetris');
-                        if (tetrisReopen) tetrisReopen.style.display = 'none';
-                    }
-                });
-            } else {
-                btn.addEventListener('click', () => requireWalletThenBet(buttonId));
-            }
+            btn.addEventListener('click', () => requireWalletThenBet(buttonId));
         }
     });
+
+    // ========================================
+    // TETRIS FAB DRAWER — botón MAKE YOUR BET
+    // ========================================
+    (function() {
+        var betBtn = document.getElementById('fp-fab-bet-btn-tetris');
+        if (betBtn) {
+            betBtn.addEventListener('click', function() {
+                setTimeout(function() {
+                    if (typeof window.requireWalletThenBet === 'function') {
+                        window.requireWalletThenBet('make-bet-tetriscipher');
+                    }
+                }, 100);
+            });
+        }
+    })();
 
     document.querySelectorAll('.bet-option-button').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -8830,30 +8827,15 @@ Si alguien pregunta cómo pagar en ARS, explicales el flujo completo de arriba c
     ⚡
 </button>
 
-<!-- TETRIS-CIPHER FAB Drawer ( Verde / Cyan) -->
-<div id="fp-fab-drawer-tetris" role="complementary" aria-label="Acceso rápido TETRIS-CIPHER" style="display:none;">
-    <button id="fp-fab-close-tetris" aria-label="Cerrar" onclick="
-    const d = document.getElementById('fp-fab-drawer-tetris');
-    const r = document.getElementById('fp-fab-reopen-tetris');
-    const pacReopen = document.getElementById('fp-fab-reopen');
-    if (d) d.style.display='none';
-    if (r) r.style.display='flex';
-    if (pacReopen) pacReopen.style.display='none';
-">✕</button>
+<!-- TETRIS-CIPHER FAB Drawer ( Verde / Cyan) — always visible shortcut -->
+<div id="fp-fab-drawer-tetris" role="complementary" aria-label="Acceso rápido TETRIS-CIPHER">
+    <button id="fp-fab-close-tetris" aria-label="Cerrar" onclick="document.getElementById('fp-fab-drawer-tetris').style.display='none';document.getElementById('fp-fab-reopen-tetris').style.display='flex'">✕</button>
     <div class="fp-fab-game-img">
         <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER">
     </div>
     <div class="fp-fab-title">[TETRIS-CIPHER]</div>
     <div class="fp-fab-subtitle">PLAY NOW!!!<br><span style="font-size:0.85em;opacity:0.8;">(Think-to-Earn)</span></div>
-    <button id="fp-fab-bet-btn-tetris" class="fp-fab-action-btn" onclick="
-        const d = document.getElementById('fp-fab-drawer-tetris');
-        const r = document.getElementById('fp-fab-reopen-tetris');
-        const pacReopen = document.getElementById('fp-fab-reopen');
-        if (d) d.style.display = 'none';
-        if (r) r.style.display = 'none';
-        if (pacReopen) pacReopen.style.display = 'block';
-        fpOpenArena(null, 'tetris-cipher');
-    ">
+    <button id="fp-fab-bet-btn-tetris" class="fp-fab-action-btn">
         ¡MAKE YOUR BET!
     </button>
 </div>
@@ -9008,7 +8990,7 @@ Si alguien pregunta cómo pagar en ARS, explicales el flujo completo de arriba c
 #fp-fab-drawer-tetris {
     position: fixed;
     left: 16px;
-    bottom: 80px;
+    bottom: 280px; /* arriba del drawer de PAC-HACK (80px + 190px height + 10px gap) */
     z-index: 9002;
     width: 190px;
     background: #050a0f;
@@ -9243,8 +9225,19 @@ Si alguien pregunta cómo pagar en ARS, explicales el flujo completo de arriba c
 
 /* Botón reabrir Tetris específico */
 #fp-fab-reopen-tetris {
+    left: 16px;
+    bottom: 280px;
     border-color: #00FF41;
     color: #00FF41;
+    box-shadow: 0 0 16px rgba(0,255,65,0.4) !important;
+}
+#fp-fab-reopen-tetris:hover {
+    background: #0a1520 !important;
+    box-shadow: 0 0 24px rgba(0,255,65,0.7) !important;
+}
+#fp-fab-reopen-tetris:hover {
+    background: #0a1520 !important;
+    box-shadow: 0 0 24px rgba(0,255,65,0.7) !important;
 }
 
 /* Botón reabrir Espacio-Breaker (override para compatibilidad) */
@@ -9260,6 +9253,8 @@ Si alguien pregunta cómo pagar en ARS, explicales el flujo completo de arriba c
 
 /* Botón reabrir Tetris (override para uniformidad) */
 #fp-fab-reopen-tetris {
+    left: 16px;
+    bottom: 280px;
     border-color: #00FF41 !important;
     color: #00FF41 !important;
     box-shadow: 0 0 16px rgba(0,255,65,0.4) !important;
@@ -9337,22 +9332,9 @@ Si alguien pregunta cómo pagar en ARS, explicales el flujo completo de arriba c
     }
 })();
 
-// ── TETRIS FAB Drawer controller ──────────────────────────────────
+// ── TETRIS FAB Drawer controller (botón MAKE YOUR BET) ─────────────
 (function() {
-    var drawer  = document.getElementById('fp-fab-drawer-tetris');
-    var closeBtn = document.getElementById('fp-fab-close-tetris');
-    var reopen  = document.getElementById('fp-fab-reopen-tetris');
-    var betBtn  = document.getElementById('fp-fab-bet-btn-tetris');
-
-    if (closeBtn) closeBtn.addEventListener('click', function() {
-        drawer.classList.add('hidden');
-        if (reopen) reopen.style.display = 'flex';
-    });
-    if (reopen) reopen.addEventListener('click', function() {
-        drawer.classList.remove('hidden');
-        reopen.style.display = 'none';
-    });
-
+    var betBtn = document.getElementById('fp-fab-bet-btn-tetris');
     if (betBtn) {
         betBtn.addEventListener('click', function() {
             setTimeout(function() {
@@ -10554,7 +10536,7 @@ async function submitContactForm() {
     </script>
 
 <!-- Botón re-abrir específico para Tetris -->
-<button id="fp-fab-reopen-tetris" title="TETRIS-CIPHER — MAKE YOUR BET" aria-label="Abrir acceso rápido TETRIS-CIPHER" style="display:none;position:fixed;left:16px;bottom:80px;z-index:9001;width:48px;height:48px;background:#050a0f;border:1px solid #00FF41;border-radius:50%;color:#00FF41;font-size:1.4em;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(0,255,65,0.4);" onclick="
+<button id="fp-fab-reopen-tetris" title="TETRIS-CIPHER — MAKE YOUR BET" aria-label="Abrir acceso rápido TETRIS-CIPHER" style="display:none;" onclick="
     const d = document.getElementById('fp-fab-drawer-tetris');
     const r = document.getElementById('fp-fab-reopen-tetris');
     const pacReopen = document.getElementById('fp-fab-reopen');
