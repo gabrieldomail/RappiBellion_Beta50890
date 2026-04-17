@@ -6243,7 +6243,7 @@ footer::before {
 }
 
 .space-promo-hdr {
-    background: rgba(0,255,255,0.15);
+    background: #000;
     border-bottom: 1px solid rgba(0,255,255,0.4);
     display: flex;
     justify-content: space-between;
@@ -6261,6 +6261,7 @@ footer::before {
 
 .space-promo-body {
     padding: 12px 14px 14px;
+    background: transparent;
 }
 
 .space-promo-img-wrap {
@@ -6280,7 +6281,7 @@ footer::before {
 
 .space-promo-date-box {
     border: 1px solid rgba(0,255,255,0.5);
-    background: rgba(0,255,255,0.04);
+    background: #000;
     padding: 10px;
     text-align: center;
     margin-bottom: 10px;
