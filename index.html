@@ -1005,27 +1005,6 @@
     </div>
 </div>
 
-<!-- 🟩 TETRIS-CIPHER — promo widget (siempre visible, estilo USDT pero verde) -->
-<div id="tetris-promo-window">
-    <div class="tetris-promo-terminal">
-        <div class="tetris-promo-hdr">
-            <span>TETRIS-CIPHER</span>
-            <button onclick="document.getElementById('tetris-promo-window').style.display='none'"
-                style="background:none;border:none;color:rgba(0,255,65,0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
-        </div>
-        <div class="tetris-promo-body">
-            <div class="tetris-promo-img-wrap">
-                <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width:100%;height:auto;display:block;">
-            </div>
-            <p class="tetris-promo-tagline">Organiza el código encriptado<br>antes de que el sistema colapse.</p>
-            <div class="tetris-promo-date-box">
-                <span class="tetris-promo-date-label">DEMO DISPONIBLE</span>
-                <span class="tetris-promo-date">DISPONIBLE</span>
-            </div>
-            <p class="tetris-promo-sub">// THINK TO EARN — modo T2E en beta cerrada</p>
-        </div>
-    </div>
-</div>
 
 <!-- ⚔ DUEL INBOX — trigger button (visible when wallet connected) -->
 <button id="duel-trigger-btn" onclick="toggleDuelInbox()" title="Bandeja de Desafíos">
@@ -9831,12 +9810,6 @@ window.addEventListener('load', function() { loadLeaderboard(); });
 // ── DUEL INBOX ────────────────────────────────────────────
 var _duelWallet = null;
 var _duelPoll   = null;
-
-function toggleTetrisPromo() {
-    var w = document.getElementById('tetris-promo-window');
-    if (!w) return;
-    w.classList.toggle('tetris-promo-hidden');
-}
 
 function toggleSpacePromo() {
     var w = document.getElementById('space-promo-window');
