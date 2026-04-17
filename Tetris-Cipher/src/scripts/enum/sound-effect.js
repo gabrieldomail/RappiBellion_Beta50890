@@ -3,5 +3,5 @@ export const SoundEffect = {
 	"GAME_OVER": "gameover.wav",
 	"THEME": "music.mp3",
 	"SCORE": "score.wav",
-	"START_GAME": "doot doot.mp3"
+	"START_GAME": "dootdoot.mp3"
 };
