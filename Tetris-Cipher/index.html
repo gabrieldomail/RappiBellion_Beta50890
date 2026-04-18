@@ -72,18 +72,57 @@
     }
   }
 
-  setInterval(checkScoreSync, 200);
+   setInterval(checkScoreSync, 200);
 
-  window.addEventListener('message', function(e) {
-    if (e.data && e.data.type === 'SET_CONTROL') {
-      controlMode = e.data.mode;
-      if (controlMode === 'dpad') {
-        createDpad();
-      } else {
-        removeDpad();
-      }
-    }
-  });
+   window.addEventListener('message', function(e) {
+     if (!e.data || !e.data.type) return;
+
+     // CHAOS_BOMB - Limpia tablero + 500 puntos + animación
+     if (e.data.type === 'CHAOS_BOMB') {
+       console.log('[Tetris] CHAOS_BOMB recibido - ejecutando');
+       var main = window.main;
+       if (main && main.currentGameState && main.currentGameState.arena) {
+         // Limpiar arena
+         var arena = main.currentGameState.arena;
+         for (var y = 0; y < arena.length; y++) {
+           for (var x = 0; x < arena[y].length; x++) {
+             arena[y][x] = 0;
+           }
+         }
+         // Forzar redraw
+         if (main.currentGameState.board) {
+           main.currentGameState.board.isBufferDirty = true;
+         }
+         // +500 puntos
+         if (main.currentGameState.stats) {
+           main.currentGameState.stats.score += 500;
+           console.log('[Tetris] Score +500 ->', main.currentGameState.stats.score);
+         }
+       }
+       // Notificar al padre
+       if (window.parent !== window) {
+         window.parent.postMessage({ type: 'BOOST_USED' }, '*');
+       }
+       // Animación bomba
+       showBombAnimation();
+     }
+   });
+
+   function showBombAnimation() {
+     try {
+       var bombWrap = document.createElement('div');
+       bombWrap.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;z-index:9999;pointer-events:none;';
+       var bomb = document.createElement('div');
+       bomb.textContent = '💣';
+       bomb.style.cssText = 'font-size:20vh;opacity:1;transform:scale(0.1);filter:brightness(1.2) drop-shadow(0 0 12px cyan);transition:all 0.3s cubic-bezier(0.25,1,0.5,1), opacity 0.7s ease-out;';
+       bombWrap.appendChild(bomb);
+       document.body.appendChild(bombWrap);
+       setTimeout(function(){ bomb.style.transform = 'scale(8)'; bomb.style.filter = 'brightness(2.5) drop-shadow(0 0 40px magenta) saturate(2)'; }, 20);
+       setTimeout(function(){ bomb.style.opacity = '0'; }, 350);
+       setTimeout(function(){ bombWrap.remove(); }, 900);
+       console.log('[Tetris] Animación bomba ejecutada');
+     } catch (ex) { console.error('[Tetris] Error anim:', ex); }
+   }
 })();
 </script>
 <script src="scripts/script.min.js"></script>
@@ -143,4 +182,4 @@ function executeChaosLogic() {
         console.log('[Tetris Fallback] Animación bomba ejecutada');
     } catch (ex) { console.error('[Tetris] Error anim:', ex); }
 }
-</script>
+</script></body></html>
