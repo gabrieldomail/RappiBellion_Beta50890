@@ -530,10 +530,10 @@
                 <div class="game-placeholder">
                     <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
                     <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">SLOT 3: TETRIS-CIPHER</strong><br>(Tetris - Organiza el código encriptado)</p>
-                    <button class="cta-button" onclick="window.fpOpenFreeGame('Tetris-Cipher/index.html')"
-                            style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-color: var(--color-caos-verde); color: var(--color-caos-verde);">
-                        &gt; CYBERDINE CLASSIFIED DATA
-                    </button>
+                     <button class="cta-button" id="play-tetris-demo"
+                             style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-color: var(--color-caos-verde); color: var(--color-caos-verde);">
+                         &gt; CYBERDINE CLASSIFIED DATA
+                     </button>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/snake.PNG" alt="SNAKE-PROTOCOL" style="width: 100%; height: auto; display: block;">
@@ -10571,14 +10571,30 @@ async function submitContactForm() {
         // 3. El Sello de la IA (Inyectado en el footer)
         const footerCenter = document.querySelector('.footer-center');
         if (footerCenter) {
-            const seal = document.createElement('span');
-            seal.className = 'ai-ghost-seal';
-            seal.textContent = '// SYSTEM_CORE_SIGH: "I\'m just a ghost in the machine... but I\'m the one counting your $RPPI" //';
-            footerCenter.appendChild(seal);
-        }
-    })();
+         const seal = document.createElement('span');
+         seal.className = 'ai-ghost-seal';
+         seal.textContent = '// SYSTEM_CORE_SIGH: "I\'m just a ghost in the machine... but I\' the one counting your $RPPI" //';
+         footerCenter.appendChild(seal);
+     }
+   })();
 
-    </script>
+   // Bind freeplay buttons to fpOpenFreeGame (ensures function exists before attaching)
+   (function() {
+     var tetrisBtn = document.getElementById('play-tetris-demo');
+     if (tetrisBtn) {
+         tetrisBtn.addEventListener('click', function() {
+             window.fpOpenFreeGame('Tetris-Cipher/index.html');
+         });
+     }
+     var pacBtn = document.getElementById('play-pacman-demo');
+     if (pacBtn) {
+         pacBtn.addEventListener('click', function() {
+             window.fpOpenFreeGame('pac-hack-freeplay/game.html');
+         });
+     }
+   })();
+
+ </script>
 
 <!-- Botón re-abrir específico para Tetris -->
 <button id="fp-fab-reopen-tetris" title="TETRIS-CIPHER — MAKE YOUR BET" aria-label="Abrir acceso rápido TETRIS-CIPHER" style="display:none;" onclick="
