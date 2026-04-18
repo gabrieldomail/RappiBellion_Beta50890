@@ -16,6 +16,13 @@ self.addEventListener('fetch', event => {
     return;
   }
   
+  // No cachear el HTML principal para asegurar actualizaciones inmediatas
+  if (event.request.url.includes('index.html') || 
+      event.request.destination === 'document') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then(response => {
