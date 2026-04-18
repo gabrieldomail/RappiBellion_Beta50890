@@ -1788,16 +1788,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Si es apuesta, sobrescribir fpState.boostLimit con el límite de la apuesta
             if (betBoostLimit !== null) fpState.boostLimit = betBoostLimit;
             fpState.boostsUsed = 0;
-            var myBoostEl    = document.getElementById('fp-boost-val');
-            var boostWrapEl  = document.getElementById('fp-boost-wrap');
-            if (myBoostEl)   myBoostEl.textContent = displayBoostLimit + '/' + displayBoostLimit;
-            if (boostWrapEl) boostWrapEl.style.display = 'block';
-            var overlayBoostBtn = document.getElementById('fp-boost-overlay-btn');
-            if (overlayBoostBtn) overlayBoostBtn.style.display = 'block';
-            var boostBadge = document.getElementById('fp-boost-badge');
-            if (boostBadge) { boostBadge.textContent = 'x' + displayBoostLimit; boostBadge.style.display = 'block'; }
-            var rivalBoostEl = document.getElementById('rival-boost-val');
-            if (rivalBoostEl) rivalBoostEl.textContent = betBoostLimit + '/' + betBoostLimit;
+            _fpShowBoostUI(displayBoostLimit);
         }
 
         // BUG5 FIX: actualizar iframe con rol real (inicialmente cargado con ?player=p1)
@@ -2357,13 +2348,55 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Aplica nivel de caos a la UI para freeplay (el iframe no envia CHAOS_LEVEL)
-    function _fpApplyChaosFreeplay(level) {
-        if (level === fpState.chaosLevel) return;
-        fpState.chaosLevel = level;
-        // Notificar al juego del nivel de caos para que acelere velocidad/dificultad
-        if (fpIframe && fpIframe.contentWindow) {
-            fpIframe.contentWindow.postMessage({ type: 'CHAOS_LEVEL', level: level }, '*');
-        }
+     function _fpApplyChaosFreeplay(level) {
+         if (level === fpState.chaosLevel) return;
+         fpState.chaosLevel = level;
+         // Notificar al juego del nivel de caos para que acelere velocidad/dificultad
+         if (fpIframe && fpIframe.contentWindow) {
+             fpIframe.contentWindow.postMessage({ type: 'CHAOS_LEVEL', level: level }, '*');
+         }
+         var _cbar  = document.getElementById('fp-chaos-bar');
+         var _cpct  = document.getElementById('fp-chaos-pct');
+         var _clbl  = document.querySelector('.fp-chaos-label');
+         var _cdyna = document.getElementById('fp-chaos-dynabtn-wrap');
+         var _ccap  = fpState.chaosUnlocked !== true;
+         var _cdisp = _ccap ? Math.min(level, 70) : level;
+         if (_cdyna) {
+             if (level >= 70 && fpState.running && !fpState.chaosUnlocked)
+                 _cdyna.style.display = 'block';
+             else if (fpState.chaosUnlocked)
+                 _cdyna.style.display = 'none';
+         }
+         if (_cbar) {
+             _cbar.style.width = _cdisp + '%';
+             _cbar.classList.toggle('apocalypse', _cdisp >= 80);
+             _cbar.style.boxShadow = (_ccap && level >= 70) ? '0 0 8px rgba(255,80,0,0.7)' : '';
+         }
+         if (_cpct) _cpct.textContent = (_ccap && level >= 70) ? '70%🔒' : _cdisp + '%';
+         if (_clbl) {
+             _clbl.style.color = _cdisp < 30  ? 'var(--color-caos-verde)'
+                               : _cdisp < 60  ? 'var(--color-caos-amarillo)'
+                               : _cdisp < 80  ? 'var(--color-caos-rosa)'
+                               : 'var(--color-primario)';
+         }
+     }
+
+     // Muestra botón, overlay, badge y contador de boosts
+     function _fpShowBoostUI(limit) {
+         if (limit <= 0) return;
+         fpState.boostsUsed = 0;
+         var myBoostEl    = document.getElementById('fp-boost-val');
+         var boostWrapEl  = document.getElementById('fp-boost-wrap');
+         var overlayBtn   = document.getElementById('fp-boost-overlay-btn');
+         var boostBadge   = document.getElementById('fp-boost-badge');
+         var rivalBoostEl = document.getElementById('rival-boost-val');
+         if (myBoostEl)   myBoostEl.textContent = limit + '/' + limit;
+         if (boostWrapEl) boostWrapEl.style.display = 'block';
+         if (overlayBtn)  overlayBtn.style.display = 'block';
+         if (boostBadge)  { boostBadge.textContent = 'x' + limit; boostBadge.style.display = 'block'; }
+         // rivalBoostEl solo se usa en T2E; en freeplay puede ser null
+         if (rivalBoostEl) rivalBoostEl.textContent = limit + '/' + limit;
+     }
         var _cbar  = document.getElementById('fp-chaos-bar');
         var _cpct  = document.getElementById('fp-chaos-pct');
         var _clbl  = document.querySelector('.fp-chaos-label');
@@ -3024,13 +3057,16 @@ function fpCloseArena() {
         var termHeader = document.querySelector('.fp-game-wrap .terminal-header-caos span:first-child');
         if (termHeader) termHeader.textContent = '[' + window._fpCurrentGameName + ']';
 
-        // 7. Abrimos la arena
-        if (typeof fpOpenArena === 'function') {
-            fpOpenArena(null);
-        } else {
-            console.error("[ERROR] La función fpOpenArena no existe.");
-        }
-    };
+         // 7. Abrimos la arena
+         if (typeof fpOpenArena === 'function') {
+             fpOpenArena(null);
+         } else {
+             console.error("[ERROR] La función fpOpenArena no existe.");
+         }
+
+         // Mostrar botón de boost en freeplay (3 cargas gratis)
+         _fpShowBoostUI(fpState.boostLimit);
+     };
     // ── Backdoor: ?arena-preview en la URL abre el arena en modo preview ─────
     // También soporta ?game=tetris para jugar Tetris en modo preview
     // Alternativamente ?preview=tetris o ?preview=1 también funciona
