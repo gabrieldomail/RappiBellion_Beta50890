@@ -327,31 +327,47 @@ window.addEventListener('message', function(event) {
  		}
  	}
 
- 	// 6. CHAOS_BOMB - Boost: limpia tablero + 500 puntos
+ 	// Variable global para evitar ejecuciones múltiples (evita que se consuman todos los boosts)
+	var isBombProcessing = false;
+
+	// 6. CHAOS_BOMB - Boost: limpia tablero + 500 puntos
  	if (event.data.type === 'CHAOS_BOMB') {
- 		console.log('[Tetris] CHAOS_BOMB recibido - ejecutando');
- 		// Limpiar tablero
- 		if (self.currentGameState && self.currentGameState.arena) {
- 			var arena = self.currentGameState.arena;
- 			for (var y = 0; y < arena.length; y++) {
- 				for (var x = 0; x < arena[y].length; x++) {
- 					arena[y][x] = 0;
- 				}
+ 		if (isBombProcessing) return; // Si ya se está procesando una bomba, ignorar
+ 		isBombProcessing = true;
+
+ 		console.log('[Tetris] 💣 CHAOS_BOMB activada');
+ 		
+// 1. LIMPIEZA DEL TABLERO
+  		if (self && self.board) {
+  			self.board.fill(null);
+  			self.board.isBufferDirty = true;
+  			console.log('[Tetris] Tablero limpiado via board.fill(null)');
+  		}
+
+ 		// 2. RESET DE LA PIEZA ACTIVA
+ 		// Si el juego está corriendo, eliminamos la pieza que está cayendo para que el tablero quede vacío
+ 		if (self.statePlaying) {
+ 			if (self.statePlaying.piece) {
+ 				self.statePlaying.piece = null; 
  			}
- 			// Forzar re-render
- 			if (self.currentGameState.board) {
- 				self.currentGameState.board.isBufferDirty = true;
+ 			// Algunos motores de Tetris requieren resetear la posición de la pieza
+ 			if (typeof self.statePlaying.reset === 'function') {
+ 				// No llamamos al reset completo porque borraría el score, 
+ 				// pero si existe una función de limpieza de pieza, se usaría aquí.
  			}
  		}
- 		// Sumar 500 puntos
- 		if (self.currentGameState && self.currentGameState.stats) {
- 			self.currentGameState.stats.score += 500;
- 			console.log('[Tetris] Score +500 ->', self.currentGameState.stats.score);
- 			window.parent.postMessage({ type: 'SCORE_UPDATE', score: self.currentGameState.stats.score }, '*');
+
+ 		// 3. SUMA DE PUNTOS
+ 		if (self.statePlaying && self.statePlaying.stats) {
+ 			self.statePlaying.stats.score += 500;
+ 			console.log('[Tetris] Score +500 ->', self.statePlaying.stats.score);
+ 			window.parent.postMessage({ type: 'SCORE_UPDATE', score: self.statePlaying.stats.score }, '*');
  		}
- 		// Notificar boost usado al padre
+ 		
+ 		// 4. NOTIFICAR BOOST USADO (Solo una vez gracias al lock)
  		window.parent.postMessage({ type: 'BOOST_USED' }, '*');
- 		// Animación visual
+ 		
+ 		// 5. ANIMACIÓN VISUAL
  		try {
  			var bombWrap = document.createElement('div');
  			bombWrap.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;z-index:2147483647;pointer-events:none;overflow:hidden;';
@@ -364,7 +380,12 @@ window.addEventListener('message', function(event) {
  			setTimeout(function(){ bomb.style.transform = 'scale(10)'; bomb.style.opacity = '0'; }, 350);
  			setTimeout(function(){ bombWrap.remove(); }, 900);
  		} catch (ex) { console.error('[Tetris] Error anim CHAOS_BOMB:', ex); }
+
+ 		// Liberar el candado después de 500ms para permitir otra bomba si hubiera más boosts
+ 		setTimeout(function() { isBombProcessing = false; }, 500);
  	}
+
+
  });
 
 window.main = new Main();
