@@ -6378,9 +6378,38 @@ btn.addEventListener('click', toggleMutePlay);
         if (betArkaButton) {
             betArkaButton.addEventListener('click', () => processBetAndOpenGame('ARKA-HACK'));
         }
-        // space-breaker, tetris-cipher y memory-breach están deshabilitados hasta su lanzamiento
-        // — no se registran listeners para que los botones no abran el modal de apuestas
-    }); // <-- FIN DEL 'DOMContentLoaded'
+         // space-breaker, tetris-cipher y memory-breach están deshabilitados hasta su lanzamiento
+         // — no se registran listeners para que los botones no abran el modal de apuestas
+
+         // Bind freeplay buttons to fpOpenFreeGame (dentro de DOMContentLoaded)
+         (function() {
+           var tetrisBtn = document.getElementById('play-tetris-demo');
+           if (tetrisBtn) {
+               tetrisBtn.addEventListener('click', function() {
+                   window.fpOpenFreeGame('Tetris-Cipher/index.html');
+               });
+           }
+           var pacBtn = document.getElementById('play-pacman-demo');
+           if (pacBtn) {
+               pacBtn.addEventListener('click', function() {
+                   window.fpOpenFreeGame('pac-hack-freeplay/game.html');
+               });
+           }
+           // Lobby flotante botones freeplay
+           var tetrisLobbyBtn = document.getElementById('play-tetris-demo-lobby');
+           if (tetrisLobbyBtn) {
+               tetrisLobbyBtn.addEventListener('click', function() {
+                   window.fpOpenFreeGame('Tetris-Cipher/index.html');
+               });
+           }
+           var pacLobbyBtn = document.getElementById('play-pacman-demo-lobby');
+           if (pacLobbyBtn) {
+               pacLobbyBtn.addEventListener('click', function() {
+                   window.fpOpenFreeGame('pac-hack-freeplay/game.html');
+               });
+           }
+         })();
+     }); // <-- FIN DEL 'DOMContentLoaded'
 </script>
     <!-- Canvas Confetti library -->
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -10575,39 +10604,9 @@ async function submitContactForm() {
          seal.className = 'ai-ghost-seal';
          seal.textContent = '// SYSTEM_CORE_SIGH: "I\'m just a ghost in the machine... but I\' the one counting your $RPPI" //';
          footerCenter.appendChild(seal);
-     }
-   })();
-
-    // Bind freeplay buttons to fpOpenFreeGame (ensures function exists before attaching)
-    (function() {
-      var tetrisBtn = document.getElementById('play-tetris-demo');
-      if (tetrisBtn) {
-          tetrisBtn.addEventListener('click', function() {
-              window.fpOpenFreeGame('Tetris-Cipher/index.html');
-          });
-      }
-      var pacBtn = document.getElementById('play-pacman-demo');
-      if (pacBtn) {
-          pacBtn.addEventListener('click', function() {
-              window.fpOpenFreeGame('pac-hack-freeplay/game.html');
-          });
-      }
-      // Lobby flotante botones freeplay
-      var tetrisLobbyBtn = document.getElementById('play-tetris-demo-lobby');
-      if (tetrisLobbyBtn) {
-          tetrisLobbyBtn.addEventListener('click', function() {
-              window.fpOpenFreeGame('Tetris-Cipher/index.html');
-          });
-      }
-      var pacLobbyBtn = document.getElementById('play-pacman-demo-lobby');
-      if (pacLobbyBtn) {
-          pacLobbyBtn.addEventListener('click', function() {
-              window.fpOpenFreeGame('pac-hack-freeplay/game.html');
-          });
       }
     })();
-
- </script>
+  </script>
 
 <!-- Botón re-abrir específico para Tetris -->
 <button id="fp-fab-reopen-tetris" title="TETRIS-CIPHER — MAKE YOUR BET" aria-label="Abrir acceso rápido TETRIS-CIPHER" style="display:none;" onclick="
