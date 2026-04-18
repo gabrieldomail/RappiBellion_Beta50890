@@ -1217,6 +1217,31 @@
                     alt="BOOST"
                 ></button>
 
+                <!-- TETRIS BOOST OVERLAY — Neon Glitch Flotante -->
+                <button id="fp-boost-tetris-overlay-btn"
+                    onclick="fpFireBoost()"
+                    style="
+                        display: none;
+                        position: absolute;
+                        top: 25%;
+                        right: 12px;
+                        transform: translateY(-50%);
+                        z-index: 10;
+                        background: transparent;
+                        border: 3px solid rgba(255,215,0,0.9);
+                        padding: 0;
+                        cursor: pointer;
+                        width: 128px;
+                        height: 128px;
+                        border-radius: 12px;
+                        transition: opacity 0.2s ease;
+                        pointer-events: auto;
+                    "
+                ><img src="images/icon-512x512.png"
+                    style="width:100%;height:100%;display:block;filter:drop-shadow(0 0 8px rgba(255,215,0,0.8));"
+                    alt="CHAOS_BOMB"
+                ></button>
+
                 <!-- Badge restantes bajo botón boost overlay -->
                 <div id="fp-boost-badge" style="
                     display: none;
@@ -2396,6 +2421,7 @@ document.addEventListener('DOMContentLoaded', function() {
          var myBoostEl    = document.getElementById('fp-boost-val');
          var boostWrapEl  = document.getElementById('fp-boost-wrap');
          var overlayBtn   = document.getElementById('fp-boost-overlay-btn');
+         var tetrisOverlayBtn = document.getElementById('fp-boost-tetris-overlay-btn');
          var boostBadge   = document.getElementById('fp-boost-badge');
          var rivalBoostEl = document.getElementById('rival-boost-val');
          var boostBtn     = document.getElementById('fp-boost-btn');
@@ -2406,9 +2432,18 @@ document.addEventListener('DOMContentLoaded', function() {
          if (boostBtn) boostBtn.style.display = isTetris ? 'none' : 'block';
          if (tetrisBosBtn) tetrisBosBtn.style.display = isTetris ? 'block' : 'none';
 
+         // Mostrar botones flotantes
+         if (overlayBtn) overlayBtn.style.display = isTetris ? 'none' : 'block';
+         if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = isTetris ? 'block' : 'none';
+
+         // Re-habilitar botones
+         if (boostBtn) boostBtn.disabled = false;
+         if (tetrisBosBtn) tetrisBosBtn.disabled = false;
+         if (overlayBtn) overlayBtn.disabled = false;
+         if (tetrisOverlayBtn) tetrisOverlayBtn.disabled = false;
+
          if (myBoostEl)   myBoostEl.textContent = limit + '/' + limit;
          if (boostWrapEl) boostWrapEl.style.display = 'block';
-         if (overlayBtn)  overlayBtn.style.display = 'block';
          if (boostBadge)  { boostBadge.textContent = 'x' + limit; boostBadge.style.display = 'block'; }
          // rivalBoostEl solo se usa en T2E; en freeplay puede ser null
           if (rivalBoostEl) rivalBoostEl.textContent = limit + '/' + limit;
@@ -3205,10 +3240,19 @@ function fpCloseArena() {
             if (boostBtn) {
                 boostBtn.disabled = bRemain <= 0;
             }
+            var tetrisBoostBtn = document.getElementById('fp-boost-tetris-btn');
+            if (tetrisBoostBtn) {
+                tetrisBoostBtn.disabled = bRemain <= 0;
+            }
             var overlayBoostBtn = document.getElementById('fp-boost-overlay-btn');
             if (overlayBoostBtn) {
                 overlayBoostBtn.disabled = bRemain <= 0;
                 overlayBoostBtn.style.opacity = bRemain <= 0 ? '0.3' : '1';
+            }
+            var tetrisOverlayBtn = document.getElementById('fp-boost-tetris-overlay-btn');
+            if (tetrisOverlayBtn) {
+                tetrisOverlayBtn.disabled = bRemain <= 0;
+                tetrisOverlayBtn.style.opacity = bRemain <= 0 ? '0.3' : '1';
             }
             var boostBadge = document.getElementById('fp-boost-badge');
             if (boostBadge) {
@@ -7698,6 +7742,22 @@ btn.addEventListener('click', toggleMutePlay);
                 top: calc(28% + 68px) !important;
                 right: 8px !important;
                 font-size: 0.65em !important;
+            }
+
+            /* Tetris Boost Overlay Button */
+            #fp-boost-tetris-overlay-btn {
+                width: 64px !important;
+                height: 64px !important;
+                top: 28% !important;
+                right: 8px !important;
+                animation: tetrisNeonGlitch 3s infinite !important;
+            }
+            #fp-boost-tetris-overlay-btn:hover {
+                filter: brightness(1.4) drop-shadow(0 0 25px rgba(255,0,200,1)) drop-shadow(0 0 50px rgba(0,255,255,0.9)) !important;
+            }
+            #fp-boost-tetris-overlay-btn:disabled {
+                opacity: 0.3 !important;
+                animation: none !important;
             }
 
             /* Performance: kill heavy animations */
