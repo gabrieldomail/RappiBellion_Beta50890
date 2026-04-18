@@ -2785,23 +2785,38 @@ function fpEndPractice() {
 
      // Exposed globally so inline onclick="fpFireBoost()" can reach it
      window.fpFireBoost = function fpFireBoost() {
-     // Solo permitido durante la partida (no durante countdown o pantallas)
-     if (!fpState.running) return;
-     // Freeplay y T2E permitidos; el límite lo controla boostsUsed >= boostLimit
+     // Permitido en T2E (running) y freeplay (boostLimit > 0)
      var bLimit  = fpState.boostLimit || 0;
      var bUsed   = fpState.boostsUsed || 0;
-     if (bUsed >= bLimit) return;
+     if (bLimit <= 0) return;              // sin boosts configurados
+     if (bUsed >= bLimit) return;           // agotados
+     if (fpState.betMode && !fpState.running) return; // T2E: solo durante partida
     var btn        = document.getElementById('fp-boost-btn');
     var overlayBtn = document.getElementById('fp-boost-overlay-btn');
     if (btn && btn.disabled) return;
-    // BUG FIX: disable immediately to prevent rapid-click race condition.
-    // The BOOST_USED echo from the iframe will re-enable if boosts remain.
+    // Disable temporarily to prevent double-click
     if (btn) btn.disabled = true;
     if (overlayBtn) overlayBtn.disabled = true;
      // Trigger in iframe: CHAOS_BOMB para Tetris, TRIGGER_BOOST para Pac-Hack
      if (fpIframe && fpIframe.contentWindow) {
          var _isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
          fpIframe.contentWindow.postMessage({ type: _isTetris ? 'CHAOS_BOMB' : 'TRIGGER_BOOST' }, '*');
+     }
+     // Freeplay: no hay BOOST_USED echo del iframe, actualizar contador aqui
+     if (!fpState.betMode) {
+         fpState.boostsUsed = (fpState.boostsUsed || 0) + 1;
+         var _bRemain = Math.max(0, bLimit - fpState.boostsUsed);
+         var _bEl = document.getElementById('fp-boost-val');
+         if (_bEl) { _bEl.textContent = _bRemain + '/' + bLimit;
+             _bEl.style.color = _bRemain === 0 ? '#ff4444' : 'var(--color-caos-amarillo)'; }
+         var _oBadge = document.getElementById('fp-boost-badge');
+         if (_oBadge) _oBadge.textContent = 'x' + _bRemain;
+         // Re-enable si quedan boosts, deshabilitar si se agotaron
+         setTimeout(function() {
+             if (btn) btn.disabled = _bRemain <= 0;
+             if (overlayBtn) { overlayBtn.disabled = _bRemain <= 0;
+                 overlayBtn.style.opacity = _bRemain <= 0 ? '0.3' : '1'; }
+         }, 400);
      }
      // Visual flash feedback — ambos botones
      if (btn) {
@@ -3294,6 +3309,11 @@ function fpCloseArena() {
     if (fpRestartBtn)  fpRestartBtn.addEventListener('click',  fpRestart);
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && fpArena && fpArena.classList.contains('show')) fpCloseArena();
+        // R = Rappia boost shortcut (freeplay y T2E)
+        if ((e.key === 'r' || e.key === 'R') && fpArena && fpArena.classList.contains('show')) {
+            e.preventDefault();
+            if (typeof window.fpFireBoost === 'function') window.fpFireBoost();
+        }
     });
 
     // ── BET BUTTONS ──
