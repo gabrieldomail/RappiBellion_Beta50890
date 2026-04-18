@@ -4512,10 +4512,10 @@ btn.addEventListener('click', toggleMutePlay);
                     <div class="game-placeholder">
                         <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
                         <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">SLOT 3: TETRIS-CIPHER</strong><br>(Tetris - Organiza el código encriptado)</p>
-                        <button class="cta-button" onclick="window.fpOpenFreeGame('Tetris-Cipher/index.html')"
-                                style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-color: var(--color-caos-verde); color: var(--color-caos-verde);">
-                            &gt; CYBERDINE CLASSIFIED DATA
-                        </button>
+                         <button class="cta-button" id="play-tetris-demo-lobby"
+                                 style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-color: var(--color-caos-verde); color: var(--color-caos-verde);">
+                             &gt; CYBERDINE CLASSIFIED DATA
+                         </button>
                     </div>
                     <div class="game-placeholder">
                         <img src="juegos beta/snake.PNG" alt="SNAKE-PROTOCOL" style="width: 100%; height: auto; display: block;">
@@ -4555,9 +4555,9 @@ btn.addEventListener('click', toggleMutePlay);
                         <button class="cta-button" id="make-bet-pachack" style="background-color: var(--color-caos-rosa); border-color: var(--color-caos-rosa);">
                             ¡MAKE YOUR BET!
                         </button>
-                        <button class="cta-button discord" id="play-pacman-demo-lobby" onclick="window.fpOpenFreeGame('pac-hack-freeplay/game.html')" style="margin-top: 5px; font-family: 'Courier New', monospace; letter-spacing: 2px;">
-                        &gt; EJECUTAR_PACKHACK_DEATH.exe      
-                        </button>
+                         <button class="cta-button discord" id="play-pacman-demo-lobby" style="margin-top: 5px; font-family: 'Courier New', monospace; letter-spacing: 2px;">
+                             &gt; EJECUTAR_PACKHACK_DEATH.exe      
+                         </button>
                     </div>
                     <div class="game-placeholder">
                         <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
@@ -10578,21 +10578,34 @@ async function submitContactForm() {
      }
    })();
 
-   // Bind freeplay buttons to fpOpenFreeGame (ensures function exists before attaching)
-   (function() {
-     var tetrisBtn = document.getElementById('play-tetris-demo');
-     if (tetrisBtn) {
-         tetrisBtn.addEventListener('click', function() {
-             window.fpOpenFreeGame('Tetris-Cipher/index.html');
-         });
-     }
-     var pacBtn = document.getElementById('play-pacman-demo');
-     if (pacBtn) {
-         pacBtn.addEventListener('click', function() {
-             window.fpOpenFreeGame('pac-hack-freeplay/game.html');
-         });
-     }
-   })();
+    // Bind freeplay buttons to fpOpenFreeGame (ensures function exists before attaching)
+    (function() {
+      var tetrisBtn = document.getElementById('play-tetris-demo');
+      if (tetrisBtn) {
+          tetrisBtn.addEventListener('click', function() {
+              window.fpOpenFreeGame('Tetris-Cipher/index.html');
+          });
+      }
+      var pacBtn = document.getElementById('play-pacman-demo');
+      if (pacBtn) {
+          pacBtn.addEventListener('click', function() {
+              window.fpOpenFreeGame('pac-hack-freeplay/game.html');
+          });
+      }
+      // Lobby flotante botones freeplay
+      var tetrisLobbyBtn = document.getElementById('play-tetris-demo-lobby');
+      if (tetrisLobbyBtn) {
+          tetrisLobbyBtn.addEventListener('click', function() {
+              window.fpOpenFreeGame('Tetris-Cipher/index.html');
+          });
+      }
+      var pacLobbyBtn = document.getElementById('play-pacman-demo-lobby');
+      if (pacLobbyBtn) {
+          pacLobbyBtn.addEventListener('click', function() {
+              window.fpOpenFreeGame('pac-hack-freeplay/game.html');
+          });
+      }
+    })();
 
  </script>
 
