@@ -1781,19 +1781,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // BOOSTS: initialize display from bet.boostLimit
+        // BOOSTS: T2E usa boostLimit de la apuesta; freeplay tiene 3 gratis
         var betBoostLimit = (bet && bet.boostLimit) ? parseInt(bet.boostLimit) : null;
-        if (betBoostLimit !== null) {
-            fpState.boostLimit = betBoostLimit;
+        var displayBoostLimit = betBoostLimit !== null ? betBoostLimit : fpState.boostLimit;
+        if (displayBoostLimit > 0) {
+            // Si es apuesta, sobrescribir fpState.boostLimit con el límite de la apuesta
+            if (betBoostLimit !== null) fpState.boostLimit = betBoostLimit;
             fpState.boostsUsed = 0;
             var myBoostEl    = document.getElementById('fp-boost-val');
             var boostWrapEl  = document.getElementById('fp-boost-wrap');
-            if (myBoostEl)   myBoostEl.textContent = betBoostLimit + '/' + betBoostLimit;
+            if (myBoostEl)   myBoostEl.textContent = displayBoostLimit + '/' + displayBoostLimit;
             if (boostWrapEl) boostWrapEl.style.display = 'block';
             var overlayBoostBtn = document.getElementById('fp-boost-overlay-btn');
             if (overlayBoostBtn) overlayBoostBtn.style.display = 'block';
             var boostBadge = document.getElementById('fp-boost-badge');
-            if (boostBadge) { boostBadge.textContent = 'x' + betBoostLimit; boostBadge.style.display = 'block'; }
+            if (boostBadge) { boostBadge.textContent = 'x' + displayBoostLimit; boostBadge.style.display = 'block'; }
             var rivalBoostEl = document.getElementById('rival-boost-val');
             if (rivalBoostEl) rivalBoostEl.textContent = betBoostLimit + '/' + betBoostLimit;
         }
@@ -1941,8 +1943,10 @@ document.addEventListener('DOMContentLoaded', function() {
          }
 
         const dur = parseInt(fpDurSelect ? fpDurSelect.value : 600);
+        // Freeplay: 3 boosts gratis para aprender la mecánica; T2E usa boostLimit de la apuesta (0 por defecto, se sobrescribe al cargar bet)
         fpState = { timeLeft:dur, totalTime:dur, running:false, ended:false, interval:null, score:0, chaosLevel:0,
-                    betId: betId || null, betMode: !!betId, chaosUnlocked: false };
+                    betId: betId || null, betMode: !!betId, chaosUnlocked: false,
+                    boostLimit: betId ? 0 : 3, boostsUsed: 0 };
         window.fpState = fpState; // exponer para funciones globales (taunt chat, etc.)
         // Resetear botón dinamita y bar al abrir arena
         var _dynaWrap = document.getElementById('fp-chaos-dynabtn-wrap');
@@ -2770,12 +2774,12 @@ function fpEndPractice() {
         });
     };
 
-    // Exposed globally so inline onclick="fpFireBoost()" can reach it
-    window.fpFireBoost = function fpFireBoost() {
-    if (!fpState.betMode) return;
-    var bLimit  = fpState.boostLimit || 0;
-    var bUsed   = fpState.boostsUsed || 0;
-    if (bUsed >= bLimit) return;
+     // Exposed globally so inline onclick="fpFireBoost()" can reach it
+     window.fpFireBoost = function fpFireBoost() {
+     // Freeplay y T2E permitidos; el límite lo controla boostsUsed >= boostLimit
+     var bLimit  = fpState.boostLimit || 0;
+     var bUsed   = fpState.boostsUsed || 0;
+     if (bUsed >= bLimit) return;
     var btn        = document.getElementById('fp-boost-btn');
     var overlayBtn = document.getElementById('fp-boost-overlay-btn');
     if (btn && btn.disabled) return;
