@@ -2884,6 +2884,15 @@ function fpEndPractice() {
              if (fpIframe.contentWindow) fpIframe.contentWindow.focus();
          }, 0);
      }
+
+     // Visual zoom effect for Tetris CHAOS_BOMB
+     var isTetrisGame = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+     if (isTetrisGame && fpIframe) {
+         fpIframe.style.animation = 'none';
+         setTimeout(function() {
+             fpIframe.style.animation = 'chaosZoom 0.6s ease-in-out 1';
+         }, 10);
+     }
  }
 
 function fpCloseArena() {
@@ -4315,6 +4324,12 @@ btn.addEventListener('click', toggleMutePlay);
 
 <style>
 /* ── TETRIS BOOST BUTTON - Neon Glitch Cyberpunk ── */
+@keyframes boostHeartbeat {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.08); }
+    50% { transform: scale(1); }
+}
+
 @keyframes tetrisNeonGlitch {
     0%, 5%, 100% {
         filter: brightness(1) drop-shadow(0 0 8px rgba(255,215,0,0.8)) drop-shadow(0 0 20px rgba(255,0,200,0.6));
@@ -4330,6 +4345,12 @@ btn.addEventListener('click', toggleMutePlay);
 @keyframes tetrisGhostFlicker {
     0%, 100% { opacity: 0; }
     50% { opacity: 0.3; }
+}
+
+@keyframes chaosZoom {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
 }
 
 .fp-boost-tetris-neon {
