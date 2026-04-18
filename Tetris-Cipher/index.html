@@ -86,4 +86,61 @@
   });
 })();
 </script>
-<script src="scripts/script.min.js"></script></body></html>
+<script src="scripts/script.min.js"></script>
+<script>
+// CHAOS_BOMB Fallback Handler - ejecuta la lógica si falla el listener principal
+window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'CHAOS_BOMB') {
+        console.log('[Tetris Fallback] CHAOS_BOMB ejecutando manualmente');
+        // Esperar a que window.main esté listo
+        if (!window.main) {
+            setTimeout(function() {
+                if (window.main && window.main.currentGameState) {
+                    executeChaosLogic();
+                }
+            }, 100);
+        } else {
+            executeChaosLogic();
+        }
+    }
+});
+
+function executeChaosLogic() {
+    var main = window.main;
+    if (!main || !main.currentGameState) return;
+
+    // Limpiar tablero
+    if (main.currentGameState.arena) {
+        var arena = main.currentGameState.arena;
+        for (var y = 0; y < arena.length; y++) {
+            for (var x = 0; x < arena[y].length; x++) {
+                arena[y][x] = 0;
+            }
+        }
+        if (main.currentGameState.board) {
+            main.currentGameState.board.isBufferDirty = true;
+        }
+        console.log('[Tetris Fallback] Tablero limpiado');
+    }
+
+    // Notificar boost usado
+    if (window.parent !== window) {
+        window.parent.postMessage({ type: 'BOOST_USED' }, '*');
+    }
+
+    // Animación de bomba
+    try {
+        var bombWrap = document.createElement('div');
+        bombWrap.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;z-index:2147483647;pointer-events:none;';
+        var bomb = document.createElement('div');
+        bomb.textContent = '💣';
+        bomb.style.cssText = 'font-size:25vh;opacity:1;transform:scale(0.1);filter:brightness(1.2) drop-shadow(0 0 12px cyan);';
+        bombWrap.appendChild(bomb);
+        document.body.appendChild(bombWrap);
+        setTimeout(function(){ bomb.style.cssText = 'font-size:25vh;opacity:1;transform:scale(8) rotate(5deg);filter:brightness(2.5) drop-shadow(0 0 40px magenta);transition:all 0.3s ease;'; }, 20);
+        setTimeout(function(){ bomb.style.opacity = '0'; }, 350);
+        setTimeout(function(){ bombWrap.remove(); }, 900);
+        console.log('[Tetris Fallback] Animación bomba ejecutada');
+    } catch (ex) { console.error('[Tetris] Error anim:', ex); }
+}
+</script>
