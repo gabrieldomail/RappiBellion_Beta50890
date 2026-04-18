@@ -2809,6 +2809,8 @@ function fpEndPractice() {
 
      // Exposed globally so inline onclick="fpFireBoost()" can reach it
      window.fpFireBoost = function fpFireBoost() {
+     // Solo permitido durante la partida (no durante countdown o pantallas)
+     if (!fpState.running) return;
      // Freeplay y T2E permitidos; el límite lo controla boostsUsed >= boostLimit
      var bLimit  = fpState.boostLimit || 0;
      var bUsed   = fpState.boostsUsed || 0;
