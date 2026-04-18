@@ -3066,10 +3066,40 @@ function fpCloseArena() {
              console.error("[ERROR] La función fpOpenArena no existe.");
          }
 
-         // Mostrar botón de boost en freeplay (3 cargas gratis)
-         _fpShowBoostUI(fpState.boostLimit);
-     };
-    // ── Backdoor: ?arena-preview en la URL abre el arena en modo preview ─────
+          // Mostrar botón de boost en freeplay (3 cargas gratis)
+          _fpShowBoostUI(fpState.boostLimit);
+      };
+
+      // Bind freeplay buttons to fpOpenFreeGame (after function is defined)
+      (function() {
+        var tetrisBtn = document.getElementById('play-tetris-demo');
+        if (tetrisBtn) {
+            tetrisBtn.addEventListener('click', function() {
+                window.fpOpenFreeGame('Tetris-Cipher/index.html');
+            });
+        }
+        var pacBtn = document.getElementById('play-pacman-demo');
+        if (pacBtn) {
+            pacBtn.addEventListener('click', function() {
+                window.fpOpenFreeGame('pac-hack-freeplay/game.html');
+            });
+        }
+        // Lobby flotante botones freeplay
+        var tetrisLobbyBtn = document.getElementById('play-tetris-demo-lobby');
+        if (tetrisLobbyBtn) {
+            tetrisLobbyBtn.addEventListener('click', function() {
+                window.fpOpenFreeGame('Tetris-Cipher/index.html');
+            });
+        }
+        var pacLobbyBtn = document.getElementById('play-pacman-demo-lobby');
+        if (pacLobbyBtn) {
+            pacLobbyBtn.addEventListener('click', function() {
+                window.fpOpenFreeGame('pac-hack-freeplay/game.html');
+            });
+        }
+      })();
+
+     // ── Backdoor: ?arena-preview en la URL abre el arena en modo preview ─────
     // También soporta ?game=tetris para jugar Tetris en modo preview
     // Alternativamente ?preview=tetris o ?preview=1 también funciona
     (function() {
@@ -6380,35 +6410,6 @@ btn.addEventListener('click', toggleMutePlay);
         }
          // space-breaker, tetris-cipher y memory-breach están deshabilitados hasta su lanzamiento
          // — no se registran listeners para que los botones no abran el modal de apuestas
-
-         // Bind freeplay buttons to fpOpenFreeGame (dentro de DOMContentLoaded)
-         (function() {
-           var tetrisBtn = document.getElementById('play-tetris-demo');
-           if (tetrisBtn) {
-               tetrisBtn.addEventListener('click', function() {
-                   window.fpOpenFreeGame('Tetris-Cipher/index.html');
-               });
-           }
-           var pacBtn = document.getElementById('play-pacman-demo');
-           if (pacBtn) {
-               pacBtn.addEventListener('click', function() {
-                   window.fpOpenFreeGame('pac-hack-freeplay/game.html');
-               });
-           }
-           // Lobby flotante botones freeplay
-           var tetrisLobbyBtn = document.getElementById('play-tetris-demo-lobby');
-           if (tetrisLobbyBtn) {
-               tetrisLobbyBtn.addEventListener('click', function() {
-                   window.fpOpenFreeGame('Tetris-Cipher/index.html');
-               });
-           }
-           var pacLobbyBtn = document.getElementById('play-pacman-demo-lobby');
-           if (pacLobbyBtn) {
-               pacLobbyBtn.addEventListener('click', function() {
-                   window.fpOpenFreeGame('pac-hack-freeplay/game.html');
-               });
-           }
-         })();
      }); // <-- FIN DEL 'DOMContentLoaded'
 </script>
     <!-- Canvas Confetti library -->
