@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test CHAOS_BOMB - Tetris Cipher</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #000;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            gap: 20px;
+        }
+        .test-panel {
+            background: rgba(0,255,65,0.1);
+            border: 2px solid #00ff41;
+            padding: 20px;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 300px;
+        }
+        h2 {
+            margin-top: 0;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        button {
+            background: rgba(0,255,65,0.3);
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            width: 100%;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        button:hover {
+            background: rgba(0,255,65,0.5);
+            box-shadow: 0 0 10px #00ff41;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .log {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #00ff41;
+            padding: 10px;
+            border-radius: 4px;
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        .log-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(0,255,65,0.2);
+        }
+        .log-entry.success {
+            color: #00ff41;
+        }
+        .log-entry.error {
+            color: #ff0055;
+        }
+        .log-entry.info {
+            color: #00ffff;
+        }
+        .counter {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 20px;
+            background: rgba(0,255,65,0.15);
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .test-frame {
+            flex: 2;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+            background: #000;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="test-panel">
+    <h2>🧪 Test CHAOS_BOMB</h2>
+
+    <div>
+        <label>Boosts consumidos:</label>
+        <div class="counter" id="boost-counter">0</div>
+    </div>
+
+    <button onclick="testChaossBomb()">💣 Activar CHAOS_BOMB (1x)</button>
+    <button onclick="testMultipleBombs()">💣💣💣 3x CHAOS_BOMB (Rapid Fire)</button>
+    <button onclick="resetTest()">🔄 Reset Test</button>
+
+    <h3>📊 Eventos Recibidos:</h3>
+    <div class="log" id="event-log"></div>
+</div>
+
+<div class="test-frame">
+    <iframe id="tetris-frame" src="Tetris-Cipher/index.html"></iframe>
+</div>
+
+<script>
+let boostCounter = 0;
+let messageLog = [];
+
+function addLog(type, message) {
+    const timestamp = new Date().toLocaleTimeString();
+    const entry = `[${timestamp}] ${message}`;
+    messageLog.push({ type, message: entry });
+
+    const logEl = document.getElementById('event-log');
+    const div = document.createElement('div');
+    div.className = `log-entry ${type}`;
+    div.textContent = entry;
+    logEl.appendChild(div);
+    logEl.scrollTop = logEl.scrollHeight;
+}
+
+function updateCounter() {
+    document.getElementById('boost-counter').textContent = boostCounter;
+}
+
+// Listener para mensajes del iframe
+window.addEventListener('message', function(e) {
+    if (!e.data || !e.data.type) return;
+
+    if (e.data.type === 'BOOST_USED') {
+        boostCounter++;
+        updateCounter();
+        addLog('success', `✅ BOOST_USED recibido - Total: ${boostCounter}`);
+    }
+
+    if (e.data.type === 'SCORE_UPDATE') {
+        addLog('info', `📈 SCORE_UPDATE: ${e.data.score}`);
+    }
+});
+
+// Capturar logs del console del iframe
+function testChaossBomb() {
+    addLog('info', '▶️  Enviando 1x CHAOS_BOMB...');
+    const frame = document.getElementById('tetris-frame');
+    frame.contentWindow.postMessage({ type: 'CHAOS_BOMB' }, '*');
+
+    // Verificar que no se dispare múltiples veces
+    setTimeout(() => {
+        if (boostCounter === 1) {
+            addLog('success', '✓ CORRECTO: 1 click = 1 boost consumido');
+        } else {
+            addLog('error', `✗ ERROR: Esperaba 1, recibí ${boostCounter}`);
+        }
+    }, 600);
+}
+
+function testMultipleBombs() {
+    addLog('info', '▶️  Enviando 3x CHAOS_BOMB en rápida sucesión...');
+    const frame = document.getElementById('tetris-frame');
+    const initialCount = boostCounter;
+
+    // Enviar 3 boosts en sucesión
+    frame.contentWindow.postMessage({ type: 'CHAOS_BOMB' }, '*');
+    setTimeout(() => frame.contentWindow.postMessage({ type: 'CHAOS_BOMB' }, '*'), 100);
+    setTimeout(() => frame.contentWindow.postMessage({ type: 'CHAOS_BOMB' }, '*'), 200);
+
+    // Verificar después de 2 segundos
+    setTimeout(() => {
+        const consumed = boostCounter - initialCount;
+        addLog('info', `Boosts consumidos en prueba: ${consumed}`);
+        if (consumed === 3) {
+            addLog('success', '✓ CORRECTO: Se consumieron los 3 boosts sin duplicación');
+        } else {
+            addLog('error', `✗ Esperaba 3, solo se consumieron ${consumed}`);
+        }
+    }, 2000);
+}
+
+function resetTest() {
+    boostCounter = 0;
+    messageLog = [];
+    updateCounter();
+    document.getElementById('event-log').innerHTML = '';
+    addLog('info', '🔄 Test reseteado');
+}
+
+// Inicializar
+addLog('info', '🚀 Test CHAOS_BOMB iniciado - Esperando iframe...');
+updateCounter();
+
+// Opcional: Auto-start si quieres
+// setTimeout(() => testChaossBomb(), 3000);
+</script>
+
+</body>
+</html>

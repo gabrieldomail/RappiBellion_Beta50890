@@ -327,34 +327,31 @@ window.addEventListener('message', function(event) {
  		}
  	}
 
- 	// Variable global para evitar ejecuciones múltiples (evita que se consuman todos los boosts)
-	var isBombProcessing = false;
-
-	// 6. CHAOS_BOMB - Boost: limpia tablero + 500 puntos
+ 	// 6. CHAOS_BOMB - Boost: limpia tablero + 500 puntos
  	if (event.data.type === 'CHAOS_BOMB') {
- 		if (isBombProcessing) return;
- 		isBombProcessing = true;
-
- 		console.log('[Tetris] 💣 CHAOS_BOMB activada');
-
-		// LIMPIEZA TOTAL DEL TABLERO (todas las piezas desaparecen)
-  		if (self && self.board) {
-  			self.board.fill(null);
-  			self.board.isBufferDirty = true;
-  			console.log('[Tetris] Todas las piezas limpiadas del tablero');
-  		}
-
- 		// SUMA DE PUNTOS
- 		if (self.statePlaying && self.statePlaying.stats) {
- 			self.statePlaying.stats.score += 500;
- 			console.log('[Tetris] Score +500 ->', self.statePlaying.stats.score);
- 			window.parent.postMessage({ type: 'SCORE_UPDATE', score: self.statePlaying.stats.score }, '*');
+ 		console.log('[Tetris] CHAOS_BOMB recibido - ejecutando');
+ 		// Limpiar tablero
+ 		if (self.currentGameState && self.currentGameState.arena) {
+ 			var arena = self.currentGameState.arena;
+ 			for (var y = 0; y < arena.length; y++) {
+ 				for (var x = 0; x < arena[y].length; x++) {
+ 					arena[y][x] = 0;
+ 				}
+ 			}
+ 			// Forzar re-render
+ 			if (self.currentGameState.board) {
+ 				self.currentGameState.board.isBufferDirty = true;
+ 			}
  		}
-
- 		// NOTIFICAR BOOST USADO
+ 		// Sumar 500 puntos
+ 		if (self.currentGameState && self.currentGameState.stats) {
+ 			self.currentGameState.stats.score += 500;
+ 			console.log('[Tetris] Score +500 ->', self.currentGameState.stats.score);
+ 			window.parent.postMessage({ type: 'SCORE_UPDATE', score: self.currentGameState.stats.score }, '*');
+ 		}
+ 		// Notificar boost usado al padre
  		window.parent.postMessage({ type: 'BOOST_USED' }, '*');
-
- 		// ANIMACIÓN VISUAL
+ 		// Animación visual
  		try {
  			var bombWrap = document.createElement('div');
  			bombWrap.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;z-index:2147483647;pointer-events:none;overflow:hidden;';
@@ -367,12 +364,7 @@ window.addEventListener('message', function(event) {
  			setTimeout(function(){ bomb.style.transform = 'scale(10)'; bomb.style.opacity = '0'; }, 350);
  			setTimeout(function(){ bombWrap.remove(); }, 900);
  		} catch (ex) { console.error('[Tetris] Error anim CHAOS_BOMB:', ex); }
-
- 		// Liberar el candado después de 500ms
- 		setTimeout(function() { isBombProcessing = false; }, 500);
  	}
-
-
  });
 
 window.main = new Main();

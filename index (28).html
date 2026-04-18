@@ -1217,8 +1217,8 @@
                     alt="BOOST"
                 ></button>
 
-                <!-- TETRIS BOOST OVERLAY — Neon Glitch Flotante (solo icono, sin contenido) -->
-                <button id="fp-tetris-botton-neon"
+                <!-- TETRIS BOOST OVERLAY — Neon Glitch Flotante -->
+                <button id="fp-boost-tetris-overlay-btn"
                     onclick="fpFireBoost()"
                     style="
                         display: none;
@@ -1236,12 +1236,11 @@
                         border-radius: 12px;
                         transition: opacity 0.2s ease;
                         pointer-events: auto;
-                        font-size: 72px;
-                        line-height: 128px;
-                        text-align: center;
-                        text-shadow: 0 0 12px rgba(255,215,0,0.9);
                     "
-                    title="CHAOS_BOMB - Click para activar boost">💣</button>
+                ><img src="images/icon-512x512.png"
+                    style="width:100%;height:100%;display:block;filter:drop-shadow(0 0 8px rgba(255,215,0,0.8));"
+                    alt="CHAOS_BOMB"
+                ></button>
 
                 <!-- Badge restantes bajo botón boost overlay -->
                 <div id="fp-boost-badge" style="
@@ -2422,28 +2421,20 @@ document.addEventListener('DOMContentLoaded', function() {
          var myBoostEl    = document.getElementById('fp-boost-val');
          var boostWrapEl  = document.getElementById('fp-boost-wrap');
          var overlayBtn   = document.getElementById('fp-boost-overlay-btn');
-         var tetrisOverlayBtn = document.getElementById('fp-tetris-botton-neon');
+         var tetrisOverlayBtn = document.getElementById('fp-boost-tetris-overlay-btn');
          var boostBadge   = document.getElementById('fp-boost-badge');
          var rivalBoostEl = document.getElementById('rival-boost-val');
          var boostBtn     = document.getElementById('fp-boost-btn');
          var tetrisBosBtn = document.getElementById('fp-boost-tetris-btn');
 
-         // Para Tetris: mostrar SOLO el neon, ocultar todo lo demás
+         // Mostrar botón correcto según el juego activo
          var isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+         if (boostBtn) boostBtn.style.display = isTetris ? 'none' : 'block';
+         if (tetrisBosBtn) tetrisBosBtn.style.display = isTetris ? 'block' : 'none';
 
-         if (isTetris) {
-             // TETRIS: solo neon
-             if (boostBtn) boostBtn.style.display = 'none';
-             if (tetrisBosBtn) tetrisBosBtn.style.display = 'block';
-             if (overlayBtn) overlayBtn.style.display = 'none';
-             if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'block';
-         } else {
-             // PAC-HACK: botón normal
-             if (boostBtn) boostBtn.style.display = 'block';
-             if (tetrisBosBtn) tetrisBosBtn.style.display = 'none';
-             if (overlayBtn) overlayBtn.style.display = 'block';
-             if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'none';
-         }
+         // Mostrar botones flotantes
+         if (overlayBtn) overlayBtn.style.display = isTetris ? 'none' : 'block';
+         if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = isTetris ? 'block' : 'none';
 
          // Re-habilitar botones
          if (boostBtn) boostBtn.disabled = false;
@@ -3267,7 +3258,7 @@ function fpCloseArena() {
                 overlayBoostBtn.disabled = bRemain <= 0;
                 overlayBoostBtn.style.opacity = bRemain <= 0 ? '0.3' : '1';
             }
-            var tetrisOverlayBtn = document.getElementById('fp-tetris-botton-neon');
+            var tetrisOverlayBtn = document.getElementById('fp-boost-tetris-overlay-btn');
             if (tetrisOverlayBtn) {
                 tetrisOverlayBtn.disabled = bRemain <= 0;
                 tetrisOverlayBtn.style.opacity = bRemain <= 0 ? '0.3' : '1';
@@ -3286,11 +3277,8 @@ function fpCloseArena() {
                     boostBadge.style.boxShadow = '0 0 8px rgba(255,68,68,0.6)';
                 }
             }
-            // Flash ghost overlay on use — SOLO para Pac-Hack, NO para Tetris
-            var isTetrisGame = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
-            if (!isTetrisGame) {
-                fpBoostGhostFlash();
-            }
+            // Flash ghost overlay on use
+            fpBoostGhostFlash();
             if (fpState.betMode && fpState.betId && fpState.myRole && window._fbDB) {
                 window._fbDB.ref('t2e_bets/' + fpState.betId + '/boosts/' + fpState.myRole)
                     .set(fpState.boostsUsed);
@@ -3299,23 +3287,27 @@ function fpCloseArena() {
             // count update via Firebase (rivalBoostsRef listener). Sending RIVAL_BOOST to
             // our own iframe (fpIframe) was incorrect and showed the warning on the wrong side.
 
-            // 🌟 Audio boost — Mario Star para Pac-Hack, Chaos Bomb para Tetris
-            var isTetrisGame = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
-            var boostAudioFile = isTetrisGame ? 'sounds/bomba-chaos.mp3' : 'sounds/mario-star.mp3';
-            if (!window._fpBoostAudio) {
-                window._fpBoostAudio = new Audio(boostAudioFile);
-                window._fpBoostAudio.loop  = false;
-                window._fpBoostAudio.volume = 0.65;
+            // Sonido de boost: bomba-chaos para Tetris, mario-star para pac-hack
+            var _boostIsTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+            if (_boostIsTetris) {
+                // bomba-chaos.mp3 ya se reproduce desde el iframe (script_min.js)
+                // No reproducir aqui para evitar doble sonido
+            } else {
+                // Pac-hack: mario-star durante la inmunidad de fantasmas
+                if (!window._fpMarioAudio) {
+                    window._fpMarioAudio = new Audio('sounds/mario-star.mp3');
+                    window._fpMarioAudio.loop  = false;
+                    window._fpMarioAudio.volume = 0.65;
+                }
+                if (window._fpMarioStarTimer) clearTimeout(window._fpMarioStarTimer);
+                window._fpMarioAudio.currentTime = 0;
+                window._fpMarioAudio.play().catch(function(){});
             }
-            if (window._fpBoostAudioTimer) clearTimeout(window._fpBoostAudioTimer);
-            window._fpBoostAudio.src = boostAudioFile; // actualizar src por si cambió el juego
-            window._fpBoostAudio.currentTime = 0;
-            window._fpBoostAudio.play().catch(function(){});
             // parar cuando termina la inmunidad (frightTime = 6s + margen)
-            window._fpBoostAudioTimer = setTimeout(function() {
-                if (window._fpBoostAudio && !window._fpBoostAudio.paused) {
-                    window._fpBoostAudio.pause();
-                    window._fpBoostAudio.currentTime = 0;
+            window._fpMarioStarTimer = setTimeout(function() {
+                if (window._fpMarioAudio && !window._fpMarioAudio.paused) {
+                    window._fpMarioAudio.pause();
+                    window._fpMarioAudio.currentTime = 0;
                 }
             }, 9500);
         }
@@ -7786,17 +7778,17 @@ btn.addEventListener('click', toggleMutePlay);
             }
 
             /* Tetris Boost Overlay Button */
-            #fp-tetris-botton-neon {
+            #fp-boost-tetris-overlay-btn {
                 width: 64px !important;
                 height: 64px !important;
                 top: 28% !important;
                 right: 8px !important;
                 animation: tetrisNeonGlitch 3s infinite !important;
             }
-            #fp-tetris-botton-neon:hover {
+            #fp-boost-tetris-overlay-btn:hover {
                 filter: brightness(1.4) drop-shadow(0 0 25px rgba(255,0,200,1)) drop-shadow(0 0 50px rgba(0,255,255,0.9)) !important;
             }
-            #fp-tetris-botton-neon:disabled {
+            #fp-boost-tetris-overlay-btn:disabled {
                 opacity: 0.3 !important;
                 animation: none !important;
             }

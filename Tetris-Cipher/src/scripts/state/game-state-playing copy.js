@@ -249,14 +249,9 @@ export class GameStatePlaying extends GameState {
 		// Draw the particles
 		this.game.particleController.render(ctx);
 
-		// --- CORRECCIÓN: Solo dibujar si las piezas existen (evita crash en CHAOS_BOMB) ---
-		if (this.ghostPiece) {
-			this.ghostPiece.render(ctx, this.game.board.cellSize);
-		}
-		if (this.fallingPiece) {
-			this.fallingPiece.render(ctx, this.game.board.cellSize);
-		}
+		// Draw the ghost and falling piece
+		this.ghostPiece.render(ctx, this.game.board.cellSize);
+		this.fallingPiece.render(ctx, this.game.board.cellSize);
 	}
-
 
 }
