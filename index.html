@@ -1176,11 +1176,12 @@
             <!-- Cuerpo: el iframe ocupa todo -->
             <div class="terminal-body-caos" style="
                 padding: 0; flex: 1; overflow: hidden; position: relative;">
-                <iframe id="fp-iframe" src=""
-                    sandbox="allow-scripts allow-same-origin"
-                    allow="autoplay"
-                    style="width:100%;height:100%;border:none;display:block;">
-                </iframe>
+                 <iframe id="fp-iframe" src=""
+                     sandbox="allow-scripts allow-same-origin"
+                     allow="autoplay"
+                     tabindex="-1"
+                     style="width:100%;height:100%;border:none;display:block;">
+                 </iframe>
 
 
                 <!-- BOOST OVERLAY — flotante sin fondo sobre el juego -->
@@ -2802,26 +2803,29 @@ function fpEndPractice() {
          var _isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
          fpIframe.contentWindow.postMessage({ type: _isTetris ? 'CHAOS_BOMB' : 'TRIGGER_BOOST' }, '*');
      }
-    // Visual flash feedback — ambos botones
-    if (btn) {
-        btn.classList.add('fp-boost-firing');
-        setTimeout(function() { btn.classList.remove('fp-boost-firing'); }, 300);
-    }
-    if (overlayBtn) {
-        overlayBtn.style.animationPlayState = 'paused';
-        overlayBtn.style.transform = 'scale(0.85)';
-        overlayBtn.style.filter = 'brightness(2) drop-shadow(0 0 14px cyan)';
-        setTimeout(function() {
-            overlayBtn.style.transform = '';
-            overlayBtn.style.filter = '';
-            overlayBtn.style.animationPlayState = '';
-        }, 300);
-    }
-    // Return focus to iframe so keyboard controls keep working
-    setTimeout(function() {
-        if (fpIframe && fpIframe.contentWindow) fpIframe.contentWindow.focus();
-    }, 0);
-}
+     // Visual flash feedback — ambos botones
+     if (btn) {
+         btn.classList.add('fp-boost-firing');
+         setTimeout(function() { btn.classList.remove('fp-boost-firing'); }, 300);
+     }
+     if (overlayBtn) {
+         overlayBtn.style.animationPlayState = 'paused';
+         overlayBtn.style.transform = 'scale(0.85)';
+         overlayBtn.style.filter = 'brightness(2) drop-shadow(0 0 14px cyan)';
+         setTimeout(function() {
+             overlayBtn.style.transform = '';
+             overlayBtn.style.filter = '';
+             overlayBtn.style.animationPlayState = '';
+         }, 300);
+     }
+     // Return focus to iframe so keyboard controls keep working
+     if (fpIframe) {
+         fpIframe.focus(); // enfoque el elemento iframe primero
+         setTimeout(function() {
+             if (fpIframe.contentWindow) fpIframe.contentWindow.focus();
+         }, 0);
+     }
+ }
 
 function fpCloseArena() {
         clearInterval(fpState.interval);

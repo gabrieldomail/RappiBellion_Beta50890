@@ -309,23 +309,62 @@ window.addEventListener('message', function(event) {
 		}, 80);
 	}
 
-	// 5. MATCH_ENDED - Forzar Game Over / Veredicto
-	if (event.data.type === 'MATCH_ENDED') {
-		console.log('[Tetris] MATCH_ENDED recibido - forzando veredicto');
+ 	// 5. MATCH_ENDED - Forzar Game Over / Veredicto
+ 	if (event.data.type === 'MATCH_ENDED') {
+ 		console.log('[Tetris] MATCH_ENDED recibido - forzando veredicto');
 
-		// Capturar score final
-		if (self.statePlaying && self.statePlaying.stats) {
-			var finalScore = self.statePlaying.stats.score || 0;
-			console.log('[Tetris] Score final:', finalScore);
-			window.parent.postMessage({ type: 'SCORE_UPDATE', score: finalScore }, '*');
-		}
+ 		// Capturar score final
+ 		if (self.statePlaying && self.statePlaying.stats) {
+ 			var finalScore = self.statePlaying.stats.score || 0;
+ 			console.log('[Tetris] Score final:', finalScore);
+ 			window.parent.postMessage({ type: 'SCORE_UPDATE', score: finalScore }, '*');
+ 		}
 
-		// Forzar estado GAMEOVER
-		self.state = GameStateType.GAMEOVER;
-		if (self.stateOver && self.stateOver.reset) {
-			self.stateOver.reset();
-		}
-	}
-});
+ 		// Forzar estado GAMEOVER
+ 		self.state = GameStateType.GAMEOVER;
+ 		if (self.stateOver && self.stateOver.reset) {
+ 			self.stateOver.reset();
+ 		}
+ 	}
+
+ 	// 6. CHAOS_BOMB - Boost: limpia tablero + 500 puntos
+ 	if (event.data.type === 'CHAOS_BOMB') {
+ 		console.log('[Tetris] CHAOS_BOMB recibido - ejecutando');
+ 		// Limpiar tablero
+ 		if (self.currentGameState && self.currentGameState.arena) {
+ 			var arena = self.currentGameState.arena;
+ 			for (var y = 0; y < arena.length; y++) {
+ 				for (var x = 0; x < arena[y].length; x++) {
+ 					arena[y][x] = 0;
+ 				}
+ 			}
+ 			// Forzar re-render
+ 			if (self.currentGameState.board) {
+ 				self.currentGameState.board.isBufferDirty = true;
+ 			}
+ 		}
+ 		// Sumar 500 puntos
+ 		if (self.currentGameState && self.currentGameState.stats) {
+ 			self.currentGameState.stats.score += 500;
+ 			console.log('[Tetris] Score +500 ->', self.currentGameState.stats.score);
+ 			window.parent.postMessage({ type: 'SCORE_UPDATE', score: self.currentGameState.stats.score }, '*');
+ 		}
+ 		// Notificar boost usado al padre
+ 		window.parent.postMessage({ type: 'BOOST_USED' }, '*');
+ 		// Animación visual
+ 		try {
+ 			var bombWrap = document.createElement('div');
+ 			bombWrap.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;z-index:2147483647;pointer-events:none;overflow:hidden;';
+ 			var bomb = document.createElement('div');
+ 			bomb.textContent = '💣';
+ 			bomb.style.cssText = 'font-size:20vh;line-height:1;transform:scale(0.1);opacity:1;transition:transform 0.25s cubic-bezier(0.25,1,0.5,1), opacity 0.7s ease-out, filter 0.2s;filter:brightness(1.2) drop-shadow(0 0 12px cyan) saturate(1.2);';
+ 			bombWrap.appendChild(bomb);
+ 			document.body.appendChild(bombWrap);
+ 			setTimeout(function(){ bomb.style.transform = 'scale(8)'; bomb.style.filter = 'brightness(2.5) drop-shadow(0 0 40px magenta) saturate(2)'; }, 20);
+ 			setTimeout(function(){ bomb.style.transform = 'scale(10)'; bomb.style.opacity = '0'; }, 350);
+ 			setTimeout(function(){ bombWrap.remove(); }, 900);
+ 		} catch (ex) { console.error('[Tetris] Error anim CHAOS_BOMB:', ex); }
+ 	}
+ });
 
 window.main = new Main();
