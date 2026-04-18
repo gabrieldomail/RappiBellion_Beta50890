@@ -245,6 +245,10 @@
         showRivalBoostWarning(data.boostsRemaining);
         break;
 
+      case 'TRIGGER_BOOST':
+        if (!matchEnded) window.PvPBridge.onPowerPellet();
+        break;
+
       case 'RIVAL_SCORE':
         break;
     }

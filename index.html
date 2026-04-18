@@ -1151,8 +1151,15 @@
             <div id="fp-boost-val"
                  style="font-family:'Orbitron',monospace; font-size:1.5em;
                          color:var(--color-caos-amarillo); letter-spacing:4px;">-/-</div>
-            <button id="fp-boost-btn" onclick="fpFireBoost()">
+            <button id="fp-boost-btn" onclick="fpFireBoost()"
+                    style="display:none;">
                 HACK IT
+            </button>
+            <!-- TETRIS BOOST BUTTON - Neon Glitch Cyberpunk -->
+            <button id="fp-boost-tetris-btn" onclick="fpFireBoost()"
+                    class="fp-boost-tetris-neon"
+                    style="display:none;">
+                <img src="images/icon-512x512.png" alt="CHAOS_BOMB" class="fp-boost-tetris-icon">
             </button>
         </div>
 
@@ -2391,6 +2398,14 @@ document.addEventListener('DOMContentLoaded', function() {
          var overlayBtn   = document.getElementById('fp-boost-overlay-btn');
          var boostBadge   = document.getElementById('fp-boost-badge');
          var rivalBoostEl = document.getElementById('rival-boost-val');
+         var boostBtn     = document.getElementById('fp-boost-btn');
+         var tetrisBosBtn = document.getElementById('fp-boost-tetris-btn');
+
+         // Mostrar botón correcto según el juego activo
+         var isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+         if (boostBtn) boostBtn.style.display = isTetris ? 'none' : 'block';
+         if (tetrisBosBtn) tetrisBosBtn.style.display = isTetris ? 'block' : 'none';
+
          if (myBoostEl)   myBoostEl.textContent = limit + '/' + limit;
          if (boostWrapEl) boostWrapEl.style.display = 'block';
          if (overlayBtn)  overlayBtn.style.display = 'block';
@@ -2792,36 +2807,30 @@ function fpEndPractice() {
      if (bUsed >= bLimit) return;           // agotados
      if (fpState.betMode && !fpState.running) return; // T2E: solo durante partida
     var btn        = document.getElementById('fp-boost-btn');
+    var tetrisBtn  = document.getElementById('fp-boost-tetris-btn');
     var overlayBtn = document.getElementById('fp-boost-overlay-btn');
     if (btn && btn.disabled) return;
+    if (tetrisBtn && tetrisBtn.disabled) return;
     // Disable temporarily to prevent double-click
     if (btn) btn.disabled = true;
+    if (tetrisBtn) tetrisBtn.disabled = true;
     if (overlayBtn) overlayBtn.disabled = true;
      // Trigger in iframe: CHAOS_BOMB para Tetris, TRIGGER_BOOST para Pac-Hack
      if (fpIframe && fpIframe.contentWindow) {
          var _isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+         console.log('[DEBUG fpFireBoost] _fpLastGameSrc:', window._fpLastGameSrc, '| fpIframe.src:', fpIframe.src, '| _isTetris:', _isTetris, '| Sending:', _isTetris ? 'CHAOS_BOMB' : 'TRIGGER_BOOST');
          fpIframe.contentWindow.postMessage({ type: _isTetris ? 'CHAOS_BOMB' : 'TRIGGER_BOOST' }, '*');
      }
-     // Freeplay: no hay BOOST_USED echo del iframe, actualizar contador aqui
-     if (!fpState.betMode) {
-         fpState.boostsUsed = (fpState.boostsUsed || 0) + 1;
-         var _bRemain = Math.max(0, bLimit - fpState.boostsUsed);
-         var _bEl = document.getElementById('fp-boost-val');
-         if (_bEl) { _bEl.textContent = _bRemain + '/' + bLimit;
-             _bEl.style.color = _bRemain === 0 ? '#ff4444' : 'var(--color-caos-amarillo)'; }
-         var _oBadge = document.getElementById('fp-boost-badge');
-         if (_oBadge) _oBadge.textContent = 'x' + _bRemain;
-         // Re-enable si quedan boosts, deshabilitar si se agotaron
-         setTimeout(function() {
-             if (btn) btn.disabled = _bRemain <= 0;
-             if (overlayBtn) { overlayBtn.disabled = _bRemain <= 0;
-                 overlayBtn.style.opacity = _bRemain <= 0 ? '0.3' : '1'; }
-         }, 400);
-     }
+     // Nota: No incrementar aqui. El iframe enviará BOOST_USED que actualizará el contador en el listener message
+     // en línea 3184. Esto evita doble-conteo en freeplay
      // Visual flash feedback — ambos botones
      if (btn) {
          btn.classList.add('fp-boost-firing');
          setTimeout(function() { btn.classList.remove('fp-boost-firing'); }, 300);
+     }
+     if (tetrisBtn) {
+         tetrisBtn.classList.add('fp-boost-firing');
+         setTimeout(function() { tetrisBtn.classList.remove('fp-boost-firing'); }, 300);
      }
      if (overlayBtn) {
          overlayBtn.style.animationPlayState = 'paused';
@@ -3112,6 +3121,7 @@ function fpCloseArena() {
     window.addEventListener('message', function(e) {
         const d = e.data;
         if (!d || !d.type) return;
+        console.log('[DEBUG iframe message]', d.type, d);
 
         // FIX: Si el juego termina por falta de vidas, cerrar la práctica del padre
         if (d.type === 'GAME_OVER') {
@@ -3181,6 +3191,7 @@ function fpCloseArena() {
         }
         // BOOST_USED: boost used by this player — update display and publish to Firebase
         if (d.type === 'BOOST_USED') {
+            console.log('[DEBUG BOOST_USED received]', d);
             fpState.boostsUsed = (fpState.boostsUsed || 0) + 1;
             var bLimit  = fpState.boostLimit || 0;
             var bRemain = Math.max(0, bLimit - fpState.boostsUsed);
@@ -4259,6 +4270,67 @@ btn.addEventListener('click', toggleMutePlay);
     </audio>
 
 <style>
+/* ── TETRIS BOOST BUTTON - Neon Glitch Cyberpunk ── */
+@keyframes tetrisNeonGlitch {
+    0%, 5%, 100% {
+        filter: brightness(1) drop-shadow(0 0 8px rgba(255,215,0,0.8)) drop-shadow(0 0 20px rgba(255,0,200,0.6));
+        transform: scale(1) rotate(0deg);
+    }
+    3% { filter: brightness(1.3) drop-shadow(0 0 15px rgba(0,255,255,0.9)) drop-shadow(0 0 30px rgba(255,0,200,0.8)); transform: scale(1.05) rotate(-1deg); }
+    7% { filter: brightness(0.8) drop-shadow(0 0 5px rgba(255,215,0,0.5)); transform: scale(0.98) rotate(0.5deg); }
+    12% { filter: brightness(1.2) drop-shadow(0 0 20px rgba(124,252,0,0.7)); }
+    18% { filter: brightness(1) drop-shadow(0 0 8px rgba(255,215,0,0.8)); }
+    25% { filter: brightness(1.1) drop-shadow(0 0 12px rgba(0,255,255,0.7)); transform: scale(1.02); }
+}
+
+@keyframes tetrisGhostFlicker {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.3; }
+}
+
+.fp-boost-tetris-neon {
+    width: 70px !important;
+    height: 70px !important;
+    padding: 0 !important;
+    border: 3px solid rgba(255,215,0,0.9) !important;
+    background: transparent !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: all 0.2s ease !important;
+    font-family: 'Orbitron', monospace !important;
+    margin-top: 8px !important;
+    animation: tetrisNeonGlitch 3s infinite !important;
+}
+
+.fp-boost-tetris-neon:hover {
+    filter: brightness(1.4) drop-shadow(0 0 25px rgba(255,0,200,1)) drop-shadow(0 0 50px rgba(0,255,255,0.9)) !important;
+    transform: scale(1.08) !important;
+}
+
+.fp-boost-tetris-neon:active {
+    transform: scale(0.95) !important;
+    filter: brightness(2) drop-shadow(0 0 40px rgba(255,215,0,1)) drop-shadow(0 0 80px rgba(124,252,0,1)) !important;
+}
+
+.fp-boost-tetris-neon:disabled {
+    opacity: 0.3 !important;
+    cursor: not-allowed !important;
+    animation: none !important;
+    filter: brightness(0.5) !important;
+}
+
+.fp-boost-tetris-icon {
+    width: 55px !important;
+    height: 55px !important;
+    filter: drop-shadow(0 0 6px rgba(255,215,0,0.8)) drop-shadow(0 0 12px rgba(255,0,200,0.6)) !important;
+    animation: tetrisGhostFlicker 2s ease-in-out infinite !important;
+}
+
 /* DISCLAIMER MOBILE FIXES */
 @media (max-width: 768px) {
     #disclaimer-modal {
@@ -7829,6 +7901,13 @@ btn.addEventListener('click', toggleMutePlay);
             background: rgba(248,255,43,0.35);
             box-shadow: 0 0 28px rgba(248,255,43,0.7);
         }
+
+        #fp-boost-tetris-btn.fp-boost-firing {
+            filter: brightness(2.5) drop-shadow(0 0 50px rgba(255,215,0,1)) drop-shadow(0 0 100px rgba(124,252,0,1)) drop-shadow(0 0 150px rgba(0,255,255,1)) !important;
+            transform: scale(1.1) rotate(2deg) !important;
+            animation: none !important;
+        }
+
         @media (max-width: 768px) {
             #fp-boost-btn { font-size: 0.75em; padding: 8px 10px; min-height: 44px; }
         }
