@@ -6910,173 +6910,140 @@ footer::before {
 
 @media all and (display-mode: standalone), (display-mode: fullscreen) {
 
-    /* 1. Ocultar TODA la web tradicional — PWA va directo a la Arena */
-    body > section:not(#t2eplay-arena),
-    header, footer,
-    #game-overlay,
-    #intro-screen, #beta-start-screen,
-    #finder-float-window, #lobby-float-window, #gemini-chat-fab,
-    #usdt-promo-window, #mp-promo-window, #contact-float-btn, #mute-play-btn {
-        display: none !important;
-        visibility: hidden !important;
-    }
+    /* ===================================================
+       PWA STANDALONE MODE - Rappibellion T2E
+       El sitio funciona como una app nativa:
+       - Layout optimizado para portrait mobile
+       - Cuando la arena esta activa: full screen inmersivo
+       - Fuera de la arena: sitio normal pero compacto
+    =================================================== */
 
-    /* 2. Cuerpo inmersivo */
+    /* 1. Fondo base de la app */
     body {
         margin: 0;
         padding: 0;
-        overflow: hidden !important;
-        background: #000;
-        height: 100vh;
+        background: var(--color-fondo-oscuro, #020408);
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
     }
 
-    /* 3. Arena ocupa toda la pantalla */
-    #t2eplay-arena {
+    /* 2. Safe area para notch / Dynamic Island */
+    body > header,
+    body > nav {
+        padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    /* 3. Floats que interfieren con la app */
+    #duel-inbox-window,
+    #duel-trigger-btn,
+    #space-promo-window,
+    #lamp-flicker-btn {
+        display: none !important;
+    }
+
+    /* 4. PWA install button - no se muestra dentro de la app instalada */
+    #pwa-install-btn {
+        display: none !important;
+    }
+
+    /* 5. ARENA ACTIVA (.show) - full screen inmersivo */
+    #t2eplay-arena.show {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 99999 !important;
+        background: #000 !important;
+        overflow: hidden !important;
+        /* Evitar que el scroll del fondo se cuele */
+        touch-action: none;
+    }
+
+    /* Cuando la arena esta abierta: bloquear scroll del body */
+    body:has(#t2eplay-arena.show) {
+        overflow: hidden !important;
+        height: 100vh !important;
+    }
+
+    /* Fallback para browsers sin :has() */
+    #t2eplay-arena.show ~ * {
+        pointer-events: none;
+    }
+
+    /* 6. Columnas de la arena en portrait */
+    #t2eplay-arena.show .fp-col-left {
+        position: absolute !important;
+        top: env(safe-area-inset-top, 10px) !important;
+        left: 2% !important;
+        width: 46% !important;
+        height: auto !important;
+        z-index: 10 !important;
+        background: rgba(5, 10, 15, 0.85) !important;
+        backdrop-filter: blur(6px) !important;
+        border: 1px solid rgba(0, 188, 255, 0.4) !important;
+        border-radius: 8px !important;
+        padding: 6px 10px !important;
         display: flex !important;
         flex-direction: column !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        position: fixed !important;
-        top: 0;
-        left: 0;
-        background: #000 !important;
-        z-index: 99999 !important;
+        gap: 4px !important;
     }
 
-    /* 4. Iframe del juego: ocupa todo */
-    .fp-game-wrap {
+    #t2eplay-arena.show .fp-col-right {
+        position: absolute !important;
+        top: env(safe-area-inset-top, 10px) !important;
+        right: 2% !important;
+        width: 46% !important;
+        height: auto !important;
+        z-index: 10 !important;
+        background: rgba(5, 10, 15, 0.85) !important;
+        backdrop-filter: blur(6px) !important;
+        border: 1px solid rgba(0, 188, 255, 0.4) !important;
+        border-radius: 8px !important;
+        padding: 6px 10px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+    }
+
+    /* 7. Game wrap: ocupa toda la pantalla bajo los HUDs */
+    #t2eplay-arena.show .fp-game-wrap {
+        position: absolute !important;
+        inset: 0 !important;
         width: 100vw !important;
         height: 100vh !important;
-        position: absolute !important;
-        top: 0;
-        left: 0;
-        margin: 0 !important;
-        padding: 0 !important;
         z-index: 1 !important;
     }
 
-    .caos-terminal {
-        height: 100% !important;
+    #t2eplay-arena.show .caos-terminal {
         width: 100% !important;
+        height: 100% !important;
         max-width: none !important;
         border: none !important;
         margin: 0 !important;
         padding: 0 !important;
+        border-radius: 0 !important;
     }
 
-    .terminal-header-caos { display: none !important; }
+    #t2eplay-arena.show .terminal-header-caos {
+        display: none !important;
+    }
 
-    #fp-iframe {
+    #t2eplay-arena.show #fp-iframe {
         width: 100vw !important;
         height: 100vh !important;
         border: none !important;
     }
 
-    /* 5. HUD superior — stats flotantes en portrait */
-    .fp-col-left {
-        position: absolute !important;
-        top: env(safe-area-inset-top, 10px) !important;
-        left: 2% !important;
-        width: 96% !important;
-        height: auto !important;
-        max-height: none !important;
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        background: rgba(5, 10, 15, 0.80) !important;
-        backdrop-filter: blur(6px) !important;
-        border: 1px solid var(--color-azul-glitch) !important;
-        border-radius: 8px !important;
-        padding: 8px 12px !important;
-        z-index: 10 !important;
-        box-shadow: 0 0 15px rgba(0, 255, 255, 0.2) !important;
+    /* 8. Tipografia mas grande en portrait */
+    #t2eplay-arena.show .fp-timer-val {
+        font-size: 2.2rem !important;
     }
 
-    .fp-col-left > div {
-        background: none !important;
-        border: none !important;
-        margin: 0 !important;
+    /* 9. Seccion principal - padding compacto en app */
+    body > section {
+        padding-left: max(16px, env(safe-area-inset-left));
+        padding-right: max(16px, env(safe-area-inset-right));
     }
-
-    .fp-timer-block,
-    .fp-stat,
-    #fp-chaos-bar-wrap {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-    }
-
-    .fp-timer-lbl,
-    .fp-stat-lbl,
-    .fp-chaos-label { font-size: 0.6rem !important; margin-bottom: 2px !important; }
-
-    .fp-timer-val,
-    .fp-stat-val { font-size: 1.1rem !important; color: var(--color-caos-amarillo) !important; }
-
-    .fp-timer-bar-wrap,
-    .fp-chaos-bar-outer { width: 50px !important; height: 4px !important; margin-top: 3px !important; }
-
-    /* Ocultar decoraciones innecesarias de la columna izquierda */
-    .fp-logo-glitch,
-    .fp-practice-lbl,
-    .fp-hover-glow,
-    .fp-col-left::before,
-    .fp-col-left::after { display: none !important; animation: none !important; }
-
-    /* 6. HUD inferior — controles flotantes en portrait */
-    .fp-col-right {
-        position: absolute !important;
-        bottom: env(safe-area-inset-bottom, 10px) !important;
-        left: 5% !important;
-        width: 90% !important;
-        height: auto !important;
-        max-height: none !important;
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-around !important;
-        align-items: center !important;
-        background: rgba(5, 10, 15, 0.80) !important;
-        backdrop-filter: blur(6px) !important;
-        border: 1px solid var(--color-primario) !important;
-        border-radius: 8px !important;
-        padding: 8px 12px !important;
-        z-index: 10 !important;
-        box-shadow: 0 0 15px rgba(255, 60, 94, 0.2) !important;
-    }
-
-    #fp-controls-freeplay {
-        display: flex !important;
-        flex-direction: row !important;
-        gap: 12px !important;
-        width: 100% !important;
-        justify-content: space-around !important;
-    }
-
-    #fp-duration-select {
-        width: auto !important;
-        padding: 6px 10px !important;
-        font-size: 0.8rem !important;
-        border-radius: 4px !important;
-    }
-
-    .fp-btn,
-    .fp-exit-cta {
-        width: auto !important;
-        padding: 8px 14px !important;
-        font-size: 0.8rem !important;
-        margin: 0 !important;
-        border-radius: 4px !important;
-    }
-
-    /* Ocultar decoraciones innecesarias de la columna derecha */
-    .fp-mode-label,
-    .fp-mode-val,
-    .fp-mode-sub,
-    #fp-tips-btn,
-    .fp-hover-glow-right,
-    .fp-col-right::before,
-    .fp-col-right::after { display: none !important; animation: none !important; }
 }
 
 /* ══════════════════════════════════════════════════
