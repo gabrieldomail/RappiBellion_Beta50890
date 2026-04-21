@@ -10,18 +10,107 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:,">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json?v=2">
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#020408">
+    <!-- PWA: Android / Chrome -->
     <meta name="mobile-web-app-capable" content="yes">
+    <!-- PWA: iOS / Safari -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Rappibellion T2E">
+    <meta name="apple-mobile-web-app-title" content="RappiΞLLi0N">
+    <!-- PWA: Splash screens iOS -->
+    <link rel="apple-touch-startup-image" href="images/icon-512x512.png">
+    <!-- OG / Social -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="RappiΞLLi0N T2E — El Próximo Think-to-Earn">
+    <meta property="og:description" content="Apuesta con tu billetera, juega Pac-Hack y Tetris Cipher, y gana en El Circuito. La revolución T2E ha comenzado.">
+    <meta property="og:image" content="images/rappibellion_logo_movil.png">
+    <meta property="og:url" content="https://rappibellion.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="RappiΞLLi0N T2E">
+    <meta name="twitter:description" content="El Think-to-Earn que te hace pensar y ganar. Pac-Hack + Tetris Cipher en El Circuito.">
+    <meta name="twitter:image" content="images/rappibellion_logo_movil.png">
+    <!-- SEO -->
+    <meta name="description" content="Rappibellion T2E: apuesta, juega y gana en El Circuito. Plataforma de gaming blockchain con $RPPI en Optimism.">
+    <meta name="keywords" content="T2E, think-to-earn, blockchain, gaming, RPPI, Optimism, Pac-Hack, Tetris, casino crypto">
     <link rel="apple-touch-icon" href="images/icon-192x192.png">
     <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./service-worker.js');
+  // ── PWA: Service Worker + Install Prompt + Update Banner ──
+  (function() {
+    if (!('serviceWorker' in navigator)) return;
+
+    var _deferredInstallPrompt = null;
+
+    // Registro del SW
+    navigator.serviceWorker.register('./service-worker.js', { scope: '/' })
+      .then(function(reg) {
+        console.log('[PWA] SW registrado, scope:', reg.scope);
+        // Detectar nueva version disponible
+        reg.addEventListener('updatefound', function() {
+          var newSW = reg.installing;
+          newSW.addEventListener('statechange', function() {
+            if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+              _showUpdateBanner();
+            }
+          });
+        });
+      })
+      .catch(function(err) { console.warn('[PWA] SW error:', err); });
+
+    // Capturar evento de instalacion (A2HS)
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      _deferredInstallPrompt = e;
+      _showInstallButton();
+    });
+
+    window.addEventListener('appinstalled', function() {
+      _deferredInstallPrompt = null;
+      _hideInstallButton();
+    });
+
+    function _showUpdateBanner() {
+      if (document.getElementById('pwa-update-banner')) return;
+      var banner = document.createElement('div');
+      banner.id = 'pwa-update-banner';
+      banner.innerHTML = '<span>Nueva version disponible</span><button id="pwa-reload-btn">ACTUALIZAR</button>';
+      banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:99999;background:linear-gradient(90deg,#020408,#00243a);border-top:2px solid #00BCFF;color:#00BCFF;font-family:Orbitron,monospace;font-size:13px;letter-spacing:2px;display:flex;align-items:center;justify-content:space-between;padding:10px 18px;box-shadow:0 -4px 24px rgba(0,188,255,0.3)';
+      document.body.appendChild(banner);
+      document.getElementById('pwa-reload-btn').addEventListener('click', function() { window.location.reload(); });
     }
-    </script>
+
+    function _showInstallButton() {
+      var btn = document.getElementById('pwa-install-btn');
+      if (btn) { btn.style.display = 'flex'; return; }
+      var fab = document.createElement('button');
+      fab.id = 'pwa-install-btn';
+      fab.textContent = '\u2B07 INSTALAR APP';
+      fab.style.cssText = 'position:fixed;bottom:80px;right:16px;z-index:9998;background:linear-gradient(135deg,#00BCFF,#0076b8);color:#000;font-family:Orbitron,monospace;font-size:11px;font-weight:700;letter-spacing:2px;border:none;border-radius:24px;padding:10px 18px;cursor:pointer;box-shadow:0 4px 20px rgba(0,188,255,0.5);display:flex;align-items:center;gap:8px';
+      fab.addEventListener('click', function() {
+        if (!_deferredInstallPrompt) return;
+        _deferredInstallPrompt.prompt();
+        _deferredInstallPrompt.userChoice.then(function(r) {
+          _deferredInstallPrompt = null; fab.style.display = 'none';
+        });
+      });
+      document.body.appendChild(fab);
+    }
+
+    function _hideInstallButton() {
+      var btn = document.getElementById('pwa-install-btn');
+      if (btn) btn.style.display = 'none';
+    }
+
+    window.triggerPWAInstall = function() {
+      if (_deferredInstallPrompt) {
+        _deferredInstallPrompt.prompt();
+        _deferredInstallPrompt.userChoice.then(function() {
+          _deferredInstallPrompt = null; _hideInstallButton();
+        });
+      }
+    };
+  })();
+  </script>
     <!-- 
     ====================================
     $RPPI TOKEN INFO (OPTIMISM MAINNET)
@@ -52,6 +141,11 @@
     <script src="web3-config.js?v=20260325r"></script>
     <script src="betting-engine.js?v=20260325r"></script>
     <script src="t2e-integration.js?v=20260325r"></script>
+    <style>
+    @keyframes slideUpBanner { from { transform:translateY(100%); } to { transform:translateY(0); } }
+    @keyframes pwaInstallPulse { 0%,100%{box-shadow:0 4px 20px rgba(0,188,255,0.5)} 50%{box-shadow:0 4px 32px rgba(0,188,255,0.9),0 0 48px rgba(0,188,255,0.3)} }
+    #pwa-update-banner button { background:#00BCFF;color:#000;border:none;border-radius:6px;padding:6px 14px;font-family:Orbitron,monospace;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer; }
+    </style>
 </head>
 <body>
 
