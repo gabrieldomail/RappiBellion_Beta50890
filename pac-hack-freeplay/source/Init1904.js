@@ -6,9 +6,6 @@
         animation, startTime, actions, shortcuts,
         soundFiles  = [ "start", "death", "eat1", "eat2", "kill" ],
 
-        // Page Visibility: optimizar cuando está en background
-        pageVisible = true,
-
         // ── PvP: detectar rol del jugador desde la URL ──
         // P1 juega con WASD | P2 con flechas | standalone usa ambos
         pvpPlayer = (new URLSearchParams(window.location.search)).get("player"),
@@ -37,37 +34,8 @@
             }
             return keys;
         }());
-    /**
-     * FIX ESCALADO DESKTOP
-     * Escala el contenedor principal para llenar el iframe sin deformar el juego
-     */
-    function adjustGameScale() {
-        // Solo aplicar en Desktop
-        if (window.innerWidth <= 768) return;
-
-        const container = document.getElementById('container');
-        if (!container) return;
-
-        // Dimensiones originales del juego (aprox)
-        const gameW = 354; 
-        const gameH = 414;
-
-        const scaleX = window.innerWidth / gameW;
-        const scaleY = window.innerHeight / gameH;
-        const scale = Math.min(scaleX, scaleY);
-
-        // Forzamos al contenedor a centrarse y escalarse
-        container.style.position = 'absolute';
-        container.style.top = '50%';
-        container.style.left = '50%';
-        container.style.transform = `translate(-50%, -50%) scale(${scale})`;
-        container.style.transformOrigin = 'center center';
-
-        // Limpiamos el body para que no haya scroll blanco alrededor
-        document.body.style.margin = '0';
-        document.body.style.overflow = 'hidden';
-        document.body.style.backgroundColor = 'black';
-    }
+    
+    
     
     /**
      * Calls the Game Over animation and then deletes the game data
@@ -113,11 +81,6 @@
             
             fruit.add(total);
             score.pill(value);
-            // Notificar score al padre
-            if (window.parent && window.parent !== window) {
-                // CORRECCIÓN: Cambiado score.get() por score.getScore()
-                window.parent.postMessage({ type: 'SCORE_UPDATE', score: score.getScore() }, '*');
-            }
             ghosts.resetPenTimer();
             ghosts.checkElroyDots(total);
             
@@ -184,12 +147,6 @@
     function requestAnimation() {
         startTime = new Date().getTime();
         animation = window.requestAnimationFrame(() => {
-            // Skip game logic when page is not visible (ahorra recursos)
-            if (!pageVisible) {
-                requestAnimation();
-                return;
-            }
-            
             let time  = new Date().getTime() - startTime;
 
             // ══════════════════════════════════════════
@@ -303,10 +260,12 @@
      * Saves the High Score
      */
     function saveHighScore() {
-        if (scores.save(score.getLevel(), score.getScore())) { 
+        if (scores.save(score.getLevel(), score.getScore())) {
             showHighScores();
         }
     }
+    
+    
     
     /**
      * Creates a shortcut object
@@ -575,39 +534,10 @@
         // 💣 CHAOS UNLOCK: parent sends UNLOCK_CHAOS to remove the 70% cap
         window._chaosUnlocked = false;
         window.addEventListener('message', function(e) {
-            if (!e.data || !e.data.type) return;
-            
-            // UNLOCK_CHAOS - remover límite de velocidad
-            if (e.data.type === 'UNLOCK_CHAOS') {
+            if (e.data && e.data.type === 'UNLOCK_CHAOS') {
                 window._chaosUnlocked = true;
-                console.log('[Pac-Hack] UNLOCK_CHAOS - velocidad maxima');
-            }
-            
-            // ⚡️ PAC-HACK BOOST: Asustar fantasmas al recibir TRIGGER_BOOST desde el HUD
-            if (e.data.type === 'TRIGGER_BOOST') {
-                console.log('[Pac-Hack] ⚡️ BOOST activado');
-                if (ghosts && blob) {
-                    ghosts.frighten(blob); // Efecto real de juego: fantasmas asustados
-                }
-                // Notificar al HUD que el boost fue procesado para descontar la carga
-                if (window.parent && window.parent !== window) {
-                    window.parent.postMessage({ type: 'BOOST_USED' }, '*');
-                }
-            }
-            
-            // SCORE_UPDATE request from parent (for sync)
-            if (e.data.type === 'SCORE_UPDATE') {
-                sendScoreUpdate();
             }
         });
-        
-        // Función para enviar score al padre
-        function sendScoreUpdate() {
-            if (score && window.parent && window.parent !== window) {
-                // CORRECCIÓN: Cambiado score.get() por score.getScore()
-                window.parent.postMessage({ type: 'SCORE_UPDATE', score: score.getScore() }, '*');
-            }
-        }
     }
     
     /**
@@ -640,37 +570,33 @@
     window.addEventListener("load", function() {
         main();
 
-        // ── Page Visibility: optimizar recursos cuando está en background ──
-        function handleVisibility() {
-            pageVisible = !document.hidden;
-        }
-        document.addEventListener("visibilitychange", handleVisibility);
-        document.addEventListener("webkitvisibilitychange", handleVisibility);
-        document.addEventListener("mozvisibilitychange", handleVisibility);
-        document.addEventListener("msvisibilitychange", handleVisibility);
-
-        // ── Escuchar START_MATCH siempre (PvP y freeplay) ──
-        window.addEventListener("message", function(e) {
-            var d = e.data;
-            if (!d || !d.type) return;
-
-            if (d.type === "START_MATCH") {
-                window._hackerStartTime = Date.now();
-                if (display.isMainScreen()) {
-                    newGame();
-                }
-            }
-            if (d.type === "MATCH_ENDED") {
-                // Solo pausar en PvP (cuando hay player)
-                if ((pvpPlayer === "p1" || pvpPlayer === "p2") && display.isPlaying()) {
-                    display.set("paused");
-                    animations.paused();
-                }
-            }
-        });
-
         // ── PvP: auto-arrancar cuando está en iframe ──
+        // Si viene con ?player=p1 o ?player=p2, saltar el menú
+        // y esperar la señal START_MATCH del padre (o arrancar tras 500ms fallback)
         if (pvpPlayer === "p1" || pvpPlayer === "p2") {
+
+            // Escuchar la señal de inicio sincronizado desde el HUD padre
+            window.addEventListener("message", function(e) {
+                var d = e.data;
+                if (!d || !d.type) return;
+
+                if (d.type === "START_MATCH") {
+                    // Marcar el inicio del timer de caos (sincronizado con el FP timer)
+                    window._hackerStartTime = Date.now();
+                    // Arrancar el juego
+                    if (display.isMainScreen()) {
+                        newGame();
+                    }
+                }
+                if (d.type === "MATCH_ENDED") {
+                    // Pausar cuando termina el tiempo
+                    if (display.isPlaying()) {
+                        display.set("paused");
+                        animations.paused();
+                    }
+                }
+            });
+
             // Fallback: si no recibe START_MATCH en 500ms, auto-arrancar
             setTimeout(function() {
                 if (display.isMainScreen() && !window._hackerStartTime) {
@@ -679,18 +605,17 @@
                 }
             }, 500);
         } else {
-            // Freeplay: solo auto-arrancar si NO estamos en un iframe
-            // Si estamos en iframe, START_MATCH del padre maneja el inicio
-            // (evita double-start que causa el loop 3,2,1 en mobile)
-            var _isInIframe = window.self !== window.top;
-            if (!_isInIframe) {
-                setTimeout(function() {
+            // Freeplay: esperar START_MATCH del padre (index.html)
+            window.addEventListener("message", function(e) {
+                var d = e.data;
+                if (!d || !d.type) return;
+                if (d.type === "START_MATCH") {
+                    window._hackerStartTime = Date.now();
                     if (display.isMainScreen()) {
-                        window._hackerStartTime = Date.now();
                         newGame();
                     }
-                }, 300);
-            }
+                }
+            });
         }
     }, false);
     

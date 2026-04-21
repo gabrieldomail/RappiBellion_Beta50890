@@ -14,6 +14,113 @@
 	<body>
 		<div id="wrapper"></div>
 
-		<script src="scripts/script.min.js"></script>
+		<!-- D-PAD VIRTUAL - 5 botones (flechas + DROP) - Freeplay mode -->
+		<div id="tetris-dpad" style="
+			display:none; position:fixed; bottom:80px; right:15px; z-index:99999;
+			flex-direction:column; align-items:center; gap:6px;">
+			<button class="dp-btn" data-key="ArrowUp">▲</button>
+			<div style="display:flex; gap:6px;">
+				<button class="dp-btn" data-key="ArrowLeft">◀</button>
+				<button class="dp-btn" data-key="ArrowDown">▼</button>
+				<button class="dp-btn" data-key="ArrowRight">▶</button>
+			</div>
+			<button class="dp-btn dp-drop" data-key="Space">DROP</button>
+		</div>
+		<style>
+			#tetris-dpad .dp-btn {
+				width:50px; height:50px;
+				background:rgba(0,255,65,0.2);
+				border:2px solid #00ff41;
+				color:#00ff41;
+				font-size:20px;
+				border-radius:8px;
+				cursor:pointer;
+				touch-action:none;
+				user-select:none;
+				display:flex; align-items:center; justify-content:center;
+				text-shadow:0 0 8px rgba(0,255,65,0.8);
+			}
+			#tetris-dpad .dp-btn:active {
+				background:rgba(0,255,65,0.4);
+				border-color:#00ff41;
+				color:#fff;
+				text-shadow:0 0 12px #fff, 0 0 20px rgba(0,255,65,1);
+			}
+			#tetris-dpad .dp-drop {
+				background:rgba(255,215,0,0.25) !important;
+				border-color:#ffd700 !important;
+				color:#ffd700 !important;
+				font-size:14px; font-weight:bold; letter-spacing:1px;
+				text-shadow:0 0 8px rgba(255,215,0,0.8);
+			}
+			#tetris-dpad .dp-drop:active {
+				background:rgba(255,215,0,0.45) !important;
+				border-color:#ffd700 !important;
+				color:#fff;
+				text-shadow:0 0 12px #fff, 0 0 20px rgba(255,215,0,1);
+			}
+		</style>
+
+		<script>
+		// D-PAD virtual inside Tetris iframe (5 botones: flechas + DROP)
+		(function() {
+			var dpadEl = null;
+			var controlMode = 'swipe'; // default
+
+			function showDpad() { if (dpadEl) dpadEl.style.display = 'flex'; }
+			function hideDpad() { if (dpadEl) dpadEl.style.display = 'none'; }
+
+			// Crear D-pad al iniciar (oculto)
+			function initDpad() {
+				if (dpadEl) return;
+				dpadEl = document.getElementById('tetris-dpad');
+				if (!dpadEl) return;
+				// listeners para cada botón
+				dpadEl.querySelectorAll('.dp-btn').forEach(function(btn) {
+					var key = btn.dataset.key;
+					function fireKey(k, down) {
+						if (!window.main) return;
+						// InputUtils is inside window.main - not a global
+						window.main.InputUtils
+							? window.main.InputUtils.triggerKey(k, down)
+							: window.dispatchEvent(new KeyboardEvent(down ? 'keydown' : 'keyup', {
+								key: k, code: k, bubbles: true, cancelable: true
+							  }));
+					}
+					btn.addEventListener('touchstart', function(e) {
+						e.preventDefault(); e.stopPropagation();
+						fireKey(key, true);
+					}, {passive:false});
+					btn.addEventListener('touchend', function(e) {
+						e.preventDefault(); e.stopPropagation();
+						fireKey(key, false);
+					}, {passive:false});
+					btn.addEventListener('mousedown', function() { fireKey(key, true); });
+					btn.addEventListener('mouseup',   function() { fireKey(key, false); });
+				});
+			}
+
+			// Esperar a que main esté listo
+			window.addEventListener('load', function() {
+				initDpad();
+			});
+
+			// Escuchar SET_CONTROL desde el padre
+			window.addEventListener('message', function(e) {
+				if (!e.data || !e.data.type) return;
+				if (e.data.type === 'SET_CONTROL') {
+					controlMode = e.data.mode;
+					if (controlMode === 'dpad') showDpad();
+					else hideDpad();
+				}
+				// START_MATCH: asegurar D-pad visible si está en modo dpad
+				if (e.data.type === 'START_MATCH' && controlMode === 'dpad') {
+					showDpad();
+				}
+			});
+		})();
+		</script>
+
+		<script src="scripts/script_min.js"></script>
 	</body>
 </html>

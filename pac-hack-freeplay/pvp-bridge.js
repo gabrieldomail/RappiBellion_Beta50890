@@ -20,19 +20,37 @@
   'use strict';
 
   // ── 1. ROL DEL JUGADOR (desde URL) ──
-  // El HUD carga el iframe así:
-  // <iframe src="game.html?player=p1">  ← Jugador 1
-  // <iframe src="game.html?player=p2">  ← Jugador 2
   const params = new URLSearchParams(window.location.search);
-  const PLAYER = params.get('player') || 'p1';
+  const PLAYER = params.get('player');
+
+  // ── 2. MODO ── Freeplay o PvP
+  const IS_PVP = PLAYER === 'p1' || PLAYER === 'p2';
   const IS_IFRAME = window.self !== window.top;
 
-  // Si no estamos en un iframe, el bridge no hace nada
-  if (!IS_IFRAME) {
-    console.info('[PvP Bridge] Modo standalone — bridge inactivo');
+  // Siempre escalar el juego para llenar el iframe (freeplay y PvP)
+  // applyPvpScale corre en ambos modos
+  if (IS_IFRAME) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() { setTimeout(applyPvpScale, 300); });
+    } else {
+      setTimeout(applyPvpScale, 300);
+    }
+  }
+
+  // Solo PvP continúa: score polling, BOOST_USED, MATCH_ENDED overlay, etc.
+  if (!IS_PVP) {
+    // Freeplay: solo escalar y escuchar TRIGGER_BOOST + MATCH_ENDED básico
+    window.addEventListener('message', function(event) {
+      var data = event.data;
+      if (!data || !data.type) return;
+      if (data.type === 'TRIGGER_BOOST') {
+        document.dispatchEvent(new CustomEvent('pvpBoost', {}));
+      }
+    });
     return;
   }
 
+  // Solo PvP llega aquí
   console.info('[PvP Bridge] Activo como ' + PLAYER.toUpperCase());
 
   // ── 2. ESTADO ──
@@ -389,8 +407,8 @@
 function initBridge() {
     gameActive = true;
 
-    // Escalar el juego para llenar el iframe
-    applyPvpScale();
+    // Nota: applyPvpScale ya fue llamado al inicio (antes del guard PvP)
+    // para que el freeplay también escale correctamente
 
     // Intentar los 3 métodos en orden
     const hooked = tryHookScoreObject();

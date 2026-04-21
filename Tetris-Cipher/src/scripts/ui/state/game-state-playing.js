@@ -1,20 +1,20 @@
-import { GhostPiece } from "../model/ghost-piece";
-import { FallingPiece } from "../model/falling-piece";
-import { RandomBag } from "../util/random-bag";
+import { GhostPiece } from "../../model/ghost-piece";
+import { FallingPiece } from "../../model/falling-piece";
+import { RandomBag } from "../../util/random-bag";
 import { GameState } from "./game-state";
-import { AudioUtils } from "../util/audio";
-import { SoundEffect } from "../enum/sound-effect";
-import { ComboParticle } from "../particle/combo-particle";
-import { Main } from "../main"
-import { GameStateType } from "../enum/game-state-type";
-import { Level } from "../model/level";
-import { InputUtils } from "../util/input";
-import { Key } from "../enum/key";
-import { ExplosionParticle } from "../particle/explosion-particle";
-import { Cell } from "../model/cell";
-import { PreferenceUtils } from "../util/preference";
-import { Setting } from "../enum/setting";
-import { Tetrominoes } from "../model/tetromino";
+import { AudioUtils } from "../../util/audio";
+import { SoundEffect } from "../../enum/sound-effect";
+import { ComboParticle } from "../../particle/combo-particle";
+import { Main } from "../../main"
+import { GameStateType } from "../../enum/game-state-type";
+import { Level } from "../../model/level";
+import { InputUtils } from "../../util/input";
+import { Key } from "../../enum/key";
+import { ExplosionParticle } from "../../particle/explosion-particle";
+import { Cell } from "../../model/cell";
+import { PreferenceUtils } from "../../util/preference";
+import { Setting } from "../../enum/setting";
+import { Tetrominoes } from "../../model/tetromino";
 
 export class GameStatePlaying extends GameState {
 

@@ -1155,12 +1155,6 @@
                     style="display:none;">
                 HACK IT
             </button>
-            <!-- TETRIS BOOST BUTTON - Neon Glitch Cyberpunk -->
-            <button id="fp-boost-tetris-btn" onclick="fpFireBoost()"
-                    class="fp-boost-tetris-neon"
-                    style="display:none;">
-                <img src="images/icon-512x512.png" alt="CHAOS_BOMB" class="fp-boost-tetris-icon">
-            </button>
         </div>
 
     </div>
@@ -2096,6 +2090,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Countdown de 5s para auto-elegir swipe
                 const cdEl = document.getElementById('ctrl-auto-countdown');
                 if (cdEl) {
+                    // Limpiar intervalo anterior si existe (evita doble countdown)
+                    if (cdEl._interval) { clearInterval(cdEl._interval); cdEl._interval = null; }
                     let secsLeft = 5;
                     cdEl.textContent = secsLeft + 's';
                     cdEl._interval = setInterval(function() {
@@ -2369,13 +2365,17 @@ document.addEventListener('DOMContentLoaded', function() {
         fpState.timeLeft--;
         fpRenderTimer(fpState.timeLeft);
         if (fpTimerBar) fpTimerBar.style.width = (fpState.timeLeft / fpState.totalTime * 100) + '%';
-        // Freeplay chaos: calcular localmente basado en progreso de tiempo
+        // Freeplay chaos: solo para Tetris (pac-hack calcula y envia su propio CHAOS_LEVEL)
         if (!fpState.betMode) {
-            var _elapsed = fpState.totalTime - fpState.timeLeft;
-            var progression = _elapsed / fpState.totalTime;
-            var chaosValue = 20 + (Math.pow(progression, 1.5) * 80);
-            var _timeChaos = Math.min(100, Math.floor(chaosValue));
-            _fpApplyChaosFreeplay(_timeChaos);
+            var _isTetrisChaos = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+            if (_isTetrisChaos) {
+                var _elapsed = fpState.totalTime - fpState.timeLeft;
+                var progression = _elapsed / fpState.totalTime;
+                var chaosValue = 20 + (Math.pow(progression, 1.5) * 80);
+                var _timeChaos = Math.min(100, Math.floor(chaosValue));
+                _fpApplyChaosFreeplay(_timeChaos);
+            }
+            // pac-hack: Init.js envia CHAOS_LEVEL propio -> handler en la linea de CHAOS_LEVEL
         }
         // Chaos T2E: el juego envía CHAOS_LEVEL vía postMessage
         if (fpState.timeLeft <= 0) { clearInterval(fpState.interval); fpState.ended = true; fpEndPractice(); }
@@ -2426,7 +2426,7 @@ document.addEventListener('DOMContentLoaded', function() {
          var boostBadge   = document.getElementById('fp-boost-badge');
          var rivalBoostEl = document.getElementById('rival-boost-val');
          var boostBtn     = document.getElementById('fp-boost-btn');
-         var tetrisBosBtn = document.getElementById('fp-boost-tetris-btn');
+         var tetrisBosBtn = null; // button removed from left column, only overlay exists
 
          // Para Tetris: mostrar SOLO el neon, ocultar todo lo demás
          var isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
@@ -2842,67 +2842,91 @@ function fpEndPractice() {
         });
     };
 
-     // Exposed globally so inline onclick="fpFireBoost()" can reach it
-     window.fpFireBoost = function fpFireBoost() {
-     // Permitido en T2E (running) y freeplay (boostLimit > 0)
-     var bLimit  = fpState.boostLimit || 0;
-     var bUsed   = fpState.boostsUsed || 0;
-     if (bLimit <= 0) return;              // sin boosts configurados
-     if (bUsed >= bLimit) return;           // agotados
-     if (fpState.betMode && !fpState.running) return; // T2E: solo durante partida
+    window.fpFireBoost = function fpFireBoost() {
+    // 1. VALIDACIONES DE SEGURIDAD
+    var bLimit  = fpState.boostLimit || 0;
+    var bUsed   = fpState.boostsUsed || 0;
+    
+    // Si no hay boosts configurados o ya se gastaron todos, no hacer nada
+    if (bLimit <= 0 || bUsed >= bLimit) return; 
+    
+    // En modo apuesta (T2E), solo se puede usar si la partida ya arrancó
+    if (fpState.betMode && !fpState.running) return;
+
+    // Referencias a los botones para desactivarlos y evitar spam
     var btn        = document.getElementById('fp-boost-btn');
-    var tetrisBtn  = document.getElementById('fp-boost-tetris-btn');
+    var tetrisBtn  = null; // tetris boost in left column removed
     var overlayBtn = document.getElementById('fp-boost-overlay-btn');
-    if (btn && btn.disabled) return;
-    if (tetrisBtn && tetrisBtn.disabled) return;
-    // Disable temporarily to prevent double-click
+    var tetrisOverlayBtn = document.getElementById('fp-tetris-botton-neon');
+
     if (btn) btn.disabled = true;
     if (tetrisBtn) tetrisBtn.disabled = true;
     if (overlayBtn) overlayBtn.disabled = true;
-     // Trigger in iframe: CHAOS_BOMB para Tetris, TRIGGER_BOOST para Pac-Hack
-     if (fpIframe && fpIframe.contentWindow) {
-         var _isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
-         console.log('[DEBUG fpFireBoost] _fpLastGameSrc:', window._fpLastGameSrc, '| fpIframe.src:', fpIframe.src, '| _isTetris:', _isTetris, '| Sending:', _isTetris ? 'CHAOS_BOMB' : 'TRIGGER_BOOST');
-         fpIframe.contentWindow.postMessage({ type: _isTetris ? 'CHAOS_BOMB' : 'TRIGGER_BOOST' }, '*');
-     }
-     // Nota: No incrementar aqui. El iframe enviará BOOST_USED que actualizará el contador en el listener message
-     // en línea 3184. Esto evita doble-conteo en freeplay
-     // Visual flash feedback — ambos botones
-     if (btn) {
-         btn.classList.add('fp-boost-firing');
-         setTimeout(function() { btn.classList.remove('fp-boost-firing'); }, 300);
-     }
-     if (tetrisBtn) {
-         tetrisBtn.classList.add('fp-boost-firing');
-         setTimeout(function() { tetrisBtn.classList.remove('fp-boost-firing'); }, 300);
-     }
-     if (overlayBtn) {
-         overlayBtn.style.animationPlayState = 'paused';
-         overlayBtn.style.transform = 'scale(0.85)';
-         overlayBtn.style.filter = 'brightness(2) drop-shadow(0 0 14px cyan)';
-         setTimeout(function() {
-             overlayBtn.style.transform = '';
-             overlayBtn.style.filter = '';
-             overlayBtn.style.animationPlayState = '';
-         }, 300);
-     }
-     // Return focus to iframe so keyboard controls keep working
-     if (fpIframe) {
-         fpIframe.focus(); // enfoque el elemento iframe primero
-         setTimeout(function() {
-             if (fpIframe.contentWindow) fpIframe.contentWindow.focus();
-         }, 0);
-     }
+    if (tetrisOverlayBtn) tetrisOverlayBtn.disabled = true;
 
-     // Visual zoom effect for Tetris CHAOS_BOMB
-     var isTetrisGame = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
-     if (isTetrisGame && fpIframe) {
-         fpIframe.classList.add('fp-chaos-zoom');
-         setTimeout(function() {
-             fpIframe.classList.remove('fp-chaos-zoom');
-         }, 600);
-     }
- }
+    // 2. DETECCIÓN DEL JUEGO ACTIVO
+    // Verificamos si la URL del juego cargado contiene "Tetris-Cipher"
+    var isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+
+    console.log('[HUD] Ejecutando Boost para: ' + (isTetris ? 'TETRIS-CIPHER' : 'PAC-HACK'));
+
+    // 3. DISPARO DE EFECTOS VISUALES EN EL PADRE (WEB)
+    if (isTetris) {
+        // EFECTO TETRIS: Zoom agresivo al iframe
+        if (fpIframe) {
+            fpIframe.classList.add('fp-chaos-zoom');
+            setTimeout(function() {
+                fpIframe.classList.remove('fp-chaos-zoom');
+            }, 600);
+        }
+    } else {
+        // EFECTO PAC-HACK: Flash del Fantasma
+        if (typeof fpBoostGhostFlash === 'function') {
+            fpBoostGhostFlash();
+        }
+    }
+
+    // 4. COMUNICACIÓN CON EL IFRAME (SISTEMA DE MENSAJES)
+    if (fpIframe && fpIframe.contentWindow) {
+        // Enviamos la orden según el juego:
+        // Si es Tetris -> 'CHAOS_BOMB' (Limpia tablero + 500 pts)
+        // Si es Pac-Man -> 'TRIGGER_BOOST' (Asusta fantasmas)
+        var messageType = isTetris ? 'CHAOS_BOMB' : 'TRIGGER_BOOST';
+        
+        fpIframe.contentWindow.postMessage({ 
+            type: messageType 
+        }, '*');
+    }
+
+    // 5. FEEDBACK VISUAL EN BOTONES (Animación de disparo)
+    if (btn) {
+        btn.classList.add('fp-boost-firing');
+        setTimeout(function() { btn.classList.remove('fp-boost-firing'); }, 300);
+    }
+    if (tetrisBtn) {
+        tetrisBtn.classList.add('fp-boost-firing');
+        setTimeout(function() { tetrisBtn.classList.remove('fp-boost-firing'); }, 300);
+    }
+    if (overlayBtn) {
+        overlayBtn.style.transform = 'scale(0.85)';
+        setTimeout(function() { overlayBtn.style.transform = ''; }, 300);
+    }
+    if (tetrisOverlayBtn) {
+        tetrisOverlayBtn.style.transform = 'scale(0.85)';
+        setTimeout(function() { tetrisOverlayBtn.style.transform = ''; }, 300);
+    }
+
+    // 6. RESTAURAR FOCO AL JUEGO
+    // Importante: Al hacer click en el botón del HUD, el iframe pierde el foco.
+    // Lo devolvemos para que el jugador no tenga que hacer click dentro del juego para volver a moverse.
+    if (fpIframe) {
+        fpIframe.focus();
+        setTimeout(function() {
+            if (fpIframe.contentWindow) fpIframe.contentWindow.focus();
+        }, 0);
+    }
+}
+ 
 
 function fpCloseArena() {
         clearInterval(fpState.interval);
@@ -2981,6 +3005,7 @@ function fpCloseArena() {
         _fpCleanSyncRefs();
         // REGRESSION FIX: reset guards so next match can open fresh
         _fpArenaOpenedForBet = null;
+        window._fpFreeGameLoading = false; // liberar guard freeplay al cerrar
         if (typeof _fpSyncInitiatedBets !== 'undefined') _fpSyncInitiatedBets.clear();
         // Limpiar badge de preview si estaba activo
         var _previewBadge = document.getElementById('fp-preview-badge');
@@ -3048,6 +3073,13 @@ function fpCloseArena() {
     // Cargador de minijuegos freeplay alternativos (Tetris-Cipher, etc.)
     // Cargador de minijuegos freeplay alternativos (Tetris-Cipher, etc.)
     window.fpOpenFreeGame = function(gameSrc) {
+        // Guard: evitar double-tap / llamadas duplicadas mientras ya está corriendo
+        if (window._fpFreeGameLoading) {
+            console.log("[fpOpenFreeGame] Guard: ya cargando, ignorando llamada duplicada.");
+            return;
+        }
+        window._fpFreeGameLoading = true;
+        setTimeout(function() { window._fpFreeGameLoading = false; }, 3000); // liberar despues de 3s
         console.log("[SISTEMA] Iniciando carga de juego:", gameSrc);
         
         window._fpNextGameSrc = gameSrc;
@@ -7366,10 +7398,10 @@ btn.addEventListener('click', toggleMutePlay);
         }
         /* La terminal centrada dentro de la columna */
         .fp-game-wrap > .caos-terminal {
-            width: 90%;
-            max-width: 900px;
-            height: 90%;
-            margin: 0 auto !important;
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            margin: 0 !important;
             border-radius: 4px !important;
         }
         .fp-game-wrap iframe {

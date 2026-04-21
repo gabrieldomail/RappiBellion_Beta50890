@@ -343,19 +343,3 @@ window.addEventListener('message', function(event) {
  });
 
 window.main = new Main();
-
-// ── SCORE SYNC LOOP ── envia SCORE_UPDATE al padre cada vez que cambia el score
-(function() {
-	var _lastSyncScore = 0;
-	setInterval(function() {
-		var m = window.main;
-		if (!m || !m.statePlaying || !m.statePlaying.stats) return;
-		var s = m.statePlaying.stats.score || 0;
-		if (s !== _lastSyncScore) {
-			_lastSyncScore = s;
-			if (window.parent !== window) {
-				window.parent.postMessage({ type: 'SCORE_UPDATE', score: s }, '*');
-			}
-		}
-	}, 250);
-})();

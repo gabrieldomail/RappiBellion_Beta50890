@@ -1,15 +1,15 @@
-import { InputUtils } from "../util/input";
-import { Main } from "../main";
-import { AudioUtils } from "../util/audio";
-import { SoundEffect } from "../enum/sound-effect";
-import { CELL_RADIUS } from "../constants";
-import { TextUtils } from "../util/text";
+import { InputUtils } from "../../util/input";
+import { Main } from "../../main";
+import { AudioUtils } from "../../util/audio";
+import { SoundEffect } from "../../enum/sound-effect";
+import { CELL_RADIUS } from "../../constants";
+import { TextUtils } from "../../util/text";
 import { GameState } from "./game-state";
-import { GameStateType } from "./../enum/game-state-type";
-import { Setting } from "../enum/setting";
-import { PreferenceUtils } from "../util/preference";
-import { LocaleUtils } from "../util/locale";
-import { ImageUtils } from "../util/image";
+import { GameStateType } from "../../enum/game-state-type";
+import { Setting } from "../../enum/setting";
+import { PreferenceUtils } from "../../util/preference";
+import { LocaleUtils } from "../../util/locale";
+import { ImageUtils } from "../../util/image";
 
 const TRANSITION_DURATION = 0.4;
 

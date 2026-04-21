@@ -1,12 +1,11 @@
-import { CELL_RADIUS } from "../constants";
-import { GameStateType } from "../enum/game-state-type";
-import { InputUtils } from "../util/input";
-import { LocaleUtils } from "../util/locale";
-import { TextUtils } from "../util/text";
-import { Main } from "./../main";
+import { GameStateType } from "../../enum/game-state-type";
+import { Main } from "../../main";
+import { InputUtils } from "../../util/input";
+import { LocaleUtils } from "../../util/locale";
+import { TextUtils } from "../../util/text";
 import { GameState } from "./game-state";
 
-export class GameStateOver extends GameState {
+export class GameStatePause extends GameState {
 
 	/**
 	 * @param {Main} game
@@ -19,9 +18,8 @@ export class GameStateOver extends GameState {
 
 	update(deltaTime) {
 		if (InputUtils.isAnyKeyDown()) {
-			this.game.reset();
-			this.game.statePlaying.reset();
 			this.game.state = GameStateType.PLAYING;
+			InputUtils.resetAllKeys();
 		}
 	}
 
@@ -34,6 +32,10 @@ export class GameStateOver extends GameState {
 	render(ctx) {
 		// Draw the board
 		this.game.board.render(ctx);
+
+		// Draw the falling and ghost piece
+		this.game.statePlaying.ghostPiece.render(ctx, this.game.board.cellSize);
+		this.game.statePlaying.fallingPiece.render(ctx, this.game.board.cellSize);
 
 		// Draw the panels
 		for (const panel of this.game.uiPanels) panel.render(ctx);
@@ -51,7 +53,7 @@ export class GameStateOver extends GameState {
 		// Draw title
 		TextUtils.drawCRT({
 			ctx,
-			text: LocaleUtils.get("gameover"),
+			text: LocaleUtils.get("paused"),
 			x: this.game.board.width / 2,
 			y: this.game.board.height / 2 - 25,
 			fontFamily: "Nintendoid1",
@@ -62,7 +64,7 @@ export class GameStateOver extends GameState {
 		// Draw subtitle
 		TextUtils.drawCRT({
 			ctx,
-			text: LocaleUtils.get("press_any_key_to_restart"),
+			text: LocaleUtils.get("press_any_key_to_resume"),
 			x: this.game.board.width / 2,
 			y: this.game.board.height / 2 + 10,
 			fontFamily: "Nintendoid1",
