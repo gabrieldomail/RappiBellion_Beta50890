@@ -6946,6 +6946,11 @@ footer::before {
         display: none !important;
     }
 
+    /* 5. VEREDICTO: siempre encima de la arena en standalone */
+    #fp-verdict.show {
+        z-index: 100001 !important;
+    }
+
     /* 5. ARENA ACTIVA (.show) - full screen inmersivo */
     #t2eplay-arena.show {
         position: fixed !important;

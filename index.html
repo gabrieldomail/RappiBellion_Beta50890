@@ -2765,14 +2765,17 @@ function fpEndPractice() {
             }
         }
 
-        // Volver a panel free play después de mostrar el veredicto
+        // Freeplay: mostrar veredicto rapido (400ms) para que el usuario lo vea sin tener que salir
+        var _verdDelay = fpState.betMode ? 1500 : 400;
+
+        // Volver a panel free play despues de mostrar el veredicto
         setTimeout(function() {
             _fpToggleRivalPanel(false);
-        }, 4000);
+        }, fpState.betMode ? 4000 : 2500);
 
         setTimeout(function() {
             fpShowVerdict(fpState.score);
-        }, 1500);
+        }, _verdDelay);
     }
 
     function _fpResolveDemo(betId, playerScore, rivalScore) {
