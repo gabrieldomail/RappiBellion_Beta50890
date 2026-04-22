@@ -6949,6 +6949,14 @@ footer::before {
     /* 5. VEREDICTO: siempre encima de la arena en standalone */
     #fp-verdict.show {
         z-index: 100001 !important;
+        pointer-events: auto !important;
+        touch-action: auto !important;
+    }
+    /* Botones del veredicto: siempre interactivos */
+    #fp-verdict.show button,
+    #fp-verdict.show a {
+        pointer-events: auto !important;
+        touch-action: manipulation !important;
     }
 
     /* 5. ARENA ACTIVA (.show) - full screen inmersivo */
@@ -6965,15 +6973,19 @@ footer::before {
     }
 
     /* Cuando la arena esta abierta: bloquear scroll del body */
+    /* Excepcion: fp-verdict debe seguir siendo interactivo */
+    body:has(#t2eplay-arena.show) #fp-verdict.show {
+        pointer-events: auto !important;
+        touch-action: auto !important;
+    }
     body:has(#t2eplay-arena.show) {
         overflow: hidden !important;
         height: 100vh !important;
     }
 
-    /* Fallback para browsers sin :has() */
-    #t2eplay-arena.show ~ * {
-        pointer-events: none;
-    }
+    /* NOTE: fallback #t2eplay-arena.show ~ * { pointer-events:none } removed
+       It blocked verdict buttons, modals and all post-arena DOM elements.
+       Body scroll-lock via :has() is sufficient for modern browsers. */
 
     /* 6. Columnas de la arena en portrait */
     #t2eplay-arena.show .fp-col-left {
