@@ -33,7 +33,7 @@
     <!-- SEO -->
     <meta name="description" content="Rappibellion T2E: apuesta, juega y gana en El Circuito. Plataforma de gaming blockchain con $RPPI en Optimism.">
     <meta name="keywords" content="T2E, think-to-earn, blockchain, gaming, RPPI, Optimism, Pac-Hack, Tetris, casino crypto">
-    <link rel="apple-touch-icon" href="images/icon-192x192.png">
+    <link rel="apple-touch-icon" href="images/icon-512x512.png">
     <script>
   // ── PWA: Service Worker + Install Prompt + Update Banner ──
   (function() {
@@ -150,12 +150,12 @@
 <body>
 
 <div id="intro-screen" style="
-    position:fixed;inset:0;z-index:99999;
-    background:#000;
-    display:flex;flex-direction:column;
-    align-items:center;justify-content:center;
-    cursor:pointer;overflow:hidden;
-">
+     position:fixed;inset:0;z-index:99999;
+     background:url('/images/tv-retro-vintage.jpg') center/cover no-repeat;
+     display:flex;flex-direction:column;
+     align-items:center;justify-content:center;
+     cursor:pointer;overflow:hidden;
+ ">
     <!-- Scanlines overlay -->
     <div style="
         position:absolute;inset:0;pointer-events:none;
@@ -176,8 +176,8 @@
         background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/><feColorMatrix type=%22saturate%22 values=%220%22/></filter><rect width=%22200%22 height=%22200%22 filter=%22url(%23n)%22/></svg>');
     "></div>
 
-    <!-- Content -->
-    <div style="position:relative;z-index:3;text-align:center;padding:20px 40px;max-width:820px;">
+      <!-- Content -->
+      <div style="position:absolute;top:35%;left:40%;transform:translateX(-50%);z-index:3;text-align:center;padding:25px 40px;max-width:350px;background:rgba(0,0,0,0.65);border-radius:8px;">
 
         <!-- Studio label — Courier -->
         <div id="intro-studio" style="
@@ -1992,6 +1992,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fpStartWithControl(mode) {
         fpState.controlMode = mode; // guardar para restart
+        window._fpSavedControlMode = mode; // persistir fuera de fpState (sobrevive al reset)
         // Enviar modo al iframe (T2E soporta SET_CONTROL; freeplay usa dpad overlay del padre)
         if (fpIframe && fpIframe.contentWindow) {
             fpIframe.contentWindow.postMessage({ type:'SET_CONTROL', mode: mode }, '*');
@@ -2156,6 +2157,10 @@ document.addEventListener('DOMContentLoaded', function() {
              fpIframe.src = nextGameSrc;
              fpIframe.addEventListener('load', function onIframeLoad() {
                  fpIframe.removeEventListener('load', onIframeLoad);
+                 // Re-enviar SET_CONTROL al nuevo iframe si hay modo guardado
+                 if (window._fpSavedControlMode) {
+                     fpIframe.contentWindow.postMessage({ type: 'SET_CONTROL', mode: window._fpSavedControlMode }, '*');
+                 }
                  if (fpState.running && fpCdOverlay && !fpCdOverlay.classList.contains('show')) {
                      fpIframe.contentWindow.postMessage({ type: 'START_MATCH' }, '*');
                  }
@@ -2165,6 +2170,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // En mobile mostrar selector de control, en desktop ir directo
         if (window.innerWidth <= 768) {
+            // Si ya eligio control antes (restart/revancha), reusar sin mostrar selector
+            if (window._fpSavedControlMode) {
+                setTimeout(function() { fpStartWithControl(window._fpSavedControlMode); }, 400);
+            } else {
             const sel = document.getElementById('fp-control-selector');
             if (sel) {
                 sel.classList.add('show');
@@ -2202,6 +2211,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // NO llamar fpStartCountdown aquí — se llama después de elegir control o cuando auto-countdown elige swipe
                 return;
             }
+            } // fin else (sin modo previo guardado)
         }
         fpRenderTimer(dur);
         if (fpTimerBar) { fpTimerBar.style.transition='none'; fpTimerBar.style.width='100%'; }
@@ -3105,6 +3115,7 @@ function fpCloseArena() {
         // REGRESSION FIX: reset guards so next match can open fresh
         _fpArenaOpenedForBet = null;
         window._fpFreeGameLoading = false; // liberar guard freeplay al cerrar
+        // NO resetear _fpSavedControlMode aqui - se conserva para proximas sesiones
         if (typeof _fpSyncInitiatedBets !== 'undefined') _fpSyncInitiatedBets.clear();
         // Limpiar badge de preview si estaba activo
         var _previewBadge = document.getElementById('fp-preview-badge');

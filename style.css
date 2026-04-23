@@ -6946,8 +6946,10 @@ footer::before {
         display: none !important;
     }
 
-    /* 5. VEREDICTO: siempre encima de la arena en standalone */
-    #fp-verdict.show {
+    /* 5. VEREDICTO y COUNTDOWN: siempre encima de la arena en standalone */
+    #fp-verdict.show,
+    #fp-countdown.show,
+    #fp-control-selector.show {
         z-index: 100001 !important;
         pointer-events: auto !important;
         touch-action: auto !important;
