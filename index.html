@@ -2431,7 +2431,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!fpState.betMode) {
                     ['contact-float-btn','duel-trigger-btn','finder-float-window',
                      'lobby-float-window','fp-fab-drawer','fp-fab-reopen',
-                     'pwa-install-btn','gemini-chat-widget','space-promo-window'].forEach(function(id) {
+                     'pwa-install-btn','lamp-flicker-btn',
+                     'gemini-chat-widget','space-promo-window'].forEach(function(id) {
                         var el = document.getElementById(id);
                         if (el) { el.dataset.fpHiddenPrev = el.style.display || ''; el.style.display = 'none'; }
                     });
@@ -2869,7 +2870,7 @@ document.addEventListener('DOMContentLoaded', function() {
                || _strategyRanks[_strategyRanks.length - 1];
     }
 
-    // ── TABLA DEL INFRAMUNDO ──
+    // ── TABLA DEL INFRAMUNDO (PAC-HACK) ──
     const _inferno = [
         {
             min:0, max:500,
@@ -2908,13 +2909,51 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     ];
 
-    function fpGetVerdict(score) {
-        var isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
-        if (isTetris) {
-            return fpGetVerdictTetris(score);
+    // ── TABLA CÓSMICA (SPACE-BREAKER) ──
+    const _cosmic = [
+        {
+            min:0, max:300,
+            icon:'❓', rank:'PILOTO UNKNOWN CLASS',
+            phrase:'"No hay clasificación disponible para un manco de tal envergadura. Los aliens te devolvieron."'
+        },
+        {
+            min:300, max:800,
+            icon:'🛸', rank:'CADETE ESTELAR',
+            phrase:'"Despegaste, eso es algo. Pero el cosmos no toma nota de vuelos tan cortos."'
+        },
+        {
+            min:800, max:2000,
+            icon:'🚀', rank:'MAVERICK INTERGALÁCTICO',
+            phrase:'"Vuela sin rumbo fijo, pero con actitud. El sector te reconoce como amenaza menor."'
+        },
+        {
+            min:2000, max:4500,
+            icon:'⚡', rank:'COMANDANTE DE LA BRECHA',
+            phrase:'"Tus torpedos dejan rastro de luz. La flota enemiga aprendió tu nombre."'
+        },
+        {
+            min:4500, max:8000,
+            icon:'🌌', rank:'ALMIRANTE DEL VACÍO',
+            phrase:'"Controlas el campo de batalla. El nodo te llama Defensor de la Rebelión."'
+        },
+        {
+            min:8000, max:13000,
+            icon:'🌠', rank:'LEYENDA DE LA GALAXIA',
+            phrase:'"Tu puntaje resuena en cada sector. Rappibellion inscribió tu nombre en el nodo central."'
+        },
+        {
+            min:13000, max:Infinity,
+            icon:'👑', rank:'EMPERADOR DEL COSMOS',
+            phrase:'"Nadie ha visto destrucción tan eficiente. El universo cede ante tu voluntad. SUPREMO."'
         }
-        return _inferno.find(function(r) { return score >= r.min && score < r.max; })
-               || _inferno[_inferno.length - 1];
+    ];
+
+    function fpGetVerdict(score) {
+        var isTetris      = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher')  !== -1;
+        var isSpaceBreak  = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker')  !== -1;
+        if (isTetris)     return fpGetVerdictTetris(score);
+        if (isSpaceBreak) return _cosmic.find(function(r) { return score >= r.min && score < r.max; }) || _cosmic[_cosmic.length - 1];
+        return _inferno.find(function(r) { return score >= r.min && score < r.max; }) || _inferno[_inferno.length - 1];
     }
 
     function fpShowVerdict(score) {
@@ -2948,11 +2987,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // Color del rank según nivel
         if (rankEl) {
             var colors, verdArray;
-            if (isTetris) {
+            var isTetris_v     = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+            var isSpaceBreak_v = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker') !== -1;
+            if (isTetris_v) {
                 verdArray = _strategyRanks;
                 colors = ['rgba(150,150,150,0.8)','rgba(200,200,200,0.8)',
                          'var(--color-caos-verde)','var(--color-caos-amarillo)',
                          'var(--color-azul-glitch)','var(--color-primario)',
+                         'var(--color-caos-rosa)'];
+            } else if (isSpaceBreak_v) {
+                verdArray = _cosmic;
+                colors = ['rgba(130,130,130,0.8)','rgba(0,188,255,0.65)',
+                         'var(--color-caos-verde)','var(--color-primario)',
+                         'var(--color-azul-glitch)','var(--color-caos-amarillo)',
                          'var(--color-caos-rosa)'];
             } else {
                 verdArray = _inferno;
@@ -3355,7 +3402,8 @@ function fpCloseArena() {
         if (window.innerWidth <= 768) {
             ['fp-faq-panel','contact-float-btn','duel-trigger-btn',
              'finder-float-window','lobby-float-window','fp-fab-drawer','fp-fab-reopen',
-             'pwa-install-btn','gemini-chat-widget','space-promo-window'].forEach(function(id) {
+             'pwa-install-btn','lamp-flicker-btn',
+             'gemini-chat-widget','space-promo-window'].forEach(function(id) {
                 var el = document.getElementById(id);
                 if (el && el.dataset.fpHiddenPrev !== undefined) {
                     el.style.display = el.dataset.fpHiddenPrev;
@@ -3603,10 +3651,11 @@ function fpCloseArena() {
         console.log('[DEBUG iframe message]', d.type, d);
 
         // GAME_OVER del iframe: NO terminar la práctica del padre.
-        // Timer y caos siguen corriendo. Score vuelve a 0. Veredicto solo al llegar timer a 0.
+        // Timer y caos siguen corriendo. Score se mantiene (peak del intento).
+        // Cuando el jugador inicia nueva partida, SCORE_UPDATE llega desde 0 y sincroniza solo.
+        // El veredicto toma fpState.score al momento que timeLeft llega a 0.
         if (d.type === 'GAME_OVER') {
-            fpState.score = 0;
-            if (fpScoreEl) fpScoreEl.textContent = '0000';
+            // No resetear score — conservar el último puntaje del intento
             return;
         }
 
@@ -3719,9 +3768,12 @@ function fpCloseArena() {
                     boostBadge.style.boxShadow = '0 0 8px rgba(255,68,68,0.6)';
                 }
             }
-            // Flash ghost overlay on use — SOLO para Pac-Hack, NO para Tetris
-            var isTetrisGame = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
-            if (!isTetrisGame) {
+            // Flash overlay on use — Pac-Hack: ghost / Space-Breaker: atomic pulse / Tetris: ninguno
+            var isTetrisGame_f     = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+            var isSpaceBreakerGame_f = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker') !== -1;
+            if (isSpaceBreakerGame_f) {
+                fpAtomicPulseFlash();
+            } else if (!isTetrisGame_f) {
                 fpBoostGhostFlash();
             }
             if (fpState.betMode && fpState.betId && fpState.myRole && window._fbDB) {
@@ -3732,19 +3784,21 @@ function fpCloseArena() {
             // count update via Firebase (rivalBoostsRef listener). Sending RIVAL_BOOST to
             // our own iframe (fpIframe) was incorrect and showed the warning on the wrong side.
 
-            // 🌟 Audio boost — Mario Star para Pac-Hack, Chaos Bomb para Tetris
-            var isTetrisGame = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
-            var boostAudioFile = isTetrisGame ? 'sounds/bomba-chaos.mp3' : 'sounds/mario-star.mp3';
+            // 🌟 Audio boost según juego activo
+            var isTetrisGame_a     = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+            var isSpaceBreakerGame_a = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker') !== -1;
+            var boostAudioFile = isTetrisGame_a    ? 'sounds/bomba-chaos.mp3'
+                               : isSpaceBreakerGame_a ? 'sounds/atomic-robotech.mp3'
+                               :                    'sounds/mario-star.mp3';
             if (!window._fpBoostAudio) {
                 window._fpBoostAudio = new Audio(boostAudioFile);
                 window._fpBoostAudio.loop  = false;
                 window._fpBoostAudio.volume = 0.65;
             }
             if (window._fpBoostAudioTimer) clearTimeout(window._fpBoostAudioTimer);
-            window._fpBoostAudio.src = boostAudioFile; // actualizar src por si cambió el juego
+            window._fpBoostAudio.src = boostAudioFile;
             window._fpBoostAudio.currentTime = 0;
             window._fpBoostAudio.play().catch(function(){});
-            // parar cuando termina la inmunidad (frightTime = 6s + margen)
             window._fpBoostAudioTimer = setTimeout(function() {
                 if (window._fpBoostAudio && !window._fpBoostAudio.paused) {
                     window._fpBoostAudio.pause();
@@ -10028,7 +10082,9 @@ Si alguien pregunta cómo pagar en ARS, explicales el flujo completo de arriba c
     body.arena-open #fp-fab-drawer,
     body.arena-open #fp-fab-reopen,
     body.arena-open #fp-fab-reopen-tetris,
-    body.arena-open #fp-fab-reopen-space { display: none !important; }
+    body.arena-open #fp-fab-reopen-space,
+    body.arena-open #lamp-flicker-btn,
+    body.arena-open #pwa-install-btn { display: none !important; }
 </style>
 
 <script>
@@ -10090,6 +10146,148 @@ Si alguien pregunta cómo pagar en ARS, explicales el flujo completo de arriba c
          style="width: min(85vw, 85vh); height: auto; filter: drop-shadow(0 0 60px #f8ff2b) drop-shadow(0 0 120px #ff2d78);"
          alt="">
 </div>
+
+<!-- ── ATOMIC PULSE FLASH OVERLAY ─────────────────────────────────── -->
+<div id="fp-atomic-pulse-flash" style="
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    pointer-events: none;
+    overflow: hidden;
+"></div>
+
+<style>
+/* ── Atomic Pulse: misil individual ── */
+@keyframes atomicMissile {
+    0%   { transform: translateY(-60px) scaleX(1);   opacity: 1; }
+    85%  { opacity: 1; }
+    100% { transform: translateY(110vh) scaleX(1.2); opacity: 0; }
+}
+@keyframes atomicFlash {
+    0%   { opacity: 0; }
+    8%   { opacity: 0.92; }
+    40%  { opacity: 0.65; }
+    100% { opacity: 0; }
+}
+@keyframes atomicShockring {
+    0%   { transform: translate(-50%,-50%) scale(0); opacity: 1; }
+    100% { transform: translate(-50%,-50%) scale(3.5); opacity: 0; }
+}
+#fp-atomic-pulse-flash.active {
+    display: block !important;
+    animation: atomicFlash 0.9s ease forwards;
+    background: radial-gradient(ellipse at 50% 40%,
+        rgba(0,188,255,0.28) 0%,
+        rgba(0,255,65,0.12) 40%,
+        transparent 70%);
+}
+.atomic-missile {
+    position: absolute;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: atomicMissile linear forwards;
+}
+.atomic-missile svg { display: block; }
+.atomic-shockring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid rgba(0,188,255,0.9);
+    box-shadow: 0 0 20px rgba(0,188,255,0.6), 0 0 50px rgba(0,255,65,0.3);
+    animation: atomicShockring 0.7s ease-out forwards;
+}
+</style>
+
+<script>
+function fpAtomicPulseFlash() {
+    var container = document.getElementById('fp-atomic-pulse-flash');
+    if (!container) return;
+
+    // Limpiar misiles anteriores
+    container.innerHTML = '';
+    container.classList.remove('active');
+    void container.offsetWidth;
+    container.classList.add('active');
+
+    // Paleta Rappibellion
+    var colors = [
+        '#00BCFF','#00FF41','#FFD700','#FF2D78','#00BCFF','#00FF41','#00BCFF'
+    ];
+
+    // Misil SVG: cohete minimalista apuntando hacia abajo
+    function missileSVG(color, scale) {
+        scale = scale || 1;
+        var w = Math.round(18 * scale), h = Math.round(44 * scale);
+        return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 18 44" xmlns="http://www.w3.org/2000/svg">'
+            + '<polygon points="9,0 16,14 9,11 2,14" fill="'+color+'"/>'
+            + '<rect x="5" y="11" width="8" height="18" rx="1" fill="'+color+'" opacity="0.9"/>'
+            + '<polygon points="5,29 2,40 9,34 16,40 13,29" fill="'+color+'" opacity="0.75"/>'
+            + '<ellipse cx="9" cy="40" rx="5" ry="3" fill="'+color+'" opacity="0.35"/>'
+            + '<line x1="9" y1="40" x2="9" y2="44" stroke="'+color+'" stroke-width="2" opacity="0.6"/>'
+            + '</svg>';
+    }
+
+    // Trail de fuego debajo del misil
+    function trailSVG(color) {
+        return '<svg width="10" height="18" viewBox="0 0 10 18" xmlns="http://www.w3.org/2000/svg">'
+            + '<ellipse cx="5" cy="4" rx="4" ry="4" fill="white" opacity="0.9"/>'
+            + '<ellipse cx="5" cy="10" rx="3" ry="5" fill="'+color+'" opacity="0.7"/>'
+            + '<ellipse cx="5" cy="16" rx="2" ry="4" fill="'+color+'" opacity="0.3"/>'
+            + '</svg>';
+    }
+
+    var W = window.innerWidth;
+    var missileCount = Math.min(28, Math.max(16, Math.floor(W / 40)));
+
+    for (var i = 0; i < missileCount; i++) {
+        (function(idx) {
+            var delay    = idx * 28 + Math.random() * 60; // ms
+            var duration = 520 + Math.random() * 380;
+            var x        = (idx / missileCount) * 100 + (Math.random() - 0.5) * 8;
+            x = Math.max(1, Math.min(98, x));
+            var color    = colors[idx % colors.length];
+            var scale    = 0.7 + Math.random() * 0.8;
+
+            var el = document.createElement('div');
+            el.className = 'atomic-missile';
+            el.style.left           = x + '%';
+            el.style.animationDelay    = delay + 'ms';
+            el.style.animationDuration = duration + 'ms';
+            el.style.filter = 'drop-shadow(0 0 6px ' + color + ') drop-shadow(0 0 16px ' + color + ')';
+            el.innerHTML = missileSVG(color, scale) + trailSVG(color);
+            container.appendChild(el);
+        })(i);
+    }
+
+    // Anillo de shockwave central
+    var ring = document.createElement('div');
+    ring.className = 'atomic-shockring';
+    container.appendChild(ring);
+
+    // Segundo anillo retrasado
+    setTimeout(function() {
+        var ring2 = document.createElement('div');
+        ring2.className = 'atomic-shockring';
+        ring2.style.width  = '200px';
+        ring2.style.height = '200px';
+        ring2.style.borderColor = 'rgba(0,255,65,0.8)';
+        ring2.style.boxShadow   = '0 0 25px rgba(0,255,65,0.7)';
+        container.appendChild(ring2);
+    }, 180);
+
+    // Limpiar después de la animación
+    setTimeout(function() {
+        container.classList.remove('active');
+        container.innerHTML = '';
+    }, 1100);
+}
+</script>
 
 <style>
 @keyframes boostGhostFlashAnim {

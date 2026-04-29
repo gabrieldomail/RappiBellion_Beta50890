@@ -144,68 +144,35 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
             var _sbDpadRight = null;
 
             function _cleanupControls() {
-                if (_sbDpadLeft) {
-                    if (_sbDpadLeft._extraBtn && _sbDpadLeft._extraBtn.parentNode)
-                        _sbDpadLeft._extraBtn.remove();
-                    _sbDpadLeft.remove();
-                    _sbDpadLeft  = null;
-                }
+                if (_sbDpadLeft)  { _sbDpadLeft.remove();  _sbDpadLeft  = null; }
                 if (_sbDpadRight) { _sbDpadRight.remove(); _sbDpadRight = null; }
                 fighter.mobileMoveVal = 50;
             }
 
             function _setupDpad() {
                 _cleanupControls();
-                var gameDiv = document.getElementById('game') || document.body;
-
-                var baseStyle = [
-                    'position:absolute','border-radius:50%','touch-action:none',
+                var gameDiv  = document.getElementById('game') || document.body;
+                var btnBase  = [
+                    'position:absolute','bottom:36px','width:76px','height:76px',
+                    'border-radius:50%','background:rgba(0,188,255,0.13)',
+                    'border:2px solid rgba(0,188,255,0.75)','color:#00BCFF',
+                    'font-size:30px','z-index:50','cursor:pointer','touch-action:none',
                     '-webkit-tap-highlight-color:transparent',
                     'display:flex','align-items:center','justify-content:center',
-                    'cursor:pointer','pointer-events:auto','z-index:50'
+                    'box-shadow:0 0 12px rgba(0,188,255,0.4)'
                 ].join(';');
 
-                // ◀ IZQUIERDA — verde, esquina inferior izquierda
-                _sbDpadLeft = document.createElement('button');
-                _sbDpadLeft.style.cssText = baseStyle + ';' + [
-                    'left:14px','bottom:28px','width:70px','height:70px',
-                    'background:rgba(0,255,65,0.12)','border:2.5px solid rgba(0,255,65,0.85)',
-                    'color:#00FF41','font-size:28px',
-                    'box-shadow:0 0 14px rgba(0,255,65,0.45)'
-                ].join(';');
-                _sbDpadLeft.innerHTML = '&#9664;';
+                _sbDpadLeft  = document.createElement('button');
+                _sbDpadLeft.style.cssText  = btnBase + ';left:16px';
+                _sbDpadLeft.innerHTML      = '&#9664;';
 
-                // ▶ DERECHA — verde, pegada a la izquierda
                 _sbDpadRight = document.createElement('button');
-                _sbDpadRight.style.cssText = baseStyle + ';' + [
-                    'left:92px','bottom:28px','width:70px','height:70px',
-                    'background:rgba(0,255,65,0.12)','border:2.5px solid rgba(0,255,65,0.85)',
-                    'color:#00FF41','font-size:28px',
-                    'box-shadow:0 0 14px rgba(0,255,65,0.45)'
-                ].join(';');
-                _sbDpadRight.innerHTML = '&#9654;';
-
-                // FIRE — amarillo Orbitron, lado derecho
-                var _sbFireBtn = document.createElement('button');
-                _sbFireBtn.style.cssText = baseStyle + ';' + [
-                    'right:14px','bottom:20px','width:88px','height:88px',
-                    'background:rgba(255,215,0,0.13)','border:2.5px solid rgba(255,215,0,0.9)',
-                    'color:#FFD700',
-                    'font-family:Orbitron,monospace','font-size:12px','font-weight:700',
-                    'letter-spacing:0.15em','text-transform:uppercase',
-                    'box-shadow:0 0 18px rgba(255,215,0,0.55)'
-                ].join(';');
-                _sbFireBtn.textContent = 'FIRE';
+                _sbDpadRight.style.cssText = btnBase + ';right:16px';
+                _sbDpadRight.innerHTML     = '&#9654;';
 
                 gameDiv.appendChild(_sbDpadLeft);
                 gameDiv.appendChild(_sbDpadRight);
-                gameDiv.appendChild(_sbFireBtn);
 
-                // Limpiar el fire btn también en cleanup
-                var _origClean = _cleanupControls;
-                _sbDpadLeft._extraBtn = _sbFireBtn;
-
-                // Touch — flechas
                 _sbDpadLeft.addEventListener('touchstart',  function(ev) { ev.preventDefault(); fighter.mobileMoveVal = 0;   }, { passive: false });
                 _sbDpadLeft.addEventListener('touchend',    function()   { fighter.mobileMoveVal = 50; });
                 _sbDpadLeft.addEventListener('touchcancel', function()   { fighter.mobileMoveVal = 50; });
@@ -213,13 +180,11 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                 _sbDpadRight.addEventListener('touchend',    function()   { fighter.mobileMoveVal = 50; });
                 _sbDpadRight.addEventListener('touchcancel', function()   { fighter.mobileMoveVal = 50; });
 
-                // Touch — FIRE
-                _sbFireBtn.addEventListener('touchstart', function(ev) { ev.preventDefault(); _startAutoFire(); }, { passive: false });
-                _sbFireBtn.addEventListener('touchend',   _stopAutoFire);
-                _sbFireBtn.addEventListener('touchcancel',_stopAutoFire);
-                _sbFireBtn.addEventListener('mousedown',  _startAutoFire);
-                _sbFireBtn.addEventListener('mouseup',    _stopAutoFire);
-                _sbFireBtn.addEventListener('mouseleave', _stopAutoFire);
+                // En dpad: tocar canvas = disparar
+                canvas.addEventListener('touchstart', function(ev) {
+                    ev.preventDefault(); _startAutoFire();
+                }, { passive: false });
+                canvas.addEventListener('touchend', _stopAutoFire);
             }
 
             function _setupSwipe() {
@@ -290,101 +255,22 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                     return;
                 }
 
-                // ATOMIC PULSE: lluvia de misiles + destrucción total de enemigos
+                // ATOMIC PULSE: limpia pantalla con explosión masiva
                 if (d.type === 'ATOMIC_PULSE') {
-                    var _nfx = (typeof NeonFX !== 'undefined') ? NeonFX : null;
-
-                    // 1. BARRAGE: inyectar misiles visuales en el canvas como torpedos
-                    //    Usamos NeonFX para spawn de trails densos desde arriba
-                    if (_nfx) {
-                        var W_c = canvas.width, H_c = canvas.height;
-                        var missileCount = 32;
-                        var launched = 0;
-
-                        (function launchWave() {
-                            if (launched >= missileCount) return;
-                            var cols = 8; // 8 misiles por oleada
-                            for (var m = 0; m < cols && launched < missileCount; m++, launched++) {
-                                (function(mi) {
-                                    var xPos = (mi / cols) * W_c + (Math.random() - 0.5) * (W_c / cols);
-                                    xPos = Math.max(30, Math.min(W_c - 30, xPos));
-                                    var delay = mi * 18; // escalonar cada misil dentro de la oleada
-                                    setTimeout(function() {
-                                        // Simular misil como serie de trail particles cayendo de arriba
-                                        var yStart = -20;
-                                        var yStep  = 0;
-                                        var trailInterval = setInterval(function() {
-                                            yStep += 55;
-                                            if (yStep > H_c + 60) { clearInterval(trailInterval); return; }
-                                            // Neon trail del misil
-                                            _nfx.particles.push({
-                                                x: xPos + (Math.random()-0.5)*6,
-                                                y: yStart + yStep,
-                                                vx: (Math.random()-0.5)*0.05,
-                                                vy: 0.5 + Math.random()*0.4,
-                                                kind: 'engine',
-                                                life: 120, maxLife: 120,
-                                                color: (mi % 3 === 0) ? '#00BCFF' : (mi % 3 === 1) ? '#00FF41' : '#FFD700',
-                                                size: 7 + Math.random()*5,
-                                                rot: 0, vr: 0
-                                            });
-                                            // punta del misil (spark blanco)
-                                            _nfx.particles.push({
-                                                x: xPos, y: yStart + yStep - 12,
-                                                vx: 0, vy: 0.3,
-                                                kind: 'spark',
-                                                life: 80, maxLife: 80,
-                                                color: '#ffffff',
-                                                size: 3, rot: 0, vr: 0
-                                            });
-                                        }, 20);
-                                        // El misil tarda ~420ms en cruzar el canvas
-                                        setTimeout(function() { clearInterval(trailInterval); }, 440);
-                                    }, delay);
-                                })(m);
-                            }
-                            // Siguiente oleada a los 120ms
-                            if (launched < missileCount) {
-                                setTimeout(launchWave, 120);
-                            }
-                        })();
+                    if (enemies && enemies.enemy) {
+                        for (var i = 0; i < enemies.enemy.length; i++) {
+                            var e = enemies.enemy[i];
+                            if (typeof NeonFX !== 'undefined')
+                                NeonFX.bigExplosion(e.center.x, e.center.y, e.type);
+                            addScore(stats, e);
+                        }
+                        enemies.enemy = [];
                     }
-
-                    // 2. DESTRUCCIÓN: detonar cada enemigo con delay escalonado
-                    //    (empieza 150ms después del barrage para efecto de "impacto")
-                    var _enemyCopy = enemies && enemies.enemy ? enemies.enemy.slice() : [];
-                    setTimeout(function() {
-                        for (var i = 0; i < _enemyCopy.length; i++) {
-                            (function(e, idx) {
-                                setTimeout(function() {
-                                    if (_nfx) _nfx.bigExplosion(e.center.x, e.center.y, e.type);
-                                    addScore(stats, e);
-                                }, idx * 55); // explotan escalonados cada 55ms
-                            })(_enemyCopy[i], i);
-                        }
-                        if (enemies) enemies.enemy = [];
-
-                        // Efectos globales al final del barrage
-                        if (_nfx) {
-                            setTimeout(function() {
-                                _nfx.flash       = Math.max(_nfx.flash,       0.95);
-                                _nfx.screenShake = Math.max(_nfx.screenShake, 42);
-                                _nfx.slowmo      = Math.max(_nfx.slowmo,      260);
-                                // Shockwave gigante central
-                                _nfx.shockwaves.push({
-                                    x: canvas.width / 2, y: canvas.height / 2,
-                                    r: 10, maxR: canvas.width * 0.8,
-                                    life: 900, maxLife: 900, color: '#00BCFF'
-                                });
-                                _nfx.shockwaves.push({
-                                    x: canvas.width / 2, y: canvas.height / 2,
-                                    r: 10, maxR: canvas.width * 0.55,
-                                    life: 650, maxLife: 650, color: '#00FF41'
-                                });
-                            }, _enemyCopy.length * 55 + 80);
-                        }
-                    }, 150);
-
+                    if (typeof NeonFX !== 'undefined') {
+                        NeonFX.flash       = Math.max(NeonFX.flash,       0.92);
+                        NeonFX.screenShake = Math.max(NeonFX.screenShake, 38);
+                        NeonFX.slowmo      = Math.max(NeonFX.slowmo,      220);
+                    }
                     window.parent.postMessage({ type: 'BOOST_USED' }, '*');
                     return;
                 }

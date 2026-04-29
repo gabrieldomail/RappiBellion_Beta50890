@@ -290,101 +290,22 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                     return;
                 }
 
-                // ATOMIC PULSE: lluvia de misiles + destrucción total de enemigos
+                // ATOMIC PULSE: limpia pantalla con explosión masiva
                 if (d.type === 'ATOMIC_PULSE') {
-                    var _nfx = (typeof NeonFX !== 'undefined') ? NeonFX : null;
-
-                    // 1. BARRAGE: inyectar misiles visuales en el canvas como torpedos
-                    //    Usamos NeonFX para spawn de trails densos desde arriba
-                    if (_nfx) {
-                        var W_c = canvas.width, H_c = canvas.height;
-                        var missileCount = 32;
-                        var launched = 0;
-
-                        (function launchWave() {
-                            if (launched >= missileCount) return;
-                            var cols = 8; // 8 misiles por oleada
-                            for (var m = 0; m < cols && launched < missileCount; m++, launched++) {
-                                (function(mi) {
-                                    var xPos = (mi / cols) * W_c + (Math.random() - 0.5) * (W_c / cols);
-                                    xPos = Math.max(30, Math.min(W_c - 30, xPos));
-                                    var delay = mi * 18; // escalonar cada misil dentro de la oleada
-                                    setTimeout(function() {
-                                        // Simular misil como serie de trail particles cayendo de arriba
-                                        var yStart = -20;
-                                        var yStep  = 0;
-                                        var trailInterval = setInterval(function() {
-                                            yStep += 55;
-                                            if (yStep > H_c + 60) { clearInterval(trailInterval); return; }
-                                            // Neon trail del misil
-                                            _nfx.particles.push({
-                                                x: xPos + (Math.random()-0.5)*6,
-                                                y: yStart + yStep,
-                                                vx: (Math.random()-0.5)*0.05,
-                                                vy: 0.5 + Math.random()*0.4,
-                                                kind: 'engine',
-                                                life: 120, maxLife: 120,
-                                                color: (mi % 3 === 0) ? '#00BCFF' : (mi % 3 === 1) ? '#00FF41' : '#FFD700',
-                                                size: 7 + Math.random()*5,
-                                                rot: 0, vr: 0
-                                            });
-                                            // punta del misil (spark blanco)
-                                            _nfx.particles.push({
-                                                x: xPos, y: yStart + yStep - 12,
-                                                vx: 0, vy: 0.3,
-                                                kind: 'spark',
-                                                life: 80, maxLife: 80,
-                                                color: '#ffffff',
-                                                size: 3, rot: 0, vr: 0
-                                            });
-                                        }, 20);
-                                        // El misil tarda ~420ms en cruzar el canvas
-                                        setTimeout(function() { clearInterval(trailInterval); }, 440);
-                                    }, delay);
-                                })(m);
-                            }
-                            // Siguiente oleada a los 120ms
-                            if (launched < missileCount) {
-                                setTimeout(launchWave, 120);
-                            }
-                        })();
+                    if (enemies && enemies.enemy) {
+                        for (var i = 0; i < enemies.enemy.length; i++) {
+                            var e = enemies.enemy[i];
+                            if (typeof NeonFX !== 'undefined')
+                                NeonFX.bigExplosion(e.center.x, e.center.y, e.type);
+                            addScore(stats, e);
+                        }
+                        enemies.enemy = [];
                     }
-
-                    // 2. DESTRUCCIÓN: detonar cada enemigo con delay escalonado
-                    //    (empieza 150ms después del barrage para efecto de "impacto")
-                    var _enemyCopy = enemies && enemies.enemy ? enemies.enemy.slice() : [];
-                    setTimeout(function() {
-                        for (var i = 0; i < _enemyCopy.length; i++) {
-                            (function(e, idx) {
-                                setTimeout(function() {
-                                    if (_nfx) _nfx.bigExplosion(e.center.x, e.center.y, e.type);
-                                    addScore(stats, e);
-                                }, idx * 55); // explotan escalonados cada 55ms
-                            })(_enemyCopy[i], i);
-                        }
-                        if (enemies) enemies.enemy = [];
-
-                        // Efectos globales al final del barrage
-                        if (_nfx) {
-                            setTimeout(function() {
-                                _nfx.flash       = Math.max(_nfx.flash,       0.95);
-                                _nfx.screenShake = Math.max(_nfx.screenShake, 42);
-                                _nfx.slowmo      = Math.max(_nfx.slowmo,      260);
-                                // Shockwave gigante central
-                                _nfx.shockwaves.push({
-                                    x: canvas.width / 2, y: canvas.height / 2,
-                                    r: 10, maxR: canvas.width * 0.8,
-                                    life: 900, maxLife: 900, color: '#00BCFF'
-                                });
-                                _nfx.shockwaves.push({
-                                    x: canvas.width / 2, y: canvas.height / 2,
-                                    r: 10, maxR: canvas.width * 0.55,
-                                    life: 650, maxLife: 650, color: '#00FF41'
-                                });
-                            }, _enemyCopy.length * 55 + 80);
-                        }
-                    }, 150);
-
+                    if (typeof NeonFX !== 'undefined') {
+                        NeonFX.flash       = Math.max(NeonFX.flash,       0.92);
+                        NeonFX.screenShake = Math.max(NeonFX.screenShake, 38);
+                        NeonFX.slowmo      = Math.max(NeonFX.slowmo,      220);
+                    }
                     window.parent.postMessage({ type: 'BOOST_USED' }, '*');
                     return;
                 }
