@@ -19,7 +19,22 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="RappiΞLLi0N">
     <!-- PWA: Splash screens iOS -->
-    <link rel="apple-touch-startup-image" href="images/icon-512x512.png">
+    <!-- iOS Splash screens - el fondo usa theme_color del manifest -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<!-- iPhone SE / 5 (320x568) -->
+<link rel="apple-touch-startup-image" media="(device-width:320px) and (device-height:568px) and (-webkit-device-pixel-ratio:2)" href="images/icon-512x512.png">
+<!-- iPhone 8 (375x667) -->
+<link rel="apple-touch-startup-image" media="(device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2)" href="images/icon-512x512.png">
+<!-- iPhone X/XS/11 Pro (375x812) -->
+<link rel="apple-touch-startup-image" media="(device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3)" href="images/icon-512x512.png">
+<!-- iPhone XR/11 (414x896) -->
+<link rel="apple-touch-startup-image" media="(device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:2)" href="images/icon-512x512.png">
+<!-- iPhone 12/13/14 (390x844) -->
+<link rel="apple-touch-startup-image" media="(device-width:390px) and (device-height:844px) and (-webkit-device-pixel-ratio:3)" href="images/icon-512x512.png">
+<!-- iPhone 14 Pro / 15 (393x852) -->
+<link rel="apple-touch-startup-image" media="(device-width:393px) and (device-height:852px) and (-webkit-device-pixel-ratio:3)" href="images/icon-512x512.png">
+<!-- iPhone 14 Pro Max / 15 Plus (430x932) -->
+<link rel="apple-touch-startup-image" media="(device-width:430px) and (device-height:932px) and (-webkit-device-pixel-ratio:3)" href="images/icon-512x512.png">
     <!-- OG / Social -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="RappiΞLLi0N T2E — El Próximo Think-to-Earn">
@@ -176,92 +191,153 @@
         background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/><feColorMatrix type=%22saturate%22 values=%220%22/></filter><rect width=%22200%22 height=%22200%22 filter=%22url(%23n)%22/></svg>');
     "></div>
 
-      <!-- Content -->
-      <div style="position:absolute;top:35%;left:40%;transform:translateX(-50%);z-index:3;text-align:center;padding:25px 40px;max-width:350px;background:rgba(0,0,0,0.65);border-radius:8px;">
+      <!-- TV Screen area - pantalla CRT dentro del televisor -->
+      <div id="intro-tv-screen" style="
+          position:absolute;
+          top:28%; left:40%;
+          transform:translateX(-50%);
+          width:clamp(220px, 38vw, 480px);
+          z-index:3;
+          text-align:center;
+          padding:clamp(12px,2vw,24px) clamp(16px,3vw,36px);
+          background:transparent;
+          overflow:visible;
+      ">
+      <!-- GLITCH BAR overlay -->
+      <div id="intro-glitch-bar" style="
+          position:absolute;inset:0;pointer-events:none;z-index:2;
+          animation:glitchBar 4s ease-in-out infinite;
+          background:linear-gradient(180deg,transparent 30%,rgba(255,0,200,0.15) 50%,transparent 70%);
+          mix-blend-mode:screen;
+      "></div>
+      <!-- GREEN CRT SCAN BEAM -->
+      <div style="
+          position:absolute;left:0;right:0;height:3px;pointer-events:none;z-index:4;
+          background:linear-gradient(90deg,transparent 0%,rgba(0,255,100,0.7) 30%,rgba(180,255,200,0.9) 50%,rgba(0,255,100,0.7) 70%,transparent 100%);
+          filter:blur(1px);
+          animation:scanBeam 3s linear infinite;
+          box-shadow:0 0 8px rgba(0,255,100,0.8), 0 0 20px rgba(0,255,100,0.4);
+      "></div>
+<!-- Contenido sobre los efectos -->
+      <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0;">
 
-        <!-- Studio label — Courier -->
+        <!-- STUDIO label -->
         <div id="intro-studio" style="
             font-family:'Courier New',monospace;
-            font-size:clamp(10px,1.4vw,14px);
-            letter-spacing:6px;
-            color:rgba(0,255,200,0.55);
+            font-size:clamp(9px,1.1vw,11px);
+            letter-spacing:4px;
             text-transform:uppercase;
-            margin-bottom:28px;
+            color:#00ffc8;
+            display:inline;
+            background:#000;
+            -webkit-box-decoration-break:clone;
+            box-decoration-break:clone;
+            padding:2px 6px;
+            line-height:1.9;
             opacity:0;
             transition:opacity 0.8s ease;
-        ">BITS LAB — BIOINTELIGENCIA ARTIFICIAL TECHNOLOGIES LAB</div>
+        ">BITS LAB</div>
 
-        <!-- Main logo — Orbitron -->
+        <!-- RAPPIBELLION logo -->
         <div id="intro-logo" style="
-            font-family:'Orbitron',sans-serif;
-            font-size:clamp(28px,6vw,72px);
+            font-family:'Courier New',monospace;
+            font-size:clamp(22px,4.5vw,48px);
             font-weight:700;
             color:#fff;
-            text-shadow:
-                0 0 20px rgba(255,0,200,0.9),
-                0 0 60px rgba(255,0,200,0.4),
-                0 0 120px rgba(0,255,255,0.2);
-            letter-spacing:8px;
+            letter-spacing:4px;
             text-transform:uppercase;
+            display:inline;
+            background:#000;
+            -webkit-box-decoration-break:clone;
+            box-decoration-break:clone;
+            padding:3px 8px;
+            line-height:1.6;
+            margin-top:6px;
             opacity:0;
             transition:opacity 1s ease;
-            position:relative;
+            text-shadow:0 0 12px rgba(255,0,200,0.7);
         ">RAPPIBELLION</div>
 
-        <!-- Tagline — Courier -->
+        <!-- Tagline -->
         <div id="intro-tagline" style="
             font-family:'Courier New',monospace;
-            font-size:clamp(10px,1.6vw,16px);
-            letter-spacing:4px;
-            color:rgba(248,255,43,0.75);
-            margin-top:14px;
+            font-size:clamp(8px,1vw,11px);
+            letter-spacing:2px;
+            color:#f8ff2b;
+            display:inline;
+            background:#000;
+            -webkit-box-decoration-break:clone;
+            box-decoration-break:clone;
+            padding:2px 6px;
+            line-height:1.9;
+            margin-top:4px;
             opacity:0;
             transition:opacity 0.8s ease;
-        ">// THINK TO EARN — WEB3 GAMING PLATFORM //</div>
+        ">// THINK TO EARN //</div>
 
         <!-- Horizontal rule -->
         <div id="intro-rule" style="
             width:0%;height:1px;
-            background:linear-gradient(90deg,transparent,rgba(0,255,255,0.6),transparent);
-            margin:28px auto;
+            background:linear-gradient(90deg,transparent,rgba(0,255,255,0.5),transparent);
+            margin:14px auto;
             transition:width 1s ease;
         "></div>
 
-        <!-- Copyright — Courier typewriter -->
+        <!-- Copyright typewriter -->
         <div id="intro-copy" style="
             font-family:'Courier New',monospace;
-            font-size:clamp(9px,1.1vw,12px);
+            font-size:clamp(8px,0.9vw,10px);
             letter-spacing:2px;
-            color:rgba(255,255,255,0.45);
+            color:#aaa;
+            display:inline;
+            background:#000;
+            -webkit-box-decoration-break:clone;
+            box-decoration-break:clone;
+            padding:1px 5px;
+            line-height:2;
             min-height:1.4em;
         "></div>
 
-        <!-- Version line — Courier -->
+        <!-- Version -->
         <div id="intro-ver" style="
             font-family:'Courier New',monospace;
-            font-size:clamp(8px,0.9vw,11px);
+            font-size:clamp(7px,0.8vw,9px);
             letter-spacing:3px;
-            color:rgba(0,255,200,0.3);
-            margin-top:8px;
+            color:rgba(0,255,200,0.5);
+            display:inline;
+            background:#000;
+            -webkit-box-decoration-break:clone;
+            box-decoration-break:clone;
+            padding:1px 5px;
+            line-height:2;
+            margin-top:2px;
             opacity:0;
             transition:opacity 0.6s ease;
-        ">BUILD 50890 — BETA — OPTIMISM NETWORK</div>
+        ">BUILD 50890 - BETA - OPTIMISM</div>
 
-        <!-- Press any key — Orbitron -->
+        <!-- Press any key -->
         <div id="intro-press" style="
-            font-family:'Orbitron',sans-serif;
-            font-size:clamp(10px,1.3vw,13px);
-            letter-spacing:5px;
-            color:rgba(255,255,255,0.7);
-            margin-top:48px;
+            font-family:'Courier New',monospace;
+            font-size:clamp(9px,1vw,11px);
+            letter-spacing:4px;
+            color:#fff;
+            display:inline;
+            background:#000;
+            -webkit-box-decoration-break:clone;
+            box-decoration-break:clone;
+            padding:2px 8px;
+            line-height:2;
+            margin-top:14px;
             opacity:0;
             animation:introBlink 1.1s ease-in-out infinite;
-        ">— PRESS ANY KEY —</div>
+        ">-- PRESS ANY KEY --</div>
 
         <!-- Auto countdown bar -->
-        <div style="margin-top:20px;width:200px;height:2px;background:rgba(255,255,255,0.08);margin-left:auto;margin-right:auto;border-radius:2px;">
-            <div id="intro-bar" style="height:100%;width:100%;background:rgba(0,255,200,0.4);border-radius:2px;transition:width 5s linear;"></div>
+        <div style="margin-top:14px;width:160px;height:2px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;">
+            <div id="intro-bar" style="height:100%;width:100%;background:rgba(0,255,200,0.5);border-radius:2px;transition:width 5s linear;"></div>
         </div>
+      </div>
+      </div>
     </div>
 </div>
 
@@ -310,6 +386,91 @@
 <style>
 @keyframes introScanMove { from{background-position:0 0} to{background-position:0 100px} }
 @keyframes introBlink    { 0%,100%{opacity:0} 50%{opacity:1} }
+@keyframes crtFlicker    { 0%,100%{opacity:1} 92%{opacity:0.97} 94%{opacity:0.92} 96%{opacity:1} 98%{opacity:0.95} }
+@keyframes crtPowerOn    { 0%{clip-path:inset(50% 0);opacity:0} 40%{clip-path:inset(48% 0);opacity:0.4} 70%{clip-path:inset(5% 0);opacity:0.9} 100%{clip-path:inset(0%);opacity:1} }
+
+/* ═══ CYBERPUNK TV CHAOS ═══ */
+
+/* RGB Chromatic Aberration - logo splits into R G B */
+@keyframes chromaGlitch {
+  0%,90%,100% { text-shadow: 0 0 12px rgba(255,0,200,0.7); }
+  91%  { text-shadow: -4px 0 0 rgba(255,0,0,0.9), 4px 0 0 rgba(0,255,255,0.9), 0 0 20px rgba(255,255,0,0.6); filter:hue-rotate(0deg); }
+  92%  { text-shadow: 6px 0 0 rgba(255,0,0,1), -6px 0 0 rgba(0,255,255,1), 0 2px 0 rgba(0,255,0,0.8); filter:hue-rotate(180deg) saturate(5); }
+  93%  { text-shadow: -3px 1px 0 rgba(255,0,0,0.8), 3px -1px 0 rgba(0,200,255,0.8); transform:skewX(-4deg) scaleX(1.04); }
+  94%  { text-shadow: 0 0 12px rgba(255,0,200,0.7); transform:none; filter:none; }
+}
+
+/* Hard horizontal glitch bars */
+@keyframes glitchBar {
+  0%,85%,100% { clip-path:none; transform:none; }
+  86%  { clip-path:inset(30% 0 60% 0); transform:translateX(-8px); filter:hue-rotate(90deg); }
+  87%  { clip-path:inset(60% 0 10% 0); transform:translateX(10px) scaleX(1.02); }
+  88%  { clip-path:inset(10% 0 80% 0); transform:translateX(-5px); filter:hue-rotate(200deg); }
+  89%  { clip-path:none; transform:none; filter:none; }
+}
+
+/* Neon pulse glow - the whole screen breathes */
+@keyframes neonPulse {
+  0%,100% { box-shadow: 0 0 10px rgba(0,255,200,0.2), 0 0 30px rgba(255,0,200,0.1); }
+  25% { box-shadow: 0 0 25px rgba(255,0,200,0.6), 0 0 60px rgba(0,255,255,0.3), 0 0 100px rgba(255,0,200,0.15); }
+  50% { box-shadow: 0 0 15px rgba(0,255,255,0.8), 0 0 40px rgba(0,255,200,0.4), 0 0 80px rgba(0,200,255,0.2); }
+  75% { box-shadow: 0 0 30px rgba(255,255,0,0.5), 0 0 70px rgba(255,0,100,0.3), 0 0 120px rgba(255,200,0,0.1); }
+}
+
+/* Scan beam - green CRT beam sweeps top to bottom */
+@keyframes scanBeam {
+  0%   { top:-6px; opacity:0; }
+  5%   { opacity:1; }
+  90%  { opacity:0.7; }
+  100% { top:110%; opacity:0; }
+}
+
+/* Static noise on logo */
+@keyframes staticNoise {
+  0%,100% { letter-spacing:4px; }
+  20% { letter-spacing:2px; filter:blur(0.5px); }
+  21% { letter-spacing:6px; }
+  22% { letter-spacing:4px; filter:none; }
+  60% { letter-spacing:3px; opacity:0.85; }
+  61% { letter-spacing:5px; opacity:1; }
+}
+
+/* VHS color bleed on tagline */
+@keyframes vhsBleed {
+  0%,100% { text-shadow:none; color:#f8ff2b; }
+  30% { text-shadow:-2px 0 rgba(255,0,255,0.8), 2px 0 rgba(0,255,255,0.8); color:#fff; }
+  31% { color:#f8ff2b; text-shadow:none; }
+  70% { color:#ff4400; text-shadow: 0 0 8px rgba(255,68,0,0.9); }
+  71% { color:#f8ff2b; }
+}
+
+/* Glitch duplicate - studio label stutters */
+@keyframes stutter {
+  0%,95%,100% { transform:none; opacity:1; }
+  96% { transform:translateX(-3px); opacity:0.7; }
+  97% { transform:translateX(4px) skewX(5deg); opacity:1; }
+  98% { transform:translateX(-1px); opacity:0.9; }
+}
+
+/* Red alert flash - whole overlay */
+@keyframes redAlert {
+  0%,88%,100% { background:transparent; }
+  89% { background:rgba(255,0,0,0.12); }
+  90% { background:rgba(255,0,0,0.06); }
+  91% { background:rgba(255,0,0,0.18); }
+  92% { background:transparent; }
+}
+
+/* Apply animations */
+#intro-tv-screen { animation: crtFlicker 4s ease-in-out infinite, crtPowerOn 1.2s ease-out forwards, neonPulse 3s ease-in-out infinite; }
+#intro-logo      { animation: chromaGlitch 4.5s ease-in-out infinite, staticNoise 6s ease-in-out infinite !important; }
+#intro-tagline   { animation: vhsBleed 5s ease-in-out infinite !important; }
+#intro-studio    { animation: stutter 7s ease-in-out infinite; }
+#intro-screen    { animation: redAlert 5s ease-in-out infinite; }
+
+/* TV Screen */
+#intro-tv-screen { animation: crtFlicker 4s ease-in-out infinite, crtPowerOn 1.2s ease-out forwards; }
+/* colors handled inline per element */
 @keyframes introGlitch   {
     0%,94%,100%{transform:none;text-shadow:0 0 20px rgba(255,0,200,0.9),0 0 60px rgba(255,0,200,0.4)}
     95%{transform:translate(-4px,0) skewX(-4deg);text-shadow:-4px 0 rgba(255,0,200,1),4px 0 rgba(0,255,255,0.8)}
@@ -334,11 +495,33 @@
     el.addEventListener('click', dismiss);
     document.addEventListener('keydown', dismiss, {once:true});
 
+    // Random pixel glitch flashes on the TV overlay
+    (function runGlitch() {
+      var screen = document.getElementById('intro-screen');
+      if (!screen) return;
+      var delay = 800 + Math.random() * 3000;
+      setTimeout(function() {
+        var colors = ['rgba(255,0,200,0.25)','rgba(0,255,255,0.2)','rgba(255,255,0,0.2)','rgba(255,0,0,0.15)'];
+        var c = colors[Math.floor(Math.random() * colors.length)];
+        var pct = Math.floor(Math.random() * 80) + 10;
+        screen.style.setProperty('--glitch-color', c);
+        var strip = document.createElement('div');
+        strip.style.cssText = 'position:absolute;left:0;right:0;pointer-events:none;z-index:9998;'
+          + 'top:' + pct + '%;height:' + (1 + Math.floor(Math.random()*3)) + 'px;'
+          + 'background:' + c + ';mix-blend-mode:screen;';
+        screen.appendChild(strip);
+        setTimeout(function(){ strip.remove(); }, 80 + Math.random()*120);
+        runGlitch();
+      }, delay);
+    })();
+
     // Sequence animations
     setTimeout(function(){ document.getElementById('intro-studio').style.opacity='1'; },300);
     setTimeout(function(){ document.getElementById('intro-logo').style.opacity='1'; },700);
     setTimeout(function(){ document.getElementById('intro-tagline').style.opacity='1'; },1200);
     setTimeout(function(){ document.getElementById('intro-rule').style.width='80%'; },1400);
+    setTimeout(function(){ document.getElementById('intro-ver').style.opacity='1'; },1800);
+    setTimeout(function(){ document.getElementById('intro-press').style.opacity='1'; },2200);
 
     // Typewriter for copyright
     var copyText = '\u00a9 2025 Bits Lab (Biointeligencia Artificial Technologies Lab). Todos los derechos reservados.';
@@ -620,6 +803,10 @@
                 <div class="game-placeholder">
                     <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
                     <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">SLOT 2: SPACE-BREAKER</strong><br>(Space Invaders - Defiende el nodo)</p>
+                    <button class="cta-button" id="space_beta_G02"
+                            style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-color: var(--color-azul-glitch); color: var(--color-azul-glitch);">
+                        &gt; LAUNCH SPACE-BREAKER.exe
+                    </button>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
@@ -1351,6 +1538,29 @@
                     z-index: 11;
                     box-shadow: 0 0 8px rgba(248,255,43,0.6);
                 ">x0</div>
+
+                <!-- FIRE BUTTON — Space-Breaker mobile (oculto por defecto) -->
+                <button id="fp-spacebreaker-fire-btn"
+                    style="
+                        display: none;
+                        position: absolute;
+                        bottom: 32px;
+                        right: 16px;
+                        z-index: 20;
+                        width: 80px;
+                        height: 80px;
+                        border-radius: 50%;
+                        background: rgba(0,188,255,0.15);
+                        border: 2px solid rgba(0,188,255,0.8);
+                        color: #00BCFF;
+                        font-size: 28px;
+                        box-shadow: 0 0 16px rgba(0,188,255,0.5);
+                        cursor: pointer;
+                        pointer-events: auto;
+                        -webkit-tap-highlight-color: transparent;
+                        touch-action: none;
+                    "
+                    title="FIRE">🔫</button>
 
                 <!-- countdown moved to body level -->
 
@@ -2143,10 +2353,15 @@ document.addEventListener('DOMContentLoaded', function() {
          window._fpLastGameSrc = nextGameSrc;
          
          // Actualizar header del terminal con nombre del juego
-         var isTetrisGame = nextGameSrc && nextGameSrc.indexOf('Tetris-Cipher') !== -1;
-         var gameName = isTetrisGame ? 'TETRIS_CIPHER // T2E' : 'PAC-HACK: DEATH // T2E';
+         var isTetrisGame      = nextGameSrc && nextGameSrc.indexOf('Tetris-Cipher') !== -1;
+         var isSpaceBreakerGame= nextGameSrc && nextGameSrc.indexOf('Space-Breaker') !== -1;
+         var gameName = isTetrisGame
+             ? 'TETRIS_CIPHER // T2E'
+             : (isSpaceBreakerGame ? 'SPACE-BREAKER // T2E' : 'PAC-HACK: DEATH // T2E');
          if (!fpState.betMode) {
-             gameName = isTetrisGame ? 'TETRIS_CIPHER // FREE_PLAY' : 'PAC-HACK: DEATH // FREE_PLAY';
+             gameName = isTetrisGame
+                 ? 'TETRIS_CIPHER // FREE_PLAY'
+                 : (isSpaceBreakerGame ? 'SPACE-BREAKER // FREE_PLAY' : 'PAC-HACK: DEATH // FREE_PLAY');
          }
          var termHeader = document.querySelector('.fp-game-wrap .terminal-header-caos span:first-child');
          if (termHeader) termHeader.textContent = '[' + gameName + ']';
@@ -2169,7 +2384,30 @@ document.addEventListener('DOMContentLoaded', function() {
          }
 
         // En mobile mostrar selector de control, en desktop ir directo
-        if (window.innerWidth <= 768) {
+        // Space-Breaker: saltar selector — conectar el botón de disparo del overlay
+        var _isSpaceBreakerSrc = nextGameSrc && nextGameSrc.indexOf('Space-Breaker') !== -1;
+        if (_isSpaceBreakerSrc) {
+            // Mostrar fire button solo en mobile
+            var _sbFireBtn = document.getElementById('fp-spacebreaker-fire-btn');
+            if (_sbFireBtn && window.innerWidth <= 768) {
+                _sbFireBtn.style.display = 'block';
+                // Enviar FIRE_START/FIRE_STOP al iframe como postMessage
+                _sbFireBtn.addEventListener('touchstart', function(ev) {
+                    ev.preventDefault();
+                    var iframe = document.getElementById('fp-iframe');
+                    if (iframe && iframe.contentWindow) {
+                        iframe.contentWindow.postMessage({ type: 'FIRE_START' }, '*');
+                    }
+                }, { passive: false });
+                _sbFireBtn.addEventListener('touchend', function() {
+                    var iframe = document.getElementById('fp-iframe');
+                    if (iframe && iframe.contentWindow) {
+                        iframe.contentWindow.postMessage({ type: 'FIRE_STOP' }, '*');
+                    }
+                });
+            }
+        }
+        if (window.innerWidth <= 768 && !_isSpaceBreakerSrc) {
             // Si ya eligio control antes (restart/revancha), reusar sin mostrar selector
             if (window._fpSavedControlMode) {
                 setTimeout(function() { fpStartWithControl(window._fpSavedControlMode); }, 400);
@@ -2470,10 +2708,11 @@ document.addEventListener('DOMContentLoaded', function() {
         fpState.timeLeft--;
         fpRenderTimer(fpState.timeLeft);
         if (fpTimerBar) fpTimerBar.style.width = (fpState.timeLeft / fpState.totalTime * 100) + '%';
-        // Freeplay chaos: solo para Tetris (pac-hack calcula y envia su propio CHAOS_LEVEL)
+        // Freeplay chaos: Tetris Y Space-Breaker calculan tiempo local; pac-hack envía su propio CHAOS_LEVEL
         if (!fpState.betMode) {
-            var _isTetrisChaos = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
-            if (_isTetrisChaos) {
+            var _isTetrisChaos       = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+            var _isSpaceBreakerChaos = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker') !== -1;
+            if (_isTetrisChaos || _isSpaceBreakerChaos) {
                 var _elapsed = fpState.totalTime - fpState.timeLeft;
                 var progression = _elapsed / fpState.totalTime;
                 var chaosValue = 20 + (Math.pow(progression, 1.5) * 80);
@@ -3050,8 +3289,13 @@ function fpCloseArena() {
             fpIframe.style.height = '100%';
         }
         window._fpPendingGameSrc = null; // limpiar src pendiente por si se cerró antes del countdown
-        // Limpiar Skynet bg al cerrar
+        // Limpiar Skynet + SpaceBreaker bg al cerrar
         document.querySelectorAll('.fp-col-skynet').forEach(function(el) { el.classList.remove('fp-col-skynet'); });
+        document.querySelectorAll('.fp-col-spacebreaker').forEach(function(el) { el.classList.remove('fp-col-spacebreaker'); });
+        // Ocultar fire button de Space-Breaker
+        var _sbFire = document.getElementById('fp-spacebreaker-fire-btn');
+        if (_sbFire) _sbFire.style.display = 'none';
+        document.querySelectorAll('.fp-col-spacebreaker').forEach(function(el) { el.classList.remove('fp-col-spacebreaker'); });
         // Reset faq-panel position
         var faqPanel = document.getElementById('fp-faq-panel');
         if (faqPanel) { faqPanel.style.top = ''; }
@@ -3195,8 +3439,9 @@ function fpCloseArena() {
         window._fpNextGameSrc = gameSrc;
         window._fpLastGameSrc = gameSrc; 
         
-        // 1. Definimos isTetris UNA SOLA VEZ
-        const isTetris = gameSrc && gameSrc.indexOf('Tetris-Cipher') !== -1;
+        // 1. Definimos isTetris / isSpaceBreaker UNA SOLA VEZ
+        const isTetris       = gameSrc && gameSrc.indexOf('Tetris-Cipher') !== -1;
+        const isSpaceBreaker = gameSrc && gameSrc.indexOf('Space-Breaker') !== -1;
 
         // 2. Manejo de la clase de centrado en el contenedor
         const wrap = document.querySelector('.fp-game-wrap');
@@ -3243,8 +3488,11 @@ function fpCloseArena() {
         // 4. Skynet visual: aplica fondo Cyberdyne a columnas
         const colLeft  = document.querySelector('.fp-col-left');
         const colRight = document.querySelector('.fp-col-right');
-        if (colLeft)  colLeft.classList.toggle('fp-col-skynet', isTetris);
-        if (colRight) colRight.classList.toggle('fp-col-skynet', isTetris);
+        if (colLeft)  colLeft.classList.toggle('fp-col-skynet',       isTetris);
+        if (colRight) colRight.classList.toggle('fp-col-skynet',      isTetris);
+        // Space-Breaker: tema espacio, sin imágenes de pac-hack (usa isSpaceBreaker, NO isSpaceBreakerGame)
+        if (colLeft)  colLeft.classList.toggle('fp-col-spacebreaker', isSpaceBreaker);
+        if (colRight) colRight.classList.toggle('fp-col-spacebreaker', isSpaceBreaker);
 
         // 5. Ajuste de posición del FAQ briefing en mobile
         if (isTetris && window.innerWidth <= 768) {
@@ -3253,7 +3501,9 @@ function fpCloseArena() {
         }
 
         // 6. Actualizar header del terminal con el nombre del juego
-        window._fpCurrentGameName = isTetris ? 'TETRIS_CIPHER // FREEPLAY' : 'PAC-HACK: DEATH // FREE_PLAY';
+        window._fpCurrentGameName = isTetris
+            ? 'TETRIS_CIPHER // FREEPLAY'
+            : (isSpaceBreaker ? 'SPACE-BREAKER // FREEPLAY' : 'PAC-HACK: DEATH // FREE_PLAY');
         var termHeader = document.querySelector('.fp-game-wrap .terminal-header-caos span:first-child');
         if (termHeader) termHeader.textContent = '[' + window._fpCurrentGameName + ']';
 
@@ -3280,6 +3530,19 @@ function fpCloseArena() {
         if (pacBtn) {
             pacBtn.addEventListener('click', function() {
                 window.fpOpenFreeGame('pac-hack-freeplay/game.html');
+            });
+        }
+        // ── SPACE-BREAKER freeplay ──────────────────────────────────────────
+        var spaceBtn = document.getElementById('space_beta_G02');
+        if (spaceBtn) {
+            spaceBtn.addEventListener('click', function() {
+                window.fpOpenFreeGame('Space-Breaker-freeplay/space.html');
+            });
+        }
+        var spaceLobbyBtn = document.getElementById('space_beta_G02_lobby');
+        if (spaceLobbyBtn) {
+            spaceLobbyBtn.addEventListener('click', function() {
+                window.fpOpenFreeGame('Space-Breaker-freeplay/space.html');
             });
         }
         // Lobby flotante botones freeplay
@@ -3318,9 +3581,11 @@ function fpCloseArena() {
         if (!d || !d.type) return;
         console.log('[DEBUG iframe message]', d.type, d);
 
-        // FIX: Si el juego termina por falta de vidas, cerrar la práctica del padre
+        // GAME_OVER del iframe: NO terminar la práctica del padre.
+        // Timer y caos siguen corriendo. Score vuelve a 0. Veredicto solo al llegar timer a 0.
         if (d.type === 'GAME_OVER') {
-            fpEndPractice();
+            fpState.score = 0;
+            if (fpScoreEl) fpScoreEl.textContent = '0000';
             return;
         }
 
@@ -4836,6 +5101,10 @@ btn.addEventListener('click', toggleMutePlay);
                     <div class="game-placeholder">
                         <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
                         <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">SLOT 2: SPACE-BREAKER</strong><br>(Space Invaders - Defiende el nodo)</p>
+                        <button class="cta-button" id="space_beta_G02_lobby"
+                                style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-color: var(--color-azul-glitch); color: var(--color-azul-glitch);">
+                            &gt; LAUNCH SPACE-BREAKER.exe
+                        </button>
                     </div>
                     <div class="game-placeholder">
                         <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
@@ -7466,6 +7735,22 @@ btn.addEventListener('click', toggleMutePlay);
             background: rgba(0,0,0,0) !important;
             opacity: 1 !important;
         }
+
+        /* ── SPACE-BREAKER theme — reemplaza pac-hack column images ── */
+        .fp-col-spacebreaker {
+            background-image:
+                linear-gradient(rgba(2,4,8,0.88), rgba(2,4,8,0.88)),
+                radial-gradient(ellipse at 50% 100%, rgba(0,188,255,0.18) 0%, transparent 70%) !important;
+            background-color: #020408 !important;
+            border-color: rgba(0,188,255,0.6) !important;
+            box-shadow: 0 0 24px rgba(0,188,255,0.25), inset 0 0 40px rgba(0,188,255,0.04) !important;
+        }
+        .fp-col-left.fp-col-spacebreaker  { border-right-color: rgba(0,188,255,0.55) !important; }
+        .fp-col-right.fp-col-spacebreaker {
+            border-left-color: rgba(0,255,65,0.45) !important;
+            box-shadow: -4px 0 24px rgba(0,255,65,0.15), inset 0 0 40px rgba(0,255,65,0.03) !important;
+        }
+        .fp-col-spacebreaker::after { background: rgba(0,0,0,0) !important; opacity: 1 !important; }
 
         /* Timer — hover scale como game-placeholder img */
         .fp-timer-val {

@@ -1,0 +1,374 @@
+/* ==========================================================================
+   GALAGA — game.css
+   Rediseño estilo Rappibellion: dark space, fuente Orbitron, glow neon
+   Conserva toda la estructura HTML original
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+
+/* ── Variables ─────────────────────────────────────────────────────────── */
+:root {
+    --color-primario:    #00BCFF;
+    --color-verde:       #00FF41;
+    --color-amarillo:    #FFD700;
+    --color-rosa:        #FF2D78;
+    --color-rojo:        #FF2E4A;
+    --color-fondo:       #020408;
+    --color-btn-bg:      rgba(0, 188, 255, 0.07);
+    --color-btn-border:  rgba(0, 188, 255, 0.55);
+    --font-hud:          'Orbitron', 'Share Tech Mono', monospace;
+    --font-body:         'Rajdhani', 'Courier New', monospace;
+}
+
+/* ── Reset + Body ──────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    min-height: 100vh;
+    overflow: hidden;
+    text-align: center;
+    background-color: var(--color-fondo);
+    font-family: var(--font-body);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Scanlines globales */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 188, 255, 0.03) 0px 1px,
+        transparent 1px 3px
+    );
+    mix-blend-mode: screen;
+}
+
+/* Viñeta */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 99;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.6) 100%);
+}
+
+/* ── Logo ──────────────────────────────────────────────────────────────── */
+.logo {
+    height: 9vh;
+    max-height: 56px;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 8px var(--color-primario))
+            drop-shadow(0 0 18px var(--color-primario));
+    animation: logoFlicker 4s infinite;
+}
+
+@keyframes logoFlicker {
+    0%, 18%, 20%, 22%, 78%, 82%, 100% { opacity: 1; }
+    19%, 21%, 80%                     { opacity: 0.6; }
+}
+
+/* ── Contenedor del juego ──────────────────────────────────────────────── */
+#game {
+    position: relative;
+    width: min(60vh, 94vw);
+    height: min(80vh, 125vw);
+    border: 2px solid var(--color-primario);
+    box-shadow:
+        0 0 20px rgba(0, 188, 255, 0.40),
+        inset 0 0 28px rgba(0, 188, 255, 0.06),
+        0 0 50px rgba(255, 45, 120, 0.14);
+    overflow: hidden;
+}
+
+/* ── Screens (menú, juego, etc.) ───────────────────────────────────────── */
+#game .screen {
+    width: 100%;
+    height: 100%;
+    display: none;
+    color: var(--color-primario);
+    background-color: var(--color-fondo);
+}
+
+#game .screen.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ── Títulos dentro de pantallas ───────────────────────────────────────── */
+#game div h1 {
+    font-family: var(--font-hud);
+    font-weight: 900;
+    font-size: clamp(18px, 4vh, 32px);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--color-primario);
+    text-shadow:
+        0 0 8px var(--color-primario),
+        0 0 20px var(--color-primario);
+    margin: 0 0 16px;
+}
+
+/* ── Párrafos de opciones/créditos ─────────────────────────────────────── */
+#game div p {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(10px, 1.8vh, 14px);
+    color: var(--color-primario);
+    letter-spacing: 0.12em;
+    margin: 6px 0;
+    opacity: 0.92;
+}
+
+/* ── Menú de botones ───────────────────────────────────────────────────── */
+ul.menu {
+    text-align: center;
+    padding: 0;
+    margin: 12px 0 0;
+    list-style: none;
+    width: 100%;
+}
+
+ul.menu li {
+    margin: 0.65em 0;
+}
+
+/* ── Botones ───────────────────────────────────────────────────────────── */
+button {
+    font-family: var(--font-hud);
+    font-size: clamp(10px, 1.8vh, 14px);
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-primario);
+    width: clamp(140px, 22vh, 200px);
+    height: clamp(36px, 5.5vh, 48px);
+    background: var(--color-btn-bg);
+    border: 1px solid var(--color-btn-border);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    box-shadow:
+        inset 0 0 8px rgba(0, 188, 255, 0.12),
+        0 0 8px rgba(0, 188, 255, 0.22);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Línea superior decorativa */
+button::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-primario), transparent);
+    opacity: 0.7;
+}
+
+button:hover,
+ul.menu li button:hover {
+    background: rgba(0, 188, 255, 0.18);
+    color: #ffffff;
+    border-color: var(--color-primario);
+    box-shadow:
+        inset 0 0 14px rgba(0, 188, 255, 0.25),
+        0 0 18px rgba(0, 188, 255, 0.45),
+        0 0 36px rgba(0, 188, 255, 0.18);
+    transform: translateY(-2px);
+    text-shadow: 0 0 8px #fff;
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 0 8px rgba(0, 188, 255, 0.3);
+}
+
+/* ── High Scores ───────────────────────────────────────────────────────── */
+#high-scores ol {
+    text-align: center;
+    padding: 0;
+    margin: 0 0 12px;
+    list-style: none;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(10px, 1.8vh, 14px);
+    color: var(--color-amarillo);
+    text-shadow: 0 0 6px var(--color-amarillo);
+    letter-spacing: 0.15em;
+}
+
+/* ── Links de teclas (en Options) ──────────────────────────────────────── */
+a {
+    border: 1px solid rgba(0, 188, 255, 0.45);
+    padding: 3px 8px;
+    display: inline-block;
+    text-decoration: none;
+    color: var(--color-primario);
+    background: rgba(0, 188, 255, 0.08);
+    border-radius: 3px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(10px, 1.6vh, 12px);
+    font-weight: bold;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: all 0.18s ease;
+}
+
+a:hover {
+    background: rgba(0, 188, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 188, 255, 0.4);
+    transform: translateY(-1px);
+}
+
+/* ── Toggle switch ─────────────────────────────────────────────────────── */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: rgba(0, 188, 255, 0.15);
+    border: 1px solid rgba(0, 188, 255, 0.4);
+    transition: 0.35s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--color-primario);
+    box-shadow: 0 0 6px var(--color-primario);
+    transition: 0.35s;
+}
+
+input:checked + .slider {
+    background-color: rgba(0, 255, 65, 0.15);
+    border-color: rgba(0, 255, 65, 0.5);
+}
+
+input:checked + .slider:before {
+    background-color: var(--color-verde);
+    box-shadow: 0 0 6px var(--color-verde);
+    transform: translateX(24px);
+}
+
+.slider.round          { border-radius: 26px; }
+.slider.round:before   { border-radius: 50%; }
+
+/* ── Canvas ────────────────────────────────────────────────────────────── */
+.canvas {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: var(--color-fondo);
+}
+
+/* ── Controles móviles ─────────────────────────────────────────────────── */
+#mobile-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: 10vh;
+    width: min(60vh, 94vw);
+    visibility: hidden;
+    margin-top: 6px;
+}
+
+#mobile-controls button {
+    width: 11vw;
+    height: 11vw;
+    max-width: 56px;
+    max-height: 56px;
+    background: rgba(255, 45, 120, 0.12);
+    border: 2px solid var(--color-rosa);
+    border-radius: 50%;
+    color: var(--color-rosa);
+    font-size: 18px;
+    box-shadow: 0 0 10px rgba(255, 45, 120, 0.35);
+    letter-spacing: 0;
+    width: auto;
+    min-width: 48px;
+}
+
+#mobile-movement {
+    -webkit-appearance: none;
+    width: 55%;
+    height: 10vw;
+    max-height: 48px;
+    background: rgba(0, 188, 255, 0.08);
+    border: 1px solid rgba(0, 188, 255, 0.3);
+    border-radius: 4px;
+    outline: none;
+    transition: opacity 0.2s;
+}
+
+#mobile-movement::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 11vw;
+    height: 11vw;
+    max-width: 48px;
+    max-height: 48px;
+    background: var(--color-verde);
+    border-radius: 50%;
+    border: 2px solid var(--color-fondo);
+    box-shadow: 0 0 8px var(--color-verde);
+}
+
+#mobile-movement::-moz-range-thumb {
+    width: 11vw;
+    height: 11vw;
+    background: var(--color-verde);
+    border-radius: 50%;
+    border: 2px solid var(--color-fondo);
+    box-shadow: 0 0 8px var(--color-verde);
+}
+
+input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 188, 255, 0.3);
+}
+
+/* ── Decoración inferior del contenedor del juego ─────────────────────── */
+#game::after {
+    content: "GALAGA // RAPPIBELLION";
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: rgba(0, 188, 255, 0.3);
+    text-align: center;
+    padding: 3px 0;
+    border-top: 1px solid rgba(0, 188, 255, 0.12);
+    pointer-events: none;
+}
