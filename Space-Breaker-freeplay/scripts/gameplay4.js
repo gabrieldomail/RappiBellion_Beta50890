@@ -114,166 +114,85 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
         // ── IFRAME BRIDGE ─────────────────────────────────────────────────
         var _inIframe = (window.self !== window.top);
         if (_inIframe) {
-
-            // Deferir showScreen para que game.js termine initialize() primero
-            setTimeout(function() {
-                if (game && game.showScreen) game.showScreen('game-play');
-            }, 0);
-
-            // ── AUTO-FIRE (mantener = disparo continuo) ────────────────────
-            var _fireHeld     = false;
-            var _fireInterval = null;
-
-            function _startAutoFire() {
-                if (_fireHeld) return;
-                _fireHeld = true;
-                if (!cancelNextRequest && fighter && !fighter.dead && stats.currentTime > 0)
-                    fireTorpedo(fighter, torpedos, stats, sound);
-                _fireInterval = setInterval(function() {
-                    if (!cancelNextRequest && fighter && !fighter.dead && stats.currentTime > 0)
-                        fireTorpedo(fighter, torpedos, stats, sound);
-                }, 120);
-            }
-            function _stopAutoFire() {
-                _fireHeld = false;
-                if (_fireInterval) { clearInterval(_fireInterval); _fireInterval = null; }
+            // Ir directo al canvas, saltar menú
+            if (MyGame.game && MyGame.game.showScreen) {
+                MyGame.game.showScreen('game-play');
             }
 
-            // ── D-PAD dinámico (inyectado en el DOM del iframe) ───────────
-            var _sbDpadLeft  = null;
-            var _sbDpadRight = null;
-
-            function _cleanupControls() {
-                if (_sbDpadLeft)  { _sbDpadLeft.remove();  _sbDpadLeft  = null; }
-                if (_sbDpadRight) { _sbDpadRight.remove(); _sbDpadRight = null; }
-                fighter.mobileMoveVal = 50;
-            }
-
-            function _setupDpad() {
-                _cleanupControls();
-                var gameDiv  = document.getElementById('game') || document.body;
-                var btnBase  = [
-                    'position:absolute','bottom:36px','width:76px','height:76px',
-                    'border-radius:50%','background:rgba(0,188,255,0.13)',
-                    'border:2px solid rgba(0,188,255,0.75)','color:#00BCFF',
-                    'font-size:30px','z-index:50','cursor:pointer','touch-action:none',
-                    '-webkit-tap-highlight-color:transparent',
-                    'display:flex','align-items:center','justify-content:center',
-                    'box-shadow:0 0 12px rgba(0,188,255,0.4)'
-                ].join(';');
-
-                _sbDpadLeft  = document.createElement('button');
-                _sbDpadLeft.style.cssText  = btnBase + ';left:16px';
-                _sbDpadLeft.innerHTML      = '&#9664;';
-
-                _sbDpadRight = document.createElement('button');
-                _sbDpadRight.style.cssText = btnBase + ';right:16px';
-                _sbDpadRight.innerHTML     = '&#9654;';
-
-                gameDiv.appendChild(_sbDpadLeft);
-                gameDiv.appendChild(_sbDpadRight);
-
-                _sbDpadLeft.addEventListener('touchstart',  function(ev) { ev.preventDefault(); fighter.mobileMoveVal = 0;   }, { passive: false });
-                _sbDpadLeft.addEventListener('touchend',    function()   { fighter.mobileMoveVal = 50; });
-                _sbDpadLeft.addEventListener('touchcancel', function()   { fighter.mobileMoveVal = 50; });
-                _sbDpadRight.addEventListener('touchstart',  function(ev) { ev.preventDefault(); fighter.mobileMoveVal = 100; }, { passive: false });
-                _sbDpadRight.addEventListener('touchend',    function()   { fighter.mobileMoveVal = 50; });
-                _sbDpadRight.addEventListener('touchcancel', function()   { fighter.mobileMoveVal = 50; });
-
-                // En dpad: tocar canvas = disparar
-                canvas.addEventListener('touchstart', function(ev) {
-                    ev.preventDefault(); _startAutoFire();
-                }, { passive: false });
-                canvas.addEventListener('touchend', _stopAutoFire);
-            }
-
-            function _setupSwipe() {
-                _cleanupControls();
-                var _sx = null, _moved = false;
-
-                canvas.addEventListener('touchstart', function(ev) {
-                    _sx = ev.touches[0].clientX; _moved = false;
-                    fighter.mobileMoveVal = 50;
-                }, { passive: true });
-
-                canvas.addEventListener('touchmove', function(ev) {
-                    ev.preventDefault();
-                    if (_sx === null) return;
-                    var dx = ev.touches[0].clientX - _sx;
-                    if (Math.abs(dx) > 8) _moved = true;
-                    fighter.mobileMoveVal = Math.max(0, Math.min(100, 50 + dx * 0.35));
-                }, { passive: false });
-
-                canvas.addEventListener('touchend', function() {
-                    // Tap corto sin swipe = disparar
-                    if (!_moved) { _startAutoFire(); setTimeout(_stopAutoFire, 150); }
-                    _sx = null;
-                    fighter.mobileMoveVal = 50;
-                });
-            }
-
-            // ── Teclado: Spacebar = fire ───────────────────────────────────
-            window.addEventListener('keydown', function(ev) {
-                if ((ev.code === 'Space' || ev.key === ' ') && !ev.repeat) {
-                    ev.preventDefault(); _startAutoFire();
-                }
-            });
-            window.addEventListener('keyup', function(ev) {
-                if (ev.code === 'Space' || ev.key === ' ') _stopAutoFire();
-            });
-
-            // ── SCORE_UPDATE cada 250ms ────────────────────────────────────
-            setInterval(function() {
-                if (!cancelNextRequest && stats && stats.score !== undefined)
-                    window.parent.postMessage({ type: 'SCORE_UPDATE', score: stats.score }, '*');
-            }, 250);
-
-            // ── Mensajes del padre ─────────────────────────────────────────
+            // ── Escuchar mensajes del padre ────────────────────────────────
             window.addEventListener('message', function(ev) {
                 var d = ev.data || {};
-
                 if (d.type === 'START_MATCH') {
+                    // Funciona tanto en carga inicial como tras una derrota (menú visible)
                     if (cancelNextRequest) {
                         if (game && game.showScreen) game.showScreen('game-play');
                         run();
                     }
-                    return;
                 }
                 if (d.type === 'MATCH_ENDED') {
                     if (!cancelNextRequest) {
                         cancelNextRequest = true;
                         window.parent.postMessage({ type: 'GAME_OVER', score: stats.score }, '*');
                     }
-                    return;
                 }
-                if (d.type === 'FIRE_START') { _startAutoFire(); return; }
-                if (d.type === 'FIRE_STOP')  { _stopAutoFire();  return; }
+            });
 
-                if (d.type === 'SET_CONTROL') {
-                    if (d.mode === 'dpad')  _setupDpad();
-                    if (d.mode === 'swipe') _setupSwipe();
-                    return;
+            // ── SCORE_UPDATE cada 250ms → padre actualiza HUD ─────────────
+            setInterval(function() {
+                if (!cancelNextRequest && stats && stats.score !== undefined) {
+                    window.parent.postMessage({ type: 'SCORE_UPDATE', score: stats.score }, '*');
                 }
+            }, 250);
 
-                // ATOMIC PULSE: limpia pantalla con explosión masiva
-                if (d.type === 'ATOMIC_PULSE') {
-                    if (enemies && enemies.enemy) {
-                        for (var i = 0; i < enemies.enemy.length; i++) {
-                            var e = enemies.enemy[i];
-                            if (typeof NeonFX !== 'undefined')
-                                NeonFX.bigExplosion(e.center.x, e.center.y, e.type);
-                            addScore(stats, e);
-                        }
-                        enemies.enemy = [];
+            // ── AUTO-SHOOT: disparo continuo mientras el botón esté presionado ──
+            // El botón #mobile-fire del padre manda touchstart/touchend
+            // En desktop: mantener Spacebar apretado
+            var _fireHeld = false;
+            var _fireInterval = null;
+
+            function _startAutoFire() {
+                if (_fireHeld) return; // ya está corriendo
+                _fireHeld = true;
+                fireTorpedo(fighter, torpedos, stats, sound); // disparo inmediato
+                _fireInterval = setInterval(function() {
+                    if (!cancelNextRequest && fighter && !fighter.dead && stats.currentTime > 0) {
+                        fireTorpedo(fighter, torpedos, stats, sound);
                     }
-                    if (typeof NeonFX !== 'undefined') {
-                        NeonFX.flash       = Math.max(NeonFX.flash,       0.92);
-                        NeonFX.screenShake = Math.max(NeonFX.screenShake, 38);
-                        NeonFX.slowmo      = Math.max(NeonFX.slowmo,      220);
-                    }
-                    window.parent.postMessage({ type: 'BOOST_USED' }, '*');
-                    return;
+                }, 120); // disparo cada 120ms mientras está presionado
+            }
+
+            function _stopAutoFire() {
+                _fireHeld = false;
+                if (_fireInterval) { clearInterval(_fireInterval); _fireInterval = null; }
+            }
+
+            // Touch (mobile-fire button del padre via postMessage)
+            window.addEventListener('message', function(ev) {
+                var d = ev.data || {};
+                if (d.type === 'FIRE_START') { _startAutoFire(); }
+                if (d.type === 'FIRE_STOP')  { _stopAutoFire();  }
+            });
+
+            // Teclado: Spacebar en el iframe
+            window.addEventListener('keydown', function(ev) {
+                if ((ev.code === 'Space' || ev.key === ' ') && !ev.repeat) {
+                    ev.preventDefault();
+                    _startAutoFire();
                 }
+            });
+            window.addEventListener('keyup', function(ev) {
+                if (ev.code === 'Space' || ev.key === ' ') {
+                    _stopAutoFire();
+                }
+            });
+
+            // Touch directo sobre el canvas del iframe
+            canvas.addEventListener('touchstart', function(ev) {
+                ev.preventDefault();
+                _startAutoFire();
+            }, { passive: false });
+            canvas.addEventListener('touchend', function() {
+                _stopAutoFire();
             });
         }
     }
@@ -355,13 +274,14 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
 
     function endGame() {
         cancelNextRequest = true;
-        // Iframe: notificar al padre, resetear, mostrar high-scores del canvas
-        // El jugador ve su score y puede reiniciar desde ahí o esperar el veredicto.
+        // Si estamos en iframe: notificar al padre, resetear estado,
+        // y mostrar el menú del canvas para que el jugador pueda reiniciar.
         if (window.self !== window.top) {
             window.parent.postMessage({ type: 'GAME_OVER', score: stats.score }, '*');
-            saveScoreValue(stats.score);
             resetGame();
-            if (game && game.showScreen) game.showScreen('high-scores');
+            // Volver al menú del canvas — el jugador elige "Play Game" para reiniciar.
+            // El score se vuelve a sincronizar automáticamente vía SCORE_UPDATE.
+            if (game && game.showScreen) game.showScreen('main-menu');
             return;
         }
         if (attractMode) {

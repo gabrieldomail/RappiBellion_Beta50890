@@ -1518,7 +1518,33 @@
                     "
                     title="CHAOS_BOMB - Click para activar boost">💣</button>
 
-                <!-- Badge restantes bajo botón boost overlay -->
+                <!-- ATOMIC PULSE — Space-Breaker boost (clone del pac-hack con icon propio) -->
+                <button id="fp-spacebreaker-boost-btn"
+                    onclick="fpFireBoost()"
+                    style="
+                        display: none;
+                        position: absolute;
+                        top: 25%;
+                        right: 12px;
+                        transform: translateY(-50%);
+                        z-index: 10;
+                        background: transparent;
+                        border: none;
+                        padding: 0;
+                        cursor: pointer;
+                        width: 128px;
+                        height: 128px;
+                        border-radius: 50%;
+                        animation: boostHeartbeat 2s ease-in-out infinite;
+                        transition: opacity 0.2s ease;
+                        pointer-events: auto;
+                    "
+                    title="ATOMIC PULSE — Destruye todos los enemigos"
+                ><img src="images/icon-192x192.png"
+                    style="width:100%;height:100%;border-radius:50%;display:block;
+                           filter: drop-shadow(0 0 10px rgba(0,188,255,0.9)) drop-shadow(0 0 24px rgba(0,188,255,0.5));"
+                    alt="ATOMIC PULSE"
+                ></button>
                 <div id="fp-boost-badge" style="
                     display: none;
                     position: absolute;
@@ -2386,28 +2412,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // En mobile mostrar selector de control, en desktop ir directo
         // Space-Breaker: saltar selector — conectar el botón de disparo del overlay
         var _isSpaceBreakerSrc = nextGameSrc && nextGameSrc.indexOf('Space-Breaker') !== -1;
-        if (_isSpaceBreakerSrc) {
-            // Mostrar fire button solo en mobile
-            var _sbFireBtn = document.getElementById('fp-spacebreaker-fire-btn');
-            if (_sbFireBtn && window.innerWidth <= 768) {
-                _sbFireBtn.style.display = 'block';
-                // Enviar FIRE_START/FIRE_STOP al iframe como postMessage
-                _sbFireBtn.addEventListener('touchstart', function(ev) {
-                    ev.preventDefault();
-                    var iframe = document.getElementById('fp-iframe');
-                    if (iframe && iframe.contentWindow) {
-                        iframe.contentWindow.postMessage({ type: 'FIRE_START' }, '*');
-                    }
-                }, { passive: false });
-                _sbFireBtn.addEventListener('touchend', function() {
-                    var iframe = document.getElementById('fp-iframe');
-                    if (iframe && iframe.contentWindow) {
-                        iframe.contentWindow.postMessage({ type: 'FIRE_STOP' }, '*');
-                    }
-                });
-            }
-        }
-        if (window.innerWidth <= 768 && !_isSpaceBreakerSrc) {
+        // Space-Breaker sigue el mismo flujo de control que pac-hack en mobile.
+        // El selector dpad/swipe es válido para ambos juegos.
+        if (window.innerWidth <= 768) {
             // Si ya eligio control antes (restart/revancha), reusar sin mostrar selector
             if (window._fpSavedControlMode) {
                 setTimeout(function() { fpStartWithControl(window._fpSavedControlMode); }, 400);
@@ -2773,20 +2780,31 @@ document.addEventListener('DOMContentLoaded', function() {
          var tetrisBosBtn = null; // button removed from left column, only overlay exists
 
          // Para Tetris: mostrar SOLO el neon, ocultar todo lo demás
-         var isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+         var isTetris       = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher')  !== -1;
+         var isSpcBreaker   = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker')  !== -1;
+         var sbBoostBtn     = document.getElementById('fp-spacebreaker-boost-btn');
 
          if (isTetris) {
              // TETRIS: solo neon
-             if (boostBtn) boostBtn.style.display = 'none';
-             if (tetrisBosBtn) tetrisBosBtn.style.display = 'block';
-             if (overlayBtn) overlayBtn.style.display = 'none';
+             if (boostBtn)       boostBtn.style.display       = 'none';
+             if (tetrisBosBtn)   tetrisBosBtn.style.display   = 'block';
+             if (overlayBtn)     overlayBtn.style.display     = 'none';
              if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'block';
+             if (sbBoostBtn)     sbBoostBtn.style.display     = 'none';
+         } else if (isSpcBreaker) {
+             // SPACE-BREAKER: ATOMIC PULSE
+             if (boostBtn)       boostBtn.style.display       = 'none';
+             if (tetrisBosBtn)   tetrisBosBtn.style.display   = 'none';
+             if (overlayBtn)     overlayBtn.style.display     = 'none';
+             if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'none';
+             if (sbBoostBtn)     sbBoostBtn.style.display     = 'block';
          } else {
              // PAC-HACK: botón normal
-             if (boostBtn) boostBtn.style.display = 'block';
-             if (tetrisBosBtn) tetrisBosBtn.style.display = 'none';
-             if (overlayBtn) overlayBtn.style.display = 'block';
+             if (boostBtn)       boostBtn.style.display       = 'block';
+             if (tetrisBosBtn)   tetrisBosBtn.style.display   = 'none';
+             if (overlayBtn)     overlayBtn.style.display     = 'block';
              if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'none';
+             if (sbBoostBtn)     sbBoostBtn.style.display     = 'none';
          }
 
          // Re-habilitar botones
@@ -3210,21 +3228,27 @@ function fpEndPractice() {
     if (tetrisBtn) tetrisBtn.disabled = true;
     if (overlayBtn) overlayBtn.disabled = true;
     if (tetrisOverlayBtn) tetrisOverlayBtn.disabled = true;
+    var sbBoostBtn = document.getElementById('fp-spacebreaker-boost-btn');
+    if (sbBoostBtn) sbBoostBtn.disabled = true;
 
     // 2. DETECCIÓN DEL JUEGO ACTIVO
-    // Verificamos si la URL del juego cargado contiene "Tetris-Cipher"
-    var isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+    var isTetris      = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+    var isSpaceBreak  = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker') !== -1;
 
-    console.log('[HUD] Ejecutando Boost para: ' + (isTetris ? 'TETRIS-CIPHER' : 'PAC-HACK'));
+    console.log('[HUD] Boost → ' + (isTetris ? 'TETRIS' : (isSpaceBreak ? 'SPACE-BREAKER' : 'PAC-HACK')));
 
     // 3. DISPARO DE EFECTOS VISUALES EN EL PADRE (WEB)
     if (isTetris) {
         // EFECTO TETRIS: Zoom agresivo al iframe
         if (fpIframe) {
             fpIframe.classList.add('fp-chaos-zoom');
-            setTimeout(function() {
-                fpIframe.classList.remove('fp-chaos-zoom');
-            }, 600);
+            setTimeout(function() { fpIframe.classList.remove('fp-chaos-zoom'); }, 600);
+        }
+    } else if (isSpaceBreak) {
+        // EFECTO SPACE-BREAKER: flash cyan + shake del iframe
+        if (fpIframe) {
+            fpIframe.style.boxShadow = '0 0 40px 10px rgba(0,188,255,0.9)';
+            setTimeout(function() { fpIframe.style.boxShadow = ''; }, 500);
         }
     } else {
         // EFECTO PAC-HACK: Flash del Fantasma
@@ -3235,14 +3259,9 @@ function fpEndPractice() {
 
     // 4. COMUNICACIÓN CON EL IFRAME (SISTEMA DE MENSAJES)
     if (fpIframe && fpIframe.contentWindow) {
-        // Enviamos la orden según el juego:
-        // Si es Tetris -> 'CHAOS_BOMB' (Limpia tablero + 500 pts)
-        // Si es Pac-Man -> 'TRIGGER_BOOST' (Asusta fantasmas)
-        var messageType = isTetris ? 'CHAOS_BOMB' : 'TRIGGER_BOOST';
-        
-        fpIframe.contentWindow.postMessage({ 
-            type: messageType 
-        }, '*');
+        var messageType = isTetris     ? 'CHAOS_BOMB'    :
+                          isSpaceBreak ? 'ATOMIC_PULSE'  : 'TRIGGER_BOOST';
+        fpIframe.contentWindow.postMessage({ type: messageType }, '*');
     }
 
     // 5. FEEDBACK VISUAL EN BOTONES (Animación de disparo)
@@ -3292,9 +3311,11 @@ function fpCloseArena() {
         // Limpiar Skynet + SpaceBreaker bg al cerrar
         document.querySelectorAll('.fp-col-skynet').forEach(function(el) { el.classList.remove('fp-col-skynet'); });
         document.querySelectorAll('.fp-col-spacebreaker').forEach(function(el) { el.classList.remove('fp-col-spacebreaker'); });
-        // Ocultar fire button de Space-Breaker
-        var _sbFire = document.getElementById('fp-spacebreaker-fire-btn');
-        if (_sbFire) _sbFire.style.display = 'none';
+        // Ocultar botones específicos de juego
+        var _sbFire  = document.getElementById('fp-spacebreaker-fire-btn');
+        var _sbBoost = document.getElementById('fp-spacebreaker-boost-btn');
+        if (_sbFire)  _sbFire.style.display  = 'none';
+        if (_sbBoost) _sbBoost.style.display = 'none';
         document.querySelectorAll('.fp-col-spacebreaker').forEach(function(el) { el.classList.remove('fp-col-spacebreaker'); });
         // Reset faq-panel position
         var faqPanel = document.getElementById('fp-faq-panel');
@@ -3678,6 +3699,11 @@ function fpCloseArena() {
             if (tetrisOverlayBtn) {
                 tetrisOverlayBtn.disabled = bRemain <= 0;
                 tetrisOverlayBtn.style.opacity = bRemain <= 0 ? '0.3' : '1';
+            }
+            var sbBoostOverlay = document.getElementById('fp-spacebreaker-boost-btn');
+            if (sbBoostOverlay) {
+                sbBoostOverlay.disabled = bRemain <= 0;
+                sbBoostOverlay.style.opacity = bRemain <= 0 ? '0.3' : '1';
             }
             var boostBadge = document.getElementById('fp-boost-badge');
             if (boostBadge) {
