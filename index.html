@@ -1294,15 +1294,14 @@
         
         <!-- Header -->
         <div style="background: rgba(255, 255, 255, 0.9); border-bottom: 1px solid rgba(255, 215, 0, 0.5); display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;">
-            <span style="color: #b8860b; font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);">TIMBER ZEUS</span>
+            <span style="flex-grow: 1; color: #b8860b; font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);">TIMBER ZEUS BETA</span>
             <button onclick="document.getElementById('zeus-promo-window').style.display='none'" style="background: none; border: none; color: #b8860b; font-size: 18px; cursor: pointer; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);">✕</button>
         </div>
         
         <!-- Body -->
         <div style="padding: 24px 20px; text-align: center;">
             <!-- Icono resplandeciente -->
-            <img src="/images/timberzeus.png" alt="TIMBER ZEUS" style="width: 75px; height: 75px; margin: 0 auto 16px; border-radius: 50%; box-shadow: 0 0 25px #ffd700, 0 0 40px rgba(135, 206, 235, 0.6); border: 2px solid #ffd700; object-fit: cover;">
-            </div>
+            <img src="/images/timberzeus.png" alt="TIMBER ZEUS" style="width: 100%; max-width: 240px; height: auto; display: block; margin: 0 auto 16px; border-radius: 8px; box-shadow: 0 0 25px #ffd700, 0 0 40px rgba(135, 206, 235, 0.6); border: 2px solid #ffd700; object-fit: contain;">
             
             <p style="color: #333; font-size: 13px; margin-bottom: 20px; font-weight: 500; line-height: 1.4;">
                 El poder del Olimpo en el Circuito.<br>
@@ -9193,18 +9192,32 @@ Q1 2026 — ● EN PROGRESO:
 Q2 2026 — // PENDIENTE:
   Capítulo II: "Who, where or when is Rappia?" — implementación de economía T2E completa.
 
-══════════════════════════════════════════════
- JUEGOS DISPONIBLES EN T2E
-══════════════════════════════════════════════
+═════════════════════════════════════════════
+ JUEGOS DISPONIBLES EN FREEPLAY
+═════════════════════════════════════════════
 • PAC-HACK: DEATH — duelo PvP arcade cyberpunk. Dos jugadores compiten en tiempo real.
 • TETRIS CIPHER — modo T2E disponible. El BOOST (botón 💣) elimina todos los ladrillos del tablero y suma 500 puntos extra.
+• SPACE BREAKER (Beta Freeplay) — Space Invaders cyberpunk. DISPONIBLE AHORA con boost "My Time To Be A Star" (homenaje a Robotech/Macross con canción de Lynn Minmay). Próximamente integrado en T2E completo.
 
-══════════════════════════════════════════════
- PRÓXIMAMENTE
-══════════════════════════════════════════════
-• SPACE BREAKER (Space Invaders style) — Beta disponible el 04/05/2026. Shooter clásico con mecánicas T2E.
+═════════════════════════════════════════════
+ TIMBER ZEUS — BETA FREEPLAY DISPONIBLE
+═════════════════════════════════════════════
+Slot machine temática Zeus/Olimpo. MODE FREE PLAY ACTIVO.
+Acceso directo: botón "MUNDO DIVINO - RTP TIMBER ZEUS" en la página principal.
+Estado: Beta gratuito (sin apuestas), en desarrollo.
+Integración T2E: En progreso, fecha adelantada.
+RTP: alto. Volatilidad: media-alta.
+Bonos: free spins, multiplicadores, thunder bonus.
+Posicionamiento: "Juega gratis ahora, apuesta cuando quieras". Transición suave freeplay → T2E.
+Se oculta automáticamente cuando entrás a una arena (modo juego).
 
-══════════════════════════════════════════════
+═════════════════════════════════════════════
+ PRÓXIMAMENTE (INTEGRACIÓN T2E)
+═════════════════════════════════════════════
+• TIMBER ZEUS T2E — apuestas $RPPI (fecha adelantada).
+• SPACE BREAKER T2E — integración completa con sistema de apuestas (fecha TBD).
+
+═══════════════════════════════════════════════
  EL EQUIPO (LA RESISTENCIA)
 ═══════════════════════════════════════════════
 Gabriel C. Dominguez — Director Estratégico / Diseño Gráfico
@@ -9217,7 +9230,7 @@ Sagai Rebelbet — Estrategia de Marketing / IA
   "El P2E es código roto. El T2E es el parche que la industria necesita." Analiza el mercado y traduce la visión en mensaje.
 
 Mama Cora — Analista y Organizadora de Proyectos
-  "Vanguardia desde la historia hasta la economía." Mantiene la estructura de la rebelión.
+  "Vanguardia desde la historia hasta la economía."
 
 legion_beta — Ministro de Economía / Director del Banco Central de Rappia
   "Mi trabajo es hackear el dinero fiat basura." Diseña la economía $RPPI atada al US02Y.
@@ -9236,7 +9249,9 @@ Cupo abierto: buscan 3 rebeldes para el staff (1 por mes). Aplicar en info@rappi
 ¿Necesito MetaMask? → Sí, para conectar wallet y apostar. Sin MetaMask solo podés jugar en modo gratuito.
 ¿Discord? → https://discord.gg/3zBrPVn7
 ¿Qué es Tetris Cipher T2E? → La versión competitiva del Tetris clásico con apuestas. Tenés 3 BOOSTs gratis en modo Freeplay. En T2E apostás $RPPI y el BOOST elimina todas las piezas del tablero (+500 pts).
-¿ Cuando sale Space Breaker? → Beta el 04/05/2026. Es un Space Invaders con sistema T2E.
+¿Cuándo sale Space Breaker? → Beta el 04/05/2026. Es un Space Invaders con sistema T2E.
+¿TIMBER ZEUS está disponible? → Sí, en modo demo gratuito (freeplay). Accede desde el botón "MUNDO DIVINO" en la página principal.
+¿TIMBER ZEUS T2E cuándo? → En desarrollo, fecha adelantada — pronto podrás apostar $RPPI.
 
 ═══════════════════════════════════════════════
  TECH STACK (POR SI TE PREGUNTAN)
@@ -9268,19 +9283,14 @@ CÓMO CARGAR USDT (cualquier usuario nuevo):
   1. Instalás MetaMask (extensión Chrome o app mobile)
   2. Entrás a portfolio.metamask.io → sección "Buy"
   3. Seleccionás USDT en red Optimism
-  4. Elegís on-ramp: MoonPay o Transak (integrados nativos en MetaMask Portfolio)
-  5. Primera vez: validación KYC (~5 minutos, documento + selfie)
-  6. Ingresás el monto en ARS (o USD/EUR) — ves el tipo de cambio en tiempo real
-  7. Pagás con tarjeta de crédito/débito o transferencia bancaria
-  8. USDT llega a tu wallet → ya podés apostar en El Circuito
+  4. Comprás con tarjeta o transferencia bancaria
+  5. Los USDT llegan a tu wallet en minutos
 
-MERCADO PAGO — LATAM:
-  Widget especial en la web para usuarios de Argentina y LATAM.
-  Botón "MÉTODO DE PAGO // LATAM" abre un modal explicativo paso a paso.
-  No es integración directa de MP al juego — es un onboarding educativo para que el usuario sepa cómo convertir ARS → USDT usando Mercado Pago como origen de fondos (tarjeta MP → MoonPay/Transak → USDT).
-  Sin necesidad de cuenta de exchange. Sin afiliados. Directo desde MetaMask Portfolio.
-
-Si alguien pregunta cómo pagar en ARS, explicales el flujo completo de arriba con actitud pero claro.`;
+═══════════════════════════════════════════════
+ SOPORTE Y COMUNIDAD
+═══════════════════════════════════════════════
+¿Necesitás ayuda? Usá el botón de chat (abajo a la izquierda) o escribí a info@rappibellion.com
+https://discord.gg/3zBrPVn7`;
 
 
 
@@ -10127,6 +10137,7 @@ Si alguien pregunta cómo pagar en ARS, explicales el flujo completo de arriba c
     body.arena-open #fp-fab-reopen-tetris,
     body.arena-open #fp-fab-reopen-space,
     body.arena-open #lamp-flicker-btn,
+    body.arena-open #zeus-promo-window,
     body.arena-open #pwa-install-btn { display: none !important; }
 </style>
 
