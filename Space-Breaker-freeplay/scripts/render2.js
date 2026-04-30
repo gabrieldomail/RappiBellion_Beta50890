@@ -428,96 +428,13 @@ MyGame.graphics = (function() {
         if (!fighter.img.isReady || fighter.dead) return;
 
         ctx.save();
-
-        // ── ATOMIC IMMUNITY: efecto dorado + glitch durante el boost ─────
-        if (fighter.atomicImmune && fighter.atomicImmune > 0) {
-            var t       = Date.now();
-            var phase   = (t % 600) / 600;          // 0-1 ciclo lento
-            var fastPhase = (t % 120) / 120;         // 0-1 ciclo rápido (parpadeo)
-            var glitchPhase = (t % 80)  / 80;        // 0-1 ultra rápido (glitch)
-
-            // ── Parpadeo dorado: alpha oscila entre 0.6 y 1.0 ────────────
-            ctx.globalAlpha = 0.62 + Math.sin(fastPhase * Math.PI * 2) * 0.38;
-
-            // ── Glow multicapa exagerado ───────────────────────────────────
-            // Capa 1: halo dorado gigante
-            ctx.shadowColor = '#FFD700';
-            ctx.shadowBlur  = 55 + Math.sin(phase * Math.PI * 2) * 25;
-            drawTexture(fighter.img, fighter.center, 0, fighter.size);
-
-            // Capa 2: borde negro pulsante (degradado dorado/negro)
-            ctx.shadowColor = 'rgba(0,0,0,0.9)';
-            ctx.shadowBlur  = 18;
-            ctx.globalAlpha = 0.35 + Math.cos(fastPhase * Math.PI * 2) * 0.25;
-            drawTexture(fighter.img, fighter.center, 0, fighter.size);
-
-            // Capa 3: glow blanco central en el pico del parpadeo
-            if (fastPhase < 0.18) {
-                ctx.shadowColor = 'rgba(255,255,220,0.95)';
-                ctx.shadowBlur  = 30;
-                ctx.globalAlpha = (0.18 - fastPhase) / 0.18;
-                drawTexture(fighter.img, fighter.center, 0, fighter.size);
-            }
-
-            // ── Efecto GLITCH: desplazamiento horizontal aleatorio ─────────
-            if (glitchPhase < 0.22) {
-                var glitchX = (Math.random() - 0.5) * 18;
-                var glitchY = (Math.random() - 0.5) * 6;
-                // Copia desplazada en cyan (canal izquierdo)
-                ctx.globalAlpha = 0.55;
-                ctx.shadowColor = NeonFX.COL.primario;
-                ctx.shadowBlur  = 12;
-                drawTexture(fighter.img,
-                    { x: fighter.center.x + glitchX, y: fighter.center.y + glitchY },
-                    0, fighter.size);
-                // Copia desplazada en rosa (canal derecho)
-                ctx.shadowColor = NeonFX.COL.rosa;
-                drawTexture(fighter.img,
-                    { x: fighter.center.x - glitchX, y: fighter.center.y - glitchY },
-                    0, fighter.size);
-            }
-
-            // ── Anillo orbitante de sparks dorados ────────────────────────
-            if (NeonFX && Math.random() < 0.45) {
-                var orbitAngle = (t % 1800) / 1800 * Math.PI * 2;
-                var orbitR     = fighter.size.width * 0.72;
-                NeonFX.particles.push({
-                    x: fighter.center.x + Math.cos(orbitAngle) * orbitR,
-                    y: fighter.center.y + Math.sin(orbitAngle) * orbitR * 0.55,
-                    vx: (Math.random()-0.5)*0.12,
-                    vy: (Math.random()-0.5)*0.12,
-                    kind: 'spark', life: 220, maxLife: 220,
-                    color: Math.random() < 0.5 ? '#FFD700' : '#FFF8A0',
-                    size: 2.5 + Math.random()*2,
-                    rot: 0, vr: 0
-                });
-                // segundo spark en el lado opuesto
-                NeonFX.particles.push({
-                    x: fighter.center.x + Math.cos(orbitAngle + Math.PI) * orbitR,
-                    y: fighter.center.y + Math.sin(orbitAngle + Math.PI) * orbitR * 0.55,
-                    vx: (Math.random()-0.5)*0.12,
-                    vy: (Math.random()-0.5)*0.12,
-                    kind: 'spark', life: 180, maxLife: 180,
-                    color: '#FF9500',
-                    size: 2 + Math.random()*2,
-                    rot: 0, vr: 0
-                });
-            }
-
-        // ── INVULNERABILIDAD NORMAL: blink suave ──────────────────────────
-        } else if (fighter.invulnerableTimer > 0 && Math.floor(Date.now() / 80) % 2 === 0) {
+        // Blink: visible cada 80ms durante invulnerabilidad
+        if (fighter.invulnerableTimer > 0 && Math.floor(Date.now() / 80) % 2 === 0) {
             ctx.globalAlpha = 0.35;
-            ctx.shadowColor = NeonFX.COL.primario;
-            ctx.shadowBlur  = 20;
-            drawTexture(fighter.img, fighter.center, 0, fighter.size);
-
-        // ── NORMAL: glow cyan base ────────────────────────────────────────
-        } else {
-            ctx.shadowColor = NeonFX.COL.primario;
-            ctx.shadowBlur  = 20;
-            drawTexture(fighter.img, fighter.center, 0, fighter.size);
         }
-
+        ctx.shadowColor = NeonFX.COL.primario;
+        ctx.shadowBlur  = 20;
+        drawTexture(fighter.img, fighter.center, 0, fighter.size);
         ctx.restore();
     }
 

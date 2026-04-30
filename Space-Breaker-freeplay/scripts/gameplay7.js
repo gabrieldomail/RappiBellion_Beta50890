@@ -72,7 +72,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
         backgroundStars = { stars: [] };
 
         fighter = { lives: 3, img: images.loadFighter(), center: { x: 600, y: 1470 }, size: { width: 80, height: 80 }, dead: false, deadTimer: 0, 
-            invulnerableTimer: 1000, mobileMoveVal: 50, atomicImmune: 0};
+            invulnerableTimer: 1000, mobileMoveVal: 50};
 
         torpedos = { friendly: [], enemy: [], img1: images.loadTorpedo1(), img2: images.loadTorpedo2(), size: {width: 15, height: 40}, noLimit: true};
 
@@ -290,288 +290,100 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                     return;
                 }
 
-                // ATOMIC PULSE: limpia pantalla con explosión masiva
-                // ═══════════════════════════════════════════════════════
-                // ATOMIC PULSE — ITANO CIRCUS TRIBUTE
-                // Sincronizado con los ~15s de atomic-robotech.mp3
-                // ═══════════════════════════════════════════════════════
+                // ATOMIC PULSE: lluvia de misiles + destrucción total de enemigos
                 if (d.type === 'ATOMIC_PULSE') {
                     var _nfx = (typeof NeonFX !== 'undefined') ? NeonFX : null;
-                    var W_c  = canvas.width;
-                    var H_c  = canvas.height;
 
-                    // ── INMUNIDAD: 15 segundos exactos (duración del audio) ──
-                    fighter.atomicImmune = 15000;
-                    // También setear invulnerableTimer para que no quede solapado
-                    fighter.invulnerableTimer = 0;
-
-                    // Colores Rappibellion + Macross
-                    var MC = {
-                        cyan:   '#00BCFF',
-                        verde:  '#00FF41',
-                        oro:    '#FFD700',
-                        rosa:   '#FF2D78',
-                        blanco: '#E8FFFF',
-                        rojo:   '#FF2E4A'
-                    };
-                    var palette = [MC.cyan, MC.verde, MC.oro, MC.rosa, MC.cyan, MC.verde, MC.blanco];
-
-                    // ── helper: crear partícula NeonFX ────────────────────
-                    function _ap(x,y,vx,vy,kind,life,col,size) {
-                        return { x:x, y:y, vx:vx, vy:vy, kind:kind,
-                                 life:life, maxLife:life, color:col, size:size,
-                                 rot:Math.random()*Math.PI*2, vr:(Math.random()-0.5)*0.06 };
-                    }
-
-                    // ── helper: misil NeonFX de arriba hacia abajo ────────
-                    function _spawnMissile(xPos, col, speed) {
-                        if (!_nfx) return;
-                        var startY  = -30;
-                        var steps   = Math.floor(H_c / (speed * 16));
-                        var yNow    = startY;
-                        var tick    = 0;
-                        var iv = setInterval(function() {
-                            yNow += speed * 16;
-                            tick++;
-                            if (yNow > H_c + 80 || tick > 180) { clearInterval(iv); return; }
-                            // cabeza del misil
-                            _nfx.particles.push(_ap(xPos, yNow, (Math.random()-0.5)*0.08, speed*0.1,
-                                'spark', 90, MC.blanco, 4));
-                            // cuerpo del misil (trail)
-                            _nfx.particles.push(_ap(xPos+(Math.random()-0.5)*4, yNow+12,
-                                (Math.random()-0.5)*0.05, speed*0.05,
-                                'engine', 140, col, 7+Math.random()*4));
-                            // exhaust
-                            _nfx.particles.push(_ap(xPos+(Math.random()-0.5)*6, yNow+26,
-                                (Math.random()-0.5)*0.12, -0.04,
-                                'fire', 160, col, 10+Math.random()*6));
-                        }, 16);
-                        return iv;
-                    }
-
-                    // ── helper: misil en ESPIRAL (Itano Circus) ──────────
-                    function _spawnSpiralMissile(cx, cy, angleDeg, speed, col) {
-                        if (!_nfx) return;
-                        var rad   = angleDeg * Math.PI / 180;
-                        var vx    = Math.cos(rad) * speed;
-                        var vy    = Math.sin(rad) * speed;
-                        var x = cx, y = cy;
-                        var tick  = 0;
-                        // curva espiral: aceleramos ángulo con el tiempo
-                        var iv = setInterval(function() {
-                            tick++;
-                            rad += 0.04; // rotación continua = espiral
-                            vx = Math.cos(rad) * speed * (1 + tick * 0.012);
-                            vy = Math.sin(rad) * speed * (1 + tick * 0.012);
-                            x += vx * 16;
-                            y += vy * 16;
-                            if (x < -100 || x > W_c+100 || y < -100 || y > H_c+100 || tick > 160) {
-                                clearInterval(iv); return;
-                            }
-                            _nfx.particles.push(_ap(x, y, vx*0.1, vy*0.1, 'spark',  80, MC.blanco, 3));
-                            _nfx.particles.push(_ap(x, y, (Math.random()-0.5)*0.3, (Math.random()-0.5)*0.3,
-                                'engine', 130, col, 8+Math.random()*4));
-                        }, 16);
-                        return iv;
-                    }
-
-                    // ── helper: shockwave en punto ────────────────────────
-                    function _sw(x, y, maxR, col, life) {
-                        if (!_nfx) return;
-                        _nfx.shockwaves.push({ x:x, y:y, r:10, maxR:maxR,
-                            life:life, maxLife:life, color:col });
-                    }
-
-                    // ══════════════════════════════════════════════════════
-                    // FASE 0 — Destello inicial (0ms)
-                    // ══════════════════════════════════════════════════════
+                    // 1. BARRAGE: inyectar misiles visuales en el canvas como torpedos
+                    //    Usamos NeonFX para spawn de trails densos desde arriba
                     if (_nfx) {
-                        _nfx.flash       = 0.95;
-                        _nfx.screenShake = 45;
-                        _sw(W_c/2, H_c/2, 600, MC.cyan,  700);
-                        _sw(W_c/2, H_c/2, 420, MC.verde, 500);
-                        _sw(W_c/2, H_c/2, 280, MC.oro,   380);
+                        var W_c = canvas.width, H_c = canvas.height;
+                        var missileCount = 32;
+                        var launched = 0;
+
+                        (function launchWave() {
+                            if (launched >= missileCount) return;
+                            var cols = 8; // 8 misiles por oleada
+                            for (var m = 0; m < cols && launched < missileCount; m++, launched++) {
+                                (function(mi) {
+                                    var xPos = (mi / cols) * W_c + (Math.random() - 0.5) * (W_c / cols);
+                                    xPos = Math.max(30, Math.min(W_c - 30, xPos));
+                                    var delay = mi * 18; // escalonar cada misil dentro de la oleada
+                                    setTimeout(function() {
+                                        // Simular misil como serie de trail particles cayendo de arriba
+                                        var yStart = -20;
+                                        var yStep  = 0;
+                                        var trailInterval = setInterval(function() {
+                                            yStep += 55;
+                                            if (yStep > H_c + 60) { clearInterval(trailInterval); return; }
+                                            // Neon trail del misil
+                                            _nfx.particles.push({
+                                                x: xPos + (Math.random()-0.5)*6,
+                                                y: yStart + yStep,
+                                                vx: (Math.random()-0.5)*0.05,
+                                                vy: 0.5 + Math.random()*0.4,
+                                                kind: 'engine',
+                                                life: 120, maxLife: 120,
+                                                color: (mi % 3 === 0) ? '#00BCFF' : (mi % 3 === 1) ? '#00FF41' : '#FFD700',
+                                                size: 7 + Math.random()*5,
+                                                rot: 0, vr: 0
+                                            });
+                                            // punta del misil (spark blanco)
+                                            _nfx.particles.push({
+                                                x: xPos, y: yStart + yStep - 12,
+                                                vx: 0, vy: 0.3,
+                                                kind: 'spark',
+                                                life: 80, maxLife: 80,
+                                                color: '#ffffff',
+                                                size: 3, rot: 0, vr: 0
+                                            });
+                                        }, 20);
+                                        // El misil tarda ~420ms en cruzar el canvas
+                                        setTimeout(function() { clearInterval(trailInterval); }, 440);
+                                    }, delay);
+                                })(m);
+                            }
+                            // Siguiente oleada a los 120ms
+                            if (launched < missileCount) {
+                                setTimeout(launchWave, 120);
+                            }
+                        })();
                     }
 
-                    // Destruir enemigos actuales — escalonado rápido
-                    var _ec0 = enemies && enemies.enemy ? enemies.enemy.slice() : [];
-                    _ec0.forEach(function(e, i) {
-                        setTimeout(function() {
-                            if (_nfx) _nfx.bigExplosion(e.center.x, e.center.y, e.type);
-                            addScore(stats, e);
-                        }, i * 40);
-                    });
-                    if (enemies) enemies.enemy = [];
-
-                    // ══════════════════════════════════════════════════════
-                    // FASE 1 — Primera oleada de misiles (150ms)
-                    // 12 misiles en columnas uniformes
-                    // ══════════════════════════════════════════════════════
+                    // 2. DESTRUCCIÓN: detonar cada enemigo con delay escalonado
+                    //    (empieza 150ms después del barrage para efecto de "impacto")
+                    var _enemyCopy = enemies && enemies.enemy ? enemies.enemy.slice() : [];
                     setTimeout(function() {
-                        for (var m = 0; m < 12; m++) {
-                            (function(mi) {
-                                var x   = (mi / 12) * W_c + (Math.random()-0.5) * (W_c/14);
-                                var col = palette[mi % palette.length];
-                                var spd = 0.8 + Math.random() * 0.5;
-                                setTimeout(function() { _spawnMissile(x, col, spd); }, mi * 35);
-                            })(m);
+                        for (var i = 0; i < _enemyCopy.length; i++) {
+                            (function(e, idx) {
+                                setTimeout(function() {
+                                    if (_nfx) _nfx.bigExplosion(e.center.x, e.center.y, e.type);
+                                    addScore(stats, e);
+                                }, idx * 55); // explotan escalonados cada 55ms
+                            })(_enemyCopy[i], i);
+                        }
+                        if (enemies) enemies.enemy = [];
+
+                        // Efectos globales al final del barrage
+                        if (_nfx) {
+                            setTimeout(function() {
+                                _nfx.flash       = Math.max(_nfx.flash,       0.95);
+                                _nfx.screenShake = Math.max(_nfx.screenShake, 42);
+                                _nfx.slowmo      = Math.max(_nfx.slowmo,      260);
+                                // Shockwave gigante central
+                                _nfx.shockwaves.push({
+                                    x: canvas.width / 2, y: canvas.height / 2,
+                                    r: 10, maxR: canvas.width * 0.8,
+                                    life: 900, maxLife: 900, color: '#00BCFF'
+                                });
+                                _nfx.shockwaves.push({
+                                    x: canvas.width / 2, y: canvas.height / 2,
+                                    r: 10, maxR: canvas.width * 0.55,
+                                    life: 650, maxLife: 650, color: '#00FF41'
+                                });
+                            }, _enemyCopy.length * 55 + 80);
                         }
                     }, 150);
-
-                    // ══════════════════════════════════════════════════════
-                    // FASE 2 — Itano Circus espiral (1200ms)
-                    // 16 misiles en espiral desde el centro-superior
-                    // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
-                        if (!_nfx) return;
-                        var cx = W_c / 2, cy = H_c * 0.18;
-                        _sw(cx, cy, 350, MC.cyan, 600);
-                        _nfx.flash = 0.55;
-                        for (var s = 0; s < 16; s++) {
-                            (function(si) {
-                                var deg = (si / 16) * 360;
-                                var col = palette[si % palette.length];
-                                setTimeout(function() {
-                                    _spawnSpiralMissile(cx, cy, deg, 0.55 + Math.random()*0.3, col);
-                                }, si * 50);
-                            })(s);
-                        }
-                    }, 1200);
-
-                    // ══════════════════════════════════════════════════════
-                    // FASE 3 — Segunda oleada densa (2600ms)
-                    // 18 misiles, velocidades mixtas
-                    // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
-                        for (var m = 0; m < 18; m++) {
-                            (function(mi) {
-                                var x   = Math.random() * W_c;
-                                var col = palette[mi % palette.length];
-                                var spd = 0.6 + Math.random() * 0.9;
-                                setTimeout(function() { _spawnMissile(x, col, spd); }, mi * 28);
-                            })(m);
-                        }
-                        if (_nfx) { _nfx.screenShake = 30; _nfx.flash = 0.42; }
-                    }, 2600);
-
-                    // ══════════════════════════════════════════════════════
-                    // FASE 4 — Shockwaves en cascada (4000ms)
-                    // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
-                        if (!_nfx) return;
-                        var pts = [
-                            [W_c*0.2, H_c*0.25], [W_c*0.8, H_c*0.25],
-                            [W_c*0.5, H_c*0.15], [W_c*0.35,H_c*0.40],
-                            [W_c*0.65,H_c*0.40]
-                        ];
-                        pts.forEach(function(pt, i) {
-                            setTimeout(function() {
-                                _sw(pt[0], pt[1], 280, palette[i % palette.length], 500);
-                                // spark burst en cada punto
-                                for (var k = 0; k < 18; k++) {
-                                    var a = (k/18)*Math.PI*2;
-                                    _nfx.particles.push(_ap(
-                                        pt[0], pt[1],
-                                        Math.cos(a)*0.9, Math.sin(a)*0.9,
-                                        'spark', 400, palette[i % palette.length], 3+Math.random()*3
-                                    ));
-                                }
-                            }, i * 140);
-                        });
-                    }, 4000);
-
-                    // ══════════════════════════════════════════════════════
-                    // FASE 5 — Tercer barrage (espejo del primero) (5800ms)
-                    // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
-                        for (var m = 0; m < 16; m++) {
-                            (function(mi) {
-                                var x   = (mi / 16) * W_c;
-                                var col = palette[(mi + 3) % palette.length];
-                                var spd = 1.0 + Math.random() * 0.6;
-                                setTimeout(function() { _spawnMissile(x, col, spd); }, mi * 30);
-                            })(m);
-                        }
-                        if (_nfx) { _nfx.flash = 0.35; _nfx.screenShake = 20; }
-                    }, 5800);
-
-                    // ══════════════════════════════════════════════════════
-                    // FASE 6 — Segundo Itano Circus (7500ms)
-                    // Doble espiral desde las esquinas
-                    // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
-                        if (!_nfx) return;
-                        var origins = [[W_c*0.25, H_c*0.12], [W_c*0.75, H_c*0.12]];
-                        origins.forEach(function(o, oi) {
-                            _sw(o[0], o[1], 250, palette[oi*2], 500);
-                            for (var s = 0; s < 10; s++) {
-                                (function(si) {
-                                    var deg = (si/10)*360 + oi*180;
-                                    var col = palette[(si + oi*3) % palette.length];
-                                    setTimeout(function() {
-                                        _spawnSpiralMissile(o[0], o[1], deg, 0.5+Math.random()*0.4, col);
-                                    }, si * 60);
-                                })(s);
-                            }
-                        });
-                        _nfx.flash = 0.5;
-                        _nfx.screenShake = 25;
-                    }, 7500);
-
-                    // ══════════════════════════════════════════════════════
-                    // FASE 7 — Clímax final (10000ms)
-                    // Enemies nuevos del stage siguiente también explotan
-                    // + barrage máximo densidad
-                    // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
-                        if (!_nfx) return;
-
-                        // Barrage final: 24 misiles muy rápidos
-                        for (var m = 0; m < 24; m++) {
-                            (function(mi) {
-                                var x   = Math.random() * W_c;
-                                var col = palette[mi % palette.length];
-                                var spd = 1.3 + Math.random() * 0.8;
-                                setTimeout(function() { _spawnMissile(x, col, spd); }, mi * 18);
-                            })(m);
-                        }
-
-                        // Shockwaves concéntricas finales desde el centro
-                        setTimeout(function() {
-                            _sw(W_c/2, H_c/2, 700, MC.cyan,  1000);
-                            _sw(W_c/2, H_c/2, 520, MC.verde,  800);
-                            _sw(W_c/2, H_c/2, 360, MC.oro,    650);
-                            _sw(W_c/2, H_c/2, 200, MC.rosa,   500);
-                            _nfx.flash       = 0.98;
-                            _nfx.screenShake = 55;
-                            _nfx.slowmo      = 300;
-                            // Explosiones en las 4 esquinas del área de juego
-                            [[150,150],[W_c-150,150],[150,H_c-200],[W_c-150,H_c-200],
-                             [W_c/2,H_c/2]].forEach(function(pt) {
-                                _nfx.bigExplosion(pt[0], pt[1], 'boss');
-                            });
-                        }, 480);
-                    }, 10000);
-
-                    // ══════════════════════════════════════════════════════
-                    // FASE 8 — Fade out (13500ms)
-                    // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
-                        if (!_nfx) return;
-                        _nfx.flash = 0.25;
-                        // Última onda suave de despedida
-                        _sw(W_c/2, H_c/2, 400, MC.cyan, 1200);
-                        // Sparks flotantes finales
-                        for (var k = 0; k < 30; k++) {
-                            var a = (k/30)*Math.PI*2;
-                            _nfx.particles.push(_ap(
-                                W_c/2 + Math.cos(a)*200,
-                                H_c/2 + Math.sin(a)*200,
-                                Math.cos(a)*0.2, Math.sin(a)*0.2,
-                                'spark', 1200, palette[k % palette.length], 2+Math.random()*3
-                            ));
-                        }
-                    }, 13500);
 
                     window.parent.postMessage({ type: 'BOOST_USED' }, '*');
                     return;
@@ -588,7 +400,6 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
         fighter.dead = false;
         fighter.deadTime = 0;
         fighter.invulnerableTimer = 1000;
-        fighter.atomicImmune = 0;
         torpedos.friendly = [];
         torpedos.enemy = [];
 

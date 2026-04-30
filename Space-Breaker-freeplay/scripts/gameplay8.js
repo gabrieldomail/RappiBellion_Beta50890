@@ -72,7 +72,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
         backgroundStars = { stars: [] };
 
         fighter = { lives: 3, img: images.loadFighter(), center: { x: 600, y: 1470 }, size: { width: 80, height: 80 }, dead: false, deadTimer: 0, 
-            invulnerableTimer: 1000, mobileMoveVal: 50, atomicImmune: 0};
+            invulnerableTimer: 1000, mobileMoveVal: 50};
 
         torpedos = { friendly: [], enemy: [], img1: images.loadTorpedo1(), img2: images.loadTorpedo2(), size: {width: 15, height: 40}, noLimit: true};
 
@@ -297,13 +297,8 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                 // ═══════════════════════════════════════════════════════
                 if (d.type === 'ATOMIC_PULSE') {
                     var _nfx = (typeof NeonFX !== 'undefined') ? NeonFX : null;
-                    var W_c  = canvas.width;
-                    var H_c  = canvas.height;
-
-                    // ── INMUNIDAD: 15 segundos exactos (duración del audio) ──
-                    fighter.atomicImmune = 15000;
-                    // También setear invulnerableTimer para que no quede solapado
-                    fighter.invulnerableTimer = 0;
+                    var W_c  = canvas.width;   // 1200
+                    var H_c  = canvas.height;  // 1600
 
                     // Colores Rappibellion + Macross
                     var MC = {
@@ -588,7 +583,6 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
         fighter.dead = false;
         fighter.deadTime = 0;
         fighter.invulnerableTimer = 1000;
-        fighter.atomicImmune = 0;
         torpedos.friendly = [];
         torpedos.enemy = [];
 

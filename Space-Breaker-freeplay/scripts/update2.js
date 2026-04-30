@@ -62,18 +62,6 @@ function updateTime(elapsedTime, stats, fighter) {
             NeonFX.spawnEngineTrail(fighter.center.x, fighter.center.y);
         }
     }
-
-    // ── ATOMIC IMMUNITY timer ─────────────────────────────────────────────
-    if (fighter.atomicImmune && fighter.atomicImmune > 0) {
-        fighter.atomicImmune -= elapsedTime;
-        if (fighter.atomicImmune <= 0) {
-            fighter.atomicImmune = 0;
-            // Al terminar: flash suave de fin de inmunidad
-            if (typeof NeonFX !== 'undefined') {
-                NeonFX.flash = Math.max(NeonFX.flash, 0.18);
-            }
-        }
-    }
 }
 
 function updateBackgroundStars(elapsedTime, backgroundStars) {
@@ -304,11 +292,6 @@ function moveFighterRight(fighter, value) {
 }
 
 function checkCollisions(torpedos, fighter, enemies, stats, particles, sound) {
-    // Durante ATOMIC IMMUNITY el fighter es intocable
-    if (fighter.atomicImmune && fighter.atomicImmune > 0) {
-        checkEnemyCollision(torpedos, enemies, stats, particles, sound);
-        return;
-    }
     if (fighter.invulnerableTimer <= 0 && !fighter.dead) {
         checkFighterCollision(torpedos, fighter, enemies, particles, sound);
     }
