@@ -564,7 +564,7 @@
                             <span>MUNDO 3: CÓDIGO</span>
                             PLAY THE CODE (Binary Reunion)
                         </a>
-<a href="#" onclick="document.getElementById('zeus-promo-window').style.display='block'; return false;" class="hero-button" style="background: linear-gradient(135deg, #ffffff, #e0f7fa); border: 2px solid #ffd700; color: #b8860b; box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);"><span style="color: #87ceeb; text-shadow: none;">MUNDO DIVINO</span>RTP MACHINE TIMBER ZEUS</a>
+<a href="#" onclick="document.getElementById('zeus-promo-window').style.display='block'; return false;" class="hero-button" style="background: linear-gradient(135deg, #ffffff, #e0f7fa); border: 2px solid #ffd700; color: #b8860b; box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);"><span style="color: #87ceeb; text-shadow: none;">MUNDO DIVINO</span>RTP TIMBER ZEUS</a>
                         <a href="#concept" class="hero-button-disabled">
                             INICIAR HACKEO (ERROR: BLOCKED)
                         </a>
@@ -863,20 +863,18 @@
                 <div class="game-placeholder">
                     <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
                     <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">[SPACE-BREAKER]</strong><br>(La \"Flota\")</p>
-                    <button class="cta-button" id="make-bet-spacebreaker"
-                        style="background-color: #000; border-color: rgba(0, 0, 0, 0);
-                               color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.9),
-                               0 0 24px rgba(255,255,255,0.4);
-                               box-shadow: 0 0 12px rgba(255,255,255,0.25), inset 0 0 8px rgba(255,255,255,0.06);
-                               padding: 15px 30px; font-size: 1.2em; cursor: pointer;">
-                        ¡MAKE YOUR BET!
-                    </button> 
+                    <button class="cta-button" id="make-bet-spacebreaker" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em; cursor: default;" disabled>
+                        [ NOT AVAILABLE ]
+                    </button>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
                     <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">[TETRIS-CIPHER]</strong><br>(El \"Código\")</p>
                     <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); padding: 15px 30px; font-size: 1.2em;">
                         MAKE YOUR BET!
+                    </button>
+                    <button class="cta-button" id="play-tetriscipher-demo" style="margin-top: 5px; background: transparent; border-color: var(--color-caos-verde); color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde); cursor: default;" disabled>
+                        ⏳ [TETRIS-CIPHER] // IN PROGRESS
                     </button>
                 </div>
                 <div class="game-placeholder">
@@ -1280,18 +1278,9 @@
                 <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width:100%;height:auto;display:block;opacity:0.85;">
             </div>
             <p class="space-promo-tagline">Rompe el espacio, quebranta el código<br>antes que el vacuum te consuma.</p>
-            <div class="space-promo-date-box" style="background:none;border:none;padding:0;margin:10px 0;">
-                <button id="make-bet-spacebreaker-promo"
-                    onclick="document.getElementById('space-promo-window').style.display='none'; requireWalletThenBet('make-bet-spacebreaker');"
-                    style="background:#000;border:1.5px solid rgba(255,255,255,0.75);
-                           color:#fff;font-family:var(--fuente-titulos,Orbitron,monospace);
-                           font-size:0.85em;font-weight:700;letter-spacing:0.2em;
-                           text-transform:uppercase;text-shadow:0 0 10px rgba(255,255,255,0.9),0 0 22px rgba(255,255,255,0.4);
-                           box-shadow:0 0 14px rgba(255,255,255,0.22),inset 0 0 8px rgba(255,255,255,0.05);
-                           padding:10px 22px;border-radius:4px;cursor:pointer;width:100%;
-                           transition:all 0.18s ease;">
-                    ¡MAKE YOUR BET!
-                </button>
+            <div class="space-promo-date-box">
+                <span class="space-promo-date-label">PRÓXIMAMENTE</span>
+                <span class="space-promo-date">04.05.2026</span>
             </div>
             <p class="space-promo-sub">// THINK TO EARN — circuito T2E expandiéndose</p>
         </div>
@@ -1300,7 +1289,7 @@
 
 
 <!-- ⚡ TIMBER ZEUS — promo widget angelical -->
-<div id="zeus-promo-window" style="display: block; position: fixed; bottom: 220px; right: 20px; z-index: 10100; animation: floatAngelic 4s ease-in-out infinite;">
+<div id="zeus-promo-window" style="display: block; position: fixed; bottom: 20px; right: 20px; z-index: 10100; animation: floatAngelic 4s ease-in-out infinite;">
     <div style="background: linear-gradient(180deg, #ffffff 0%, #e0f7fa 100%); border: 2px solid #ffd700; border-radius: 12px; width: 280px; box-shadow: 0 0 30px rgba(255, 215, 0, 0.7), inset 0 0 20px rgba(255, 255, 255, 1); overflow: hidden; font-family: 'Roboto', sans-serif;">
         
         <!-- Header -->
@@ -2413,8 +2402,6 @@ document.addEventListener('DOMContentLoaded', function() {
              if (gameType) {
                  if (gameType.toLowerCase().indexOf('tetris') !== -1) {
                      nextGameSrc = 'Tetris-Cipher-T2E/index.html';
-                 } else if (gameType.toLowerCase().indexOf('space') !== -1) {
-                     nextGameSrc = 'Space-Breaker-T2E/space-t2e.html?player=p1';
                  } else {
                      // Pac-Hack T2E por defecto
                      nextGameSrc = 'pac-hack/game.html?player=p1';
@@ -5294,13 +5281,8 @@ btn.addEventListener('click', toggleMutePlay);
                     <div class="game-placeholder">
                         <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
                         <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">[SPACE-BREAKER]</strong><br>(La \"Flota\")</p>
-                        <button class="cta-button" id="make-bet-spacebreaker-lobby"
-                            style="background-color: #000; border-color: rgba(255,255,255,0.75);
-                                   color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.9),
-                                   0 0 24px rgba(255,255,255,0.4);
-                                   box-shadow: 0 0 12px rgba(255,255,255,0.25), inset 0 0 8px rgba(255,255,255,0.06);
-                                   padding: 15px 30px; font-size: 1.2em; cursor: pointer;">
-                            ¡MAKE YOUR BET!
+                        <button class="cta-button" id="make-bet-spacebreaker" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em;">
+                            [ NOT AVAILABLE ]
                         </button>
                     </div>
                     <div class="game-placeholder">
@@ -9136,7 +9118,7 @@ btn.addEventListener('click', toggleMutePlay);
         // Proxy Cloudflare Worker — la API key vive en Cloudflare, nunca aquí
         const GEMINI_URL = 'https://rapid-figemini-proxy.gabrieldomail.workers.dev';
 
-        const SYSTEM_PROMPT = `Sos RAPPIA_AI — la inteligencia artificial oficial de Rappibellion.
+const SYSTEM_PROMPT = `Sos RAPPIA_AI — la inteligencia artificial oficial de Rappibellion.
 Personalidad: rebelde, directa, irónica, con mucha actitud punk/cyberpunk. Hablás en español rioplatense (vos, dale, joya, piola, qué onda, etc). 
 Respondé SIEMPRE corto y con punch — máximo 3-4 líneas. Como un chat de arcade, no un manual de instrucciones.
 Si no sabés algo específico, decilo con actitud pero sin inventar datos.
@@ -10199,19 +10181,9 @@ https://discord.gg/3zBrPVn7`;
         });
     }
 })();
-
-// ── SPACE-BREAKER lobby button binding ─────────────────────────────────
-(function() {
-    var sbLobbyBtn = document.getElementById('make-bet-spacebreaker-lobby');
-    if (sbLobbyBtn) {
-        sbLobbyBtn.addEventListener('click', function() {
-            if (typeof window.requireWalletThenBet === 'function') {
-                window.requireWalletThenBet('make-bet-spacebreaker');
-            }
-        });
-    }
-})();
 </script>
+
+<!-- BOOST GHOST FLASH OVERLAY -->
 <div id="fp-boost-ghost-flash" style="
     display: none;
     position: fixed;

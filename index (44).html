@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -564,7 +564,6 @@
                             <span>MUNDO 3: CÓDIGO</span>
                             PLAY THE CODE (Binary Reunion)
                         </a>
-<a href="#" onclick="document.getElementById('zeus-promo-window').style.display='block'; return false;" class="hero-button" style="background: linear-gradient(135deg, #ffffff, #e0f7fa); border: 2px solid #ffd700; color: #b8860b; box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);"><span style="color: #87ceeb; text-shadow: none;">MUNDO DIVINO</span>RTP MACHINE TIMBER ZEUS</a>
                         <a href="#concept" class="hero-button-disabled">
                             INICIAR HACKEO (ERROR: BLOCKED)
                         </a>
@@ -863,20 +862,18 @@
                 <div class="game-placeholder">
                     <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
                     <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">[SPACE-BREAKER]</strong><br>(La \"Flota\")</p>
-                    <button class="cta-button" id="make-bet-spacebreaker"
-                        style="background-color: #000; border-color: rgba(0, 0, 0, 0);
-                               color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.9),
-                               0 0 24px rgba(255,255,255,0.4);
-                               box-shadow: 0 0 12px rgba(255,255,255,0.25), inset 0 0 8px rgba(255,255,255,0.06);
-                               padding: 15px 30px; font-size: 1.2em; cursor: pointer;">
-                        ¡MAKE YOUR BET!
-                    </button> 
+                    <button class="cta-button" id="make-bet-spacebreaker" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em; cursor: default;" disabled>
+                        [ NOT AVAILABLE ]
+                    </button>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/tetris.JPG" alt="TETRIS-CIPHER" style="width: 100%; height: auto; display: block;">
                     <p style="margin-top: 10px;"><strong style="color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde);">[TETRIS-CIPHER]</strong><br>(El \"Código\")</p>
                     <button class="cta-button" id="make-bet-tetriscipher" style="background-color: var(--color-caos-verde); border-color: var(--color-caos-verde); padding: 15px 30px; font-size: 1.2em;">
                         MAKE YOUR BET!
+                    </button>
+                    <button class="cta-button" id="play-tetriscipher-demo" style="margin-top: 5px; background: transparent; border-color: var(--color-caos-verde); color: var(--color-caos-verde); text-shadow: 0 0 8px var(--color-caos-verde); cursor: default;" disabled>
+                        ⏳ [TETRIS-CIPHER] // IN PROGRESS
                     </button>
                 </div>
                 <div class="game-placeholder">
@@ -1280,18 +1277,9 @@
                 <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width:100%;height:auto;display:block;opacity:0.85;">
             </div>
             <p class="space-promo-tagline">Rompe el espacio, quebranta el código<br>antes que el vacuum te consuma.</p>
-            <div class="space-promo-date-box" style="background:none;border:none;padding:0;margin:10px 0;">
-                <button id="make-bet-spacebreaker-promo"
-                    onclick="document.getElementById('space-promo-window').style.display='none'; requireWalletThenBet('make-bet-spacebreaker');"
-                    style="background:#000;border:1.5px solid rgba(255,255,255,0.75);
-                           color:#fff;font-family:var(--fuente-titulos,Orbitron,monospace);
-                           font-size:0.85em;font-weight:700;letter-spacing:0.2em;
-                           text-transform:uppercase;text-shadow:0 0 10px rgba(255,255,255,0.9),0 0 22px rgba(255,255,255,0.4);
-                           box-shadow:0 0 14px rgba(255,255,255,0.22),inset 0 0 8px rgba(255,255,255,0.05);
-                           padding:10px 22px;border-radius:4px;cursor:pointer;width:100%;
-                           transition:all 0.18s ease;">
-                    ¡MAKE YOUR BET!
-                </button>
+            <div class="space-promo-date-box">
+                <span class="space-promo-date-label">PRÓXIMAMENTE</span>
+                <span class="space-promo-date">04.05.2026</span>
             </div>
             <p class="space-promo-sub">// THINK TO EARN — circuito T2E expandiéndose</p>
         </div>
@@ -1299,44 +1287,6 @@
 </div>
 
 
-<!-- ⚡ TIMBER ZEUS — promo widget angelical -->
-<div id="zeus-promo-window" style="display: block; position: fixed; bottom: 220px; right: 20px; z-index: 10100; animation: floatAngelic 4s ease-in-out infinite;">
-    <div style="background: linear-gradient(180deg, #ffffff 0%, #e0f7fa 100%); border: 2px solid #ffd700; border-radius: 12px; width: 280px; box-shadow: 0 0 30px rgba(255, 215, 0, 0.7), inset 0 0 20px rgba(255, 255, 255, 1); overflow: hidden; font-family: 'Roboto', sans-serif;">
-        
-        <!-- Header -->
-        <div style="background: rgba(255, 255, 255, 0.9); border-bottom: 1px solid rgba(255, 215, 0, 0.5); display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;">
-            <span style="flex-grow: 1; color: #b8860b; font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);">TIMBER ZEUS BETA</span>
-            <button onclick="document.getElementById('zeus-promo-window').style.display='none'" style="background: none; border: none; color: #b8860b; font-size: 18px; cursor: pointer; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);">✕</button>
-        </div>
-        
-        <!-- Body -->
-        <div style="padding: 24px 20px; text-align: center;">
-            <!-- Icono resplandeciente -->
-            <img src="/images/timberzeus.png" alt="TIMBER ZEUS" style="width: 100%; max-width: 240px; height: auto; display: block; margin: 0 auto 16px; border-radius: 8px; box-shadow: 0 0 25px #ffd700, 0 0 40px rgba(135, 206, 235, 0.6); border: 2px solid #ffd700; object-fit: contain;">
-            
-            <p style="color: #333; font-size: 13px; margin-bottom: 20px; font-weight: 500; line-height: 1.4;">
-                El poder del Olimpo en el Circuito.<br>
-                <span style="color: #5bbde3; font-weight: 700;">Luz, destello y ganancias divinas.</span>
-            </p>
-            
-            <!-- Botón de Acción -->
-            <a href="/rtp-timberzeus/timberzeus.html" style="display: inline-block; background: #ffffff; color: #b8860b; font-weight: 900; letter-spacing: 2px; padding: 12px 24px; border: 2px solid #ffd700; border-radius: 30px; text-decoration: none; box-shadow: 0 0 15px #ffd700; transition: all 0.3s ease; text-transform: uppercase; font-size: 12px;" 
-               onmouseover="this.style.boxShadow='0 0 30px #ffd700'; this.style.transform='scale(1.05)';" 
-               onmouseout="this.style.boxShadow='0 0 15px #ffd700'; this.style.transform='scale(1)';">
-                PLAY_timberZEUS
-            </a>
-        </div>
-        
-    </div>
-</div>
-
-<!-- Animación de levitación suave (sin glitch) -->
-<style>
-@keyframes floatAngelic {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-}
-</style>
 <!-- ⚔ DUEL INBOX — trigger button (visible when wallet connected) -->
 <button id="duel-trigger-btn" onclick="toggleDuelInbox()" title="Bandeja de Desafíos">
     DUELOS <span id="duel-badge">0</span>
@@ -1568,33 +1518,7 @@
                     "
                     title="CHAOS_BOMB - Click para activar boost">💣</button>
 
-                <!-- ATOMIC PULSE — Space-Breaker boost (clone del pac-hack con icon propio) -->
-                <button id="fp-spacebreaker-boost-btn"
-                    onclick="fpFireBoost()"
-                    style="
-                        display: none;
-                        position: absolute;
-                        top: 25%;
-                        right: 12px;
-                        transform: translateY(-50%);
-                        z-index: 10;
-                        background: transparent;
-                        border: none;
-                        padding: 0;
-                        cursor: pointer;
-                        width: 128px;
-                        height: 128px;
-                        border-radius: 50%;
-                        animation: boostHeartbeat 2s ease-in-out infinite;
-                        transition: opacity 0.2s ease;
-                        pointer-events: auto;
-                    "
-                    title="ATOMIC PULSE — Destruye todos los enemigos"
-                ><img src="images/icon-192x192.png"
-                    style="width:100%;height:100%;border-radius:50%;display:block;
-                           filter: drop-shadow(0 0 10px rgba(0,188,255,0.9)) drop-shadow(0 0 24px rgba(0,188,255,0.5));"
-                    alt="ATOMIC PULSE"
-                ></button>
+                <!-- Badge restantes bajo botón boost overlay -->
                 <div id="fp-boost-badge" style="
                     display: none;
                     position: absolute;
@@ -2413,8 +2337,6 @@ document.addEventListener('DOMContentLoaded', function() {
              if (gameType) {
                  if (gameType.toLowerCase().indexOf('tetris') !== -1) {
                      nextGameSrc = 'Tetris-Cipher-T2E/index.html';
-                 } else if (gameType.toLowerCase().indexOf('space') !== -1) {
-                     nextGameSrc = 'Space-Breaker-T2E/space-t2e.html?player=p1';
                  } else {
                      // Pac-Hack T2E por defecto
                      nextGameSrc = 'pac-hack/game.html?player=p1';
@@ -2464,9 +2386,28 @@ document.addEventListener('DOMContentLoaded', function() {
         // En mobile mostrar selector de control, en desktop ir directo
         // Space-Breaker: saltar selector — conectar el botón de disparo del overlay
         var _isSpaceBreakerSrc = nextGameSrc && nextGameSrc.indexOf('Space-Breaker') !== -1;
-        // Space-Breaker sigue el mismo flujo de control que pac-hack en mobile.
-        // El selector dpad/swipe es válido para ambos juegos.
-        if (window.innerWidth <= 768) {
+        if (_isSpaceBreakerSrc) {
+            // Mostrar fire button solo en mobile
+            var _sbFireBtn = document.getElementById('fp-spacebreaker-fire-btn');
+            if (_sbFireBtn && window.innerWidth <= 768) {
+                _sbFireBtn.style.display = 'block';
+                // Enviar FIRE_START/FIRE_STOP al iframe como postMessage
+                _sbFireBtn.addEventListener('touchstart', function(ev) {
+                    ev.preventDefault();
+                    var iframe = document.getElementById('fp-iframe');
+                    if (iframe && iframe.contentWindow) {
+                        iframe.contentWindow.postMessage({ type: 'FIRE_START' }, '*');
+                    }
+                }, { passive: false });
+                _sbFireBtn.addEventListener('touchend', function() {
+                    var iframe = document.getElementById('fp-iframe');
+                    if (iframe && iframe.contentWindow) {
+                        iframe.contentWindow.postMessage({ type: 'FIRE_STOP' }, '*');
+                    }
+                });
+            }
+        }
+        if (window.innerWidth <= 768 && !_isSpaceBreakerSrc) {
             // Si ya eligio control antes (restart/revancha), reusar sin mostrar selector
             if (window._fpSavedControlMode) {
                 setTimeout(function() { fpStartWithControl(window._fpSavedControlMode); }, 400);
@@ -2483,8 +2424,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!fpState.betMode) {
                     ['contact-float-btn','duel-trigger-btn','finder-float-window',
                      'lobby-float-window','fp-fab-drawer','fp-fab-reopen',
-                     'pwa-install-btn','lamp-flicker-btn',
-                     'gemini-chat-widget','space-promo-window'].forEach(function(id) {
+                     'pwa-install-btn','gemini-chat-widget','space-promo-window'].forEach(function(id) {
                         var el = document.getElementById(id);
                         if (el) { el.dataset.fpHiddenPrev = el.style.display || ''; el.style.display = 'none'; }
                     });
@@ -2833,31 +2773,20 @@ document.addEventListener('DOMContentLoaded', function() {
          var tetrisBosBtn = null; // button removed from left column, only overlay exists
 
          // Para Tetris: mostrar SOLO el neon, ocultar todo lo demás
-         var isTetris       = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher')  !== -1;
-         var isSpcBreaker   = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker')  !== -1;
-         var sbBoostBtn     = document.getElementById('fp-spacebreaker-boost-btn');
+         var isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
 
          if (isTetris) {
              // TETRIS: solo neon
-             if (boostBtn)       boostBtn.style.display       = 'none';
-             if (tetrisBosBtn)   tetrisBosBtn.style.display   = 'block';
-             if (overlayBtn)     overlayBtn.style.display     = 'none';
+             if (boostBtn) boostBtn.style.display = 'none';
+             if (tetrisBosBtn) tetrisBosBtn.style.display = 'block';
+             if (overlayBtn) overlayBtn.style.display = 'none';
              if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'block';
-             if (sbBoostBtn)     sbBoostBtn.style.display     = 'none';
-         } else if (isSpcBreaker) {
-             // SPACE-BREAKER: ATOMIC PULSE
-             if (boostBtn)       boostBtn.style.display       = 'none';
-             if (tetrisBosBtn)   tetrisBosBtn.style.display   = 'none';
-             if (overlayBtn)     overlayBtn.style.display     = 'none';
-             if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'none';
-             if (sbBoostBtn)     sbBoostBtn.style.display     = 'block';
          } else {
              // PAC-HACK: botón normal
-             if (boostBtn)       boostBtn.style.display       = 'block';
-             if (tetrisBosBtn)   tetrisBosBtn.style.display   = 'none';
-             if (overlayBtn)     overlayBtn.style.display     = 'block';
+             if (boostBtn) boostBtn.style.display = 'block';
+             if (tetrisBosBtn) tetrisBosBtn.style.display = 'none';
+             if (overlayBtn) overlayBtn.style.display = 'block';
              if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'none';
-             if (sbBoostBtn)     sbBoostBtn.style.display     = 'none';
          }
 
          // Re-habilitar botones
@@ -2922,7 +2851,7 @@ document.addEventListener('DOMContentLoaded', function() {
                || _strategyRanks[_strategyRanks.length - 1];
     }
 
-    // ── TABLA DEL INFRAMUNDO (PAC-HACK) ──
+    // ── TABLA DEL INFRAMUNDO ──
     const _inferno = [
         {
             min:0, max:500,
@@ -2961,51 +2890,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     ];
 
-    // ── TABLA CÓSMICA (SPACE-BREAKER) ──
-    const _cosmic = [
-        {
-            min:0, max:300,
-            icon:'❓', rank:'PILOTO UNKNOWN CLASS',
-            phrase:'"No hay clasificación disponible para un manco de tal envergadura. Los aliens te devolvieron."'
-        },
-        {
-            min:300, max:800,
-            icon:'🛸', rank:'CADETE ESTELAR',
-            phrase:'"Despegaste, eso es algo. Pero el cosmos no toma nota de vuelos tan cortos."'
-        },
-        {
-            min:800, max:2000,
-            icon:'🚀', rank:'MAVERICK INTERGALÁCTICO',
-            phrase:'"Vuela sin rumbo fijo, pero con actitud. El sector te reconoce como amenaza menor."'
-        },
-        {
-            min:2000, max:4500,
-            icon:'⚡', rank:'COMANDANTE DE LA BRECHA',
-            phrase:'"Tus torpedos dejan rastro de luz. La flota enemiga aprendió tu nombre."'
-        },
-        {
-            min:4500, max:8000,
-            icon:'🌌', rank:'ALMIRANTE DEL VACÍO',
-            phrase:'"Controlas el campo de batalla. El nodo te llama Defensor de la Rebelión."'
-        },
-        {
-            min:8000, max:13000,
-            icon:'🌠', rank:'LEYENDA DE LA GALAXIA',
-            phrase:'"Tu puntaje resuena en cada sector. Rappibellion inscribió tu nombre en el nodo central."'
-        },
-        {
-            min:13000, max:Infinity,
-            icon:'👑', rank:'EMPERADOR DEL COSMOS',
-            phrase:'"Nadie ha visto destrucción tan eficiente. El universo cede ante tu voluntad. SUPREMO."'
-        }
-    ];
-
     function fpGetVerdict(score) {
-        var isTetris      = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher')  !== -1;
-        var isSpaceBreak  = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker')  !== -1;
-        if (isTetris)     return fpGetVerdictTetris(score);
-        if (isSpaceBreak) return _cosmic.find(function(r) { return score >= r.min && score < r.max; }) || _cosmic[_cosmic.length - 1];
-        return _inferno.find(function(r) { return score >= r.min && score < r.max; }) || _inferno[_inferno.length - 1];
+        var isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+        if (isTetris) {
+            return fpGetVerdictTetris(score);
+        }
+        return _inferno.find(function(r) { return score >= r.min && score < r.max; })
+               || _inferno[_inferno.length - 1];
     }
 
     function fpShowVerdict(score) {
@@ -3039,19 +2930,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Color del rank según nivel
         if (rankEl) {
             var colors, verdArray;
-            var isTetris_v     = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
-            var isSpaceBreak_v = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker') !== -1;
-            if (isTetris_v) {
+            if (isTetris) {
                 verdArray = _strategyRanks;
                 colors = ['rgba(150,150,150,0.8)','rgba(200,200,200,0.8)',
                          'var(--color-caos-verde)','var(--color-caos-amarillo)',
                          'var(--color-azul-glitch)','var(--color-primario)',
-                         'var(--color-caos-rosa)'];
-            } else if (isSpaceBreak_v) {
-                verdArray = _cosmic;
-                colors = ['rgba(130,130,130,0.8)','rgba(0,188,255,0.65)',
-                         'var(--color-caos-verde)','var(--color-primario)',
-                         'var(--color-azul-glitch)','var(--color-caos-amarillo)',
                          'var(--color-caos-rosa)'];
             } else {
                 verdArray = _inferno;
@@ -3327,27 +3210,21 @@ function fpEndPractice() {
     if (tetrisBtn) tetrisBtn.disabled = true;
     if (overlayBtn) overlayBtn.disabled = true;
     if (tetrisOverlayBtn) tetrisOverlayBtn.disabled = true;
-    var sbBoostBtn = document.getElementById('fp-spacebreaker-boost-btn');
-    if (sbBoostBtn) sbBoostBtn.disabled = true;
 
     // 2. DETECCIÓN DEL JUEGO ACTIVO
-    var isTetris      = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
-    var isSpaceBreak  = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker') !== -1;
+    // Verificamos si la URL del juego cargado contiene "Tetris-Cipher"
+    var isTetris = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
 
-    console.log('[HUD] Boost → ' + (isTetris ? 'TETRIS' : (isSpaceBreak ? 'SPACE-BREAKER' : 'PAC-HACK')));
+    console.log('[HUD] Ejecutando Boost para: ' + (isTetris ? 'TETRIS-CIPHER' : 'PAC-HACK'));
 
     // 3. DISPARO DE EFECTOS VISUALES EN EL PADRE (WEB)
     if (isTetris) {
         // EFECTO TETRIS: Zoom agresivo al iframe
         if (fpIframe) {
             fpIframe.classList.add('fp-chaos-zoom');
-            setTimeout(function() { fpIframe.classList.remove('fp-chaos-zoom'); }, 600);
-        }
-    } else if (isSpaceBreak) {
-        // EFECTO SPACE-BREAKER: flash cyan + shake del iframe
-        if (fpIframe) {
-            fpIframe.style.boxShadow = '0 0 40px 10px rgba(0,188,255,0.9)';
-            setTimeout(function() { fpIframe.style.boxShadow = ''; }, 500);
+            setTimeout(function() {
+                fpIframe.classList.remove('fp-chaos-zoom');
+            }, 600);
         }
     } else {
         // EFECTO PAC-HACK: Flash del Fantasma
@@ -3358,9 +3235,14 @@ function fpEndPractice() {
 
     // 4. COMUNICACIÓN CON EL IFRAME (SISTEMA DE MENSAJES)
     if (fpIframe && fpIframe.contentWindow) {
-        var messageType = isTetris     ? 'CHAOS_BOMB'    :
-                          isSpaceBreak ? 'ATOMIC_PULSE'  : 'TRIGGER_BOOST';
-        fpIframe.contentWindow.postMessage({ type: messageType }, '*');
+        // Enviamos la orden según el juego:
+        // Si es Tetris -> 'CHAOS_BOMB' (Limpia tablero + 500 pts)
+        // Si es Pac-Man -> 'TRIGGER_BOOST' (Asusta fantasmas)
+        var messageType = isTetris ? 'CHAOS_BOMB' : 'TRIGGER_BOOST';
+        
+        fpIframe.contentWindow.postMessage({ 
+            type: messageType 
+        }, '*');
     }
 
     // 5. FEEDBACK VISUAL EN BOTONES (Animación de disparo)
@@ -3410,11 +3292,9 @@ function fpCloseArena() {
         // Limpiar Skynet + SpaceBreaker bg al cerrar
         document.querySelectorAll('.fp-col-skynet').forEach(function(el) { el.classList.remove('fp-col-skynet'); });
         document.querySelectorAll('.fp-col-spacebreaker').forEach(function(el) { el.classList.remove('fp-col-spacebreaker'); });
-        // Ocultar botones específicos de juego
-        var _sbFire  = document.getElementById('fp-spacebreaker-fire-btn');
-        var _sbBoost = document.getElementById('fp-spacebreaker-boost-btn');
-        if (_sbFire)  _sbFire.style.display  = 'none';
-        if (_sbBoost) _sbBoost.style.display = 'none';
+        // Ocultar fire button de Space-Breaker
+        var _sbFire = document.getElementById('fp-spacebreaker-fire-btn');
+        if (_sbFire) _sbFire.style.display = 'none';
         document.querySelectorAll('.fp-col-spacebreaker').forEach(function(el) { el.classList.remove('fp-col-spacebreaker'); });
         // Reset faq-panel position
         var faqPanel = document.getElementById('fp-faq-panel');
@@ -3454,8 +3334,7 @@ function fpCloseArena() {
         if (window.innerWidth <= 768) {
             ['fp-faq-panel','contact-float-btn','duel-trigger-btn',
              'finder-float-window','lobby-float-window','fp-fab-drawer','fp-fab-reopen',
-             'pwa-install-btn','lamp-flicker-btn',
-             'gemini-chat-widget','space-promo-window'].forEach(function(id) {
+             'pwa-install-btn','gemini-chat-widget','space-promo-window'].forEach(function(id) {
                 var el = document.getElementById(id);
                 if (el && el.dataset.fpHiddenPrev !== undefined) {
                     el.style.display = el.dataset.fpHiddenPrev;
@@ -3702,12 +3581,9 @@ function fpCloseArena() {
         if (!d || !d.type) return;
         console.log('[DEBUG iframe message]', d.type, d);
 
-        // GAME_OVER del iframe: NO terminar la práctica del padre.
-        // Timer y caos siguen corriendo. Score se mantiene (peak del intento).
-        // Cuando el jugador inicia nueva partida, SCORE_UPDATE llega desde 0 y sincroniza solo.
-        // El veredicto toma fpState.score al momento que timeLeft llega a 0.
+        // FIX: Si el juego termina por falta de vidas, cerrar la práctica del padre
         if (d.type === 'GAME_OVER') {
-            // No resetear score — conservar el último puntaje del intento
+            fpEndPractice();
             return;
         }
 
@@ -3801,11 +3677,6 @@ function fpCloseArena() {
                 tetrisOverlayBtn.disabled = bRemain <= 0;
                 tetrisOverlayBtn.style.opacity = bRemain <= 0 ? '0.3' : '1';
             }
-            var sbBoostOverlay = document.getElementById('fp-spacebreaker-boost-btn');
-            if (sbBoostOverlay) {
-                sbBoostOverlay.disabled = bRemain <= 0;
-                sbBoostOverlay.style.opacity = bRemain <= 0 ? '0.3' : '1';
-            }
             var boostBadge = document.getElementById('fp-boost-badge');
             if (boostBadge) {
                 if (bRemain > 0) {
@@ -3820,12 +3691,9 @@ function fpCloseArena() {
                     boostBadge.style.boxShadow = '0 0 8px rgba(255,68,68,0.6)';
                 }
             }
-            // Flash overlay según juego
-            var isTetrisGame_f       = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
-            var isSpaceBreakerGame_f = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker') !== -1;
-            if (isSpaceBreakerGame_f) {
-                fpAtomicPulseFlash();
-            } else if (!isTetrisGame_f) {
+            // Flash ghost overlay on use — SOLO para Pac-Hack, NO para Tetris
+            var isTetrisGame = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+            if (!isTetrisGame) {
                 fpBoostGhostFlash();
             }
             if (fpState.betMode && fpState.betId && fpState.myRole && window._fbDB) {
@@ -3836,30 +3704,25 @@ function fpCloseArena() {
             // count update via Firebase (rivalBoostsRef listener). Sending RIVAL_BOOST to
             // our own iframe (fpIframe) was incorrect and showed the warning on the wrong side.
 
-            // 🎵 Audio boost según juego — Minmay/Robotech para Space-Breaker (duración completa)
-            var isTetrisGame_a       = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
-            var isSpaceBreakerGame_a = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker') !== -1;
-            var boostAudioFile = isTetrisGame_a       ? 'sounds/bomba-chaos.mp3'
-                               : isSpaceBreakerGame_a ? 'sounds/atomic-robotech.mp3'
-                               :                       'sounds/mario-star.mp3';
+            // 🌟 Audio boost — Mario Star para Pac-Hack, Chaos Bomb para Tetris
+            var isTetrisGame = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
+            var boostAudioFile = isTetrisGame ? 'sounds/bomba-chaos.mp3' : 'sounds/mario-star.mp3';
             if (!window._fpBoostAudio) {
                 window._fpBoostAudio = new Audio(boostAudioFile);
-                window._fpBoostAudio.loop   = false;
-                window._fpBoostAudio.volume = 0.72;
+                window._fpBoostAudio.loop  = false;
+                window._fpBoostAudio.volume = 0.65;
             }
             if (window._fpBoostAudioTimer) clearTimeout(window._fpBoostAudioTimer);
-            window._fpBoostAudio.src = boostAudioFile;
+            window._fpBoostAudio.src = boostAudioFile; // actualizar src por si cambió el juego
             window._fpBoostAudio.currentTime = 0;
             window._fpBoostAudio.play().catch(function(){});
-            // Solo cortar Pac-Hack a los 9.5s — Space-Breaker suena completa (15s)
-            if (!isSpaceBreakerGame_a) {
-                window._fpBoostAudioTimer = setTimeout(function() {
-                    if (window._fpBoostAudio && !window._fpBoostAudio.paused) {
-                        window._fpBoostAudio.pause();
-                        window._fpBoostAudio.currentTime = 0;
-                    }
-                }, 9500);
-            }
+            // parar cuando termina la inmunidad (frightTime = 6s + margen)
+            window._fpBoostAudioTimer = setTimeout(function() {
+                if (window._fpBoostAudio && !window._fpBoostAudio.paused) {
+                    window._fpBoostAudio.pause();
+                    window._fpBoostAudio.currentTime = 0;
+                }
+            }, 9500);
         }
     });
 
@@ -5294,13 +5157,8 @@ btn.addEventListener('click', toggleMutePlay);
                     <div class="game-placeholder">
                         <img src="juegos beta/space invaders.jpg" alt="SPACE-BREAKER" style="width: 100%; height: auto; display: block;">
                         <p style="margin-top: 10px;"><strong style="color: var(--color-azul-glitch); text-shadow: 0 0 8px var(--color-azul-glitch);">[SPACE-BREAKER]</strong><br>(La \"Flota\")</p>
-                        <button class="cta-button" id="make-bet-spacebreaker-lobby"
-                            style="background-color: #000; border-color: rgba(255,255,255,0.75);
-                                   color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.9),
-                                   0 0 24px rgba(255,255,255,0.4);
-                                   box-shadow: 0 0 12px rgba(255,255,255,0.25), inset 0 0 8px rgba(255,255,255,0.06);
-                                   padding: 15px 30px; font-size: 1.2em; cursor: pointer;">
-                            ¡MAKE YOUR BET!
+                        <button class="cta-button" id="make-bet-spacebreaker" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em;">
+                            [ NOT AVAILABLE ]
                         </button>
                     </div>
                     <div class="game-placeholder">
@@ -9210,32 +9068,18 @@ Q1 2026 — ● EN PROGRESO:
 Q2 2026 — // PENDIENTE:
   Capítulo II: "Who, where or when is Rappia?" — implementación de economía T2E completa.
 
-═════════════════════════════════════════════
- JUEGOS DISPONIBLES EN FREEPLAY
-═════════════════════════════════════════════
+══════════════════════════════════════════════
+ JUEGOS DISPONIBLES EN T2E
+══════════════════════════════════════════════
 • PAC-HACK: DEATH — duelo PvP arcade cyberpunk. Dos jugadores compiten en tiempo real.
 • TETRIS CIPHER — modo T2E disponible. El BOOST (botón 💣) elimina todos los ladrillos del tablero y suma 500 puntos extra.
-• SPACE BREAKER (Beta Freeplay) — Space Invaders cyberpunk. DISPONIBLE AHORA con boost "My Time To Be A Star" (homenaje a Robotech/Macross con canción de Lynn Minmay). Próximamente integrado en T2E completo.
 
-═════════════════════════════════════════════
- TIMBER ZEUS — BETA FREEPLAY DISPONIBLE
-═════════════════════════════════════════════
-Slot machine temática Zeus/Olimpo. MODE FREE PLAY ACTIVO.
-Acceso directo: botón "MUNDO DIVINO - RTP TIMBER ZEUS" en la página principal.
-Estado: Beta gratuito (sin apuestas), en desarrollo.
-Integración T2E: En progreso, fecha adelantada.
-RTP: alto. Volatilidad: media-alta.
-Bonos: free spins, multiplicadores, thunder bonus.
-Posicionamiento: "Juega gratis ahora, apuesta cuando quieras". Transición suave freeplay → T2E.
-Se oculta automáticamente cuando entrás a una arena (modo juego).
+══════════════════════════════════════════════
+ PRÓXIMAMENTE
+══════════════════════════════════════════════
+• SPACE BREAKER (Space Invaders style) — Beta disponible el 04/05/2026. Shooter clásico con mecánicas T2E.
 
-═════════════════════════════════════════════
- PRÓXIMAMENTE (INTEGRACIÓN T2E)
-═════════════════════════════════════════════
-• TIMBER ZEUS T2E — apuestas $RPPI (fecha adelantada).
-• SPACE BREAKER T2E — integración completa con sistema de apuestas (fecha TBD).
-
-═══════════════════════════════════════════════
+══════════════════════════════════════════════
  EL EQUIPO (LA RESISTENCIA)
 ═══════════════════════════════════════════════
 Gabriel C. Dominguez — Director Estratégico / Diseño Gráfico
@@ -9248,7 +9092,7 @@ Sagai Rebelbet — Estrategia de Marketing / IA
   "El P2E es código roto. El T2E es el parche que la industria necesita." Analiza el mercado y traduce la visión en mensaje.
 
 Mama Cora — Analista y Organizadora de Proyectos
-  "Vanguardia desde la historia hasta la economía."
+  "Vanguardia desde la historia hasta la economía." Mantiene la estructura de la rebelión.
 
 legion_beta — Ministro de Economía / Director del Banco Central de Rappia
   "Mi trabajo es hackear el dinero fiat basura." Diseña la economía $RPPI atada al US02Y.
@@ -9267,9 +9111,7 @@ Cupo abierto: buscan 3 rebeldes para el staff (1 por mes). Aplicar en info@rappi
 ¿Necesito MetaMask? → Sí, para conectar wallet y apostar. Sin MetaMask solo podés jugar en modo gratuito.
 ¿Discord? → https://discord.gg/3zBrPVn7
 ¿Qué es Tetris Cipher T2E? → La versión competitiva del Tetris clásico con apuestas. Tenés 3 BOOSTs gratis en modo Freeplay. En T2E apostás $RPPI y el BOOST elimina todas las piezas del tablero (+500 pts).
-¿Cuándo sale Space Breaker? → Beta el 04/05/2026. Es un Space Invaders con sistema T2E.
-¿TIMBER ZEUS está disponible? → Sí, en modo demo gratuito (freeplay). Accede desde el botón "MUNDO DIVINO" en la página principal.
-¿TIMBER ZEUS T2E cuándo? → En desarrollo, fecha adelantada — pronto podrás apostar $RPPI.
+¿ Cuando sale Space Breaker? → Beta el 04/05/2026. Es un Space Invaders con sistema T2E.
 
 ═══════════════════════════════════════════════
  TECH STACK (POR SI TE PREGUNTAN)
@@ -9301,14 +9143,19 @@ CÓMO CARGAR USDT (cualquier usuario nuevo):
   1. Instalás MetaMask (extensión Chrome o app mobile)
   2. Entrás a portfolio.metamask.io → sección "Buy"
   3. Seleccionás USDT en red Optimism
-  4. Comprás con tarjeta o transferencia bancaria
-  5. Los USDT llegan a tu wallet en minutos
+  4. Elegís on-ramp: MoonPay o Transak (integrados nativos en MetaMask Portfolio)
+  5. Primera vez: validación KYC (~5 minutos, documento + selfie)
+  6. Ingresás el monto en ARS (o USD/EUR) — ves el tipo de cambio en tiempo real
+  7. Pagás con tarjeta de crédito/débito o transferencia bancaria
+  8. USDT llega a tu wallet → ya podés apostar en El Circuito
 
-═══════════════════════════════════════════════
- SOPORTE Y COMUNIDAD
-═══════════════════════════════════════════════
-¿Necesitás ayuda? Usá el botón de chat (abajo a la izquierda) o escribí a info@rappibellion.com
-https://discord.gg/3zBrPVn7`;
+MERCADO PAGO — LATAM:
+  Widget especial en la web para usuarios de Argentina y LATAM.
+  Botón "MÉTODO DE PAGO // LATAM" abre un modal explicativo paso a paso.
+  No es integración directa de MP al juego — es un onboarding educativo para que el usuario sepa cómo convertir ARS → USDT usando Mercado Pago como origen de fondos (tarjeta MP → MoonPay/Transak → USDT).
+  Sin necesidad de cuenta de exchange. Sin afiliados. Directo desde MetaMask Portfolio.
+
+Si alguien pregunta cómo pagar en ARS, explicales el flujo completo de arriba con actitud pero claro.`;
 
 
 
@@ -10153,10 +10000,7 @@ https://discord.gg/3zBrPVn7`;
     body.arena-open #fp-fab-drawer,
     body.arena-open #fp-fab-reopen,
     body.arena-open #fp-fab-reopen-tetris,
-    body.arena-open #fp-fab-reopen-space,
-    body.arena-open #lamp-flicker-btn,
-    body.arena-open #zeus-promo-window,
-    body.arena-open #pwa-install-btn { display: none !important; }
+    body.arena-open #fp-fab-reopen-space { display: none !important; }
 </style>
 
 <script>
@@ -10199,19 +10043,9 @@ https://discord.gg/3zBrPVn7`;
         });
     }
 })();
-
-// ── SPACE-BREAKER lobby button binding ─────────────────────────────────
-(function() {
-    var sbLobbyBtn = document.getElementById('make-bet-spacebreaker-lobby');
-    if (sbLobbyBtn) {
-        sbLobbyBtn.addEventListener('click', function() {
-            if (typeof window.requireWalletThenBet === 'function') {
-                window.requireWalletThenBet('make-bet-spacebreaker');
-            }
-        });
-    }
-})();
 </script>
+
+<!-- BOOST GHOST FLASH OVERLAY -->
 <div id="fp-boost-ghost-flash" style="
     display: none;
     position: fixed;
@@ -10228,272 +10062,6 @@ https://discord.gg/3zBrPVn7`;
          style="width: min(85vw, 85vh); height: auto; filter: drop-shadow(0 0 60px #f8ff2b) drop-shadow(0 0 120px #ff2d78);"
          alt="">
 </div>
-
-<!-- ══════════════════════════════════════════════════════════
-     ATOMIC PULSE — MACROSS ITANO CIRCUS TRIBUTE
-     ══════════════════════════════════════════════════════════ -->
-<div id="fp-atomic-pulse-flash" style="display:none;position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;"></div>
-
-<style>
-/* ── Fade del contenedor ── */
-@keyframes atomicContainerFade {
-    0%   { opacity:0; }
-    5%   { opacity:1; }
-    80%  { opacity:1; }
-    100% { opacity:0; }
-}
-#fp-atomic-pulse-flash.active {
-    display: block !important;
-    animation: atomicContainerFade 3.8s ease forwards;
-    background: radial-gradient(ellipse at 50% 40%,
-        rgba(0,188,255,0.22) 0%, rgba(0,255,65,0.08) 45%, transparent 72%);
-}
-
-/* ── Misiles: lluvia vertical ── */
-@keyframes missileRain {
-    0%   { transform:translateY(-80px); opacity:1; }
-    90%  { opacity:1; }
-    100% { transform:translateY(110vh);  opacity:0; }
-}
-/* ── Misiles: espiral Itano Circus ── */
-@keyframes missileSpiral {
-    0%   { opacity:1; transform:translate(0,0) rotate(var(--deg)) translateX(var(--r)) rotate(0deg); }
-    100% { opacity:0; transform:translate(var(--tx),var(--ty)) rotate(var(--deg)) translateX(calc(var(--r)*4)) rotate(720deg); }
-}
-.atm-missile {
-    position:absolute;
-    pointer-events:none;
-    animation: missileRain linear forwards;
-    filter: drop-shadow(0 0 5px var(--mc)) drop-shadow(0 0 12px var(--mc));
-}
-.atm-spiral {
-    position:absolute;
-    left:50%; top:45%;
-    pointer-events:none;
-    transform-origin: 0 0;
-    animation: missileSpiral ease-out forwards;
-}
-
-/* ── Fold rings (hyperspace) ── */
-@keyframes foldRing {
-    0%   { transform:translate(-50%,-50%) scale(0); opacity:0.9; }
-    100% { transform:translate(-50%,-50%) scale(6);  opacity:0; }
-}
-.atm-fold {
-    position:absolute;
-    left:50%; top:45%;
-    border-radius:50%;
-    border:2px solid var(--fc);
-    box-shadow:0 0 18px var(--fc), inset 0 0 18px var(--fc);
-    animation: foldRing ease-out forwards;
-    pointer-events:none;
-}
-
-/* ── Valkyrie silhouette ── */
-@keyframes valkyrieFly {
-    0%   { transform:translate(-150px, 60vh) rotate(-15deg); opacity:0; }
-    8%   { opacity:1; }
-    50%  { transform:translate(55vw, 28vh) rotate(-8deg); opacity:1; }
-    92%  { opacity:1; }
-    100% { transform:translate(115vw, -10vh) rotate(5deg); opacity:0; }
-}
-.atm-valkyrie {
-    position:absolute;
-    left:0; top:0;
-    animation: valkyrieFly ease-in-out forwards;
-    pointer-events:none;
-    filter: drop-shadow(0 0 12px #00BCFF) drop-shadow(0 0 30px #00FF41);
-}
-
-/* ── Texto DYRL ── */
-@keyframes dyrlText {
-    0%   { opacity:0; letter-spacing:0.6em; }
-    15%  { opacity:1; letter-spacing:0.22em; }
-    70%  { opacity:1; }
-    100% { opacity:0; letter-spacing:0.5em; }
-}
-.atm-dyrl {
-    position:absolute;
-    left:50%; top:72%;
-    transform:translateX(-50%);
-    font-family:'Orbitron',monospace;
-    font-weight:900;
-    font-size:clamp(10px,2.2vw,20px);
-    color:#00BCFF;
-    text-shadow:0 0 10px #00BCFF, 0 0 28px #00FF41;
-    white-space:nowrap;
-    letter-spacing:0.22em;
-    pointer-events:none;
-    animation: dyrlText 3.4s ease forwards;
-    animation-delay: 0.5s;
-    opacity:0;
-}
-.atm-subtext {
-    position:absolute;
-    left:50%; top:79%;
-    transform:translateX(-50%);
-    font-family:'Share Tech Mono',monospace;
-    font-size:clamp(7px,1.1vw,11px);
-    color:rgba(0,255,65,0.85);
-    text-shadow:0 0 8px #00FF41;
-    white-space:nowrap;
-    letter-spacing:0.35em;
-    pointer-events:none;
-    animation: dyrlText 3.0s ease forwards;
-    animation-delay: 0.9s;
-    opacity:0;
-}
-</style>
-
-<script>
-/* ─────────────────────────────────────────────
-   fpAtomicPulseFlash — Macross Itano Circus
-   ───────────────────────────────────────────── */
-function fpAtomicPulseFlash() {
-    var c = document.getElementById('fp-atomic-pulse-flash');
-    if (!c) return;
-    c.innerHTML = '';
-    c.classList.remove('active');
-    void c.offsetWidth;
-    c.classList.add('active');
-
-    var W = window.innerWidth, H = window.innerHeight;
-    var cols = ['#00BCFF','#00FF41','#FFD700','#FF2D78','#00BCFF','#00FF41','#00BCFF','#ffffff'];
-
-    /* ── SVG: misil ── */
-    function svgMissile(col, w, h) {
-        return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 14 38" xmlns="http://www.w3.org/2000/svg">'
-            +'<polygon points="7,0 12,10 7,8 2,10" fill="'+col+'"/>'
-            +'<rect x="4" y="8" width="6" height="16" rx="1" fill="'+col+'" opacity="0.92"/>'
-            +'<polygon points="4,24 1,35 7,29 13,35 10,24" fill="'+col+'" opacity="0.7"/>'
-            +'<ellipse cx="7" cy="35" rx="4" ry="2.5" fill="'+col+'" opacity="0.3"/>'
-            +'<rect x="6" y="35" width="2" height="4" fill="'+col+'" opacity="0.5"/>'
-            +'</svg>';
-    }
-
-    /* ── SVG: Valkyrie VF-1 vista lateral (silhouette) ── */
-    function svgValkyrie() {
-        return '<svg width="160" height="72" viewBox="0 0 160 72" xmlns="http://www.w3.org/2000/svg">'
-            // fuselaje
-            +'<ellipse cx="80" cy="36" rx="62" ry="10" fill="rgba(0,188,255,0.7)"/>'
-            // nariz
-            +'<polygon points="142,36 160,34 160,38" fill="rgba(0,188,255,0.9)"/>'
-            // cabina
-            +'<ellipse cx="116" cy="31" rx="12" ry="7" fill="rgba(0,255,65,0.85)"/>'
-            // ala delta izquierda
-            +'<polygon points="80,30 18,4 22,36 80,38" fill="rgba(0,188,255,0.55)"/>'
-            // ala delta derecha
-            +'<polygon points="80,42 18,68 22,36 80,38" fill="rgba(0,188,255,0.55)"/>'
-            // cola
-            +'<polygon points="20,36 0,22 8,36 0,50" fill="rgba(0,255,65,0.6)"/>'
-            // motor glow
-            +'<ellipse cx="14" cy="36" rx="8" ry="5" fill="rgba(0,255,65,0.9)"/>'
-            +'<ellipse cx="14" cy="36" rx="5" ry="3" fill="white" opacity="0.8"/>'
-            +'</svg>';
-    }
-
-    /* ════ 1. OLEADAS DE MISILES VERTICALES (lluvia) ════ */
-    var totalMissiles = 52;
-    var waves = 6;
-    var perWave = Math.ceil(totalMissiles / waves);
-
-    for (var w = 0; w < waves; w++) {
-        (function(wi) {
-            setTimeout(function() {
-                for (var m = 0; m < perWave; m++) {
-                    var col   = cols[(wi * perWave + m) % cols.length];
-                    var xPct  = ((wi * perWave + m) / totalMissiles) * 100 + (Math.random()-0.5)*10;
-                    xPct = Math.max(1, Math.min(99, xPct));
-                    var scale  = 0.6 + Math.random()*0.9;
-                    var dur    = 600 + Math.random()*700;
-                    var mdel   = m * 22 + Math.random()*30;
-                    var mW     = Math.round(14*scale), mH = Math.round(38*scale);
-
-                    var el = document.createElement('div');
-                    el.className = 'atm-missile';
-                    el.style.cssText = 'left:'+xPct+'%;top:0;--mc:'+col+';'
-                        +'animation-duration:'+dur+'ms;'
-                        +'animation-delay:'+mdel+'ms;';
-                    el.innerHTML = svgMissile(col, mW, mH);
-                    c.appendChild(el);
-                }
-            }, wi * 320);
-        })(w);
-    }
-
-    /* ════ 2. ESPIRAL ITANO CIRCUS (misiles en arco desde el centro) ════ */
-    var spiralCount = 24;
-    setTimeout(function() {
-        for (var s = 0; s < spiralCount; s++) {
-            (function(si) {
-                var deg   = (si / spiralCount) * 360;
-                var r     = 60 + si * 8;
-                var col   = cols[si % cols.length];
-                var tx    = Math.cos(deg * Math.PI/180) * (W * 0.6) + 'px';
-                var ty    = Math.sin(deg * Math.PI/180) * (H * 0.6) + 'px';
-                var dur   = 1400 + Math.random()*600;
-                var mdel  = si * 35;
-
-                var el = document.createElement('div');
-                el.className = 'atm-spiral';
-                el.style.cssText = '--deg:'+deg+'deg;--r:'+r+'px;--tx:'+tx+';--ty:'+ty+';'
-                    +'--mc:'+col+';'
-                    +'animation-duration:'+dur+'ms;'
-                    +'animation-delay:'+mdel+'ms;'
-                    +'filter:drop-shadow(0 0 6px '+col+') drop-shadow(0 0 14px '+col+');';
-                el.innerHTML = svgMissile(col, 10, 26);
-                c.appendChild(el);
-            })(s);
-        }
-    }, 400);
-
-    /* ════ 3. FOLD RINGS (hyperspace de Macross) ════ */
-    var ringData = [
-        { delay:0,    size:'80px',  col:'rgba(0,188,255,0.9)', dur:'0.8s' },
-        { delay:120,  size:'140px', col:'rgba(0,255,65,0.75)', dur:'1.0s' },
-        { delay:260,  size:'100px', col:'rgba(255,215,0,0.8)', dur:'0.9s' },
-        { delay:420,  size:'180px', col:'rgba(255,45,120,0.7)','dur':'1.2s' },
-        { delay:600,  size:'120px', col:'rgba(0,188,255,0.85)','dur':'1.1s' },
-        { delay:900,  size:'200px', col:'rgba(0,255,65,0.6)',  dur:'1.4s' },
-        { delay:1300, size:'90px',  col:'rgba(255,215,0,0.9)', dur:'0.85s' },
-    ];
-    ringData.forEach(function(rd) {
-        setTimeout(function() {
-            var el = document.createElement('div');
-            el.className = 'atm-fold';
-            el.style.cssText = 'width:'+rd.size+';height:'+rd.size+';--fc:'+rd.col+';'
-                +'animation-duration:'+rd.dur+';';
-            c.appendChild(el);
-        }, rd.delay);
-    });
-
-    /* ════ 4. VALKYRIE VF-1 cruzando la pantalla ════ */
-    setTimeout(function() {
-        var valk = document.createElement('div');
-        valk.className = 'atm-valkyrie';
-        valk.style.animationDuration = '2.8s';
-        valk.innerHTML = svgValkyrie();
-        c.appendChild(valk);
-    }, 200);
-
-    /* ════ 5. TEXTO MACROSS ════ */
-    var dyrl = document.createElement('div');
-    dyrl.className = 'atm-dyrl';
-    dyrl.textContent = '// DO YOU REMEMBER LOVE? //';
-    c.appendChild(dyrl);
-
-    var sub = document.createElement('div');
-    sub.className = 'atm-subtext';
-    sub.textContent = 'LYNN MINMAY · MACROSS · ITANO CIRCUS ACTIVE';
-    c.appendChild(sub);
-
-    /* ════ CLEANUP ════ */
-    setTimeout(function() {
-        c.classList.remove('active');
-        setTimeout(function() { c.innerHTML = ''; }, 200);
-    }, 3900);
-}
-</script>
 
 <style>
 @keyframes boostGhostFlashAnim {

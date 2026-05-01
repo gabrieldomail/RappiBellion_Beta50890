@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" href="./images/Galaga_Fighter.png" type="image/x-icon" />
+    <link rel = "stylesheet" type = "text/css" href = "styles/game.css">
+    
+    <!-- FUENTES CYBERPUNK DE GOOGLE -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <title>Galaga</title>
+  </head>
+  <body id="body">
+    <img class="logo" src="images/Galaga_logo.svg" title="Galaga Logo">
+    <div id = "game">
+        <div id = "main-menu" class = "screen active">
+            <ul class = "menu">
+                <li><button id = "id-new-game">Play&nbsp;Game</button></li>
+                <li><button id = "id-high-scores">High&nbsp;Scores</button></li>
+                <li><button id = "id-help">Options</button></li>
+                <li><button id = "id-about">Credits</button></li>
+            </ul>
+        </div>
+        <div id = "game-play" class = "screen">
+            <canvas id = "id-canvas" class="canvas" width="1200" height="1600"></canvas>
+        </div>
+        <div id = "high-scores" class = "screen">
+            <h1>High Scores</h1>
+            <ol id="high-score-list">
+            </ol>
+            <ul class = "menu">
+                <li><button id = "id-reset-high-scores" onclick="resetHighScores()" type="button">Reset High Scores</button></li>
+                <li><button id = "id-high-scores-back">Back</button></li>
+            </ul>
+        </div>
+        <div id = "help" class = "screen">
+            <h1>Options</h1>
+            <p>Move Left: <a id="move-left-btn" href="#">A or &#8592;</a></p>
+            <p>Move Right: <a id="move-right-btn" href="#">D or &#8594;</a></p>
+            <p>Fire Torpedo: <a id="fire-torpedo-btn" href="#">Spacebar</a></p>
+            <p>Classic Torpedo Limit: <label class="switch">
+                <input type="checkbox" id="torpedo-limit-toggle">
+                <span class="slider round"></span>
+            </label></p>
+            <ul class = "menu">
+                <li><button id = "resetOptions" onclick="resetOptions()">Reset</button></li>
+                <li><button id = "id-help-back">Back</button></li>
+            </ul>
+        </div>
+        <div id = "about" class = "screen">
+            <h1>Credits</h1>
+            <p>Josh Williams</p>
+            <p>Based on Galaga by Namco</p>
+            <ul class = "menu">
+                <li><button id = "id-about-back">Back</button></li>
+            </ul>
+        </div>
+    </div>
+    <div id = "mobile-controls">
+        <input id="mobile-movement" type="range" min="0" max="100" value="50">
+        <button id="mobile-fire"></button>
+    </div>
+
+        <script>
+        let MyGame = {
+            screens : {
+                showScreen: function(screenId) {
+                    // Oculta todas las pantallas
+                    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                    // Muestra la seleccionada
+                    const target = document.getElementById(screenId);
+                    if (target) {
+                        target.classList.add('active');
+                    }
+                }
+            },
+            input: {},
+            objects: {},
+            render: []
+        };
+    </script>
+
+    <!-- 1. SISTEMAS BÁSICOS -->
+    <script src = "scripts/systems/math.js"></script>
+    <script src = "scripts/systems/input-keyboard.js"></script>
+    <script src = "scripts/systems/particles.js"></script>
+    <script src = "scripts/systems/pathing.js"></script>
+    
+    <!-- 2. RECURSOS -->
+    <script src = "scripts/systems/loadImages.js"></script>
+    <script src = "scripts/systems/loadSounds.js"></script>
+    
+    <!-- 3. MOTOR VISUAL Y LÓGICA -->
+    <script src = "scripts/render.js"></script>
+    <script src = "scripts/update.js"></script>
+    <script src = "scripts/stages.js"></script>
+    
+    <!-- 4. PERSISTENCIA -->
+    <script src = "scripts/systems/savescores.js"></script>
+    <script src = "scripts/systems/saveOptions.js"></script>
+    
+    <!-- 5. PÁGINAS -->
+    <script src = "scripts/pages/mainmenu.js"></script>
+    <script src = "scripts/pages/highscores.js"></script>
+    <script src = "scripts/pages/help.js"></script>
+    <script src = "scripts/pages/about.js"></script>
+    
+    <!-- 6. CORE -->
+    <script src = "scripts/gameplay.js"></script>
+
+    <script>
+         window.onload = function() {
+             try {
+                 // 1. Inicializar datos (pero NO arrancar el loop)
+                 MyGame.game.initialize(); 
+
+                 // 2. Mostrar el menú principal
+                 MyGame.screens.showScreen('main-menu');
+
+                 console.log("Galaga: Listo. Esperando clic en Play...");
+             } catch (e) {
+                 console.error("Error al iniciar Galaga:", e);
+             }
+         };
+
+         // --- CONTROL MANUAL DE BOTONES (Para evitar conflictos con mainmenu.js) ---
+         
+         // Botón PLAY
+         document.getElementById('id-new-game').addEventListener('click', function() {
+             MyGame.screens.showScreen('game-play');
+             MyGame.game.run(); // <--- AQUÍ es donde arranca el juego
+         });
+
+         // Botón HIGH SCORES
+         document.getElementById('id-high-scores').addEventListener('click', function() {
+             MyGame.screens.showScreen('high-scores');
+         });
+
+         // Botón OPTIONS
+         document.getElementById('id-help').addEventListener('click', function() {
+             MyGame.screens.showScreen('help');
+         });
+
+         // Botón CREDITS
+         document.getElementById('id-about').addEventListener('click', function() {
+             MyGame.screens.showScreen('about');
+         });
+
+         // Botones de VOLVER
+         document.getElementById('id-high-scores-back').addEventListener('click', () => MyGame.screens.showScreen('main-menu'));
+         document.getElementById('id-help-back').addEventListener('click', () => MyGame.screens.showScreen('main-menu'));
+         document.getElementById('id-about-back').addEventListener('click', () => MyGame.screens.showScreen('main-menu'));
+    </script>
+
+   
+
+
+
+
+</body>
+</html>
