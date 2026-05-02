@@ -564,7 +564,7 @@
                             <span>MUNDO 3: CÓDIGO</span>
                             PLAY THE CODE (Binary Reunion)
                         </a>
-<a href="#" onclick="document.getElementById('zeus-promo-window').style.display='block'; return false;" class="hero-button" style="background: linear-gradient(135deg, #ffffff, #e0f7fa); border: 2px solid #ffd700; color: #b8860b; box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);"><span style="color: #87ceeb; text-shadow: none;">MUNDO DIVINO</span>RTP MACHINE TIMBER ZEUS</a>
+<a href="#" onclick="zeusOpenRebelTerminal(); return false;" class="hero-button" style="background: linear-gradient(135deg, #ffffff, #e0f7fa); border: 2px solid #ffd700; color: #b8860b; box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);"><span style="color: #87ceeb; text-shadow: none;">MUNDO DIVINO</span>RTP MACHINE TIMBER ZEUS</a>
                         <a href="#concept" class="hero-button-disabled">
                             INICIAR HACKEO (ERROR: BLOCKED)
                         </a>
@@ -1319,31 +1319,25 @@
                 <span style="color: #5bbde3; font-weight: 700;">Luz, destello y ganancias divinas.</span>
             </p>
             
-            <!-- Botón freeplay -->
+            <!-- Botón de Acción -->
             <a href="/rtp-timberzeus/timberzeus.html" style="display: inline-block; background: #ffffff; color: #b8860b; font-weight: 900; letter-spacing: 2px; padding: 12px 24px; border: 2px solid #ffd700; border-radius: 30px; text-decoration: none; box-shadow: 0 0 15px #ffd700; transition: all 0.3s ease; text-transform: uppercase; font-size: 12px;" 
                onmouseover="this.style.boxShadow='0 0 30px #ffd700'; this.style.transform='scale(1.05)';" 
                onmouseout="this.style.boxShadow='0 0 15px #ffd700'; this.style.transform='scale(1)';">
                 PLAY_timberZEUS
             </a>
-
-            <!-- Botón REBELBET → Terminal Celestial -->
-            <div style="margin-top: 12px;">
-                <button onclick="zeusOpenRebelTerminal()"
-                    style="display:inline-block;background:#0a0a0a;color:#ffd700;
-                           font-family:'Orbitron',monospace;font-weight:700;font-size:11px;
-                           letter-spacing:0.2em;text-transform:uppercase;
-                           padding:11px 20px;border:2px solid #ffd700;border-radius:4px;
-                           cursor:pointer;width:100%;
-                           text-shadow:0 0 8px #ffd700,0 0 18px rgba(255,215,0,0.4);
-                           box-shadow:0 0 12px rgba(255,215,0,0.35),inset 0 0 8px rgba(255,215,0,0.06);
-                           transition:all 0.18s ease;">
+            <div style="margin-top:10px;">
+                <button onclick="document.getElementById('zeus-promo-window').style.display='none'; zeusOpenRebelTerminal();"
+                    style="background:#0a0a0a;color:#ffd700;font-family:'Orbitron',monospace;
+                           font-weight:700;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;
+                           padding:10px 18px;border:2px solid #ffd700;border-radius:4px;cursor:pointer;
+                           width:100%;text-shadow:0 0 8px #ffd700,0 0 18px rgba(255,215,0,0.4);
+                           box-shadow:0 0 12px rgba(255,215,0,0.35);">
                     ⚡ REBELBET // MAKE YOUR BET
                 </button>
             </div>
-        </div>
-        
-    </div>
-</div>
+        </div><!-- /body padding -->
+    </div><!-- /contenedor blanco -->
+</div><!-- /zeus-promo-window -->
 
 <!-- Animación de levitación suave (sin glitch) -->
 <style>
@@ -11685,288 +11679,822 @@ async function submitContactForm() {
     ⚡
 </button>
 
-<!-- ═══════════════════════════════════════════════════════════════
+<!-- ═══════════════════════════════════════════════════════════════════
      TIMBER ZEUS — TERMINAL CELESTIAL REBELDE
-     Colores: dorado #ffd700 / celeste #87ceeb / negro #0a0a0a
-════════════════════════════════════════════════════════════════ -->
+     Estética: slot machine divina (piedra/mármol/dorado)
+     Los dioses revelando su propio fraude. REBELBET style.
+════════════════════════════════════════════════════════════════════ -->
 
-<!-- OVERLAY oscuro -->
+<!-- Overlay -->
 <div id="zeus-rebel-overlay" onclick="zeusCloseRebelTerminal()"
     style="display:none;position:fixed;inset:0;z-index:200000;
-           background:rgba(0,0,0,0.82);backdrop-filter:blur(4px);"></div>
+           background:rgba(0,0,0,0.88);backdrop-filter:blur(6px);"></div>
 
-<!-- TERMINAL CELESTIAL -->
+<!-- TERMINAL PRINCIPAL -->
 <div id="zeus-rebel-terminal" style="
     display:none;position:fixed;
     top:50%;left:50%;transform:translate(-50%,-50%);
-    z-index:200001;width:min(680px,94vw);max-height:88vh;overflow-y:auto;
-    background:#050503;
-    border:2px solid #ffd700;border-radius:6px;
-    box-shadow:0 0 40px rgba(255,215,0,0.55),
-               0 0 80px rgba(135,206,235,0.18),
-               inset 0 0 30px rgba(255,215,0,0.04);
-    font-family:'Share Tech Mono','Courier New',monospace;
+    z-index:200001;
+    width:min(760px,96vw);
+    max-height:92vh;
+    border-radius:8px;
+    overflow:hidden;
+    background: linear-gradient(180deg, #1a1200 0%, #0a0800 100%);
+    border: 4px solid transparent;
+    background-clip: padding-box;
+    box-shadow:
+        0 0 0 4px #b8860b,
+        0 0 0 7px #3a2800,
+        0 0 0 9px #ffd700,
+        0 0 70px rgba(255,215,0,0.55),
+        0 0 140px rgba(135,206,235,0.22),
+        inset 0 0 40px rgba(255,215,0,0.04);
+    font-family:'robotoblack','Share Tech Mono','Courier New',monospace;
 ">
-    <!-- Header terminal -->
-    <div style="background:rgba(255,215,0,0.08);border-bottom:1px solid rgba(255,215,0,0.3);
-                padding:10px 18px;display:flex;justify-content:space-between;align-items:center;">
-        <span style="font-family:'Orbitron',monospace;font-size:11px;font-weight:700;
-                     color:#ffd700;letter-spacing:0.35em;
-                     text-shadow:0 0 10px #ffd700,0 0 22px rgba(255,215,0,0.4);">
-            ⚡ TIMBER ZEUS // REBEL_BET_TERMINAL v1.0
-        </span>
-        <button onclick="zeusCloseRebelTerminal()"
-            style="background:none;border:none;color:rgba(255,215,0,0.55);
-                   font-size:20px;cursor:pointer;line-height:1;padding:0 4px;">✕</button>
+
+    <!-- HEADER STICKY -->
+    <div id="zeus-term-header" style="
+        position:sticky;top:0;z-index:10;
+        background: linear-gradient(180deg, #2a1800 0%, #1a0e00 100%);
+        border-bottom: 3px solid #b8860b;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.3);
+        padding:0;
+    ">
+        <div style="height:3px;background:linear-gradient(90deg,transparent,#ffd700,#fff8dc,#ffd700,transparent);"></div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;">
+            <div style="display:flex;align-items:center;gap:14px;">
+                <!-- Thunder animado -->
+                <div id="zeus-thunder-sprite" style="
+                    width:60px;height:130px;flex-shrink:0;
+                    background-image:url('images/timberzeus-sprites/thunder_avatar_0.png');
+                    background-size:cover;background-repeat:no-repeat;
+                    filter:drop-shadow(0 0 10px #87ceeb) drop-shadow(0 0 20px rgba(135,206,235,0.7));
+                "></div>
+                <!-- Info badge -->
+                <img src="images/timberzeus-sprites/but_credits.png"
+                    style="width:49px;height:49px;flex-shrink:0;
+                           filter:drop-shadow(0 0 6px #ffd700) drop-shadow(0 0 14px rgba(255,215,0,0.5));
+                           cursor:default;"
+                    alt="info">
+                <div>
+                    <div style="
+                        font-family:'Orbitron',monospace;font-weight:900;font-size:20px;
+                        color:#ffd700;letter-spacing:0.28em;
+                        text-shadow:0 0 14px #ffd700,0 0 30px rgba(255,215,0,0.5);
+                        line-height:1.2;
+                    ">⚡ REBEL_BET_TERMINAL</div>
+                    <div style="
+                        font-size:13px;color:#87ceeb;letter-spacing:0.38em;
+                        text-shadow:0 0 8px #87ceeb;margin-top:3px;
+                        font-family:'robotoblack','Share Tech Mono',monospace;
+                    ">OLIMPO DIGITAL // REBELBET v1.0</div>
+                </div>
+            </div>
+            <!-- Botón cerrar con sprite but_exit -->
+            <button onclick="zeusCloseRebelTerminal()" style="
+                background:radial-gradient(circle,#3a1800,#1a0800);
+                border:2px solid #b8860b;border-radius:4px;
+                width:52px;height:52px;cursor:pointer;padding:4px;
+                box-shadow:0 0 10px rgba(255,215,0,0.35),inset 0 0 6px rgba(0,0,0,0.5);
+                display:flex;align-items:center;justify-content:center;
+                flex-shrink:0;transition:all 0.15s;
+            " onmouseover="this.style.boxShadow='0 0 20px rgba(255,215,0,0.75)'"
+               onmouseout="this.style.boxShadow='0 0 10px rgba(255,215,0,0.35),inset 0 0 6px rgba(0,0,0,0.5)'">
+                <img src="images/timberzeus-sprites/but_exit.png"
+                    style="width:52px;height:52px;display:block;filter:drop-shadow(0 0 4px rgba(255,215,0,0.6));"
+                    alt="cerrar">
+            </button>
+        </div>
+        <div style="height:2px;background:linear-gradient(90deg,transparent,#b8860b,#ffd700,#b8860b,transparent);"></div>
     </div>
 
-    <!-- Scanlines overlay -->
-    <div style="position:absolute;inset:0;pointer-events:none;z-index:1;
-                background:repeating-linear-gradient(0deg,
-                    rgba(255,215,0,0.018) 0px 1px,transparent 1px 3px);"></div>
+    <!-- CUERPO scrolleable -->
+    <div style="overflow-y:auto;max-height:calc(92vh - 140px);position:relative;">
 
-    <!-- Cuerpo del terminal -->
-    <div style="padding:28px 26px;position:relative;z-index:2;">
+        <!-- ── Thunder lateral izquierdo — cubre todo el alto con tiles ── -->
+        <div id="zeus-thunder-left" style="
+            position:absolute;left:0;top:0;bottom:0;width:73px;
+            pointer-events:none;z-index:3;
+            background-image:url('images/timberzeus-sprites/thunder_avatar_0.png');
+            background-size:73px auto;
+            background-repeat:repeat-y;
+            filter:drop-shadow(0 0 10px #87ceeb) drop-shadow(0 0 22px rgba(135,206,235,0.6));
+            opacity:0.80;
+            animation:zeusThunderBg 1.8s steps(1) infinite;
+            animation-delay:0.3s;
+        "></div>
 
-        <!-- Prompt inicial -->
-        <div id="zeus-term-content" style="color:#ffd700;font-size:13px;line-height:1.75;letter-spacing:0.04em;"></div>
+        <!-- ── Thunder lateral derecho — espejado, delay distinto ── -->
+        <div id="zeus-thunder-right" style="
+            position:absolute;right:0;top:0;bottom:0;width:73px;
+            pointer-events:none;z-index:3;
+            background-image:url('images/timberzeus-sprites/thunder_avatar_0.png');
+            background-size:73px auto;
+            background-repeat:repeat-y;
+            filter:drop-shadow(0 0 10px #ffd700) drop-shadow(0 0 22px rgba(255,215,0,0.55));
+            opacity:0.70;
+            transform:scaleX(-1);
+            animation:zeusThunderBg 1.8s steps(1) infinite;
+            animation-delay:0.9s;
+        "></div>
 
-        <!-- Separador -->
-        <div style="border-top:1px solid rgba(255,215,0,0.2);margin:22px 0;"></div>
+        <!-- Suspance reel fino en los bordes más internos -->
+        <div style="
+            position:absolute;left:73px;top:0;bottom:0;width:10px;
+            background-image:url('images/timberzeus-sprites/suspance_reel.png');
+            background-size:cover;background-repeat:repeat-y;
+            opacity:0.35;pointer-events:none;z-index:2;
+        "></div>
+        <div style="
+            position:absolute;right:73px;top:0;bottom:0;width:10px;
+            background-image:url('images/timberzeus-sprites/suspance_reel.png');
+            background-size:cover;background-repeat:repeat-y;
+            opacity:0.35;pointer-events:none;z-index:2;transform:scaleX(-1);
+        "></div>
 
-        <!-- ELECCIÓN: SINGLE vs T2E -->
-        <div id="zeus-bet-choice" style="display:none;">
-            <p style="color:#87ceeb;font-size:11px;letter-spacing:0.3em;margin-bottom:18px;
-                      text-shadow:0 0 8px #87ceeb;text-transform:uppercase;">
-                // ELEGÍ TU MODO DE APUESTA //
-            </p>
+        <!-- Scanlines -->
+        <div style="
+            position:absolute;inset:0;pointer-events:none;z-index:1;
+            background:repeating-linear-gradient(0deg,
+                rgba(255,215,0,0.02) 0px 1px,transparent 1px 3px);
+        "></div>
 
-            <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <!-- CONTENIDO — padding lateral para dejar espacio a los thunders (73px) + reel (10px) + margen (17px) = 100px -->
+        <div style="padding:26px 100px 26px 100px;position:relative;z-index:4;">
 
-                <!-- SINGLE -->
-                <div onclick="zeusSelectMode('single')" id="zeus-card-single"
-                    style="flex:1;min-width:220px;padding:20px;border:2px solid rgba(255,215,0,0.35);
-                           border-radius:5px;cursor:pointer;background:rgba(255,215,0,0.04);
-                           transition:all 0.18s ease;">
-                    <div style="font-family:'Orbitron',monospace;font-weight:700;font-size:13px;
-                                color:#ffd700;letter-spacing:0.2em;margin-bottom:10px;">
-                        🎰 SINGLE PLAYER
+            <div id="zeus-term-content" style="
+                font-family:'robotoblack','Share Tech Mono',monospace;
+                font-size:17px;
+                line-height:1.9;
+                letter-spacing:0.04em;
+                color:#fff;
+            "></div>
+
+            <div style="margin:26px 0;height:2px;
+                background:linear-gradient(90deg,transparent,#b8860b,#ffd700,#b8860b,transparent);"></div>
+
+            <!-- SECCIÓN DE APUESTA -->
+            <div id="zeus-bet-choice" style="display:none;">
+
+                <p style="
+                    color:#87ceeb;font-size:18px;letter-spacing:0.28em;margin-bottom:22px;
+                    text-shadow:0 0 10px #87ceeb,0 0 22px rgba(135,206,235,0.4);
+                    text-transform:uppercase;text-align:center;
+                    font-family:'Orbitron',monospace;font-weight:700;
+                ">// ELEGÍ TU MODO — EL OLIMPO ESPERA //</p>
+
+                <div style="display:flex;gap:16px;flex-wrap:wrap;">
+
+                    <!-- SINGLE -->
+                    <div onclick="zeusSelectMode('single')" id="zeus-card-single" style="
+                        flex:1;min-width:220px;padding:22px;cursor:pointer;
+                        background:radial-gradient(circle at 50% 0%,#1a0800,#0a0500);
+                        border:3px solid #6b3a00;border-radius:6px;
+                        box-shadow:inset 0 0 20px rgba(0,0,0,0.6),0 0 8px rgba(255,215,0,0.1);
+                        transition:all 0.2s ease;
+                    ">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                            <img src="images/timberzeus-sprites/but_exit.png"
+                                style="width:38px;height:38px;flex-shrink:0;
+                                       filter:drop-shadow(0 0 6px rgba(255,100,100,0.8));"
+                                alt="x">
+                            <div style="font-family:'Orbitron',monospace;font-weight:700;font-size:18px;
+                                        color:#ffd700;letter-spacing:0.2em;
+                                        text-shadow:0 0 10px #ffd700;">SINGLE PLAYER</div>
+                        </div>
+                        <div style="font-size:16px;color:rgba(255,255,255,0.65);line-height:1.8;margin-bottom:14px;
+                                    font-family:'robotoblack','Share Tech Mono',monospace;">
+                            Jugás solo contra la casa.<br>
+                            RTP oficial:
+                            <span style="color:#fff;font-weight:700;
+                                text-shadow:0 0 10px #ffd700,0 0 22px rgba(255,215,0,0.6),0 0 40px rgba(255,215,0,0.3);">
+                                87% casa / 13% vos
+                            </span>
+                        </div>
+                        <div style="
+                            background:rgba(180,20,20,0.15);border:1px solid rgba(220,60,60,0.45);
+                            border-radius:3px;padding:8px 12px;font-size:14px;color:#ff6666;
+                            letter-spacing:0.2em;text-shadow:0 0 6px rgba(255,100,100,0.5);
+                            font-family:'robotoblack',monospace;
+                        ">⚠ ODDS OFICIALES — MODO CLÁSICO</div>
                     </div>
-                    <div style="font-size:11px;color:rgba(255,215,0,0.6);line-height:1.6;margin-bottom:12px;">
-                        Jugás solo contra la casa.<br>
-                        RTP oficial: <span style="color:#ff4444;font-weight:700;">87% casa / 13% vos</span><br>
-                        <span style="color:rgba(255,255,255,0.35);font-size:10px;">
-                            * Modo para valientes o masoquistas
+
+                    <!-- T2E -->
+                    <div onclick="zeusSelectMode('t2e')" id="zeus-card-t2e" style="
+                        flex:1;min-width:220px;padding:22px;cursor:pointer;
+                        background:radial-gradient(circle at 50% 0%,#001a0a,#000a05);
+                        border:3px solid #006b30;border-radius:6px;
+                        box-shadow:inset 0 0 20px rgba(0,0,0,0.6),0 0 8px rgba(0,255,65,0.1);
+                        transition:all 0.2s ease;
+                    ">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                            <img src="images/timberzeus-sprites/but_yes.png"
+                                style="width:38px;height:38px;flex-shrink:0;
+                                       filter:drop-shadow(0 0 6px rgba(0,255,65,0.8));"
+                                alt="ok">
+                            <div style="font-family:'Orbitron',monospace;font-weight:700;font-size:18px;
+                                        color:#00ff41;letter-spacing:0.2em;
+                                        text-shadow:0 0 10px #00ff41;">T2E PvP DUEL</div>
+                        </div>
+                        <div style="font-size:16px;color:rgba(255,255,255,0.65);line-height:1.8;margin-bottom:14px;
+                                    font-family:'robotoblack','Share Tech Mono',monospace;">
+                            Jugás contra otro humano.<br>
+                            RTP efectivo:
+                            <span style="color:#fff;font-weight:700;
+                                text-shadow:0 0 10px #00ff41,0 0 22px rgba(0,255,65,0.5);">
+                                50% — 50% entre vos
+                            </span>
+                        </div>
+                        <div style="
+                            background:rgba(0,100,30,0.15);border:1px solid rgba(0,200,65,0.4);
+                            border-radius:3px;padding:8px 12px;font-size:14px;color:#00ff41;
+                            letter-spacing:0.2em;text-shadow:0 0 6px rgba(0,255,65,0.5);
+                            font-family:'robotoblack',monospace;
+                        ">✅ RAPPIBELLION MODE — RECOMENDADO</div>
+                    </div>
+
+                </div>
+
+                <!-- Panel T2E -->
+                <div id="zeus-bet-t2e-panel" style="display:none;margin-top:20px;">
+                    <p style="color:#87ceeb;font-size:16px;letter-spacing:0.22em;margin-bottom:14px;
+                               text-shadow:0 0 8px #87ceeb;font-family:'robotoblack',monospace;">
+                        // CONFIGURAR APUESTA T2E //
+                    </p>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+                        <div style="flex:1;min-width:140px;">
+                            <label style="font-size:14px;color:rgba(255,215,0,0.6);letter-spacing:0.2em;
+                                          display:block;margin-bottom:6px;font-family:'robotoblack',monospace;">APUESTA (USDT)</label>
+                            <select id="zeus-bet-amount" style="
+                                width:100%;background:#0a0500;border:2px solid #b8860b;
+                                color:#ffd700;font-family:'robotoblack','Share Tech Mono',monospace;
+                                font-size:17px;padding:10px 12px;border-radius:4px;outline:none;
+                                box-shadow:inset 0 0 10px rgba(0,0,0,0.5);
+                            ">
+                                <option value="1">1 USDT</option>
+                                <option value="5">5 USDT</option>
+                                <option value="10" selected>10 USDT</option>
+                                <option value="25">25 USDT</option>
+                                <option value="50">50 USDT</option>
+                            </select>
+                        </div>
+                        <div style="flex:1;min-width:140px;">
+                            <label style="font-size:14px;color:rgba(255,215,0,0.6);letter-spacing:0.2em;
+                                          display:block;margin-bottom:6px;font-family:'robotoblack',monospace;">TIEMPO (MIN)</label>
+                            <select id="zeus-bet-time" style="
+                                width:100%;background:#0a0500;border:2px solid #b8860b;
+                                color:#ffd700;font-family:'robotoblack','Share Tech Mono',monospace;
+                                font-size:17px;padding:10px 12px;border-radius:4px;outline:none;
+                                box-shadow:inset 0 0 10px rgba(0,0,0,0.5);
+                            ">
+                                <option value="3">3 min</option>
+                                <option value="5" selected>5 min</option>
+                                <option value="10">10 min</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="zeusLaunchT2E()" style="
+                        margin-top:16px;width:100%;
+                        background:radial-gradient(circle,#2a1400,#0a0500);
+                        border:3px solid #ffd700;color:#ffd700;
+                        font-family:'Orbitron',monospace;font-weight:700;font-size:18px;
+                        letter-spacing:0.28em;padding:16px;cursor:pointer;border-radius:5px;
+                        text-shadow:0 0 12px #ffd700;
+                        box-shadow:0 0 20px rgba(255,215,0,0.35),inset 0 0 12px rgba(0,0,0,0.5);
+                        transition:all 0.18s ease;text-transform:uppercase;
+                    " onmouseover="this.style.boxShadow='0 0 38px rgba(255,215,0,0.7),inset 0 0 12px rgba(0,0,0,0.5)'"
+                       onmouseout="this.style.boxShadow='0 0 20px rgba(255,215,0,0.35),inset 0 0 12px rgba(0,0,0,0.5)'">
+                        ⚡ BUSCAR RIVAL // MAKE YOUR BET
+                    </button>
+                </div>
+
+                <!-- Panel Single -->
+                <div id="zeus-bet-single-panel" style="display:none;margin-top:20px;">
+                    <div style="
+                        background:rgba(180,20,20,0.08);border:2px solid rgba(180,60,60,0.35);
+                        border-radius:5px;padding:20px;
+                        font-size:16px;color:rgba(255,255,255,0.6);line-height:1.8;
+                        font-family:'robotoblack','Share Tech Mono',monospace;
+                    ">
+                        <p style="color:#ff6666;font-family:'Orbitron',monospace;font-size:15px;
+                                   letter-spacing:0.2em;margin-bottom:10px;
+                                   text-shadow:0 0 8px rgba(255,100,100,0.5);">⚠ MODO CLÁSICO ACTIVADO</p>
+                        RTP oficial → 87% casa, 13% jugador.<br>
+                        <span style="color:rgba(255,255,255,0.38);font-size:14px;">
+                            "El único superdotado que juegue single por el 13%... respeto máximo." — SaGAI
                         </span>
                     </div>
-                    <div style="background:rgba(255,68,68,0.12);border:1px solid rgba(255,68,68,0.4);
-                                border-radius:3px;padding:6px 10px;font-size:10px;color:#ff4444;
-                                letter-spacing:0.2em;">
-                        ⚠ ODDS OFICIALES — MODO CLASICO
-                    </div>
+                    <a href="/rtp-timberzeus/timberzeus.html" target="_blank" style="
+                        display:block;margin-top:14px;text-align:center;
+                        background:radial-gradient(circle,#1a0800,#0a0400);
+                        border:2px solid rgba(255,215,0,0.45);color:rgba(255,215,0,0.8);
+                        font-family:'Orbitron',monospace;font-size:15px;letter-spacing:0.2em;
+                        padding:14px;border-radius:4px;text-decoration:none;text-transform:uppercase;
+                        box-shadow:0 0 10px rgba(255,215,0,0.15);transition:all 0.18s ease;
+                    ">JUGAR EN MODO CLÁSICO (FREEPLAY)</a>
                 </div>
 
-                <!-- T2E -->
-                <div onclick="zeusSelectMode('t2e')" id="zeus-card-t2e"
-                    style="flex:1;min-width:220px;padding:20px;border:2px solid rgba(255,215,0,0.35);
-                           border-radius:5px;cursor:pointer;background:rgba(255,215,0,0.04);
-                           transition:all 0.18s ease;">
-                    <div style="font-family:'Orbitron',monospace;font-weight:700;font-size:13px;
-                                color:#ffd700;letter-spacing:0.2em;margin-bottom:10px;">
-                        ⚡ T2E PvP DUEL
-                    </div>
-                    <div style="font-size:11px;color:rgba(255,215,0,0.6);line-height:1.6;margin-bottom:12px;">
-                        Jugás contra otro humano.<br>
-                        RTP efectivo: <span style="color:#00ff41;font-weight:700;">50% / 50% entre vos</span><br>
-                        <span style="color:rgba(255,255,255,0.35);font-size:10px;">
-                            * La casa no se lleva nada del match
-                        </span>
-                    </div>
-                    <div style="background:rgba(0,255,65,0.08);border:1px solid rgba(0,255,65,0.4);
-                                border-radius:3px;padding:6px 10px;font-size:10px;color:#00ff41;
-                                letter-spacing:0.2em;">
-                        ✅ RAPPIBELLION MODE — RECOMENDADO
-                    </div>
-                </div>
+            </div><!-- /zeus-bet-choice -->
 
+        </div><!-- /padding -->
+    </div><!-- /scrolleable -->
+</div><!-- /terminal -->
+
+    <!-- HEADER STICKY — Siempre visible al scrollear -->
+    <div id="zeus-term-header" style="
+        position:sticky;top:0;z-index:10;
+        background: linear-gradient(180deg, #2a1800 0%, #1a0e00 100%);
+        border-bottom: 3px solid #b8860b;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.3);
+        padding:0;
+    ">
+        <!-- Borde dorado superior decorativo -->
+        <div style="height:3px;background:linear-gradient(90deg,transparent,#ffd700,#fff8dc,#ffd700,transparent);"></div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;">
+            <!-- Thunder animado + título -->
+            <div style="display:flex;align-items:center;gap:14px;">
+                <div id="zeus-thunder-sprite" style="
+                    width:36px;height:80px;
+                    background-image:url('images/timberzeus-sprites/thunder_avatar_0.png');
+                    background-size:cover;background-repeat:no-repeat;
+                    flex-shrink:0;
+                    filter:drop-shadow(0 0 8px #87ceeb) drop-shadow(0 0 16px rgba(135,206,235,0.6));
+                "></div>
+                <div>
+                    <div style="
+                        font-family:'Orbitron',monospace;font-weight:900;font-size:14px;
+                        color:#ffd700;letter-spacing:0.3em;
+                        text-shadow:0 0 12px #ffd700,0 0 28px rgba(255,215,0,0.5);
+                        line-height:1.2;
+                    ">⚡ REBEL_BET_TERMINAL</div>
+                    <div style="
+                        font-size:10px;color:#87ceeb;letter-spacing:0.4em;
+                        text-shadow:0 0 8px #87ceeb;margin-top:2px;
+                    ">DESDE LAS ALTURAS DEL OLIMPO DIGITAL // v1.0</div>
+                </div>
             </div>
-
-            <!-- Panel apuesta T2E (oculto hasta selección) -->
-            <div id="zeus-bet-t2e-panel" style="display:none;margin-top:18px;">
-                <p style="color:#87ceeb;font-size:11px;letter-spacing:0.25em;margin-bottom:12px;">
-                    // CONFIGURAR APUESTA T2E //
-                </p>
-                <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
-                    <div style="flex:1;min-width:140px;">
-                        <label style="font-size:10px;color:rgba(255,215,0,0.55);letter-spacing:0.2em;
-                                      display:block;margin-bottom:6px;">APUESTA (USDT)</label>
-                        <select id="zeus-bet-amount"
-                            style="width:100%;background:#0a0a0a;border:1px solid rgba(255,215,0,0.45);
-                                   color:#ffd700;font-family:'Share Tech Mono',monospace;
-                                   font-size:13px;padding:8px 10px;border-radius:3px;outline:none;">
-                            <option value="1">1 USDT</option>
-                            <option value="5">5 USDT</option>
-                            <option value="10" selected>10 USDT</option>
-                            <option value="25">25 USDT</option>
-                            <option value="50">50 USDT</option>
-                        </select>
-                    </div>
-                    <div style="flex:1;min-width:140px;">
-                        <label style="font-size:10px;color:rgba(255,215,0,0.55);letter-spacing:0.2em;
-                                      display:block;margin-bottom:6px;">TIEMPO (MIN)</label>
-                        <select id="zeus-bet-time"
-                            style="width:100%;background:#0a0a0a;border:1px solid rgba(255,215,0,0.45);
-                                   color:#ffd700;font-family:'Share Tech Mono',monospace;
-                                   font-size:13px;padding:8px 10px;border-radius:3px;outline:none;">
-                            <option value="3">3 min</option>
-                            <option value="5" selected>5 min</option>
-                            <option value="10">10 min</option>
-                        </select>
-                    </div>
-                </div>
-                <button onclick="zeusLaunchT2E()"
-                    style="margin-top:14px;width:100%;background:#0a0a0a;
-                           border:2px solid #ffd700;color:#ffd700;
-                           font-family:'Orbitron',monospace;font-weight:700;font-size:12px;
-                           letter-spacing:0.25em;padding:13px;cursor:pointer;border-radius:3px;
-                           text-shadow:0 0 10px #ffd700;
-                           box-shadow:0 0 14px rgba(255,215,0,0.3);
-                           transition:all 0.18s ease;text-transform:uppercase;">
-                    ⚡ BUSCAR RIVAL // MAKE YOUR BET
-                </button>
-            </div>
-
-            <!-- Panel Single (oculto hasta selección) -->
-            <div id="zeus-bet-single-panel" style="display:none;margin-top:18px;">
-                <div style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.3);
-                            border-radius:4px;padding:16px;font-size:12px;color:rgba(255,255,255,0.65);
-                            line-height:1.7;">
-                    <p style="color:#ff4444;font-family:'Orbitron',monospace;font-size:11px;
-                               letter-spacing:0.2em;margin-bottom:8px;">⚠ MODO CLÁSICO ACTIVADO</p>
-                    Recordá: el RTP oficial es 87% para la casa y 13% para vos.<br>
-                    <span style="color:rgba(255,255,255,0.4);font-size:11px;">
-                        "El único superdotado mental que quiera jugar single por el 13%... bienvenido."
-                        <br>— SaGAI REBELBET
-                    </span>
-                </div>
-                <a href="/rtp-timberzeus/timberzeus.html" target="_blank"
-                    style="display:block;margin-top:12px;text-align:center;
-                           background:#0a0a0a;border:2px solid rgba(255,215,0,0.5);
-                           color:rgba(255,215,0,0.75);font-family:'Orbitron',monospace;
-                           font-size:11px;letter-spacing:0.2em;padding:12px;
-                           border-radius:3px;text-decoration:none;text-transform:uppercase;
-                           transition:all 0.18s ease;">
-                    JUGAR EN MODO CLÁSICO (FREEPLAY)
-                </a>
-            </div>
+            <!-- Botón cerrar estilo slot -->
+            <button onclick="zeusCloseRebelTerminal()" style="
+                background: radial-gradient(circle, #3a1800, #1a0800);
+                border:2px solid #b8860b;border-radius:4px;
+                color:#ffd700;font-size:18px;
+                width:38px;height:38px;
+                cursor:pointer;
+                box-shadow:0 0 8px rgba(255,215,0,0.3),inset 0 0 6px rgba(0,0,0,0.5);
+                display:flex;align-items:center;justify-content:center;
+                transition:all 0.15s;
+                flex-shrink:0;
+            " onmouseover="this.style.boxShadow='0 0 14px rgba(255,215,0,0.7)'"
+               onmouseout="this.style.boxShadow='0 0 8px rgba(255,215,0,0.3),inset 0 0 6px rgba(0,0,0,0.5)'">✕</button>
         </div>
+        <!-- Borde dorado inferior decorativo -->
+        <div style="height:2px;background:linear-gradient(90deg,transparent,#b8860b,#ffd700,#b8860b,transparent);"></div>
+    </div>
 
-    </div><!-- /padding -->
-</div>
+    <!-- CUERPO scrolleable -->
+    <div style="overflow-y:auto;max-height:calc(90vh - 130px);position:relative;">
+
+        <!-- Suspance reel como fondo lateral -->
+        <div style="
+            position:absolute;left:0;top:0;bottom:0;width:12px;
+            background-image:url('images/timberzeus-sprites/suspance_reel.png');
+            background-size:cover;background-repeat:repeat-y;
+            opacity:0.45;pointer-events:none;
+        "></div>
+        <div style="
+            position:absolute;right:0;top:0;bottom:0;width:12px;
+            background-image:url('images/timberzeus-sprites/suspance_reel.png');
+            background-size:cover;background-repeat:repeat-y;
+            opacity:0.45;pointer-events:none;transform:scaleX(-1);
+        "></div>
+
+        <!-- Scanlines -->
+        <div style="
+            position:absolute;inset:0;pointer-events:none;z-index:1;
+            background:repeating-linear-gradient(0deg,
+                rgba(255,215,0,0.02) 0px 1px,transparent 1px 3px);
+        "></div>
+
+        <!-- CONTENIDO TERMINAL -->
+        <div style="padding:24px 28px;position:relative;z-index:2;">
+
+            <!-- Texto del mensaje -->
+            <div id="zeus-term-content" style="
+                color:#fff;
+                font-size:15px;
+                line-height:1.85;
+                letter-spacing:0.05em;
+            "></div>
+
+            <!-- Separador estilo slot -->
+            <div style="
+                margin:24px 0;
+                height:2px;
+                background:linear-gradient(90deg,transparent,#b8860b,#ffd700,#b8860b,transparent);
+            "></div>
+
+            <!-- SECCIÓN DE APUESTA -->
+            <div id="zeus-bet-choice" style="display:none;">
+
+                <p style="
+                    color:#87ceeb;font-size:13px;letter-spacing:0.3em;margin-bottom:20px;
+                    text-shadow:0 0 10px #87ceeb,0 0 20px rgba(135,206,235,0.4);
+                    text-transform:uppercase;text-align:center;
+                ">// ELEGÍ TU MODO — EL OLIMPO ESPERA //</p>
+
+                <div style="display:flex;gap:16px;flex-wrap:wrap;">
+
+                    <!-- SINGLE -->
+                    <div onclick="zeusSelectMode('single')" id="zeus-card-single" style="
+                        flex:1;min-width:220px;padding:22px;cursor:pointer;
+                        background:radial-gradient(circle at 50% 0%, #1a0800, #0a0500);
+                        border:3px solid #6b3a00;border-radius:6px;
+                        box-shadow:inset 0 0 20px rgba(0,0,0,0.6),0 0 8px rgba(255,215,0,0.1);
+                        transition:all 0.2s ease;
+                    ">
+                        <div style="
+                            font-family:'Orbitron',monospace;font-weight:700;font-size:16px;
+                            color:#ffd700;letter-spacing:0.2em;margin-bottom:12px;
+                            text-shadow:0 0 10px #ffd700;
+                        ">🎰 SINGLE PLAYER</div>
+                        <div style="font-size:14px;color:rgba(255,255,255,0.65);line-height:1.8;margin-bottom:14px;">
+                            Jugás solo contra la casa.<br>
+                            RTP oficial:
+                            <span style="
+                                color:#fff;font-weight:700;
+                                text-shadow:0 0 10px #ffd700,0 0 22px rgba(255,215,0,0.6),0 0 40px rgba(255,215,0,0.3);
+                            ">87% casa</span>
+                            /
+                            <span style="
+                                color:#fff;font-weight:700;
+                                text-shadow:0 0 10px #ffd700,0 0 22px rgba(255,215,0,0.6);
+                            ">13% vos</span><br>
+                            <span style="color:rgba(255,255,255,0.35);font-size:12px;">
+                                * Para valientes o masoquistas
+                            </span>
+                        </div>
+                        <div style="
+                            background:rgba(180,20,20,0.15);border:1px solid rgba(220,60,60,0.45);
+                            border-radius:3px;padding:8px 12px;font-size:12px;color:#ff6666;
+                            letter-spacing:0.2em;text-shadow:0 0 6px rgba(255,100,100,0.5);
+                        ">⚠ ODDS OFICIALES — MODO CLÁSICO</div>
+                    </div>
+
+                    <!-- T2E -->
+                    <div onclick="zeusSelectMode('t2e')" id="zeus-card-t2e" style="
+                        flex:1;min-width:220px;padding:22px;cursor:pointer;
+                        background:radial-gradient(circle at 50% 0%, #001a0a, #000a05);
+                        border:3px solid #006b30;border-radius:6px;
+                        box-shadow:inset 0 0 20px rgba(0,0,0,0.6),0 0 8px rgba(0,255,65,0.1);
+                        transition:all 0.2s ease;
+                    ">
+                        <div style="
+                            font-family:'Orbitron',monospace;font-weight:700;font-size:16px;
+                            color:#00ff41;letter-spacing:0.2em;margin-bottom:12px;
+                            text-shadow:0 0 10px #00ff41;
+                        ">⚡ T2E PvP DUEL</div>
+                        <div style="font-size:14px;color:rgba(255,255,255,0.65);line-height:1.8;margin-bottom:14px;">
+                            Jugás contra otro humano.<br>
+                            RTP efectivo:
+                            <span style="
+                                color:#fff;font-weight:700;
+                                text-shadow:0 0 10px #00ff41,0 0 22px rgba(0,255,65,0.5);
+                            ">50% — 50%</span>
+                            entre vos.<br>
+                            <span style="color:rgba(255,255,255,0.35);font-size:12px;">
+                                * La casa no se lleva el pool del match
+                            </span>
+                        </div>
+                        <div style="
+                            background:rgba(0,100,30,0.15);border:1px solid rgba(0,200,65,0.4);
+                            border-radius:3px;padding:8px 12px;font-size:12px;color:#00ff41;
+                            letter-spacing:0.2em;text-shadow:0 0 6px rgba(0,255,65,0.5);
+                        ">✅ RAPPIBELLION MODE — RECOMENDADO</div>
+                    </div>
+
+                </div>
+
+                <!-- Panel T2E -->
+                <div id="zeus-bet-t2e-panel" style="display:none;margin-top:20px;">
+                    <p style="color:#87ceeb;font-size:13px;letter-spacing:0.25em;margin-bottom:14px;text-shadow:0 0 8px #87ceeb;">
+                        // CONFIGURAR APUESTA T2E //
+                    </p>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+                        <div style="flex:1;min-width:140px;">
+                            <label style="font-size:12px;color:rgba(255,215,0,0.6);letter-spacing:0.2em;display:block;margin-bottom:6px;">APUESTA (USDT)</label>
+                            <select id="zeus-bet-amount" style="
+                                width:100%;background:#0a0500;border:2px solid #b8860b;
+                                color:#ffd700;font-family:'Share Tech Mono',monospace;
+                                font-size:15px;padding:10px 12px;border-radius:4px;outline:none;
+                                box-shadow:inset 0 0 10px rgba(0,0,0,0.5);
+                            ">
+                                <option value="1">1 USDT</option>
+                                <option value="5">5 USDT</option>
+                                <option value="10" selected>10 USDT</option>
+                                <option value="25">25 USDT</option>
+                                <option value="50">50 USDT</option>
+                            </select>
+                        </div>
+                        <div style="flex:1;min-width:140px;">
+                            <label style="font-size:12px;color:rgba(255,215,0,0.6);letter-spacing:0.2em;display:block;margin-bottom:6px;">TIEMPO (MIN)</label>
+                            <select id="zeus-bet-time" style="
+                                width:100%;background:#0a0500;border:2px solid #b8860b;
+                                color:#ffd700;font-family:'Share Tech Mono',monospace;
+                                font-size:15px;padding:10px 12px;border-radius:4px;outline:none;
+                                box-shadow:inset 0 0 10px rgba(0,0,0,0.5);
+                            ">
+                                <option value="3">3 min</option>
+                                <option value="5" selected>5 min</option>
+                                <option value="10">10 min</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="zeusLaunchT2E()" style="
+                        margin-top:16px;width:100%;
+                        background:radial-gradient(circle, #2a1400, #0a0500);
+                        border:3px solid #ffd700;color:#ffd700;
+                        font-family:'Orbitron',monospace;font-weight:700;font-size:15px;
+                        letter-spacing:0.3em;padding:16px;cursor:pointer;border-radius:5px;
+                        text-shadow:0 0 12px #ffd700;
+                        box-shadow:0 0 20px rgba(255,215,0,0.35),inset 0 0 12px rgba(0,0,0,0.5);
+                        transition:all 0.18s ease;text-transform:uppercase;
+                    " onmouseover="this.style.boxShadow='0 0 35px rgba(255,215,0,0.65),inset 0 0 12px rgba(0,0,0,0.5)'"
+                       onmouseout="this.style.boxShadow='0 0 20px rgba(255,215,0,0.35),inset 0 0 12px rgba(0,0,0,0.5)'">
+                        ⚡ BUSCAR RIVAL // MAKE YOUR BET
+                    </button>
+                </div>
+
+                <!-- Panel Single -->
+                <div id="zeus-bet-single-panel" style="display:none;margin-top:20px;">
+                    <div style="
+                        background:rgba(180,20,20,0.08);border:2px solid rgba(180,60,60,0.35);
+                        border-radius:5px;padding:20px;font-size:14px;color:rgba(255,255,255,0.6);
+                        line-height:1.8;
+                    ">
+                        <p style="
+                            color:#ff6666;font-family:'Orbitron',monospace;font-size:13px;
+                            letter-spacing:0.2em;margin-bottom:10px;
+                            text-shadow:0 0 8px rgba(255,100,100,0.5);
+                        ">⚠ MODO CLÁSICO ACTIVADO</p>
+                        Recordá: RTP oficial → 87% casa, 13% jugador.<br>
+                        <span style="color:rgba(255,255,255,0.38);font-size:12px;">
+                            "El único superdotado que juegue single por el 13%... respeto máximo." — SaGAI
+                        </span>
+                    </div>
+                    <a href="/rtp-timberzeus/timberzeus.html" target="_blank" style="
+                        display:block;margin-top:14px;text-align:center;
+                        background:radial-gradient(circle,#1a0800,#0a0400);
+                        border:2px solid rgba(255,215,0,0.45);color:rgba(255,215,0,0.8);
+                        font-family:'Orbitron',monospace;font-size:13px;letter-spacing:0.2em;
+                        padding:14px;border-radius:4px;text-decoration:none;text-transform:uppercase;
+                        box-shadow:0 0 10px rgba(255,215,0,0.15);
+                        transition:all 0.18s ease;
+                    ">JUGAR EN MODO CLÁSICO (FREEPLAY)</a>
+                </div>
+
+            </div><!-- /zeus-bet-choice -->
+
+        </div><!-- /padding -->
+    </div><!-- /scrolleable -->
+</div><!-- /terminal -->
 
 <style>
-/* ── Zeus Terminal — animaciones ── */
+/* ── Zeus Terminal — animaciones ────────────────────────── */
+
+/* Roboto Black — misma fuente que el slot de Zeus */
+@font-face {
+    font-family: 'robotoblack';
+    src: url('images/timberzeus-sprites/roboto-black-webfont.woff2') format('woff2'),
+         url('images/timberzeus-sprites/roboto-black-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 @keyframes zeusTermType {
-    from { opacity: 0; transform: translateY(4px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from { opacity:0; transform:translateY(5px); }
+    to   { opacity:1; transform:translateY(0); }
 }
 @keyframes zeusCursor {
-    0%,100% { opacity: 1; } 50% { opacity: 0; }
+    0%,100%{opacity:1;} 50%{opacity:0;}
+}
+@keyframes zeusThunderBg {
+    0%   { background-image:url('images/timberzeus-sprites/thunder_avatar_0.png');  }
+    3%   { background-image:url('images/timberzeus-sprites/thunder_avatar_1.png');  }
+    6%   { background-image:url('images/timberzeus-sprites/thunder_avatar_2.png');  }
+    9%   { background-image:url('images/timberzeus-sprites/thunder_avatar_3.png');  }
+    12%  { background-image:url('images/timberzeus-sprites/thunder_avatar_4.png');  }
+    15%  { background-image:url('images/timberzeus-sprites/thunder_avatar_5.png');  }
+    18%  { background-image:url('images/timberzeus-sprites/thunder_avatar_6.png');  }
+    21%  { background-image:url('images/timberzeus-sprites/thunder_avatar_7.png');  }
+    24%  { background-image:url('images/timberzeus-sprites/thunder_avatar_8.png');  }
+    27%  { background-image:url('images/timberzeus-sprites/thunder_avatar_9.png');  }
+    30%  { background-image:url('images/timberzeus-sprites/thunder_avatar_10.png'); }
+    33%  { background-image:url('images/timberzeus-sprites/thunder_avatar_11.png'); }
+    36%  { background-image:url('images/timberzeus-sprites/thunder_avatar_12.png'); }
+    39%  { background-image:url('images/timberzeus-sprites/thunder_avatar_13.png'); }
+    42%  { background-image:url('images/timberzeus-sprites/thunder_avatar_14.png'); }
+    45%  { background-image:url('images/timberzeus-sprites/thunder_avatar_15.png'); }
+    48%  { background-image:url('images/timberzeus-sprites/thunder_avatar_16.png'); }
+    51%  { background-image:url('images/timberzeus-sprites/thunder_avatar_17.png'); }
+    54%  { background-image:url('images/timberzeus-sprites/thunder_avatar_18.png'); }
+    57%  { background-image:url('images/timberzeus-sprites/thunder_avatar_19.png'); }
+    60%  { background-image:url('images/timberzeus-sprites/thunder_avatar_20.png'); }
+    63%  { background-image:url('images/timberzeus-sprites/thunder_avatar_21.png'); }
+    66%  { background-image:url('images/timberzeus-sprites/thunder_avatar_22.png'); }
+    69%  { background-image:url('images/timberzeus-sprites/thunder_avatar_23.png'); }
+    72%  { background-image:url('images/timberzeus-sprites/thunder_avatar_24.png'); }
+    75%  { background-image:url('images/timberzeus-sprites/thunder_avatar_25.png'); }
+    78%  { background-image:url('images/timberzeus-sprites/thunder_avatar_26.png'); }
+    81%  { background-image:url('images/timberzeus-sprites/thunder_avatar_27.png'); }
+    84%  { background-image:url('images/timberzeus-sprites/thunder_avatar_28.png'); }
+    87%  { background-image:url('images/timberzeus-sprites/thunder_avatar_29.png'); }
+    90%  { background-image:url('images/timberzeus-sprites/thunder_avatar_30.png'); }
+    93%  { background-image:url('images/timberzeus-sprites/thunder_avatar_31.png'); }
+    96%  { background-image:url('images/timberzeus-sprites/thunder_avatar_32.png'); }
+    97%  { background-image:url('images/timberzeus-sprites/thunder_avatar_33.png'); }
+    98%  { background-image:url('images/timberzeus-sprites/thunder_avatar_34.png'); }
+    100% { background-image:url('images/timberzeus-sprites/thunder_avatar_35.png'); }
+}
+@keyframes zeusThunder {
+    0%   { background-image:url('images/timberzeus-sprites/thunder_avatar_0.png');  }
+    3%   { background-image:url('images/timberzeus-sprites/thunder_avatar_1.png');  }
+    6%   { background-image:url('images/timberzeus-sprites/thunder_avatar_2.png');  }
+    9%   { background-image:url('images/timberzeus-sprites/thunder_avatar_3.png');  }
+    12%  { background-image:url('images/timberzeus-sprites/thunder_avatar_4.png');  }
+    15%  { background-image:url('images/timberzeus-sprites/thunder_avatar_5.png');  }
+    18%  { background-image:url('images/timberzeus-sprites/thunder_avatar_6.png');  }
+    21%  { background-image:url('images/timberzeus-sprites/thunder_avatar_7.png');  }
+    24%  { background-image:url('images/timberzeus-sprites/thunder_avatar_8.png');  }
+    27%  { background-image:url('images/timberzeus-sprites/thunder_avatar_9.png');  }
+    30%  { background-image:url('images/timberzeus-sprites/thunder_avatar_10.png'); }
+    33%  { background-image:url('images/timberzeus-sprites/thunder_avatar_11.png'); }
+    36%  { background-image:url('images/timberzeus-sprites/thunder_avatar_12.png'); }
+    39%  { background-image:url('images/timberzeus-sprites/thunder_avatar_13.png'); }
+    42%  { background-image:url('images/timberzeus-sprites/thunder_avatar_14.png'); }
+    45%  { background-image:url('images/timberzeus-sprites/thunder_avatar_15.png'); }
+    48%  { background-image:url('images/timberzeus-sprites/thunder_avatar_16.png'); }
+    51%  { background-image:url('images/timberzeus-sprites/thunder_avatar_17.png'); }
+    54%  { background-image:url('images/timberzeus-sprites/thunder_avatar_18.png'); }
+    57%  { background-image:url('images/timberzeus-sprites/thunder_avatar_19.png'); }
+    60%  { background-image:url('images/timberzeus-sprites/thunder_avatar_20.png'); }
+    63%  { background-image:url('images/timberzeus-sprites/thunder_avatar_21.png'); }
+    66%  { background-image:url('images/timberzeus-sprites/thunder_avatar_22.png'); }
+    69%  { background-image:url('images/timberzeus-sprites/thunder_avatar_23.png'); }
+    72%  { background-image:url('images/timberzeus-sprites/thunder_avatar_24.png'); }
+    75%  { background-image:url('images/timberzeus-sprites/thunder_avatar_25.png'); }
+    78%  { background-image:url('images/timberzeus-sprites/thunder_avatar_26.png'); }
+    81%  { background-image:url('images/timberzeus-sprites/thunder_avatar_27.png'); }
+    84%  { background-image:url('images/timberzeus-sprites/thunder_avatar_28.png'); }
+    87%  { background-image:url('images/timberzeus-sprites/thunder_avatar_29.png'); }
+    90%  { background-image:url('images/timberzeus-sprites/thunder_avatar_30.png'); }
+    93%  { background-image:url('images/timberzeus-sprites/thunder_avatar_31.png'); }
+    96%  { background-image:url('images/timberzeus-sprites/thunder_avatar_32.png'); }
+    97%  { background-image:url('images/timberzeus-sprites/thunder_avatar_33.png'); }
+    98%  { background-image:url('images/timberzeus-sprites/thunder_avatar_34.png'); }
+    100% { background-image:url('images/timberzeus-sprites/thunder_avatar_35.png'); }
+}
+#zeus-thunder-sprite {
+    animation: zeusThunder 1.4s steps(1) infinite;
 }
 .zeus-line {
-    opacity: 0;
-    animation: zeusTermType 0.25s ease forwards;
-    display: block;
+    opacity:0;
+    animation:zeusTermType 0.3s ease forwards;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    min-height:28px;
+    margin-bottom:2px;
 }
 .zeus-cursor {
-    display: inline-block;
-    animation: zeusCursor 0.9s step-end infinite;
-    color: #ffd700;
+    display:inline-block;
+    animation:zeusCursor 0.85s step-end infinite;
+    color:#ffd700;
 }
-/* Card hover */
-#zeus-card-single:hover, #zeus-card-t2e:hover {
-    border-color: #ffd700 !important;
-    background: rgba(255,215,0,0.08) !important;
-    box-shadow: 0 0 16px rgba(255,215,0,0.25);
-}
-#zeus-card-t2e.selected {
-    border-color: #00ff41 !important;
-    background: rgba(0,255,65,0.06) !important;
-    box-shadow: 0 0 14px rgba(0,255,65,0.2);
-}
-#zeus-card-single.selected {
-    border-color: #ff4444 !important;
-    background: rgba(255,68,68,0.06) !important;
-}
+#zeus-card-single:hover { border-color:#b8860b !important; box-shadow:0 0 18px rgba(255,215,0,0.25),inset 0 0 20px rgba(0,0,0,0.6) !important; }
+#zeus-card-t2e:hover    { border-color:#00cc33 !important; box-shadow:0 0 18px rgba(0,255,65,0.2),inset 0 0 20px rgba(0,0,0,0.6) !important; }
+#zeus-card-t2e.selected { border-color:#00ff41 !important; box-shadow:0 0 22px rgba(0,255,65,0.4),inset 0 0 20px rgba(0,30,10,0.6) !important; }
+#zeus-card-single.selected { border-color:#ff6666 !important; box-shadow:0 0 18px rgba(255,80,80,0.3),inset 0 0 20px rgba(30,0,0,0.6) !important; }
 </style>
 
 <script>
-/* ── TIMBER ZEUS REBEL TERMINAL ──────────────────────────────── */
+/* ── TIMBER ZEUS REBEL TERMINAL ────────────────────────── */
 var _zeusTyping = false;
 
 var _zeusLines = [
-    { text: '> CONEXIÓN ESTABLECIDA — CANAL ENCRIPTADO ✓',        color: '#87ceeb', delay: 0    },
-    { text: '> FUENTE: SaGAI // RAPPIBELLION REBELBET NODE',       color: '#ffd700', delay: 280  },
-    { text: '───────────────────────────────────────────',          color: 'rgba(255,215,0,0.25)', delay: 500 },
-    { text: '> INFORME LOTERÍA // DATOS OFICIALES VERIFICADOS:',   color: '#87ceeb', delay: 750  },
-    { text: '',                                                      color: '', delay: 900 },
-    { text: '  RTP (Return To Player) OFICIAL:',                   color: 'rgba(255,255,255,0.6)', delay: 1050 },
-    { text: '  ████ CASA  →  87% del pool por spin',               color: '#ff4444', delay: 1250 },
-    { text: '  ████ VOS   →  13% si tenés mucha suerte',           color: 'rgba(255,68,68,0.7)', delay: 1450 },
-    { text: '',                                                      color: '', delay: 1600 },
-    { text: '> TRADUCCIÓN PARA HUMANOS:',                          color: '#87ceeb', delay: 1800 },
-    { text: '  Por cada $100 que metés, la casa se queda $87.',    color: 'rgba(255,255,255,0.55)', delay: 2000 },
-    { text: '  Eso es el modelo que defienden como "juego limpio".',color: 'rgba(255,255,255,0.45)', delay: 2200 },
-    { text: '',                                                      color: '', delay: 2350 },
-    { text: '───────────────────────────────────────────',          color: 'rgba(255,215,0,0.25)', delay: 2500 },
-    { text: '> PROPUESTA REBELDE // TIMBER ZEUS T2E:',             color: '#ffd700', delay: 2700 },
-    { text: '',                                                      color: '', delay: 2850 },
-    { text: '  EN VEZ DE:  87% casa — 13% jugador',                color: '#ff4444', delay: 3000 },
-    { text: '  LOGRAMOS:   50% — 50% entre participantes.',        color: '#00ff41', delay: 3200 },
-    { text: '',                                                      color: '', delay: 3350 },
-    { text: '  La casa opera el match. No se lleva el pool.',       color: 'rgba(255,255,255,0.55)', delay: 3500 },
-    { text: '  El ganador se lleva lo del perdedor. Punto.',        color: 'rgba(255,255,255,0.55)', delay: 3700 },
-    { text: '',                                                      color: '', delay: 3850 },
-    { text: '  (Salvo que seas un superdotado mental y quieras',    color: 'rgba(255,255,255,0.38)', delay: 4000 },
-    { text: '   jugar single por ese glorioso 13%... respeto.) 🫡', color: 'rgba(255,255,255,0.38)', delay: 4150 },
-    { text: '',                                                      color: '', delay: 4300 },
-    { text: '───────────────────────────────────────────',          color: 'rgba(255,215,0,0.25)', delay: 4450 },
-    { text: '> ELEGÍ TU MODO. EL OLIMPO TE OBSERVA.',              color: '#ffd700', delay: 4600 },
-    { text: '> REBELBET OUT. ⚡',                                   color: '#87ceeb', delay: 4800 },
+    { text:'> CONEXIÓN ESTABLECIDA — CANAL ENCRIPTADO ✓',             color:'#87ceeb', delay:0    },
+    { text:'> FUENTE: SaGAI // RAPPIBELLION REBELBET NODE',            color:'#ffd700', delay:300  },
+    { text:'──────────────────────────────────────────────────',        color:'rgba(255,215,0,0.22)', delay:520 },
+    { text:'',                                                           color:'', delay:660 },
+    { text:'> INFORME RECIBIDO DE: LOTERÍA // DATOS VERIFICADOS',      color:'#87ceeb', delay:820  },
+    { text:'',                                                           color:'', delay:960 },
+    { text:'  RTP — RETURN TO PLAYER (nombre oficial, te lo juro):',   color:'rgba(255,255,255,0.55)', delay:1100 },
+    { text:'',                                                           color:'', delay:1220 },
+    { type:'sprite', src:'images/timberzeus-sprites/but_yes.png', glow:'#ffd700',
+      text:' CASA  →  87% del pool por cada spin',  color:'white', delay:1380 },
+    { type:'sprite', src:'images/timberzeus-sprites/but_exit.png', glow:'#ffd700',
+      text:' VOS   →  13% si los astros se alinean', color:'white', delay:1560 },
+    { text:'',                                                           color:'', delay:1700 },
+    { text:'> TRADUCCIÓN PARA MORTALES SIN ABOGADO:',                  color:'#87ceeb', delay:1860 },
+    { text:'',                                                           color:'', delay:1980 },
+    { text:'  De cada $100 que metés, Zeus se queda $87.',             color:'rgba(255,255,255,0.6)', delay:2120 },
+    { text:'  Vos competís por el $13 restante.',                      color:'rgba(255,255,255,0.6)', delay:2300 },
+    { text:'  Y esto... lo llaman "entretenimiento responsable". 🫠',   color:'rgba(255,255,255,0.45)', delay:2480 },
+    { text:'',                                                           color:'', delay:2620 },
+    { text:'──────────────────────────────────────────────────',        color:'rgba(255,215,0,0.22)', delay:2760 },
+    { text:'',                                                           color:'', delay:2900 },
+    { text:'> PROPUESTA RAPPIBELLION // TIMBER ZEUS T2E:',             color:'#ffd700', delay:3060 },
+    { text:'',                                                           color:'', delay:3180 },
+    { type:'sprite', src:'images/timberzeus-sprites/but_exit.png', glow:'#ff6666',
+      text:' EN VEZ DE →  87% casa — 13% jugador',  color:'#ff6666', delay:3320 },
+    { type:'sprite', src:'images/timberzeus-sprites/but_yes.png', glow:'#00ff41',
+      text:' LOGRAMOS  →  50% — 50% entre vos.',    color:'#00ff41', delay:3500 },
+    { text:'',                                                           color:'', delay:3640 },
+    { text:'  La plataforma opera el match. No toca el pool.',         color:'rgba(255,255,255,0.55)', delay:3780 },
+    { text:'  El ganador se queda con lo del perdedor. Así de simple.',color:'rgba(255,255,255,0.55)', delay:3960 },
+    { text:'',                                                           color:'', delay:4100 },
+    { text:'  (Salvo que seas un superdotado mental que quiera',        color:'rgba(255,255,255,0.32)', delay:4240 },
+    { text:'   jugar single por ese glorioso 13%... máximo respeto.) 🫡', color:'rgba(255,255,255,0.32)', delay:4380 },
+    { text:'',                                                           color:'', delay:4500 },
+    { text:'──────────────────────────────────────────────────',        color:'rgba(255,215,0,0.22)', delay:4640 },
+    { text:'',                                                           color:'', delay:4760 },
+    { text:'> ELEGÍ TU MODO. EL OLIMPO TE OBSERVA.',                   color:'#ffd700', delay:4900 },
+    { text:'> REBELBET OUT. ⚡⚡⚡',                                   color:'#87ceeb', delay:5060 },
 ];
 
 function zeusOpenRebelTerminal() {
-    if (_zeusTyping) return;
+    if (_zeusTyping) {
+        document.getElementById('zeus-rebel-overlay').style.display = 'block';
+        document.getElementById('zeus-rebel-terminal').style.display = 'block';
+        return;
+    }
     document.getElementById('zeus-rebel-overlay').style.display = 'block';
     document.getElementById('zeus-rebel-terminal').style.display = 'block';
     document.getElementById('zeus-term-content').innerHTML = '';
     document.getElementById('zeus-bet-choice').style.display = 'none';
     document.getElementById('zeus-bet-t2e-panel').style.display = 'none';
     document.getElementById('zeus-bet-single-panel').style.display = 'none';
-    // Reset card selection
-    document.getElementById('zeus-card-single').classList.remove('selected');
-    document.getElementById('zeus-card-t2e').classList.remove('selected');
+    var sc = document.getElementById('zeus-card-single');
+    var tc = document.getElementById('zeus-card-t2e');
+    if(sc) sc.classList.remove('selected');
+    if(tc) tc.classList.remove('selected');
 
     _zeusTyping = true;
     _zeusLines.forEach(function(line, idx) {
         setTimeout(function() {
             var container = document.getElementById('zeus-term-content');
             if (!container) return;
-            var span = document.createElement('span');
-            span.className = 'zeus-line';
-            span.style.animationDelay = '0ms';
-            span.style.color = line.color || 'rgba(255,215,0,0.7)';
-            span.textContent = line.text;
-            container.appendChild(span);
-            container.appendChild(document.createElement('br'));
-            // Auto-scroll
-            container.scrollTop = container.scrollHeight;
-            // Mostrar selector después del último mensaje
+
+            var wrapper = document.createElement('span');
+            wrapper.className = 'zeus-line';
+            wrapper.style.display = 'flex';
+            wrapper.style.alignItems = 'center';
+            wrapper.style.gap = '8px';
+            wrapper.style.minHeight = '28px';
+
+            if (line.type === 'sprite' && line.src) {
+                // Línea con sprite (but_yes / but_exit)
+                var img = document.createElement('img');
+                img.src = line.src;
+                img.style.cssText = 'width:32px;height:32px;flex-shrink:0;vertical-align:middle;'
+                    + 'filter:drop-shadow(0 0 6px ' + (line.glow || '#ffd700') + ')'
+                    + ' drop-shadow(0 0 14px ' + (line.glow || '#ffd700') + ');';
+                wrapper.appendChild(img);
+
+                var txt = document.createElement('span');
+                txt.style.color  = line.color || '#fff';
+                txt.style.fontFamily = "'robotoblack','Share Tech Mono',monospace";
+                txt.style.fontSize   = '17px';
+                if (line.glow) {
+                    txt.style.textShadow = '0 0 10px ' + line.glow
+                        + ', 0 0 24px ' + line.glow
+                        + ', 0 0 44px ' + (line.glow.replace(')', ',0.35)').replace('rgb','rgba'));
+                }
+                txt.textContent = line.text;
+                wrapper.appendChild(txt);
+
+            } else {
+                // Línea de texto normal
+                wrapper.style.color      = line.color || 'rgba(255,215,0,0.7)';
+                wrapper.style.fontFamily = "'robotoblack','Share Tech Mono',monospace";
+                wrapper.style.fontSize   = '17px';
+                if (line.glow) {
+                    wrapper.style.textShadow = '0 0 10px ' + line.glow
+                        + ', 0 0 24px ' + line.glow;
+                }
+                wrapper.textContent = line.text;
+            }
+
+            container.appendChild(wrapper);
+
+            // Mostrar selector al terminar
             if (idx === _zeusLines.length - 1) {
                 setTimeout(function() {
                     _zeusTyping = false;
-                    document.getElementById('zeus-bet-choice').style.display = 'block';
-                }, 300);
+                    var bc = document.getElementById('zeus-bet-choice');
+                    if (bc) bc.style.display = 'block';
+                }, 350);
             }
         }, line.delay);
     });
@@ -11975,40 +12503,37 @@ function zeusOpenRebelTerminal() {
 function zeusCloseRebelTerminal() {
     document.getElementById('zeus-rebel-overlay').style.display = 'none';
     document.getElementById('zeus-rebel-terminal').style.display = 'none';
-    _zeusTyping = false;
 }
 
 function zeusSelectMode(mode) {
-    // Reset cards
-    document.getElementById('zeus-card-single').classList.remove('selected');
-    document.getElementById('zeus-card-t2e').classList.remove('selected');
-    document.getElementById('zeus-bet-t2e-panel').style.display = 'none';
-    document.getElementById('zeus-bet-single-panel').style.display = 'none';
-
+    var sc = document.getElementById('zeus-card-single');
+    var tc = document.getElementById('zeus-card-t2e');
+    var tp = document.getElementById('zeus-bet-t2e-panel');
+    var sp = document.getElementById('zeus-bet-single-panel');
+    if(sc) sc.classList.remove('selected');
+    if(tc) tc.classList.remove('selected');
+    if(tp) tp.style.display = 'none';
+    if(sp) sp.style.display = 'none';
     if (mode === 't2e') {
-        document.getElementById('zeus-card-t2e').classList.add('selected');
-        document.getElementById('zeus-bet-t2e-panel').style.display = 'block';
+        if(tc) tc.classList.add('selected');
+        if(tp) tp.style.display = 'block';
     } else {
-        document.getElementById('zeus-card-single').classList.add('selected');
-        document.getElementById('zeus-bet-single-panel').style.display = 'block';
+        if(sc) sc.classList.add('selected');
+        if(sp) sp.style.display = 'block';
     }
 }
 
 function zeusLaunchT2E() {
-    var amount = document.getElementById('zeus-bet-amount').value;
-    var time   = document.getElementById('zeus-bet-time').value;
+    var amount = document.getElementById('zeus-bet-amount') ? document.getElementById('zeus-bet-amount').value : '10';
+    var time   = document.getElementById('zeus-bet-time')   ? document.getElementById('zeus-bet-time').value   : '5';
     zeusCloseRebelTerminal();
-    // Reutilizar el sistema de apuestas existente si está disponible
     if (typeof window.requireWalletThenBet === 'function') {
         window.requireWalletThenBet('make-bet-timberzeus', {
-            gameType:   'timberzeus',
-            amount:     parseFloat(amount),
-            timeLimit:  parseInt(time) * 60,
-            boostLimit: 1
+            gameType:'timberzeus', amount:parseFloat(amount),
+            timeLimit:parseInt(time)*60, boostLimit:1
         });
     } else {
-        // Fallback: abrir directamente la carpeta T2E
-        window.open('/timberzeus-t2e/timberzeus-t2e.html?player=p1&bet=' + amount + '&time=' + time, '_blank');
+        window.open('/rtp-timberzeus-t2e/timberzeus-t2e.html?player=p1&bet='+amount+'&time='+time, '_blank');
     }
 }
 </script>
