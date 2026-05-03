@@ -575,6 +575,40 @@
                             <span>LA ECONOMÍA</span>
                             TOKEN T2E ECONOMIA
                         </a>
+
+                        <!-- RAPPIA CREDIT PAPER V01 — negro/cyan/naranja -->
+                        <a href="/docs/RAPPIBELLION PAPER RPPI-C.pdf" target="_blank"
+                            class="hero-button rappia-naranja"
+                            style="
+                                background:#000 !important;
+                                border-color: var(--color-primario) !important;
+                                color: var(--color-primario) !important;
+                                box-shadow: 0 0 18px rgba(0,188,255,0.5),
+                                            0 0 6px rgba(255,165,0,0.3) !important;
+                                text-shadow: 0 0 8px var(--color-primario) !important;
+                            ">
+                            <span style="color:var(--color-caos-amarillo) !important;
+                                         text-shadow:0 0 8px rgba(255,165,0,0.7) !important;">
+                                RPPI-C
+                            </span>
+                            RAPPIA CREDIT PAPER V01
+                        </a>
+
+                        <!-- OBTENER CRÉDITOS — estilo buy-rppi con glow naranja -->
+                        <button id="get-credits-button"
+                            class="hero-button-buy"
+                            onclick="rppiOpenLogin()"
+                            style="
+                                border-color: var(--color-caos-amarillo) !important;
+                                box-shadow: 0 0 22px rgba(255,165,0,0.65),
+                                            0 0 60px rgba(255,165,0,0.2),
+                                            inset 0 0 14px rgba(255,165,0,0.08) !important;
+                                text-shadow: 0 0 10px rgba(255,165,0,0.8),
+                                             0 0 24px rgba(255,165,0,0.4) !important;
+                                color: var(--color-caos-amarillo) !important;
+                            ">
+                            OBTENER CRÉDITOS RAPPIA
+                        </button>
                         <a href="#team" class="hero-button rappia-azul">
                             <span>LA FILOSOFÍA</span>
                             LA RESISTENCIA
@@ -952,6 +986,557 @@
 <button id="contact-float-btn" title="Contacto / Soporte" onclick="document.getElementById('contact-modal').style.display='flex'">
     SOPORTE
 </button>
+
+<!-- === BOTÓN FLOTANTE: ACCESO RAPPIA (sin emoji, más grande) === -->
+<button id="login-float-btn" title="Acceso al sistema RAPPIA" onclick="rppiOpenLogin()">
+    ACCESO RAPPIA
+</button>
+
+<style>
+/* LOGIN BUTTON — mismo base que contact-float-btn pero naranja/cyan */
+#login-float-btn {
+    font-family: 'Orbitron', 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    /* Se posiciona por JS junto al SOPORTE */
+}
+</style>
+
+<!-- ══════════════════════════════════════════════════════════
+     RAPPIA CREDIT MODAL — terminología RPPI-C Paper v01
+     ARS 145 = 1 RPPI-C = 0.10 RPPI token
+     USD 1   = 10 RPPI-C = 1  RPPI token
+════════════════════════════════════════════════════════════ -->
+<div id="rppi-login-modal" style="
+    display:none;position:fixed;inset:0;z-index:10001;
+    background:rgba(0,0,0,0.94);
+    align-items:center;justify-content:center;padding:16px;
+    font-family:'Share Tech Mono','Courier New',monospace;
+">
+  <div style="
+      width:min(500px,96vw);max-height:90vh;overflow-y:auto;
+      background:#020408;
+      border:2px solid var(--color-primario,#00BCFF);
+      border-radius:6px;
+      box-shadow:0 0 40px rgba(0,188,255,0.45),
+                 0 0 80px rgba(255,165,0,0.12),
+                 inset 0 0 30px rgba(0,188,255,0.03);
+      position:relative;
+  ">
+      <div style="position:absolute;inset:0;pointer-events:none;z-index:0;
+                  background:repeating-linear-gradient(0deg,rgba(0,188,255,0.018) 0px 1px,transparent 1px 3px);"></div>
+
+      <!-- Header -->
+      <div style="
+          background:rgba(0,188,255,0.07);
+          border-bottom:2px solid rgba(0,188,255,0.3);
+          padding:14px 18px;display:flex;justify-content:space-between;align-items:center;
+          position:relative;z-index:1;
+      ">
+          <div>
+              <div style="font-family:'Orbitron',monospace;font-weight:700;font-size:14px;
+                          color:#00BCFF;letter-spacing:0.28em;
+                          text-shadow:0 0 10px #00BCFF,0 0 22px rgba(0,188,255,0.4);">
+                  RAPPIBELLION_SYS
+              </div>
+              <div style="font-size:10px;color:rgba(255,165,0,0.7);letter-spacing:0.35em;margin-top:2px;
+                          text-shadow:0 0 6px rgba(255,165,0,0.5);">
+                  RAPPIA CREDIT // RPPI-C ACCESS v1.0
+              </div>
+          </div>
+          <button onclick="rppiCloseLogin()"
+              style="background:none;border:1px solid rgba(0,188,255,0.4);color:#00BCFF;
+                     font-size:16px;width:32px;height:32px;border-radius:3px;cursor:pointer;
+                     display:flex;align-items:center;justify-content:center;">✕</button>
+      </div>
+
+      <!-- Body -->
+      <div style="padding:22px 20px;position:relative;z-index:1;">
+
+          <!-- Terminal typing -->
+          <div id="rppi-login-term" style="
+              font-size:12px;color:rgba(0,255,65,0.75);
+              line-height:1.7;letter-spacing:0.06em;margin-bottom:18px;min-height:54px;
+          "></div>
+
+          <!-- Tabs -->
+          <div style="display:flex;gap:0;margin-bottom:18px;border:1px solid rgba(0,188,255,0.3);border-radius:4px;overflow:hidden;">
+              <button id="rppi-tab-login" onclick="rppiSetTab('login')"
+                  style="flex:1;padding:9px;background:rgba(0,188,255,0.15);border:none;
+                         color:#00BCFF;font-family:'Orbitron',monospace;font-size:11px;
+                         letter-spacing:0.2em;cursor:pointer;border-right:1px solid rgba(0,188,255,0.3);">
+                  ACCEDER
+              </button>
+              <button id="rppi-tab-reg" onclick="rppiSetTab('register')"
+                  style="flex:1;padding:9px;background:transparent;border:none;
+                         color:rgba(0,188,255,0.5);font-family:'Orbitron',monospace;font-size:11px;
+                         letter-spacing:0.2em;cursor:pointer;">
+                  REGISTRARSE
+              </button>
+          </div>
+
+          <!-- FORM LOGIN -->
+          <div id="rppi-form-login">
+              <div style="display:flex;flex-direction:column;gap:13px;">
+                  <div>
+                      <label style="font-size:11px;color:rgba(0,188,255,0.55);letter-spacing:0.25em;display:block;margin-bottom:5px;">EMAIL</label>
+                      <input id="rppi-login-email" type="email" placeholder="tu@email.com"
+                          style="width:100%;background:#020408;border:1px solid rgba(0,188,255,0.35);
+                                 color:#00BCFF;font-family:'Share Tech Mono',monospace;font-size:14px;
+                                 padding:10px 12px;border-radius:3px;outline:none;box-sizing:border-box;"
+                          onfocus="this.style.borderColor='#00BCFF'"
+                          onblur="this.style.borderColor='rgba(0,188,255,0.35)'">
+                  </div>
+                  <div>
+                      <label style="font-size:11px;color:rgba(0,188,255,0.55);letter-spacing:0.25em;display:block;margin-bottom:5px;">ALIAS CBU/CVU</label>
+                      <input id="rppi-login-alias" type="text" placeholder="mi.alias.mp"
+                          style="width:100%;background:#020408;border:1px solid rgba(0,188,255,0.35);
+                                 color:#00BCFF;font-family:'Share Tech Mono',monospace;font-size:14px;
+                                 padding:10px 12px;border-radius:3px;outline:none;box-sizing:border-box;"
+                          onfocus="this.style.borderColor='#00BCFF'"
+                          onblur="this.style.borderColor='rgba(0,188,255,0.35)'">
+                  </div>
+              </div>
+              <div id="rppi-login-error" style="display:none;margin-top:11px;padding:8px 12px;
+                  background:rgba(255,45,120,0.1);border:1px solid rgba(255,45,120,0.4);
+                  border-radius:3px;font-size:12px;color:#FF2D78;"></div>
+              <button onclick="rppiDoLogin()"
+                  style="margin-top:16px;width:100%;background:transparent;
+                         border:2px solid #00BCFF;color:#00BCFF;
+                         font-family:'Orbitron',monospace;font-weight:700;font-size:13px;
+                         letter-spacing:0.3em;padding:13px;cursor:pointer;border-radius:3px;
+                         text-shadow:0 0 10px #00BCFF;
+                         box-shadow:0 0 16px rgba(0,188,255,0.3);transition:all 0.18s;text-transform:uppercase;"
+                  onmouseover="this.style.background='rgba(0,188,255,0.1)';this.style.boxShadow='0 0 28px rgba(0,188,255,0.55)'"
+                  onmouseout="this.style.background='transparent';this.style.boxShadow='0 0 16px rgba(0,188,255,0.3)'">
+                  INGRESAR AL SISTEMA
+              </button>
+          </div>
+
+          <!-- FORM REGISTRO -->
+          <div id="rppi-form-register" style="display:none;">
+              <div style="display:flex;flex-direction:column;gap:13px;">
+                  <div>
+                      <label style="font-size:11px;color:rgba(0,188,255,0.55);letter-spacing:0.25em;display:block;margin-bottom:5px;">EMAIL</label>
+                      <input id="rppi-reg-email" type="email" placeholder="tu@email.com"
+                          style="width:100%;background:#020408;border:1px solid rgba(0,188,255,0.35);
+                                 color:#00BCFF;font-family:'Share Tech Mono',monospace;font-size:14px;
+                                 padding:10px 12px;border-radius:3px;outline:none;box-sizing:border-box;"
+                          onfocus="this.style.borderColor='#00BCFF'"
+                          onblur="this.style.borderColor='rgba(0,188,255,0.35)'">
+                  </div>
+                  <div>
+                      <label style="font-size:11px;color:rgba(0,188,255,0.55);letter-spacing:0.25em;display:block;margin-bottom:5px;">ALIAS CBU/CVU</label>
+                      <input id="rppi-reg-alias" type="text" placeholder="mi.alias.mp"
+                          style="width:100%;background:#020408;border:1px solid rgba(0,188,255,0.35);
+                                 color:#00BCFF;font-family:'Share Tech Mono',monospace;font-size:14px;
+                                 padding:10px 12px;border-radius:3px;outline:none;box-sizing:border-box;"
+                          onfocus="this.style.borderColor='#00BCFF'"
+                          onblur="this.style.borderColor='rgba(0,188,255,0.35)'">
+                  </div>
+              </div>
+              <!-- Nota QR -->
+              <div style="margin-top:13px;padding:12px;background:rgba(0,255,65,0.04);
+                  border:1px solid rgba(0,255,65,0.22);border-radius:3px;
+                  font-size:11px;color:rgba(0,255,65,0.65);line-height:1.75;letter-spacing:0.07em;">
+                  <span style="color:#00FF41;font-weight:700;">// QR DE ACREDITACIÓN RPPI-C //</span><br>
+                  Al registrarte, generamos tu QR único de acreditación.<br>
+                  Transferí usando tu alias como referencia y los RPPI-C se acreditan automáticamente.<br>
+                  <span style="color:rgba(255,165,0,0.8);font-weight:700;font-size:12px;">
+                      ARS 145 = 1 RPPI-C = 0.10 RPPI token<br>
+                      USD 1 = 10 RPPI-C = 1 RPPI token
+                  </span>
+              </div>
+              <div id="rppi-reg-error" style="display:none;margin-top:11px;padding:8px 12px;
+                  background:rgba(255,45,120,0.1);border:1px solid rgba(255,45,120,0.4);
+                  border-radius:3px;font-size:12px;color:#FF2D78;"></div>
+              <button onclick="rppiDoRegister()"
+                  style="margin-top:16px;width:100%;background:transparent;
+                         border:2px solid #00FF41;color:#00FF41;
+                         font-family:'Orbitron',monospace;font-weight:700;font-size:13px;
+                         letter-spacing:0.3em;padding:13px;cursor:pointer;border-radius:3px;
+                         text-shadow:0 0 10px #00FF41;
+                         box-shadow:0 0 16px rgba(0,255,65,0.3);transition:all 0.18s;text-transform:uppercase;"
+                  onmouseover="this.style.background='rgba(0,255,65,0.08)'"
+                  onmouseout="this.style.background='transparent'">
+                  CREAR CUENTA RAPPIA
+              </button>
+          </div>
+
+          <!-- PANEL USUARIO LOGUEADO -->
+          <div id="rppi-panel-user" style="display:none;">
+              <div style="text-align:center;padding:8px 0 18px;">
+                  <div id="rppi-user-greeting" style="font-family:'Orbitron',monospace;font-size:13px;
+                       color:#00BCFF;letter-spacing:0.2em;text-shadow:0 0 10px #00BCFF;"></div>
+              </div>
+
+              <!-- Créditos RPPI-C -->
+              <div style="background:rgba(0,188,255,0.06);border:1px solid rgba(0,188,255,0.28);
+                          border-radius:4px;padding:14px;margin-bottom:14px;text-align:center;">
+                  <div style="font-size:10px;color:rgba(255,165,0,0.65);letter-spacing:0.3em;margin-bottom:4px;">
+                      LICENCIAS RPPI-C DISPONIBLES
+                  </div>
+                  <div id="rppi-user-credits" style="font-family:'Orbitron',monospace;font-size:34px;
+                       color:#00BCFF;text-shadow:0 0 18px #00BCFF;font-weight:900;">0</div>
+                  <div style="font-size:10px;color:rgba(255,165,0,0.55);letter-spacing:0.25em;margin-top:3px;">
+                      RPPI-C // ARS 145 = 1 RPPI-C
+                  </div>
+              </div>
+
+              <!-- QR de acreditación -->
+              <div style="text-align:center;margin-bottom:16px;">
+                  <div style="font-size:11px;color:rgba(0,255,65,0.6);letter-spacing:0.25em;margin-bottom:10px;">
+                      // QR ACREDITACIÓN RPPI-C //
+                  </div>
+                  <div id="rppi-qr-container" style="
+                      display:inline-block;background:#fff;padding:10px;border-radius:4px;
+                      box-shadow:0 0 20px rgba(0,188,255,0.4);
+                  ">
+                      <canvas id="rppi-qr-canvas" width="150" height="150"></canvas>
+                  </div>
+                  <div id="rppi-qr-uid" style="margin-top:10px;font-size:11px;
+                       color:rgba(255,165,0,0.75);letter-spacing:0.18em;font-family:'Orbitron',monospace;"></div>
+                  <div style="margin-top:6px;font-size:10px;color:rgba(0,255,65,0.5);line-height:1.7;">
+                      Transferí a tu alias con este código como concepto.<br>
+                      Acreditación automática en ~1 min.
+                  </div>
+              </div>
+
+              <!-- Botón Burn & Reward (no "retirar dinero") -->
+              <button onclick="rppiOpenBurnReward()"
+                  style="width:100%;background:transparent;
+                         border:2px solid rgba(255,165,0,0.6);color:rgba(255,165,0,0.85);
+                         font-family:'Orbitron',monospace;font-size:12px;
+                         letter-spacing:0.2em;padding:12px;cursor:pointer;border-radius:3px;
+                         text-shadow:0 0 8px rgba(255,165,0,0.5);
+                         box-shadow:0 0 12px rgba(255,165,0,0.18);
+                         transition:all 0.18s;margin-bottom:10px;"
+                  onmouseover="this.style.background='rgba(255,165,0,0.08)';this.style.boxShadow='0 0 22px rgba(255,165,0,0.4)'"
+                  onmouseout="this.style.background='transparent';this.style.boxShadow='0 0 12px rgba(255,165,0,0.18)'">
+                  BURN &amp; REWARD — CONTRIBUIR A LA RED
+              </button>
+
+              <button onclick="rppiLogout()"
+                  style="width:100%;background:transparent;border:1px solid rgba(255,45,120,0.35);
+                         color:rgba(255,45,120,0.6);font-family:'Orbitron',monospace;font-size:11px;
+                         letter-spacing:0.2em;padding:9px;cursor:pointer;border-radius:3px;
+                         transition:all 0.18s;"
+                  onmouseover="this.style.borderColor='#FF2D78';this.style.color='#FF2D78'"
+                  onmouseout="this.style.borderColor='rgba(255,45,120,0.35)';this.style.color='rgba(255,45,120,0.6)'">
+                  CERRAR SESIÓN
+              </button>
+          </div>
+
+          <!-- Burn & Reward panel (oculto, se abre desde el botón) -->
+          <div id="rppi-burn-panel" style="display:none;margin-top:14px;">
+              <div style="background:rgba(255,165,0,0.05);border:1px solid rgba(255,165,0,0.3);
+                          border-radius:4px;padding:16px;">
+                  <div style="font-family:'Orbitron',monospace;font-size:12px;color:rgba(255,165,0,0.85);
+                               letter-spacing:0.2em;margin-bottom:10px;text-shadow:0 0 8px rgba(255,165,0,0.4);">
+                      OPTIMIZATION BOUNTY // BURN RPPI-C
+                  </div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.5);line-height:1.75;margin-bottom:14px;">
+                      Al ceder tus RPPI-C no utilizados contribuís a liberar<br>
+                      capacidad operativa del ecosistema.<br>
+                      <span style="color:rgba(255,165,0,0.6);">Rappibellion evaluará el Bounty de Optimización<br>
+                      y lo liquidará vía transferencia a tu alias registrado.</span>
+                  </div>
+                  <div style="display:flex;gap:10px;align-items:flex-end;">
+                      <div style="flex:1;">
+                          <label style="font-size:10px;color:rgba(255,165,0,0.55);letter-spacing:0.2em;display:block;margin-bottom:5px;">RPPI-C A QUEMAR</label>
+                          <input id="rppi-burn-amount" type="number" min="1" placeholder="10"
+                              style="width:100%;background:#020408;border:1px solid rgba(255,165,0,0.4);
+                                     color:rgba(255,165,0,0.9);font-family:'Share Tech Mono',monospace;
+                                     font-size:15px;padding:9px 11px;border-radius:3px;outline:none;box-sizing:border-box;">
+                      </div>
+                  </div>
+                  <div id="rppi-burn-preview" style="margin-top:10px;font-size:11px;color:rgba(0,255,65,0.6);letter-spacing:0.1em;min-height:18px;"></div>
+                  <button onclick="rppiDoBurn()"
+                      style="margin-top:12px;width:100%;background:transparent;
+                             border:2px solid rgba(255,165,0,0.7);color:rgba(255,165,0,0.9);
+                             font-family:'Orbitron',monospace;font-size:12px;
+                             letter-spacing:0.2em;padding:12px;cursor:pointer;border-radius:3px;
+                             text-shadow:0 0 8px rgba(255,165,0,0.5);transition:all 0.18s;"
+                      onmouseover="this.style.background='rgba(255,165,0,0.1)'"
+                      onmouseout="this.style.background='transparent'">
+                      CONSULTANDO CAPACIDAD BOUNTY...
+                  </button>
+              </div>
+          </div>
+
+      </div><!-- /body -->
+  </div>
+</div>
+
+<script>
+/* ── RAPPIA CREDIT SYSTEM — Frontend ───────────────────────── */
+var _rppiUser = null;
+var WORKER_URL = 'https://rapid-figemini-proxy.workers.dev';
+var RAPPIA_PER_ARS = 145; // ARS 145 = 1 RPPI-C
+
+// Cargar QR lib
+(function() {
+    if (!window._rppiQRLoaded) {
+        window._rppiQRLoaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+        s.async = true;
+        document.head.appendChild(s);
+    }
+})();
+
+document.addEventListener('DOMContentLoaded', function() {
+    _rppiPositionBtn();
+    _rppiCheckSession();
+    // Preview burn amount
+    var burnInput = document.getElementById('rppi-burn-amount');
+    if (burnInput) {
+        burnInput.addEventListener('input', function() {
+            var amt = parseInt(this.value) || 0;
+            var ars = amt * RAPPIA_PER_ARS;
+            var el  = document.getElementById('rppi-burn-preview');
+            if (el) el.textContent = amt > 0
+                ? '→ Equivalente: ARS ' + ars + ' // Bounty a evaluar por el sistema'
+                : '';
+        });
+    }
+});
+
+function _rppiPositionBtn() {
+    var soporte  = document.getElementById('contact-float-btn');
+    var loginBtn = document.getElementById('login-float-btn');
+    if (!soporte || !loginBtn) return;
+    var rect = soporte.getBoundingClientRect();
+    var cs   = window.getComputedStyle(soporte);
+    // Copiar estilos base del soporte
+    loginBtn.style.position   = 'fixed';
+    loginBtn.style.bottom     = cs.bottom;
+    loginBtn.style.zIndex     = '2147483640';
+    loginBtn.style.background = soporte.style.background || cs.background;
+    loginBtn.style.border     = cs.border;
+    loginBtn.style.padding    = cs.padding;
+    loginBtn.style.borderRadius = cs.borderRadius;
+    loginBtn.style.fontSize   = '13px'; // más grande
+    loginBtn.style.fontFamily = cs.fontFamily;
+    loginBtn.style.fontWeight = '700';
+    loginBtn.style.letterSpacing = '0.22em';
+    loginBtn.style.textTransform = 'uppercase';
+    loginBtn.style.cursor     = 'pointer';
+    // Posición: al lado derecho del SOPORTE
+    loginBtn.style.left = (rect.right + 10) + 'px';
+    // Color naranja/cyan diferenciado
+    loginBtn.style.color      = 'rgba(255,165,0,0.9)';
+    loginBtn.style.boxShadow  = '0 0 12px rgba(255,165,0,0.35)';
+    loginBtn.style.borderColor = 'rgba(255,165,0,0.6)';
+}
+
+function _rppiCheckSession() {
+    try {
+        var saved = localStorage.getItem('rppi_user');
+        if (saved) { _rppiUser = JSON.parse(saved); _rppiUpdateUI(); }
+    } catch(e) {}
+}
+
+function rppiOpenLogin() {
+    document.getElementById('rppi-login-modal').style.display = 'flex';
+    _rppiTypeTerminal();
+    if (_rppiUser) { rppiSetPanel('user'); }
+    else           { rppiSetTab('login'); }
+}
+function rppiCloseLogin() {
+    document.getElementById('rppi-login-modal').style.display = 'none';
+}
+
+function rppiSetTab(tab) {
+    document.getElementById('rppi-form-login').style.display    = tab === 'login'    ? 'block' : 'none';
+    document.getElementById('rppi-form-register').style.display = tab === 'register' ? 'block' : 'none';
+    document.getElementById('rppi-panel-user').style.display    = 'none';
+    document.getElementById('rppi-burn-panel').style.display    = 'none';
+    document.getElementById('rppi-tab-login').style.background  = tab === 'login'    ? 'rgba(0,188,255,0.15)' : 'transparent';
+    document.getElementById('rppi-tab-login').style.color       = tab === 'login'    ? '#00BCFF' : 'rgba(0,188,255,0.45)';
+    document.getElementById('rppi-tab-reg').style.background    = tab === 'register' ? 'rgba(0,188,255,0.15)' : 'transparent';
+    document.getElementById('rppi-tab-reg').style.color         = tab === 'register' ? '#00BCFF' : 'rgba(0,188,255,0.45)';
+}
+function rppiSetPanel(p) {
+    document.getElementById('rppi-form-login').style.display    = 'none';
+    document.getElementById('rppi-form-register').style.display = 'none';
+    document.getElementById('rppi-panel-user').style.display    = p === 'user' ? 'block' : 'none';
+    document.getElementById('rppi-burn-panel').style.display    = 'none';
+}
+
+var _rppiTermLines = [
+    '> INICIANDO PROTOCOLO RAPPIA CREDIT...',
+    '> VERIFICANDO CAPACIDAD DE RED...',
+    '> ACCESO AUTORIZADO. RPPI-C DISPONIBLE.'
+];
+function _rppiTypeTerminal() {
+    var el = document.getElementById('rppi-login-term');
+    if (!el) return;
+    el.innerHTML = '';
+    var delay = 0;
+    _rppiTermLines.forEach(function(line) {
+        setTimeout(function() {
+            var span = document.createElement('span');
+            span.style.cssText = 'display:block;opacity:0;animation:zeusTermType 0.3s ease forwards;';
+            span.textContent = line;
+            el.appendChild(span);
+        }, delay);
+        delay += 340;
+    });
+}
+
+function _rppiValidate(email, alias) {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Email inválido';
+    if (!alias || alias.trim().length < 3) return 'Alias demasiado corto';
+    return null;
+}
+
+function rppiDoLogin() {
+    var email = (document.getElementById('rppi-login-email').value || '').trim();
+    var alias = (document.getElementById('rppi-login-alias').value || '').trim();
+    var err   = _rppiValidate(email, alias);
+    var errEl = document.getElementById('rppi-login-error');
+    if (err) { errEl.style.display = 'block'; errEl.textContent = '⚠ ' + err; return; }
+    errEl.style.display = 'none';
+    _rppiFetchOrCreateUser(email, alias, function(user) {
+        _rppiUser = user;
+        localStorage.setItem('rppi_user', JSON.stringify(user));
+        _rppiUpdateUI();
+        rppiSetPanel('user');
+    }, function(e) { errEl.style.display = 'block'; errEl.textContent = '⚠ ' + (e || 'Error'); });
+}
+
+function rppiDoRegister() {
+    var email = (document.getElementById('rppi-reg-email').value || '').trim();
+    var alias = (document.getElementById('rppi-reg-alias').value || '').trim();
+    var err   = _rppiValidate(email, alias);
+    var errEl = document.getElementById('rppi-reg-error');
+    if (err) { errEl.style.display = 'block'; errEl.textContent = '⚠ ' + err; return; }
+    errEl.style.display = 'none';
+    _rppiFetchOrCreateUser(email, alias, function(user) {
+        _rppiUser = user;
+        localStorage.setItem('rppi_user', JSON.stringify(user));
+        _rppiUpdateUI();
+        rppiSetPanel('user');
+    }, function(e) { errEl.style.display = 'block'; errEl.textContent = '⚠ ' + (e || 'Error'); });
+}
+
+function _rppiFetchOrCreateUser(email, alias, onOk, onErr) {
+    var FB_URL = 'https://rappibellion-default-rtdb.firebaseio.com';
+    var key    = 'rppi_users/' + email.replace(/[.#$\[\]]/g, '_');
+    fetch(FB_URL + '/' + key + '.json')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data && data.email) {
+                if (data.alias && data.alias !== alias) {
+                    onErr('Alias no coincide con el registrado.');
+                    return;
+                }
+                onOk(data);
+            } else {
+                var uid = 'RPPI-' + Math.random().toString(16).slice(2,10).toUpperCase();
+                var newUser = { email, alias, credits: 0, createdAt: Date.now(), uid };
+                // Crear usuario + índice UID
+                Promise.all([
+                    fetch(FB_URL + '/' + key + '.json', {
+                        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newUser)
+                    }),
+                    fetch(FB_URL + '/rappi_uid_index/' + uid + '.json', {
+                        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(key.replace('rppi_users/', ''))
+                    })
+                ]).then(function() { onOk(newUser); }).catch(onErr);
+            }
+        })
+        .catch(function() { onErr('Sin conexión con el servidor.'); });
+}
+
+function _rppiUpdateUI() {
+    if (!_rppiUser) return;
+    var g = document.getElementById('rppi-user-greeting');
+    var c = document.getElementById('rppi-user-credits');
+    var q = document.getElementById('rppi-qr-uid');
+    if (g) g.textContent = '// ' + _rppiUser.email.split('@')[0].toUpperCase() + ' //';
+    if (c) c.textContent = _rppiUser.credits || 0;
+    if (q) q.textContent = 'UID: ' + (_rppiUser.uid || '');
+    var lb = document.getElementById('login-float-btn');
+    if (lb) lb.textContent = (_rppiUser.email.split('@')[0].substring(0,10).toUpperCase());
+    _rppiGenQR();
+    // Refrescar balance desde worker
+    fetch(WORKER_URL + '/rappia/balance', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: _rppiUser.email })
+    }).then(function(r) { return r.json(); }).then(function(d) {
+        if (d.ok && c) {
+            c.textContent = d.credits;
+            _rppiUser.credits = d.credits;
+            localStorage.setItem('rppi_user', JSON.stringify(_rppiUser));
+        }
+    }).catch(function(){});
+}
+
+function _rppiGenQR() {
+    if (!_rppiUser || !_rppiUser.uid) return;
+    var canvas = document.getElementById('rppi-qr-canvas');
+    if (!canvas) return;
+    var tryGen = function() {
+        if (window.QRCode) {
+            try {
+                var ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, 150, 150);
+                new QRCode(canvas, {
+                    text: 'RAPPIA://' + (_rppiUser.alias || '') + '?uid=' + _rppiUser.uid + '&ref=RAPPIBELLION',
+                    width: 150, height: 150,
+                    colorDark: '#020408', colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            } catch(e) {}
+        } else { setTimeout(tryGen, 400); }
+    };
+    tryGen();
+}
+
+function rppiOpenBurnReward() {
+    var bp = document.getElementById('rppi-burn-panel');
+    if (bp) bp.style.display = bp.style.display === 'none' ? 'block' : 'none';
+}
+
+function rppiDoBurn() {
+    if (!_rppiUser) return;
+    var amt = parseInt(document.getElementById('rppi-burn-amount').value) || 0;
+    if (amt < 1) return;
+    if (amt > (_rppiUser.credits || 0)) {
+        alert('RPPI-C insuficientes'); return;
+    }
+    // Llamar al worker para registrar el retiro
+    fetch(WORKER_URL + '/rappia/withdraw', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: _rppiUser.email, credits: amt })
+    }).then(function(r) { return r.json(); }).then(function(d) {
+        if (d.ok) {
+            alert('✅ Solicitud registrada!\n' + d.message + '\nID: ' + d.withdrawId);
+            _rppiUser.credits = (_rppiUser.credits || 0) - amt;
+            localStorage.setItem('rppi_user', JSON.stringify(_rppiUser));
+            var c = document.getElementById('rppi-user-credits');
+            if (c) c.textContent = _rppiUser.credits;
+            document.getElementById('rppi-burn-panel').style.display = 'none';
+        } else {
+            alert('⚠ ' + (d.error || 'Error al procesar'));
+        }
+    }).catch(function() { alert('Sin conexión'); });
+}
+
+function rppiLogout() {
+    _rppiUser = null;
+    localStorage.removeItem('rppi_user');
+    var lb = document.getElementById('login-float-btn');
+    if (lb) lb.textContent = 'ACCESO RAPPIA';
+    rppiCloseLogin();
+}
+</script>
 
 <!-- === MODAL: FORMULARIO DE CONTACTO / TICKET === -->
 <div id="contact-modal" style="display:none;position:fixed;inset:0;z-index:10000;
@@ -11722,32 +12307,38 @@ async function submitContactForm() {
     ">
         <div style="height:3px;background:linear-gradient(90deg,transparent,#ffd700,#fff8dc,#ffd700,transparent);"></div>
 
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;">
-            <div style="display:flex;align-items:center;gap:14px;">
-                <!-- Thunder animado -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;gap:8px;min-width:0;">
+            <div style="display:flex;align-items:center;gap:10px;min-width:0;overflow:hidden;">
+                <!-- Thunder animado — se achica en mobile -->
                 <div id="zeus-thunder-sprite" style="
-                    width:60px;height:130px;flex-shrink:0;
+                    width:clamp(36px,8vw,60px);
+                    height:clamp(78px,18vw,130px);
+                    flex-shrink:0;
                     background-image:url('images/timberzeus-sprites/thunder_avatar_0.png');
                     background-size:cover;background-repeat:no-repeat;
                     filter:drop-shadow(0 0 10px #87ceeb) drop-shadow(0 0 20px rgba(135,206,235,0.7));
                 "></div>
-                <!-- Info badge -->
+                <!-- Info badge — oculto en pantallas < 420px -->
                 <img src="images/timberzeus-sprites/but_credits.png"
-                    style="width:49px;height:49px;flex-shrink:0;
+                    style="width:clamp(0px,7vw,49px);height:clamp(0px,7vw,49px);flex-shrink:0;
                            filter:drop-shadow(0 0 6px #ffd700) drop-shadow(0 0 14px rgba(255,215,0,0.5));
-                           cursor:default;"
+                           cursor:default;display:block;"
+                    class="zeus-hdr-badge"
                     alt="info">
-                <div>
+                <div style="min-width:0;overflow:hidden;">
                     <div style="
-                        font-family:'Orbitron',monospace;font-weight:900;font-size:20px;
-                        color:#ffd700;letter-spacing:0.28em;
+                        font-family:'Orbitron',monospace;font-weight:900;
+                        font-size:clamp(10px,3.2vw,20px);
+                        color:#ffd700;letter-spacing:clamp(0.05em,0.5vw,0.28em);
                         text-shadow:0 0 14px #ffd700,0 0 30px rgba(255,215,0,0.5);
-                        line-height:1.2;
+                        line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
                     ">⚡ REBEL_BET_TERMINAL</div>
                     <div style="
-                        font-size:13px;color:#87ceeb;letter-spacing:0.38em;
-                        text-shadow:0 0 8px #87ceeb;margin-top:3px;
+                        font-size:clamp(8px,2vw,13px);color:#87ceeb;
+                        letter-spacing:clamp(0.05em,0.4vw,0.38em);
+                        text-shadow:0 0 8px #87ceeb;margin-top:2px;
                         font-family:'robotoblack','Share Tech Mono',monospace;
+                        white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
                     ">OLIMPO DIGITAL // REBELBET v1.0</div>
                 </div>
             </div>
@@ -11755,14 +12346,16 @@ async function submitContactForm() {
             <button onclick="zeusCloseRebelTerminal()" style="
                 background:radial-gradient(circle,#3a1800,#1a0800);
                 border:2px solid #b8860b;border-radius:4px;
-                width:52px;height:52px;cursor:pointer;padding:4px;
+                width:clamp(40px,10vw,52px);height:clamp(40px,10vw,52px);
+                cursor:pointer;padding:4px;flex-shrink:0;
                 box-shadow:0 0 10px rgba(255,215,0,0.35),inset 0 0 6px rgba(0,0,0,0.5);
                 display:flex;align-items:center;justify-content:center;
-                flex-shrink:0;transition:all 0.15s;
+                transition:all 0.15s;
             " onmouseover="this.style.boxShadow='0 0 20px rgba(255,215,0,0.75)'"
                onmouseout="this.style.boxShadow='0 0 10px rgba(255,215,0,0.35),inset 0 0 6px rgba(0,0,0,0.5)'">
                 <img src="images/timberzeus-sprites/but_exit.png"
-                    style="width:52px;height:52px;display:block;filter:drop-shadow(0 0 4px rgba(255,215,0,0.6));"
+                    style="width:clamp(28px,7vw,52px);height:clamp(28px,7vw,52px);display:block;
+                           filter:drop-shadow(0 0 4px rgba(255,215,0,0.6));"
                     alt="cerrar">
             </button>
         </div>
@@ -11774,10 +12367,11 @@ async function submitContactForm() {
 
         <!-- ── Thunder lateral izquierdo — cubre todo el alto con tiles ── -->
         <div id="zeus-thunder-left" style="
-            position:absolute;left:0;top:0;bottom:0;width:73px;
+            position:absolute;left:0;top:0;bottom:0;
+            width:clamp(20px,10vw,73px);
             pointer-events:none;z-index:3;
             background-image:url('images/timberzeus-sprites/thunder_avatar_0.png');
-            background-size:73px auto;
+            background-size:100% auto;
             background-repeat:repeat-y;
             filter:drop-shadow(0 0 10px #87ceeb) drop-shadow(0 0 22px rgba(135,206,235,0.6));
             opacity:0.80;
@@ -11787,10 +12381,11 @@ async function submitContactForm() {
 
         <!-- ── Thunder lateral derecho — espejado, delay distinto ── -->
         <div id="zeus-thunder-right" style="
-            position:absolute;right:0;top:0;bottom:0;width:73px;
+            position:absolute;right:0;top:0;bottom:0;
+            width:clamp(20px,10vw,73px);
             pointer-events:none;z-index:3;
             background-image:url('images/timberzeus-sprites/thunder_avatar_0.png');
-            background-size:73px auto;
+            background-size:100% auto;
             background-repeat:repeat-y;
             filter:drop-shadow(0 0 10px #ffd700) drop-shadow(0 0 22px rgba(255,215,0,0.55));
             opacity:0.70;
@@ -11821,7 +12416,7 @@ async function submitContactForm() {
         "></div>
 
         <!-- CONTENIDO — padding lateral para dejar espacio a los thunders (73px) + reel (10px) + margen (17px) = 100px -->
-        <div style="padding:26px 100px 26px 100px;position:relative;z-index:4;">
+        <div style="padding:26px clamp(16px,14vw,100px) 60px clamp(16px,14vw,100px);position:relative;z-index:4;">
 
             <div id="zeus-term-content" style="
                 font-family:'robotoblack','Share Tech Mono',monospace;
@@ -12516,10 +13111,10 @@ function zeusSelectMode(mode) {
     if(sp) sp.style.display = 'none';
     if (mode === 't2e') {
         if(tc) tc.classList.add('selected');
-        if(tp) tp.style.display = 'block';
+        if(tp) { tp.style.display = 'block'; setTimeout(function(){ tp.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 80); }
     } else {
         if(sc) sc.classList.add('selected');
-        if(sp) sp.style.display = 'block';
+        if(sp) { sp.style.display = 'block'; setTimeout(function(){ sp.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 80); }
     }
 }
 
@@ -12527,13 +13122,37 @@ function zeusLaunchT2E() {
     var amount = document.getElementById('zeus-bet-amount') ? document.getElementById('zeus-bet-amount').value : '10';
     var time   = document.getElementById('zeus-bet-time')   ? document.getElementById('zeus-bet-time').value   : '5';
     zeusCloseRebelTerminal();
-    if (typeof window.requireWalletThenBet === 'function') {
-        window.requireWalletThenBet('make-bet-timberzeus', {
-            gameType:'timberzeus', amount:parseFloat(amount),
-            timeLimit:parseInt(time)*60, boostLimit:1
-        });
+
+    // Ir directo a la arena T2E con los parámetros ya elegidos en el terminal.
+    // El boost de TimberZeus es 1 free-spin bonus (ya definido en el juego).
+    var betConfig = {
+        gameType:   'timberzeus',
+        gameSrc:    'rtp-timberzeus-t2e/timberzeus-t2e.html',
+        amount:     parseFloat(amount),
+        timeLimit:  parseInt(time) * 60,   // en segundos
+        boostLimit: 1
+    };
+
+    // Si el sistema de wallet está disponible, úsalo para verificar la wallet
+    // y luego abre la arena directamente (sin pasar por el lobby genérico)
+    if (typeof window.fpOpenArena === 'function' && window.fpState) {
+        // Configurar fpState con los parámetros del bet
+        window.fpState.betMode    = true;
+        window.fpState.betAmount  = betConfig.amount;
+        window.fpState.timeLimit  = betConfig.timeLimit;
+        window.fpState.boostLimit = betConfig.boostLimit;
+        window.fpState.gameType   = 'timberzeus';
+        window.fpOpenArena(betConfig);
+    } else if (typeof window.requireWalletThenBet === 'function') {
+        // Fallback: pasar por el sistema de wallet normal
+        window._zeusDirectBet = betConfig;
+        window.requireWalletThenBet('make-bet-timberzeus');
     } else {
-        window.open('/rtp-timberzeus-t2e/timberzeus-t2e.html?player=p1&bet='+amount+'&time='+time, '_blank');
+        // Último fallback: abrir directo
+        window.open(
+            '/rtp-timberzeus-t2e/timberzeus-t2e.html?player=p1&bet=' + amount + '&time=' + time,
+            '_blank'
+        );
     }
 }
 </script>
