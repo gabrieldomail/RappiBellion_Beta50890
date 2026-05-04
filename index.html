@@ -1273,7 +1273,7 @@
 <script>
 /* ── RAPPIA CREDIT SYSTEM — Frontend ───────────────────────── */
 var _rppiUser = null;
-var WORKER_URL = 'https://rapid-figemini-proxy.workers.dev';
+var WORKER_URL = 'https://rapid-figemini-proxy.gabrieldomail.workers.dev';
 var RAPPIA_PER_ARS = 145; // ARS 145 = 1 RPPI-C
 
 // Cargar QR lib
@@ -1424,7 +1424,7 @@ function rppiDoRegister() {
 }
 
 function _rppiFetchOrCreateUser(email, alias, onOk, onErr) {
-    var FB_URL = 'https://rappibellion-default-rtdb.firebaseio.com';
+    var FB_URL = 'https://rappibellion-comments-default-rtdb.firebaseio.com';
     var key    = 'rppi_users/' + email.replace(/[.#$\[\]]/g, '_');
     fetch(FB_URL + '/' + key + '.json')
         .then(function(r) { return r.json(); })
