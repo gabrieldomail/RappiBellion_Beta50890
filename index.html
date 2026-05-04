@@ -1480,21 +1480,37 @@ function _rppiUpdateUI() {
 
 function _rppiGenQR() {
     if (!_rppiUser || !_rppiUser.uid) return;
-    var canvas = document.getElementById('rppi-qr-canvas');
-    if (!canvas) return;
+    
+    // Apuntamos al CONTENEDOR, no al canvas directamente
+    var container = document.getElementById('rppi-qr-container');
+    if (!container) return;
+
     var tryGen = function() {
         if (window.QRCode) {
             try {
-                var ctx = canvas.getContext('2d');
-                ctx.clearRect(0, 0, 150, 150);
-                new QRCode(canvas, {
+                // Limpiamos el contenedor antes de generar uno nuevo para evitar duplicados visuales
+                container.innerHTML = ''; 
+                
+                new QRCode(container, {
                     text: 'RAPPIA://' + (_rppiUser.alias || '') + '?uid=' + _rppiUser.uid + '&ref=RAPPIBELLION',
-                    width: 150, height: 150,
-                    colorDark: '#020408', colorLight: '#ffffff',
+                    width: 150,
+                    height: 150,
+                    colorDark: '#020408',
+                    colorLight: '#ffffff',
                     correctLevel: QRCode.CorrectLevel.M
                 });
-            } catch(e) {}
-        } else { setTimeout(tryGen, 400); }
+                
+                // Opcional: Si querés que el canvas generado tenga un ID específico
+                const generatedCanvas = container.querySelector('canvas');
+                if(generatedCanvas) generatedCanvas.id = "rppi-qr-canvas";
+
+            } catch(e) {
+                console.error("Error generando QR:", e);
+            }
+        } else { 
+            // Si la librería aún no cargó, reintentamos en 400ms
+            setTimeout(tryGen, 400); 
+        }
     };
     tryGen();
 }
