@@ -584,11 +584,11 @@
                                 border-color: var(--color-primario) !important;
                                 color: var(--color-primario) !important;
                                 box-shadow: 0 0 18px rgba(0,188,255,0.5),
-                                            0 0 6px rgba(255,165,0,0.3) !important;
+                                            0 0 6px rgb(0, 204, 255) !important;
                                 text-shadow: 0 0 8px var(--color-primario) !important;
                             ">
                             <span style="color:var(--color-caos-amarillo) !important;
-                                         text-shadow:0 0 8px rgba(255,165,0,0.7) !important;">
+                                         text-shadow:0 0 8px rgb(0, 204, 255)rtant;">
                                 RPPI-C
                             </span>
                             RAPPIA CREDIT PAPER V01
@@ -1480,39 +1480,105 @@ function _rppiUpdateUI() {
 
 function _rppiGenQR() {
     if (!_rppiUser || !_rppiUser.uid) return;
-    
-    // Apuntamos al CONTENEDOR, no al canvas directamente
     var container = document.getElementById('rppi-qr-container');
+    var uidEl     = document.getElementById('rppi-qr-uid');
     if (!container) return;
 
+    var uid   = _rppiUser.uid;
+    // QR contiene SOLO el UID — texto plano, válido en cualquier scanner
+    // Apps argentinas (MP, Lemon, Uala) esperan EMVCo — no acepta RAPPIA://
+    // El usuario escanea → ve el UID → lo pega en CONCEPTO al transferir
+    container.innerHTML = '';
     var tryGen = function() {
         if (window.QRCode) {
             try {
-                // Limpiamos el contenedor antes de generar uno nuevo para evitar duplicados visuales
-                container.innerHTML = ''; 
-                
                 new QRCode(container, {
-                    text: 'RAPPIA://' + (_rppiUser.alias || '') + '?uid=' + _rppiUser.uid + '&ref=RAPPIBELLION',
-                    width: 150,
-                    height: 150,
-                    colorDark: '#020408',
-                    colorLight: '#ffffff',
+                    text:         uid,
+                    width:        150,
+                    height:       150,
+                    colorDark:    '#020408',
+                    colorLight:   '#ffffff',
                     correctLevel: QRCode.CorrectLevel.M
                 });
-                
-                // Opcional: Si querés que el canvas generado tenga un ID específico
-                const generatedCanvas = container.querySelector('canvas');
-                if(generatedCanvas) generatedCanvas.id = "rppi-qr-canvas";
-
-            } catch(e) {
-                console.error("Error generando QR:", e);
-            }
-        } else { 
-            // Si la librería aún no cargó, reintentamos en 400ms
-            setTimeout(tryGen, 400); 
-        }
+                var c = container.querySelector('canvas');
+                if (c) c.id = 'rppi-qr-canvas';
+            } catch(e) { console.error('QR error:', e); }
+        } else { setTimeout(tryGen, 400); }
     };
     tryGen();
+
+    // Panel instrucciones + botón copiar UID
+    if (uidEl) {
+        uidEl.innerHTML = [
+            '<div style="margin-top:11px;padding:12px;background:rgba(0,188,255,0.05);',
+            'border:1px solid rgba(0,188,255,0.22);border-radius:4px;text-align:left;">',
+            // UID + botón copiar
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;',
+            'background:rgba(0,0,0,0.3);border:1px solid rgba(0,188,255,0.3);',
+            'border-radius:3px;padding:7px 10px;">',
+            '<span style="font-size:9px;color:rgba(0,188,255,0.5);letter-spacing:0.2em;',
+            'flex-shrink:0;font-family:Orbitron,monospace;">UID:</span>',
+            '<span id="rppi-uid-text" style="font-family:Share Tech Mono,monospace;',
+            'font-size:14px;color:#00BCFF;letter-spacing:0.08em;flex:1;',
+            'word-break:break-all;text-shadow:0 0 8px #00BCFF;">',
+            uid, '</span>',
+            '<button onclick="_rppiCopyUID()" id="rppi-copy-btn"',
+            'style="background:rgba(0,188,255,0.15);border:1px solid rgba(0,188,255,0.5);',
+            'color:#00BCFF;border-radius:3px;padding:5px 10px;cursor:pointer;',
+            'font-size:14px;flex-shrink:0;transition:all 0.15s;" title="Copiar UID">',
+            '📋</button>',
+            '</div>',
+            // Instrucciones
+            '<div style="font-size:11px;color:rgba(255,255,255,0.5);line-height:1.9;',
+            'letter-spacing:0.04em;">',
+            '<span style="color:#00FF41;font-weight:700;letter-spacing:0.12em;">',
+            '// CÓMO ACREDITAR RPPI-C //</span><br>',
+            '1. Abrí MP / Lemon Cash / Uala<br>',
+            '2. Transferí a: <span style="color:#00BCFF;font-weight:700;">gabodc.mp</span><br>',
+            '3. En <strong style="color:#FFD700;">CONCEPTO</strong> pegá tu UID (botón 📋)<br>',
+            '4. El QR de arriba también contiene tu UID para scanner<br>',
+            '<span style="color:rgba(255,165,0,0.85);font-size:12px;font-weight:700;">',
+            'ARS 145 = 1 RPPI-C · USD 0.10 = 1 RPPI-C</span>',
+            '</div>',
+            '</div>'
+        ].join('');
+    }
+}
+
+function _rppiCopyUID() {
+    var uid = _rppiUser && _rppiUser.uid;
+    if (!uid) return;
+    var btn = document.getElementById('rppi-copy-btn');
+    var doSuccess = function() {
+        if (btn) {
+            btn.textContent      = '✅';
+            btn.style.borderColor = '#00FF41';
+            btn.style.color       = '#00FF41';
+            setTimeout(function() {
+                btn.textContent      = '📋';
+                btn.style.borderColor = 'rgba(0,188,255,0.5)';
+                btn.style.color       = '#00BCFF';
+            }, 2200);
+        }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(uid).then(doSuccess).catch(function() {
+            _rppiSelectUID();
+        });
+    } else {
+        _rppiSelectUID();
+        doSuccess();
+    }
+}
+
+function _rppiSelectUID() {
+    var el = document.getElementById('rppi-uid-text');
+    if (!el) return;
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
 }
 
 function rppiOpenBurnReward() {
