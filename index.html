@@ -486,12 +486,71 @@
     // Don't show if already dismissed this session
     if (sessionStorage.getItem('intro-seen')) { el.style.display='none'; return; }
 
-    function dismiss() {
+    // === INICIO INTEGRACIÓN DE AUDIO ===
+    var introAudio = new Audio('/sounds/intro-rappibellion-web.mp3');
+    
+    // Intentamos reproducir el audio inmediatamente
+    var playPromise = introAudio.play();
+    
+    // Manejo de políticas de Autoplay
+    if (playPromise !== undefined) {
+        playPromise.catch(function(error) {
+            console.warn("El navegador bloqueó el autoplay del sonido. Requiere interacción.", error);
+            el.addEventListener('click', function() {
+                introAudio.play().catch(e => console.warn(e));
+            }, { once: true });
+        });
+    }
+
+    // --- BOTÓN DE SILENCIAR (MUTE) ---
+    var muteBtn = document.createElement('button');
+    muteBtn.innerHTML = '🔊'; // Icono inicial (sonido activado)
+    
+    // Estilos del botón (puedes ajustarlos para que combinen con tu diseño retro/glitch)
+    muteBtn.style.position = 'absolute';
+    muteBtn.style.top = '20px';
+    muteBtn.style.right = '20px';
+    muteBtn.style.zIndex = '9999';
+    muteBtn.style.background = 'rgba(0, 0, 0, 0.5)';
+    muteBtn.style.color = '#00ff00'; // Verde tipo terminal, cámbialo si prefieres
+    muteBtn.style.border = '1px solid #00ff00';
+    muteBtn.style.padding = '8px 12px';
+    muteBtn.style.cursor = 'pointer';
+    muteBtn.style.fontSize = '16px';
+    muteBtn.style.fontFamily = 'monospace';
+    muteBtn.style.outline = 'none';
+
+    // Funcionalidad del botón
+    muteBtn.addEventListener('click', function(e) {
+        e.stopPropagation(); // Evita que al hacer clic en el botón se cierre la pantalla de intro
+        introAudio.muted = !introAudio.muted; // Alterna entre muteado y no muteado
+        muteBtn.innerHTML = introAudio.muted ? '🔇' : '🔊'; // Cambia el icono
+    });
+
+    el.appendChild(muteBtn); // Agrega el botón a la pantalla de intro
+    // === FIN INTEGRACIÓN DE AUDIO ===
+
+    function dismiss(e) {
+        // Ignorar si el clic viene del botón de silenciar (por si falla el stopPropagation)
+        if (e && e.target === muteBtn) return;
+
         sessionStorage.setItem('intro-seen','1');
         el.style.transition='opacity 0.7s ease';
         el.style.opacity='0';
+        
+        // Desvanece el volumen del audio cuando se quita la intro
+        var fadeAudio = setInterval(function () {
+            if (introAudio.volume > 0.1) {
+                introAudio.volume -= 0.1;
+            } else {
+                introAudio.pause();
+                clearInterval(fadeAudio);
+            }
+        }, 50);
+
         setTimeout(function(){ el.style.display='none'; },700);
     }
+    
     el.addEventListener('click', dismiss);
     document.addEventListener('keydown', dismiss, {once:true});
 
@@ -524,7 +583,7 @@
     setTimeout(function(){ document.getElementById('intro-press').style.opacity='1'; },2200);
 
     // Typewriter for copyright
-    var copyText = '\u00a9 2025 Bits Lab (Biointeligencia Artificial Technologies Lab). Todos los derechos reservados.';
+    var copyText = '\u00a9 2026 Bits Lab (Biointeligencia Artificial Technologies Lab). Todos los derechos reservados.';
     var copyEl   = document.getElementById('intro-copy');
     var i = 0;
     setTimeout(function() {
