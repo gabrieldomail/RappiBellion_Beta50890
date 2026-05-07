@@ -486,71 +486,12 @@
     // Don't show if already dismissed this session
     if (sessionStorage.getItem('intro-seen')) { el.style.display='none'; return; }
 
-    // === INICIO INTEGRACIÓN DE AUDIO ===
-    var introAudio = new Audio('/sounds/intro-rappibellion-web.mp3');
-    
-    // Intentamos reproducir el audio inmediatamente
-    var playPromise = introAudio.play();
-    
-    // Manejo de políticas de Autoplay
-    if (playPromise !== undefined) {
-        playPromise.catch(function(error) {
-            console.warn("El navegador bloqueó el autoplay del sonido. Requiere interacción.", error);
-            el.addEventListener('click', function() {
-                introAudio.play().catch(e => console.warn(e));
-            }, { once: true });
-        });
-    }
-
-    // --- BOTÓN DE SILENCIAR (MUTE) ---
-    var muteBtn = document.createElement('button');
-    muteBtn.innerHTML = '🔊'; // Icono inicial (sonido activado)
-    
-    // Estilos del botón (puedes ajustarlos para que combinen con tu diseño retro/glitch)
-    muteBtn.style.position = 'absolute';
-    muteBtn.style.top = '20px';
-    muteBtn.style.right = '20px';
-    muteBtn.style.zIndex = '9999';
-    muteBtn.style.background = 'rgba(0, 0, 0, 0.5)';
-    muteBtn.style.color = '#00ff00'; // Verde tipo terminal, cámbialo si prefieres
-    muteBtn.style.border = '1px solid #00ff00';
-    muteBtn.style.padding = '8px 12px';
-    muteBtn.style.cursor = 'pointer';
-    muteBtn.style.fontSize = '16px';
-    muteBtn.style.fontFamily = 'monospace';
-    muteBtn.style.outline = 'none';
-
-    // Funcionalidad del botón
-    muteBtn.addEventListener('click', function(e) {
-        e.stopPropagation(); // Evita que al hacer clic en el botón se cierre la pantalla de intro
-        introAudio.muted = !introAudio.muted; // Alterna entre muteado y no muteado
-        muteBtn.innerHTML = introAudio.muted ? '🔇' : '🔊'; // Cambia el icono
-    });
-
-    el.appendChild(muteBtn); // Agrega el botón a la pantalla de intro
-    // === FIN INTEGRACIÓN DE AUDIO ===
-
-    function dismiss(e) {
-        // Ignorar si el clic viene del botón de silenciar (por si falla el stopPropagation)
-        if (e && e.target === muteBtn) return;
-
+    function dismiss() {
         sessionStorage.setItem('intro-seen','1');
         el.style.transition='opacity 0.7s ease';
         el.style.opacity='0';
-        
-        // Desvanece el volumen del audio cuando se quita la intro
-        var fadeAudio = setInterval(function () {
-            if (introAudio.volume > 0.1) {
-                introAudio.volume -= 0.1;
-            } else {
-                introAudio.pause();
-                clearInterval(fadeAudio);
-            }
-        }, 50);
-
         setTimeout(function(){ el.style.display='none'; },700);
     }
-    
     el.addEventListener('click', dismiss);
     document.addEventListener('keydown', dismiss, {once:true});
 
@@ -583,7 +524,7 @@
     setTimeout(function(){ document.getElementById('intro-press').style.opacity='1'; },2200);
 
     // Typewriter for copyright
-    var copyText = '\u00a9 2026 Bits Lab (Biointeligencia Artificial Technologies Lab). Todos los derechos reservados.';
+    var copyText = '\u00a9 2025 Bits Lab (Biointeligencia Artificial Technologies Lab). Todos los derechos reservados.';
     var copyEl   = document.getElementById('intro-copy');
     var i = 0;
     setTimeout(function() {
@@ -623,7 +564,7 @@
                             <span>MUNDO 3: CÓDIGO</span>
                             PLAY THE CODE (Binary Reunion)
                         </a>
-<a href="#" onclick="zeusOpenRebelTerminal(); return false;" class="hero-button" style="background: linear-gradient(135deg, #ffffff, #e0f7fa); border: 2px solid #ffd700; color: #b8860b; box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);"><span style="color: #87ceeb; text-shadow: none;">MUNDO DIVINO</span>RTP MACHINE TIMBER ZEUS</a>
+<a href="#" onclick="zeusHeroLaunch(); return false;" class="hero-button" style="background: linear-gradient(135deg, #ffffff, #e0f7fa); border: 2px solid #ffd700; color: #b8860b; box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);"><span style="color: #87ceeb; text-shadow: none;">MUNDO DIVINO</span>RTP MACHINE TIMBER ZEUS</a>
                         <a href="#concept" class="hero-button-disabled">
                             INICIAR HACKEO (ERROR: BLOCKED)
                         </a>
@@ -1593,7 +1534,7 @@ function _rppiGenQR() {
             '<span style="color:#00FF41;font-weight:700;letter-spacing:0.12em;">',
             '// CÓMO ACREDITAR RPPI-C //</span><br>',
             '1. Abrí MP / Lemon Cash / Uala<br>',
-            '2. Transferí a: <span style="color:#00BCFF;font-weight:700;">xxxx.mp</span><br>',
+            '2. Transferí a: <span style="color:#00BCFF;font-weight:700;">gabodc.mp</span><br>',
             '3. En <strong style="color:#FFD700;">CONCEPTO</strong> pegá tu UID (botón 📋)<br>',
             '4. El QR de arriba también contiene tu UID para scanner<br>',
             '<span style="color:rgba(255,165,0,0.85);font-size:12px;font-weight:700;">',
@@ -13295,6 +13236,325 @@ function zeusLaunchT2E() {
             '_blank'
         );
     }
+}
+</script>
+
+<!-- ══════════════════════════════════════════════════════════
+     TIMBER ZEUS — MODO REAL (SINGLE / RPPI-C)
+     Hero btn → check login → chip selector → iframe con créditos reales
+════════════════════════════════════════════════════════════ -->
+<div id="zeus-real-overlay" onclick="zeusCloseReal()"
+    style="display:none;position:fixed;inset:0;z-index:200010;
+           background:rgba(0,0,0,0.92);backdrop-filter:blur(5px);"></div>
+
+<div id="zeus-real-modal" style="
+    display:none;position:fixed;
+    top:50%;left:50%;transform:translate(-50%,-50%);
+    z-index:200011;width:min(520px,96vw);max-height:92vh;overflow-y:auto;
+    background:#050503;
+    border:3px solid #b8860b;
+    box-shadow:0 0 0 5px #ffd700,0 0 60px rgba(255,215,0,0.5);
+    border-radius:6px;overflow:hidden;
+    font-family:'Share Tech Mono',monospace;
+">
+    <div style="height:3px;background:linear-gradient(90deg,transparent,#ffd700,#fff8dc,#ffd700,transparent);"></div>
+    <div style="background:linear-gradient(180deg,#2a1800,#1a0e00);border-bottom:2px solid #b8860b;
+                padding:12px 18px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+            <div style="font-family:'Orbitron',monospace;font-weight:900;font-size:16px;
+                        color:#ffd700;letter-spacing:0.25em;text-shadow:0 0 12px #ffd700;">⚡ TIMBER ZEUS</div>
+            <div style="font-size:10px;color:#87ceeb;letter-spacing:0.3em;margin-top:2px;">MODO REAL // SINGLE PLAYER // RPPI-C</div>
+        </div>
+        <button onclick="zeusCloseReal()"
+            style="background:radial-gradient(circle,#3a1800,#1a0800);border:2px solid #b8860b;
+                   border-radius:4px;width:38px;height:38px;cursor:pointer;color:#ffd700;font-size:18px;
+                   display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+    <div style="height:2px;background:linear-gradient(90deg,transparent,#b8860b,#ffd700,#b8860b,transparent);"></div>
+
+    <!-- No logueado -->
+    <div id="zeus-real-nologin" style="padding:28px 24px;text-align:center;">
+        <div style="font-size:36px;margin-bottom:14px;">🎰</div>
+        <div style="font-family:'Orbitron',monospace;font-size:14px;color:#ffd700;letter-spacing:0.2em;margin-bottom:10px;text-shadow:0 0 10px #ffd700;">ACCESO REQUERIDO</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.8;margin-bottom:22px;">
+            Para jugar en modo real con créditos RPPI-C<br>necesitás cuenta en Rappibellion.
+        </div>
+        <button onclick="zeusCloseReal(); rppiOpenLogin();"
+            style="width:100%;background:transparent;border:2px solid #ffd700;color:#ffd700;
+                   font-family:'Orbitron',monospace;font-weight:700;font-size:13px;letter-spacing:0.25em;
+                   padding:13px;cursor:pointer;border-radius:4px;text-shadow:0 0 10px #ffd700;
+                   box-shadow:0 0 16px rgba(255,215,0,0.3);margin-bottom:10px;"
+            onmouseover="this.style.background='rgba(255,215,0,0.1)'"
+            onmouseout="this.style.background='transparent'">INGRESAR / REGISTRARSE</button>
+        <a href="/rtp-timberzeus/timberzeus.html" target="_blank"
+            style="display:block;color:rgba(255,215,0,0.45);font-size:11px;letter-spacing:0.2em;text-decoration:none;margin-top:6px;">
+            → MODO DEMO GRATUITO (sin créditos)
+        </a>
+    </div>
+
+    <!-- Sin créditos -->
+    <div id="zeus-real-nocredits" style="display:none;padding:28px 24px;text-align:center;">
+        <div style="font-size:36px;margin-bottom:14px;">⚡</div>
+        <div style="font-family:'Orbitron',monospace;font-size:13px;color:#ffd700;letter-spacing:0.2em;margin-bottom:8px;">RPPI-C INSUFICIENTES</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.8;margin-bottom:20px;">
+            Mínimo <span style="color:#ffd700;font-weight:700;">10 RPPI-C</span> para iniciar.<br>ARS 1.450 = 10 RPPI-C
+        </div>
+        <button onclick="zeusCloseReal(); rppiOpenLogin();"
+            style="width:100%;background:transparent;border:2px solid rgba(255,165,0,0.7);color:rgba(255,165,0,0.9);
+                   font-family:'Orbitron',monospace;font-weight:700;font-size:13px;letter-spacing:0.25em;
+                   padding:13px;cursor:pointer;border-radius:4px;"
+            onmouseover="this.style.background='rgba(255,165,0,0.1)'"
+            onmouseout="this.style.background='transparent'">OBTENER CRÉDITOS RAPPIA</button>
+    </div>
+
+    <!-- Ready: elegir chips y lanzar -->
+    <div id="zeus-real-ready" style="display:none;padding:22px;">
+        <!-- Balance -->
+        <div style="display:flex;justify-content:space-between;align-items:center;
+                    background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.3);
+                    border-radius:4px;padding:14px 18px;margin-bottom:18px;">
+            <div>
+                <div style="font-size:10px;color:rgba(255,165,0,0.6);letter-spacing:0.3em;margin-bottom:3px;">RPPI-C DISPONIBLES</div>
+                <div id="zeus-real-credits-display"
+                    style="font-family:'Orbitron',monospace;font-size:28px;color:#ffd700;font-weight:900;text-shadow:0 0 14px #ffd700;">—</div>
+            </div>
+            <div style="text-align:right;">
+                <div style="font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.2em;margin-bottom:3px;">USUARIO</div>
+                <div id="zeus-real-user-display" style="font-size:12px;color:#87ceeb;letter-spacing:0.15em;">—</div>
+            </div>
+        </div>
+
+        <!-- Chips -->
+        <div style="margin-bottom:18px;">
+            <label style="font-size:11px;color:rgba(255,215,0,0.55);letter-spacing:0.25em;display:block;margin-bottom:8px;">RPPI-C A USAR EN ESTA SESIÓN</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="zeus-credit-chip" data-val="10"  onclick="zeusSelectCredits(10)">10</button>
+                <button class="zeus-credit-chip" data-val="25"  onclick="zeusSelectCredits(25)">25</button>
+                <button class="zeus-credit-chip" data-val="50"  onclick="zeusSelectCredits(50)">50</button>
+                <button class="zeus-credit-chip" data-val="100" onclick="zeusSelectCredits(100)">100</button>
+            </div>
+            <div id="zeus-credit-selected" style="margin-top:8px;font-size:11px;color:rgba(255,215,0,0.6);letter-spacing:0.15em;min-height:18px;"></div>
+        </div>
+
+        <button id="zeus-real-launch-btn" onclick="zeusLaunchReal()" disabled
+            style="width:100%;background:radial-gradient(circle,#2a1400,#0a0500);
+                   border:3px solid rgba(255,215,0,0.35);color:rgba(255,215,0,0.45);
+                   font-family:'Orbitron',monospace;font-weight:700;font-size:14px;
+                   letter-spacing:0.28em;padding:15px;cursor:not-allowed;border-radius:5px;
+                   transition:all 0.2s;text-transform:uppercase;">
+            SELECCIONÁ CRÉDITOS
+        </button>
+
+        <!-- HUD en juego + iframe -->
+        <div id="zeus-real-game-wrap" style="display:none;margin-top:16px;">
+            <div style="background:#0a0800;border:1px solid #b8860b;border-radius:4px 4px 0 0;
+                        padding:10px 16px;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <div style="font-size:9px;color:rgba(255,165,0,0.55);letter-spacing:0.25em;">RPPI-C RESTANTES</div>
+                    <div id="zeus-real-remaining"
+                        style="font-family:'Orbitron',monospace;font-size:20px;color:#ffd700;font-weight:700;text-shadow:0 0 10px #ffd700;">—</div>
+                </div>
+                <div>
+                    <div style="font-size:9px;color:rgba(255,165,0,0.55);letter-spacing:0.25em;margin-bottom:2px;">CRÉDITOS EN JUEGO</div>
+                    <div id="zeus-real-ingame"
+                        style="font-family:'Orbitron',monospace;font-size:20px;color:#87ceeb;font-weight:700;">—</div>
+                </div>
+                <button onclick="zeusEndRealSession()"
+                    style="background:transparent;border:1px solid rgba(255,45,120,0.5);
+                           color:rgba(255,45,120,0.8);font-family:'Orbitron',monospace;
+                           font-size:10px;letter-spacing:0.2em;padding:6px 12px;
+                           cursor:pointer;border-radius:3px;">TERMINAR</button>
+            </div>
+            <iframe id="zeus-real-iframe" src="" width="100%" height="380"
+                style="display:block;border:1px solid #b8860b;border-top:none;border-radius:0 0 4px 4px;background:#000;">
+            </iframe>
+        </div>
+    </div>
+</div>
+
+<style>
+.zeus-credit-chip {
+    background:transparent;border:2px solid rgba(255,215,0,0.4);
+    color:rgba(255,215,0,0.7);font-family:'Orbitron',monospace;
+    font-size:13px;font-weight:700;padding:8px 16px;border-radius:4px;
+    cursor:pointer;transition:all 0.15s;letter-spacing:0.1em;
+}
+.zeus-credit-chip:hover { background:rgba(255,215,0,0.1);border-color:#ffd700;color:#ffd700; }
+.zeus-credit-chip.active { background:rgba(255,215,0,0.18);border-color:#ffd700;color:#ffd700;box-shadow:0 0 14px rgba(255,215,0,0.4); }
+.zeus-credit-chip:disabled { opacity:0.3;cursor:not-allowed; }
+</style>
+
+<script>
+/* ── TIMBER ZEUS MODO REAL — RPPI-C sync ─────────────────── */
+var _zeusRealSelected = 0;
+
+function zeusHeroLaunch() {
+    // Si no hay sesión → abrir la terminal de apuesta normal
+    if (!window._rppiUser) {
+        zeusOpenRebelTerminal();
+        return;
+    }
+    // Hay sesión → abrir modal de modo real con créditos
+    var modal   = document.getElementById('zeus-real-modal');
+    var overlay = document.getElementById('zeus-real-overlay');
+    modal.style.display   = 'block';
+    overlay.style.display = 'block';
+
+    // Reset paneles
+    ['zeus-real-nologin','zeus-real-nocredits','zeus-real-ready'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+    var gw = document.getElementById('zeus-real-game-wrap');
+    if (gw) gw.style.display = 'none';
+
+    // Refrescar balance y mostrar panel
+    var user = window._rppiUser;
+    fetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/balance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email })
+    }).then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.ok) {
+            user.credits = d.credits;
+            window._rppiUser = user;
+            localStorage.setItem('rppi_user', JSON.stringify(user));
+        }
+        _zeusShowRealPanel(user);
+    }).catch(function() { _zeusShowRealPanel(user); });
+}
+
+function _zeusShowRealPanel(user) {
+    var credits = user.credits || 0;
+    if (credits < 10) {
+        document.getElementById('zeus-real-nocredits').style.display = 'block';
+        return;
+    }
+    var panel = document.getElementById('zeus-real-ready');
+    panel.style.display = 'block';
+    document.getElementById('zeus-real-credits-display').textContent = credits + ' RPPI-C';
+    document.getElementById('zeus-real-user-display').textContent =
+        user.email.split('@')[0].toUpperCase();
+
+    // Chips — deshabilitar los que superan el balance
+    document.querySelectorAll('.zeus-credit-chip').forEach(function(btn) {
+        var val = parseInt(btn.dataset.val);
+        btn.disabled     = val > credits;
+        btn.style.opacity = val > credits ? '0.3' : '1';
+        btn.classList.remove('active');
+    });
+    _zeusRealSelected = 0;
+}
+
+function zeusSelectCredits(val) {
+    var user = window._rppiUser;
+    if (!user || val > (user.credits || 0)) return;
+    _zeusRealSelected = val;
+    document.querySelectorAll('.zeus-credit-chip').forEach(function(btn) {
+        btn.classList.toggle('active', parseInt(btn.dataset.val) === val);
+    });
+    var ars = val * 145;
+    document.getElementById('zeus-credit-selected').textContent =
+        val + ' RPPI-C = ARS ' + ars + ' en créditos de juego';
+
+    var btn = document.getElementById('zeus-real-launch-btn');
+    btn.disabled          = false;
+    btn.style.borderColor = '#ffd700';
+    btn.style.color       = '#ffd700';
+    btn.style.cursor      = 'pointer';
+    btn.style.boxShadow   = '0 0 20px rgba(255,215,0,0.35)';
+    btn.textContent       = '⚡ JUGAR CON ' + val + ' RPPI-C';
+}
+
+function zeusLaunchReal() {
+    var user = window._rppiUser;
+    if (!user || _zeusRealSelected < 1) return;
+
+    var credits     = _zeusRealSelected;
+    var startCredit = credits * 10; // 1 RPPI-C = 10 créditos del slot
+
+    // Descontar créditos localmente (optimista)
+    user.credits = Math.max(0, (user.credits || 0) - credits);
+    window._rppiUser = user;
+    localStorage.setItem('rppi_user', JSON.stringify(user));
+
+    // Registrar como withdrawal en Firebase via worker
+    fetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/withdraw', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email, credits: credits })
+    }).catch(function() {});
+
+    // Mostrar iframe
+    var wrap   = document.getElementById('zeus-real-game-wrap');
+    var iframe = document.getElementById('zeus-real-iframe');
+    var rem    = document.getElementById('zeus-real-remaining');
+    var ing    = document.getElementById('zeus-real-ingame');
+    wrap.style.display    = 'block';
+    rem.textContent       = user.credits + ' RPPI-C';
+    ing.textContent       = startCredit;
+    iframe.src = '/rtp-timberzeus/timberzeus.html?start_credit=' + startCredit
+               + '&real_mode=1&rppi_credits=' + credits;
+
+    // Ocultar selector
+    var launchBtn = document.getElementById('zeus-real-launch-btn');
+    if (launchBtn) launchBtn.style.display = 'none';
+
+    // Actualizar botón login
+    var lb = document.getElementById('login-float-btn');
+    if (lb) lb.textContent = user.email.split('@')[0].substring(0,10).toUpperCase();
+
+    // Escuchar mensajes del iframe de Zeus
+    window._zeusRealListener && window.removeEventListener('message', window._zeusRealListener);
+    window._zeusRealListener = function(ev) {
+        var d = ev.data;
+        if (!d || !d.type) return;
+
+        if (d.type === 'ZEUS_CREDIT_UPDATE') {
+            // Actualizar HUD en tiempo real
+            if (ing) ing.textContent = d.totalMoney || 0;
+            // Cada vez que baja a 0 créditos en el slot
+            if ((d.totalMoney || 0) <= 0) {
+                if (rem) rem.textContent = user.credits + ' RPPI-C';
+            }
+        }
+
+        if (d.type === 'ZEUS_SESSION_END' || d.type === 'ZEUS_NO_CREDITS') {
+            // La sesión terminó — calcular créditos no usados
+            var mpLeft    = d.rppiLeft || 0;  // RPPI-C que quedaron (si el juego terminó con saldo)
+            // Devolver los RPPI-C restantes si quedaron créditos en el juego
+            if (mpLeft > 0 && d.type === 'ZEUS_SESSION_END') {
+                user.credits = (user.credits || 0) + mpLeft;
+                window._rppiUser = user;
+                localStorage.setItem('rppi_user', JSON.stringify(user));
+                // Acreditar de vuelta en Firebase
+                fetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/balance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: user.email })
+                }).catch(function(){});
+            }
+            if (rem) rem.textContent = (user.credits || 0) + ' RPPI-C';
+            window.removeEventListener('message', window._zeusRealListener);
+        }
+    };
+    window.addEventListener('message', window._zeusRealListener);
+}
+
+function zeusEndRealSession() {
+    var iframe = document.getElementById('zeus-real-iframe');
+    if (iframe) iframe.src = '';
+    window._zeusRealListener && window.removeEventListener('message', window._zeusRealListener);
+    zeusCloseReal();
+}
+
+function zeusCloseReal() {
+    document.getElementById('zeus-real-modal').style.display  = 'none';
+    document.getElementById('zeus-real-overlay').style.display = 'none';
+    var iframe = document.getElementById('zeus-real-iframe');
+    if (iframe) iframe.src = '';
+    _zeusRealSelected = 0;
 }
 </script>
 
