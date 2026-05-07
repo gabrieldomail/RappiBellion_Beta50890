@@ -142,6 +142,7 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
     <!-- Web3 Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
@@ -6922,6 +6923,7 @@ btn.addEventListener('click', toggleMutePlay);
             }
         }
         
+        
         // ========================================
         // FIREBASE - SISTEMA DE COMENTARIOS
         // ========================================
@@ -6938,18 +6940,28 @@ btn.addEventListener('click', toggleMutePlay);
         };
         
         // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        window._fbDB = database; // Exponer para betting-engine (cross-device sync)
-        const commentsRef = database.ref('rebellion-comments');
-        
-        // Elementos del DOM
-        const usernameInput = document.getElementById('rebellion-username');
-        const messageInput = document.getElementById('rebellion-message');
-        const submitBtn = document.getElementById('submit-rebellion-comment');
-        const statusMsg = document.getElementById('comment-status');
-        const commentsList = document.getElementById('rebellion-comments-list');
-        
+           firebase.initializeApp(firebaseConfig);
+           const database = firebase.database();
+           window._fbDB = database; // Exponer para betting-engine (cross-device sync)
+
+        // --- NUEVO: AUTENTICACIÓN SILENCIOSA ---
+           firebase.auth().signInAnonymously()
+           .then((userCredential) => {
+           console.log("⚡ [SISTEMA] Conectado a Firebase Auth (Anónimo). UID:", userCredential.user.uid);
+           })
+           .catch((error) => {
+           console.error("⚠ [SISTEMA] Error en Auth:", error.code, error.message);
+           });
+
+        // 3. Referencias y DOM (Fuera de las promesas para que siempre estén disponibles)
+           const commentsRef = database.ref('rebellion-comments');
+
+           const usernameInput = document.getElementById('rebellion-username');
+           const messageInput = document.getElementById('rebellion-message');
+           const submitBtn = document.getElementById('submit-rebellion-comment');
+           const statusMsg = document.getElementById('comment-status');
+           const commentsList = document.getElementById('rebellion-comments-list');
+                          
         // Función para enviar comentario
         function submitComment() {
             const username = usernameInput.value.trim();
