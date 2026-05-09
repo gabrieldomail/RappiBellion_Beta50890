@@ -812,6 +812,118 @@
         <button id="start-beta-button" class="cta-button">COMENZAR</button>
 
     </div>
+<div class="terminal-use-cases">
+    <button class="terminal-toggle-btn" onclick="toggleTacticsTerminal()">
+        <span class="cmd-prompt">></span> DECRYPT_LOG.exe: <span class="highlight">[ ACCESO RESTRINGIDO: Tácticas del Circuito ]</span> <span class="blink">_</span>
+    </button>
+    
+    <div id="tactics-content" class="terminal-content" style="display: none;">
+        <div class="scanlines"></div>
+        <div id="tactics-typing-container"></div>
+    </div>
+</div>
+
+<script>
+// Variable para saber si ya lo desencriptamos una vez
+let tacticsDecrypted = false;
+let audioCtx = null;
+
+// Función para sintetizar el sonido de teclado/terminal retro
+function playTerminalBeep() {
+    try {
+        // Inicializamos el contexto de audio (requiere interacción del usuario primero)
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        // Frecuencia cuadrada aleatoria para que suene robótico/mecánico
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(600 + Math.random() * 300, audioCtx.currentTime); 
+        
+        // Volumen muy bajito y duración ultra corta (30 milisegundos)
+        gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+        
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.03);
+    } catch(e) {}
+}
+
+// Función que abre la terminal
+function toggleTacticsTerminal() {
+    const content = document.getElementById('tactics-content');
+    const container = document.getElementById('tactics-typing-container');
+    
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        
+        // Si es la primera vez que se abre, disparamos el Typewriter
+        if (!tacticsDecrypted) {
+            tacticsDecrypted = true;
+            
+            // Este es el texto con todo su HTML que vamos a escribir letra por letra
+            const htmlToType = `
+            <p class="sys-msg">// INICIANDO EXTRACCIÓN DE DATOS...</p>
+            <ul class="tactics-list">
+            <li><strong>[01] RESOLUCIÓN DE CONFLICTOS FÍSICOS (IRL)</strong><br>¿Quién paga la cena? ¿Quién lava los platos? Deja que el Circuito decida. Una partida rápida, el ganador se salva, el perdedor paga (y ambos minan $RPPI).</li>
+            <li><strong>[02] PROTOCOLO "KILL MY OLD FRIEND"</strong><br>Usa el filtro de desafíos directos para armar mini-torneos privados. Demuestra quién tiene la supremacía cognitiva en tu círculo de confianza.</li>
+            <li><strong>[03] GIMNASIO NEURONAL (T2E)</strong><br>No es solo un juego, es una actualización de tu hardware biológico. Despliega estrategias y agiliza tu razonamiento bajo presión sin que se sienta como tarea.</li>
+            <li><strong>[04] VACIADO DE MEMORIA CACHÉ (PAUSA ACTIVA)</strong><br>¿Cerebro saturado de trabajar/estudiar? Entra 5 minutos. Reinicia tus conexiones neuronales con una descarga de adrenalina y vuelve a la realidad enfocado.</li>
+            </ul>
+            <p class="sys-msg">// FIN DE LA TRANSMISIÓN. ÚSALO A TU FAVOR. //</p>
+            `;
+            
+            // Llamamos a la magia (velocidad: 15 milisegundos por letra)
+            typeHTML(container, htmlToType, 15); 
+        }
+    } else {
+        content.style.display = 'none';
+    }
+}
+
+// El motor del Typewriter que ignora las etiquetas HTML
+function typeHTML(element, htmlString, speed) {
+    element.innerHTML = '';
+    let i = 0;
+    let isTag = false;
+    
+    function type() {
+        if (i < htmlString.length) {
+            let char = htmlString.charAt(i);
+            
+            // Detectar si estamos procesando una etiqueta HTML (ej: <strong>)
+            if (char === '<') isTag = true;
+            if (char === '>') isTag = false;
+            
+            i++;
+            
+            if (isTag) {
+                // Si es código HTML, saltamos a la siguiente letra instantáneamente para no romper el diseño
+                type(); 
+            } else {
+                // Escribimos el contenido y agregamos el cursor titilante al final
+                element.innerHTML = htmlString.substring(0, i) + '<span class="blink" style="color:var(--color-caos-verde);">█</span>';
+                
+                // Hacemos sonar la tecla (solo cada 2 letras para no saturar el audio del navegador)
+                if (i % 2 === 0) playTerminalBeep(); 
+                
+                setTimeout(type, speed);
+            }
+        } else {
+            // Al terminar de escribir todo, quitamos el cursor cuadrado sobrante
+            element.innerHTML = htmlString; 
+        }
+    }
+    
+    type();
+}
+
+</script>
 
 </section>
 <!-- === GAME OVERLAY (contenido del circuito) === -->
@@ -1973,6 +2085,7 @@ function rppiLogout() {
             <span>SNAKE-PROTOCOL</span>
             <button onclick="document.getElementById('snake-promo-window').style.display='none'" style="background:none;border:none;color:rgba(248, 255, 43, 0.5);font-size:14px;cursor:pointer;line-height:1;">✕</button>
         </div>
+       
         <div class="snake-promo-body">
             <div class="snake-promo-img-wrap">
                 <img src="images/snake.PNG" alt="SNAKE-PROTOCOL" style="width:100%;height:auto;display:block;opacity:0.85;">
