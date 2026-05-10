@@ -1681,7 +1681,7 @@ function _rppiGenQR() {
         '<div style="font-size:11px;color:rgba(255,255,255,0.45);line-height:1.85;letter-spacing:0.04em;">',
           '<span style="color:#00FF41;font-weight:700;letter-spacing:0.1em;">// CÓMO ACREDITAR //</span><br>',
           '• <strong>QR dinámico</strong>: elegí monto → escaneá con MP / Lemon / Uala<br>',
-          '• <strong>Manual</strong>: transferí a <span style="color:#00BCFF;font-weight:700;">xxxx.mp</span>',
+          '• <strong>Manual</strong>: transferí a <span style="color:#00BCFF;font-weight:700;">gabodc.mp</span>',
           ' y pegá tu UID en CONCEPTO<br>',
           '<span style="color:rgba(255,165,0,0.8);font-weight:700;">ARS 145 = 1 RPPI-C · USD 0.10 = 1 RPPI-C</span>',
         '</div>',
@@ -2327,6 +2327,335 @@ function rppiLogout() {
         </div>
     </div>
 </div>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL DE APUESTAS RAPPIA CRÉDITO (WEB2.5 / RPPI-C)
+     Misma mecánica que T2E pero con créditos off-chain
+     Colores: cyan / amarillo neon / negro profundo
+════════════════════════════════════════════════════════════ -->
+<div id="rppi-bet-modal" class="game-menu-hidden">
+    <div class="bet-modal-content" style="
+        background: #020408;
+        border: 2px solid rgba(0,188,255,0.6);
+        box-shadow: 0 0 40px rgba(0,188,255,0.35),
+                    0 0 80px rgba(0,188,255,0.12),
+                    inset 0 0 30px rgba(0,188,255,0.03);
+        border-radius: 6px;
+        font-family: 'Share Tech Mono','Courier New',monospace;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+    ">
+        <!-- Scanlines -->
+        <div style="position:absolute;inset:0;pointer-events:none;z-index:0;
+             background:repeating-linear-gradient(0deg,rgba(0,188,255,0.018) 0px 1px,transparent 1px 3px);
+             border-radius:6px;"></div>
+
+        <!-- Header -->
+        <div style="position:relative;z-index:1;
+             background:rgba(0,188,255,0.08);
+             border-bottom:2px solid rgba(0,188,255,0.3);
+             padding:13px 18px;display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <span style="font-family:'Orbitron',monospace;font-weight:700;font-size:13px;
+                             color:#00BCFF;letter-spacing:0.35em;
+                             text-shadow:0 0 10px #00BCFF,0 0 24px rgba(0,188,255,0.4);">
+                    [RPPI_CREDIT_LOBBY]
+                </span>
+                <div style="font-size:9px;color:rgba(255,165,0,0.7);letter-spacing:0.3em;margin-top:2px;">
+                    WEB2.5 // SIN BLOCKCHAIN // RAPPIA CRÉDITOS
+                </div>
+            </div>
+            <button onclick="rppiCloseBetModal()"
+                style="background:rgba(0,188,255,0.1);border:1px solid rgba(0,188,255,0.4);
+                       color:#00BCFF;font-size:16px;width:32px;height:32px;border-radius:3px;
+                       cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+        </div>
+
+        <!-- Body -->
+        <div style="padding:20px 18px;position:relative;z-index:1;">
+
+            <!-- Desafíos abiertos (lobby) -->
+            <div style="margin-bottom:18px;">
+                <label style="display:block;text-align:center;color:#FFD700;
+                              font-size:11px;letter-spacing:0.25em;margin-bottom:10px;
+                              text-shadow:0 0 8px rgba(255,215,0,0.5);">
+                    [ DESAFÍOS ABIERTOS — CIRCUITO RAPPIA ]
+                </label>
+                <div id="rppi-bets-lobby" style="
+                    min-height:44px;background:rgba(0,188,255,0.04);
+                    border:1px solid rgba(0,188,255,0.18);border-radius:4px;
+                    padding:10px;font-size:11px;color:rgba(0,188,255,0.45);
+                    text-align:center;letter-spacing:0.15em;">
+                    // SIN DESAFÍOS ACTIVOS — SÉ EL PRIMERO //
+                </div>
+            </div>
+
+            <div style="border-top:1px dashed rgba(0,188,255,0.2);padding-top:18px;margin-bottom:16px;
+                        text-align:center;font-family:'Orbitron',monospace;font-size:12px;
+                        color:#00BCFF;letter-spacing:0.2em;text-shadow:0 0 8px #00BCFF;">
+                CREAR DESAFÍO RAPPIA CRÉDITO
+            </div>
+
+            <!-- Balance disponible -->
+            <div id="rppi-bet-balance-wrap" style="
+                background:rgba(0,188,255,0.06);border:1px solid rgba(0,188,255,0.25);
+                border-radius:4px;padding:10px 14px;margin-bottom:16px;
+                display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:10px;color:rgba(0,188,255,0.55);letter-spacing:0.2em;">
+                    RPPI-C DISPONIBLES
+                </span>
+                <span id="rppi-bet-balance" style="font-family:'Orbitron',monospace;
+                      font-size:20px;color:#00BCFF;font-weight:700;text-shadow:0 0 10px #00BCFF;">
+                    —
+                </span>
+            </div>
+
+            <!-- 1. Monto en RPPI-C -->
+            <div style="margin-bottom:16px;">
+                <label style="display:block;font-size:11px;color:rgba(0,188,255,0.6);
+                              letter-spacing:0.2em;margin-bottom:8px;">
+                    1. DEFINE TU APUESTA (RPPI-C):
+                </label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+                    <button class="rppi-bet-chip" data-type="amount" data-value="10"  onclick="rppiSelectBetOpt(this,'amount',10)">10</button>
+                    <button class="rppi-bet-chip" data-type="amount" data-value="25"  onclick="rppiSelectBetOpt(this,'amount',25)">25</button>
+                    <button class="rppi-bet-chip" data-type="amount" data-value="50"  onclick="rppiSelectBetOpt(this,'amount',50)">50</button>
+                    <button class="rppi-bet-chip" data-type="amount" data-value="100" onclick="rppiSelectBetOpt(this,'amount',100)">100</button>
+                </div>
+                <div id="rppi-bet-amount-preview" style="font-size:11px;
+                     color:rgba(255,165,0,0.65);letter-spacing:0.1em;min-height:16px;"></div>
+            </div>
+
+            <!-- 2. Tiempo -->
+            <div style="margin-bottom:16px;">
+                <label style="display:block;font-size:11px;color:rgba(0,188,255,0.6);
+                              letter-spacing:0.2em;margin-bottom:8px;">
+                    2. LÍMITE DE TIEMPO:
+                </label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="rppi-bet-chip" data-type="time" data-value="5"  onclick="rppiSelectBetOpt(this,'time',5)">5 Min</button>
+                    <button class="rppi-bet-chip" data-type="time" data-value="10" onclick="rppiSelectBetOpt(this,'time',10)">10 Min</button>
+                    <button class="rppi-bet-chip" data-type="time" data-value="15" onclick="rppiSelectBetOpt(this,'time',15)">15 Min</button>
+                </div>
+            </div>
+
+            <!-- 3. Boosts — fijo en 1 boost = 10 RPPI-C -->
+            <div style="margin-bottom:20px;">
+                <label style="display:block;font-size:11px;color:rgba(0,188,255,0.6);
+                              letter-spacing:0.2em;margin-bottom:8px;">
+                    3. LÍMITE DE BOOSTS (INMUNIDAD):
+                </label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="rppi-bet-chip" data-type="boost" data-value="1" onclick="rppiSelectBetOpt(this,'boost',1)">1 Boost</button>
+                    <button class="rppi-bet-chip" data-type="boost" data-value="3" onclick="rppiSelectBetOpt(this,'boost',3)">3 Boosts</button>
+                    <button class="rppi-bet-chip" data-type="boost" data-value="5" onclick="rppiSelectBetOpt(this,'boost',5)">5 Boosts (Máx)</button>
+                </div>
+                <div style="margin-top:7px;font-size:10px;color:rgba(255,165,0,0.55);
+                            letter-spacing:0.12em;">
+                    ⚡ 1 BOOST = 10 RPPI-C (incluido en el monto de apuesta)
+                </div>
+            </div>
+
+            <!-- Botón principal -->
+            <button id="rppi-launch-bet-btn" onclick="rppiLaunchBet()" disabled
+                style="width:100%;background:transparent;
+                       border:2px solid rgba(0,188,255,0.35);
+                       color:rgba(0,188,255,0.4);
+                       font-family:'Orbitron',monospace;font-weight:700;font-size:13px;
+                       letter-spacing:0.28em;padding:14px;cursor:not-allowed;
+                       border-radius:4px;transition:all 0.2s;text-transform:uppercase;
+                       text-shadow:none;">
+                SELECCIONÁ LAS OPCIONES
+            </button>
+
+            <!-- Estado / error -->
+            <div id="rppi-bet-status" style="margin-top:10px;font-size:11px;
+                 text-align:center;color:rgba(0,188,255,0.5);letter-spacing:0.1em;
+                 min-height:18px;"></div>
+
+        </div><!-- /body -->
+    </div>
+</div>
+
+<style>
+/* ── Chips del modal RPPI-C ── */
+.rppi-bet-chip {
+    background: transparent;
+    border: 1px solid rgba(0,188,255,0.35);
+    color: rgba(0,188,255,0.7);
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.1em;
+}
+.rppi-bet-chip:hover {
+    background: rgba(0,188,255,0.1);
+    border-color: #00BCFF;
+    color: #00BCFF;
+}
+.rppi-bet-chip.rppi-selected {
+    background: rgba(0,188,255,0.18);
+    border-color: #00BCFF;
+    color: #00BCFF;
+    box-shadow: 0 0 12px rgba(0,188,255,0.4);
+}
+</style>
+
+<script>
+/* ── RAPPIA CRÉDITO BET MODAL ──────────────────────────── */
+var _rppiBet = { amount: 0, time: 0, boost: 0 };
+
+function rppiOpenBetModal(gameId) {
+    // Verificar login
+    if (!window._rppiUser) {
+        rppiOpenLogin();
+        return;
+    }
+    // Refrescar balance
+    var user    = window._rppiUser;
+    var balEl   = document.getElementById('rppi-bet-balance');
+    if (balEl) balEl.textContent = (user.credits || 0) + ' RPPI-C';
+
+    // Guardar el juego destino
+    window._rppiBetGameId = gameId || null;
+
+    // Reset opciones
+    _rppiBet = { amount: 0, time: 0, boost: 0 };
+    document.querySelectorAll('.rppi-bet-chip').forEach(function(b) {
+        b.classList.remove('rppi-selected');
+    });
+    var btn = document.getElementById('rppi-launch-bet-btn');
+    if (btn) {
+        btn.disabled          = true;
+        btn.style.borderColor = 'rgba(0,188,255,0.35)';
+        btn.style.color       = 'rgba(0,188,255,0.4)';
+        btn.style.cursor      = 'not-allowed';
+        btn.style.textShadow  = 'none';
+        btn.textContent       = 'SELECCIONÁ LAS OPCIONES';
+    }
+    var st = document.getElementById('rppi-bet-status');
+    if (st) st.textContent = '';
+
+    document.getElementById('rppi-bet-modal').classList.remove('game-menu-hidden');
+    document.getElementById('rppi-bet-modal').classList.add('game-menu-visible');
+}
+
+function rppiCloseBetModal() {
+    document.getElementById('rppi-bet-modal').classList.add('game-menu-hidden');
+    document.getElementById('rppi-bet-modal').classList.remove('game-menu-visible');
+}
+
+function rppiSelectBetOpt(el, type, val) {
+    // Highlight chip
+    document.querySelectorAll('.rppi-bet-chip[data-type="' + type + '"]').forEach(function(b) {
+        b.classList.remove('rppi-selected');
+    });
+    el.classList.add('rppi-selected');
+    _rppiBet[type] = val;
+
+    // Preview monto
+    if (type === 'amount') {
+        var prev = document.getElementById('rppi-bet-amount-preview');
+        if (prev) prev.textContent = val + ' RPPI-C = ARS ' + (val * 145) + ' aprox.';
+    }
+
+    // Activar botón si todo está completo
+    if (_rppiBet.amount > 0 && _rppiBet.time > 0 && _rppiBet.boost > 0) {
+        var user    = window._rppiUser;
+        var credits = user ? (user.credits || 0) : 0;
+        var btn     = document.getElementById('rppi-launch-bet-btn');
+        var st      = document.getElementById('rppi-bet-status');
+        if (_rppiBet.amount > credits) {
+            if (btn) {
+                btn.disabled = true;
+                btn.style.borderColor = 'rgba(255,45,120,0.5)';
+                btn.style.color       = 'rgba(255,45,120,0.6)';
+                btn.style.cursor      = 'not-allowed';
+                btn.textContent       = 'RPPI-C INSUFICIENTES';
+            }
+            if (st) st.textContent = 'Necesitás ' + _rppiBet.amount + ' RPPI-C. Tenés ' + credits + '.';
+        } else {
+            if (btn) {
+                btn.disabled          = false;
+                btn.style.borderColor = '#00BCFF';
+                btn.style.color       = '#00BCFF';
+                btn.style.cursor      = 'pointer';
+                btn.style.textShadow  = '0 0 10px #00BCFF';
+                btn.style.boxShadow   = '0 0 18px rgba(0,188,255,0.3)';
+                btn.textContent       = '⚡ LANZAR DESAFÍO RAPPIA CRÉDITO';
+            }
+            if (st) st.textContent = '';
+        }
+    }
+}
+
+function rppiLaunchBet() {
+    var user = window._rppiUser;
+    if (!user || !user.credits) return;
+    if (_rppiBet.amount <= 0 || _rppiBet.time <= 0 || _rppiBet.boost <= 0) return;
+    if (_rppiBet.amount > (user.credits || 0)) return;
+
+    var st = document.getElementById('rppi-bet-status');
+    if (st) { st.style.color = 'rgba(0,255,65,0.7)'; st.textContent = '⏳ Creando desafío...'; }
+
+    // Descontar créditos optimistamente
+    user.credits -= _rppiBet.amount;
+    window._rppiUser = user;
+    localStorage.setItem('rppi_user', JSON.stringify(user));
+    var balEl = document.getElementById('rppi-bet-balance');
+    if (balEl) balEl.textContent = user.credits + ' RPPI-C';
+
+    // Registrar apuesta en Firebase bajo t2e_bets (compatible con el sistema existente)
+    var betId   = 'RPPI-BET-' + Date.now() + '-' + Math.random().toString(16).slice(2,6).toUpperCase();
+    var FB_URL  = 'https://rappibellion-comments-default-rtdb.firebaseio.com';
+    var betData = {
+        id:          betId,
+        type:        'rppi_credit',          // distingue de bets blockchain
+        creator:     user.email,
+        uid:         user.uid,
+        amount:      _rppiBet.amount,        // en RPPI-C
+        currency:    'RPPI-C',
+        timeLimit:   _rppiBet.time * 60,    // segundos
+        boostLimit:  _rppiBet.boost,
+        boostCost:   10,                    // 1 boost = 10 RPPI-C
+        game:        window._rppiBetGameId || null,
+        status:      'open',
+        createdAt:   Date.now()
+    };
+
+    fetch(FB_URL + '/t2e_bets/' + betId + '.json', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(betData)
+    }).then(function(r) { return r.json(); }).then(function() {
+        if (st) st.textContent = '✅ Desafío abierto — esperando rival...';
+        // Cerrar modal y abrir arena en modo RPPI-C
+        rppiCloseBetModal();
+        if (typeof window.fpOpenArena === 'function') {
+            window.fpState = window.fpState || {};
+            window.fpState.betMode     = true;
+            window.fpState.betId       = betId;
+            window.fpState.betAmount   = _rppiBet.amount;
+            window.fpState.currency    = 'RPPI-C';
+            window.fpState.timeLimit   = _rppiBet.time * 60;
+            window.fpState.boostLimit  = _rppiBet.boost;
+            window.fpState.gameType    = window._rppiBetGameId;
+            window.fpOpenArena(betId, window._rppiBetGameId);
+        }
+    }).catch(function() {
+        // Revertir si falla
+        user.credits += _rppiBet.amount;
+        window._rppiUser = user;
+        localStorage.setItem('rppi_user', JSON.stringify(user));
+        if (st) { st.style.color = 'rgba(255,45,120,0.8)'; st.textContent = '⚠ Error al crear desafío. Créditos revertidos.'; }
+    });
+}
+</script>
 
 <!-- === FREE PLAY ARENA — 3 COLUMNAS === -->
 <div id="t2eplay-arena">
