@@ -484,17 +484,33 @@
 (function(){
     var el = document.getElementById('intro-screen');
     if (!el) return;
-    // Don't show if already dismissed this session
     if (sessionStorage.getItem('intro-seen')) { el.style.display='none'; return; }
 
-    function dismiss() {
+    // Modo elegido por el usuario: 'web25' o 'web30'
+    window.rappibellionMode = sessionStorage.getItem('rappibellion-mode') || null;
+
+    function dismiss(mode) {
+        if (mode) {
+            window.rappibellionMode = mode;
+            sessionStorage.setItem('rappibellion-mode', mode);
+            // Mostrar u ocultar elementos según el modo
+            document.querySelectorAll('.only-web25').forEach(function(e){ e.style.display = mode==='web25' ? '' : 'none'; });
+            document.querySelectorAll('.only-web30').forEach(function(e){ e.style.display = mode==='web30' ? '' : 'none'; });
+        }
         sessionStorage.setItem('intro-seen','1');
         el.style.transition='opacity 0.7s ease';
         el.style.opacity='0';
         setTimeout(function(){ el.style.display='none'; },700);
     }
-    el.addEventListener('click', dismiss);
-    document.addEventListener('keydown', dismiss, {once:true});
+
+    // enterSite es llamado por los botones WEB2.5 / WEB3.0
+    window.enterSite = function(mode) { dismiss(mode); };
+
+    // Click en cualquier parte de la TV (sin botón) → auto web30
+    el.addEventListener('click', function(ev){
+        if (!ev.target.closest('button')) dismiss('web30');
+    });
+    document.addEventListener('keydown', function(){ dismiss('web30'); }, {once:true});
 
     // Random pixel glitch flashes on the TV overlay
     (function runGlitch() {
@@ -536,11 +552,12 @@
     }, 1600);
 
     setTimeout(function(){ document.getElementById('intro-ver').style.opacity='1'; },2200);
-    setTimeout(function(){ document.getElementById('intro-press').style.opacity='1'; },2600);
-
+    setTimeout(function(){ document.getElementById('intro-press').style.opacity='1'; },2200);
     // Countdown bar → shrinks to 0 in 5s then auto-dismiss
-    setTimeout(function(){ document.getElementById('intro-bar').style.width='0%'; },100);
-    setTimeout(dismiss, 5500);
+    setTimeout(function(){
+        var sp = document.getElementById('intro-split');
+        if (sp) sp.style.opacity='1';
+    }, 2200);
 })();
 </script>
 
@@ -1598,140 +1615,145 @@ function _rppiComputeCentId(uid) {
     return (h % 99) + 1;
 }
 
+function _rppiComputeCentId(uid) {
+    var h = 0;
+    for (var i = 0; i < uid.length; i++) h = (h * 31 + uid.charCodeAt(i)) & 0xffff;
+    return (h % 99) + 1;
+}
+
 function _rppiGenQR() {
     if (!_rppiUser || !_rppiUser.uid) return;
     var container = document.getElementById('rppi-qr-container');
-    var uidEl     = document.getElementById('rppi-qr-uid');
+    var uidEl = document.getElementById('rppi-qr-uid');
     if (!container) return;
-
-    var uid    = _rppiUser.uid;
+    var uid = _rppiUser.uid;
     var centId = _rppiUser.centId || _rppiComputeCentId(uid);
-
-    // Persistir centId y registrar índice en Firebase (una sola vez)
     if (!_rppiUser.centId) {
         _rppiUser.centId = centId;
         localStorage.setItem('rppi_user', JSON.stringify(_rppiUser));
-        var FB  = 'https://rappibellion-comments-default-rtdb.firebaseio.com';
+        var FB = 'https://rappibellion-comments-default-rtdb.firebaseio.com';
         var key = (_rppiUser.email || '').replace(/[.#$\[\]]/g, '_');
         fetch(FB + '/rappi_cent_index/' + String(centId).padStart(2,'0') + '.json', {
-            method: 'PUT', headers: { 'Content-Type': 'application/json' },
+            method: 'PUT', headers: {'Content-Type':'application/json'},
             body: JSON.stringify(key)
         }).catch(function(){});
     }
-
-    // QR de UID texto plano (fallback visible siempre)
     container.innerHTML = '';
-    var tryGen = function() {
+    (function tryGenQR() {
         if (window.QRCode) {
             try {
-                new QRCode(container, { text: uid, width: 150, height: 150,
-                    colorDark: '#020408', colorLight: '#ffffff',
-                    correctLevel: QRCode.CorrectLevel.M });
+                new QRCode(container, {text: uid, width:150, height:150,
+                    colorDark:'#020408', colorLight:'#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M});
                 var c = container.querySelector('canvas');
                 if (c) c.id = 'rppi-qr-canvas';
             } catch(e) {}
-        } else { setTimeout(tryGen, 400); }
-    };
-    tryGen();
-
+        } else { setTimeout(tryGenQR, 400); }
+    })();
     if (!uidEl) return;
     uidEl.innerHTML = [
         '<div style="margin-top:11px;padding:12px;background:rgba(0,188,255,0.05);',
         'border:1px solid rgba(0,188,255,0.22);border-radius:4px;text-align:left;">',
-
-        // ── Selector de monto → QR dinámico EMVCo ──
-        '<div style="margin-bottom:12px;">',
-          '<div style="font-size:10px;color:rgba(0,188,255,0.55);letter-spacing:0.2em;margin-bottom:7px;">',
-          'RPPI-C A COMPRAR (ARS 145 c/u)</div>',
-          '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">',
-          [1,5,10,25,50].map(function(v){
-            return '<button onclick="_rppiLoadDynQR('+v+')" class="rppi-amt-chip"'+
-                   ' style="background:transparent;border:1px solid rgba(0,188,255,0.35);'+
-                   'color:rgba(0,188,255,0.75);border-radius:3px;padding:5px 10px;cursor:pointer;'+
-                   'font-size:12px;font-family:Orbitron,monospace;letter-spacing:0.1em;'+
-                   'transition:all 0.15s;">'+v+' RPPI</button>';
-          }).join(''),
-          '</div>',
-          '<div id="rppi-qr-status" style="font-size:11px;color:rgba(255,165,0,0.7);min-height:16px;',
-          'letter-spacing:0.08em;">Elegí la cantidad para generar el QR de pago</div>',
+        '<div style="margin-bottom:14px;">',
+        '<div style="font-size:10px;color:rgba(0,188,255,0.55);letter-spacing:0.2em;margin-bottom:7px;">CANTIDAD DE RPPI-C A COMPRAR</div>',
+        '<div style="display:flex;gap:8px;align-items:stretch;">',
+        '<input id="rppi-buy-input" type="number" min="1" placeholder="ej: 10"',
+        ' oninput="_rppiCalcARS()" onchange="_rppiCalcARS()"',
+        ' style="flex:1;background:#020408;border:1px solid rgba(0,188,255,0.4);',
+        'color:#00BCFF;font-family:Share Tech Mono,monospace;font-size:16px;',
+        'padding:9px 12px;border-radius:3px;outline:none;box-sizing:border-box;"',
+        ' onfocus="this.style.borderColor=\'#00BCFF\'"',
+        ' onblur="this.style.borderColor=\'rgba(0,188,255,0.4)\'">',
+        '<button onclick="_rppiLoadDynQR()" id="rppi-gen-qr-btn"',
+        ' style="background:transparent;border:2px solid #00BCFF;color:#00BCFF;',
+        'font-family:Orbitron,monospace;font-weight:700;font-size:11px;',
+        'letter-spacing:0.15em;padding:9px 14px;border-radius:3px;cursor:pointer;',
+        'white-space:nowrap;flex-shrink:0;">GENERAR QR</button>',
         '</div>',
-
-        // ── Área QR dinámico (se muestra al elegir monto) ──
+        '<div id="rppi-ars-equiv" style="margin-top:7px;font-size:12px;',
+        'color:rgba(255,165,0,0.75);letter-spacing:0.1em;">Mínimo 1 RPPI-C = ARS 145</div>',
+        '</div>',
+        '<div id="rppi-qr-status" style="font-size:11px;color:rgba(255,165,0,0.65);',
+        'letter-spacing:0.08em;min-height:16px;margin-bottom:10px;"></div>',
         '<div id="rppi-dynqr-wrap" style="text-align:center;margin-bottom:12px;display:none;">',
-          '<div id="rppi-dynqr-img" style="display:inline-block;background:#fff;padding:8px;',
-          'border-radius:4px;box-shadow:0 0 18px rgba(0,188,255,0.35);"></div>',
-          '<div id="rppi-dynqr-amount" style="margin-top:7px;font-family:Orbitron,monospace;',
-          'font-size:13px;color:#FFD700;text-shadow:0 0 8px #FFD700;"></div>',
+        '<div id="rppi-dynqr-img" style="display:inline-block;background:#fff;padding:8px;',
+        'border-radius:4px;box-shadow:0 0 18px rgba(0,188,255,0.35);"></div>',
+        '<div id="rppi-dynqr-amount" style="margin-top:7px;font-family:Orbitron,monospace;',
+        'font-size:13px;color:#FFD700;text-shadow:0 0 8px #FFD700;"></div>',
         '</div>',
-
-        // ── UID + botón copiar (fallback siempre visible) ──
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;',
         'background:rgba(0,0,0,0.3);border:1px solid rgba(0,188,255,0.25);',
         'border-radius:3px;padding:7px 10px;">',
-          '<span style="font-size:9px;color:rgba(0,188,255,0.45);letter-spacing:0.2em;flex-shrink:0;">UID:</span>',
-          '<span id="rppi-uid-text" style="font-family:Share Tech Mono,monospace;font-size:13px;',
-          'color:#00BCFF;flex:1;word-break:break-all;text-shadow:0 0 6px #00BCFF;">', uid, '</span>',
-          '<button onclick="_rppiCopyUID()" id="rppi-copy-btn"',
-          'style="background:rgba(0,188,255,0.12);border:1px solid rgba(0,188,255,0.45);',
-          'color:#00BCFF;border-radius:3px;padding:5px 10px;cursor:pointer;font-size:13px;',
-          'flex-shrink:0;transition:all 0.15s;" title="Copiar UID">📋</button>',
+        '<span style="font-size:9px;color:rgba(0,188,255,0.45);letter-spacing:0.2em;flex-shrink:0;">UID:</span>',
+        '<span id="rppi-uid-text" style="font-family:Share Tech Mono,monospace;font-size:13px;',
+        'color:#00BCFF;flex:1;word-break:break-all;">', uid, '</span>',
+        '<button onclick="_rppiCopyUID()" id="rppi-copy-btn"',
+        ' style="background:rgba(0,188,255,0.12);border:1px solid rgba(0,188,255,0.45);',
+        'color:#00BCFF;border-radius:3px;padding:5px 10px;cursor:pointer;font-size:13px;',
+        'flex-shrink:0;">📋</button>',
         '</div>',
-
-        // ── Instrucciones ──
         '<div style="font-size:11px;color:rgba(255,255,255,0.45);line-height:1.85;letter-spacing:0.04em;">',
-          '<span style="color:#00FF41;font-weight:700;letter-spacing:0.1em;">// CÓMO ACREDITAR //</span><br>',
-          '• <strong>QR dinámico</strong>: elegí monto → escaneá con MP / Lemon / Uala<br>',
-          '• <strong>Manual</strong>: transferí a <span style="color:#00BCFF;font-weight:700;">gabodc.mp</span>',
-          ' y pegá tu UID en CONCEPTO<br>',
-          '<span style="color:rgba(255,165,0,0.8);font-weight:700;">ARS 145 = 1 RPPI-C · USD 0.10 = 1 RPPI-C</span>',
-        '</div>',
-        '</div>'
+        '<span style="color:#00FF41;font-weight:700;">// CÓMO ACREDITAR //</span><br>',
+        '• QR dinámico: ingresá cantidad → GENERAR QR → escaneá con MP / Lemon / Uala<br>',
+        '• Manual: transferí a <span style="color:#00BCFF;font-weight:700;">gabodc.mp</span> y pegá tu UID en CONCEPTO<br>',
+        '<span style="color:rgba(255,165,0,0.8);font-weight:700;">ARS 145 = 1 RPPI-C · USD 0.10 = 1 RPPI-C</span>',
+        '</div></div>'
     ].join('');
 }
 
-function _rppiLoadDynQR(amountRppi) {
+function _rppiCalcARS() {
+    var input = document.getElementById('rppi-buy-input');
+    var equiv = document.getElementById('rppi-ars-equiv');
+    if (!input || !equiv) return;
+    var qty = parseInt(input.value) || 0;
+    if (qty < 1) {
+        equiv.textContent = 'Mínimo 1 RPPI-C = ARS 145';
+        equiv.style.color = 'rgba(255,165,0,0.75)';
+    } else {
+        equiv.textContent = qty + ' RPPI-C = ARS ' + (qty * 145).toLocaleString('es-AR');
+        equiv.style.color = '#FFD700';
+    }
+}
+
+function _rppiLoadDynQR() {
+    var input = document.getElementById('rppi-buy-input');
+    var amountRppi = input ? (parseInt(input.value) || 0) : 0;
+    var statusEl = document.getElementById('rppi-qr-status');
+    if (amountRppi < 1) {
+        if (statusEl) { statusEl.style.color='rgba(255,45,120,0.8)'; statusEl.textContent='⚠ Ingresá al menos 1 RPPI-C'; }
+        return;
+    }
     var user = window._rppiUser;
     if (!user) return;
-    var centId    = user.centId || _rppiComputeCentId(user.uid);
-    var statusEl  = document.getElementById('rppi-qr-status');
-    var wrapEl    = document.getElementById('rppi-dynqr-wrap');
-    var imgEl     = document.getElementById('rppi-dynqr-img');
-    var amtEl     = document.getElementById('rppi-dynqr-amount');
-
-    // Highlight chip
-    document.querySelectorAll('.rppi-amt-chip').forEach(function(btn) {
-        var mine = btn.textContent.trim() === amountRppi + ' RPPI';
-        btn.style.background  = mine ? 'rgba(0,188,255,0.18)' : 'transparent';
-        btn.style.borderColor = mine ? '#00BCFF' : 'rgba(0,188,255,0.35)';
-        btn.style.color       = mine ? '#00BCFF'  : 'rgba(0,188,255,0.75)';
-    });
-    if (statusEl) statusEl.textContent = '⏳ Generando QR de pago real...';
-
+    var centId = user.centId || _rppiComputeCentId(user.uid);
+    var wrapEl = document.getElementById('rppi-dynqr-wrap');
+    var imgEl  = document.getElementById('rppi-dynqr-img');
+    var amtEl  = document.getElementById('rppi-dynqr-amount');
+    var genBtn = document.getElementById('rppi-gen-qr-btn');
+    if (statusEl) { statusEl.style.color='rgba(255,165,0,0.7)'; statusEl.textContent='⏳ Generando QR real...'; }
+    if (genBtn)   { genBtn.disabled=true; genBtn.textContent='...'; }
     fetch(WORKER_URL + '/rappia/qr-dynamic', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ centId: centId, amountRppi: amountRppi })
-    }).then(function(r) { return r.json(); })
-    .then(function(d) {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({centId:centId, amountRppi:amountRppi})
+    }).then(function(r){return r.json();}).then(function(d){
+        if (genBtn) { genBtn.disabled=false; genBtn.textContent='GENERAR QR'; }
         if (!d.ok || !d.qrData) {
-            if (statusEl) statusEl.textContent = '⚠ Error al generar QR. Usá el UID manual abajo.';
+            if (statusEl) { statusEl.style.color='rgba(255,45,120,0.8)'; statusEl.textContent='⚠ Error MP: '+(d.error||'sin respuesta')+' — usá UID manual'; }
             return;
         }
         if (imgEl) {
-            imgEl.innerHTML = '';
+            imgEl.innerHTML='';
             if (window.QRCode) {
-                try {
-                    new QRCode(imgEl, { text: d.qrData, width: 160, height: 160,
-                        colorDark: '#020408', colorLight: '#ffffff',
-                        correctLevel: QRCode.CorrectLevel.M });
-                } catch(e) { imgEl.textContent = '⚠ Error generando QR'; }
+                try { new QRCode(imgEl,{text:d.qrData,width:160,height:160,colorDark:'#020408',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); }
+                catch(e) { imgEl.textContent='⚠ Error generando QR'; }
             }
         }
-        if (amtEl) amtEl.textContent = 'Monto exacto: ARS ' + d.finalAmount + ' → ' + amountRppi + ' RPPI-C';
-        if (wrapEl) wrapEl.style.display = 'block';
-        if (statusEl) statusEl.textContent = '✅ QR listo — escaneá con MP, Lemon o Uala';
-    }).catch(function() {
-        if (statusEl) statusEl.textContent = '⚠ Sin conexión — usá el UID manual abajo.';
+        if (amtEl)  amtEl.textContent='Monto exacto: ARS '+d.finalAmount+' → '+amountRppi+' RPPI-C';
+        if (wrapEl) wrapEl.style.display='block';
+        if (statusEl) { statusEl.style.color='rgba(0,255,65,0.75)'; statusEl.textContent='✅ QR listo — escaneá con MP, Lemon o Uala'; }
+    }).catch(function(){
+        if (genBtn)   { genBtn.disabled=false; genBtn.textContent='GENERAR QR'; }
+        if (statusEl) { statusEl.style.color='rgba(255,45,120,0.8)'; statusEl.textContent='⚠ Sin conexión — usá UID manual'; }
     });
 }
 
@@ -2282,6 +2304,113 @@ function rppiLogout() {
         </div>
     </div>
 </div>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL DE APUESTAS RAPPIA CRÉDITO (WEB2.5)
+════════════════════════════════════════════════════════════ -->
+<div id="rppi-bet-modal" class="game-menu-hidden">
+    <div class="bet-modal-content" style="
+        background:#020408;border:2px solid rgba(0,188,255,0.6);
+        box-shadow:0 0 40px rgba(0,188,255,0.35),inset 0 0 30px rgba(0,188,255,0.03);
+        border-radius:6px;font-family:'Share Tech Mono','Courier New',monospace;
+        max-height:90vh;overflow-y:auto;position:relative;">
+        <div style="position:absolute;inset:0;pointer-events:none;z-index:0;
+             background:repeating-linear-gradient(0deg,rgba(0,188,255,0.018) 0px 1px,transparent 1px 3px);border-radius:6px;"></div>
+        <div style="position:relative;z-index:1;background:rgba(0,188,255,0.08);
+             border-bottom:2px solid rgba(0,188,255,0.3);padding:13px 18px;
+             display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <span style="font-family:'Orbitron',monospace;font-weight:700;font-size:13px;
+                             color:#00BCFF;letter-spacing:0.35em;
+                             text-shadow:0 0 10px #00BCFF,0 0 24px rgba(0,188,255,0.4);">
+                    [RPPI_CREDIT_LOBBY]
+                </span>
+                <div style="font-size:9px;color:rgba(255,165,0,0.7);letter-spacing:0.3em;margin-top:2px;">
+                    WEB2.5 // SIN BLOCKCHAIN // RAPPIA CRÉDITOS
+                </div>
+            </div>
+            <button onclick="rppiCloseBetModal()"
+                style="background:rgba(0,188,255,0.1);border:1px solid rgba(0,188,255,0.4);
+                       color:#00BCFF;font-size:16px;width:32px;height:32px;border-radius:3px;
+                       cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+        </div>
+        <div style="padding:20px 18px;position:relative;z-index:1;">
+            <div style="margin-bottom:18px;">
+                <label style="display:block;text-align:center;color:#FFD700;
+                              font-size:11px;letter-spacing:0.25em;margin-bottom:10px;
+                              text-shadow:0 0 8px rgba(255,215,0,0.5);">
+                    [ DESAFÍOS ABIERTOS — CIRCUITO RAPPIA ]
+                </label>
+                <div id="rppi-bets-lobby" style="min-height:44px;background:rgba(0,188,255,0.04);
+                    border:1px solid rgba(0,188,255,0.18);border-radius:4px;padding:10px;
+                    font-size:11px;color:rgba(0,188,255,0.45);text-align:center;letter-spacing:0.15em;">
+                    // SIN DESAFÍOS ACTIVOS — SÉ EL PRIMERO //
+                </div>
+            </div>
+            <div style="border-top:1px dashed rgba(0,188,255,0.2);padding-top:18px;margin-bottom:16px;
+                        text-align:center;font-family:'Orbitron',monospace;font-size:12px;
+                        color:#00BCFF;letter-spacing:0.2em;text-shadow:0 0 8px #00BCFF;">
+                CREAR DESAFÍO RAPPIA CRÉDITO
+            </div>
+            <div id="rppi-bet-balance-wrap" style="background:rgba(0,188,255,0.06);
+                border:1px solid rgba(0,188,255,0.25);border-radius:4px;padding:10px 14px;
+                margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:10px;color:rgba(0,188,255,0.55);letter-spacing:0.2em;">RPPI-C DISPONIBLES</span>
+                <span id="rppi-bet-balance" style="font-family:'Orbitron',monospace;font-size:20px;
+                      color:#00BCFF;font-weight:700;text-shadow:0 0 10px #00BCFF;">—</span>
+            </div>
+            <div style="margin-bottom:16px;">
+                <label style="display:block;font-size:11px;color:rgba(0,188,255,0.6);letter-spacing:0.2em;margin-bottom:8px;">1. DEFINE TU APUESTA (RPPI-C):</label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+                    <button class="rppi-bet-chip" data-type="amount" data-value="10"  onclick="rppiSelectBetOpt(this,'amount',10)">10</button>
+                    <button class="rppi-bet-chip" data-type="amount" data-value="25"  onclick="rppiSelectBetOpt(this,'amount',25)">25</button>
+                    <button class="rppi-bet-chip" data-type="amount" data-value="50"  onclick="rppiSelectBetOpt(this,'amount',50)">50</button>
+                    <button class="rppi-bet-chip" data-type="amount" data-value="100" onclick="rppiSelectBetOpt(this,'amount',100)">100</button>
+                </div>
+                <div id="rppi-bet-amount-preview" style="font-size:11px;color:rgba(255,165,0,0.65);letter-spacing:0.1em;min-height:16px;"></div>
+            </div>
+            <div style="margin-bottom:16px;">
+                <label style="display:block;font-size:11px;color:rgba(0,188,255,0.6);letter-spacing:0.2em;margin-bottom:8px;">2. LÍMITE DE TIEMPO:</label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="rppi-bet-chip" data-type="time" data-value="5"  onclick="rppiSelectBetOpt(this,'time',5)">5 Min</button>
+                    <button class="rppi-bet-chip" data-type="time" data-value="10" onclick="rppiSelectBetOpt(this,'time',10)">10 Min</button>
+                    <button class="rppi-bet-chip" data-type="time" data-value="15" onclick="rppiSelectBetOpt(this,'time',15)">15 Min</button>
+                </div>
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block;font-size:11px;color:rgba(0,188,255,0.6);letter-spacing:0.2em;margin-bottom:8px;">3. LÍMITE DE BOOSTS:</label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="rppi-bet-chip" data-type="boost" data-value="1" onclick="rppiSelectBetOpt(this,'boost',1)">1 Boost</button>
+                    <button class="rppi-bet-chip" data-type="boost" data-value="3" onclick="rppiSelectBetOpt(this,'boost',3)">3 Boosts</button>
+                    <button class="rppi-bet-chip" data-type="boost" data-value="5" onclick="rppiSelectBetOpt(this,'boost',5)">5 Boosts (Máx)</button>
+                </div>
+                <div style="margin-top:7px;font-size:10px;color:rgba(255,165,0,0.55);letter-spacing:0.12em;">
+                    ⚡ 1 BOOST = 10 RPPI-C
+                </div>
+            </div>
+            <button id="rppi-launch-bet-btn" onclick="rppiLaunchBet()" disabled
+                style="width:100%;background:transparent;border:2px solid rgba(0,188,255,0.35);
+                       color:rgba(0,188,255,0.4);font-family:'Orbitron',monospace;font-weight:700;
+                       font-size:13px;letter-spacing:0.28em;padding:14px;cursor:not-allowed;
+                       border-radius:4px;transition:all 0.2s;text-transform:uppercase;">
+                SELECCIONÁ LAS OPCIONES
+            </button>
+            <div id="rppi-bet-status" style="margin-top:10px;font-size:11px;text-align:center;
+                 color:rgba(0,188,255,0.5);letter-spacing:0.1em;min-height:18px;"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+.rppi-bet-chip {
+    background:transparent;border:1px solid rgba(0,188,255,0.35);
+    color:rgba(0,188,255,0.7);font-family:'Orbitron',monospace;
+    font-size:12px;font-weight:600;padding:7px 14px;border-radius:3px;
+    cursor:pointer;transition:all 0.15s;letter-spacing:0.1em;
+}
+.rppi-bet-chip:hover { background:rgba(0,188,255,0.1);border-color:#00BCFF;color:#00BCFF; }
+.rppi-bet-chip.rppi-selected { background:rgba(0,188,255,0.18);border-color:#00BCFF;color:#00BCFF;box-shadow:0 0 12px rgba(0,188,255,0.4); }
+</style>
 
 <!-- === MODAL DE APUESTAS T2E === -->
 <div id="make-bet-modal" class="game-menu-hidden">
