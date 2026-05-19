@@ -2784,6 +2784,7 @@ function rppiLaunchBet() {
         if (st) { st.style.color = 'rgba(255,45,120,0.8)'; st.textContent = '⚠ Error al crear desafío. Créditos revertidos.'; }
     });
 }
+
 </script>
 
 <!-- === FREE PLAY ARENA — 3 COLUMNAS === -->
@@ -14246,6 +14247,108 @@ function zeusCloseReal() {
     if (iframe) iframe.src = '';
     _zeusRealSelected = 0;
 }
+
+
+
+/* ── RAPPIA CRÉDITO BET MODAL ──────────────────────────── */
+var _rppiBet = { amount: 0, time: 0, boost: 0 };
+
+function rppiOpenBetModal(gameId) {
+    if (!window._rppiUser) { rppiOpenLogin(); return; }
+    var user  = window._rppiUser;
+    var balEl = document.getElementById('rppi-bet-balance');
+    if (balEl) balEl.textContent = (user.credits || 0) + ' RPPI-C';
+    window._rppiBetGameId = gameId || null;
+    _rppiBet = { amount:0, time:0, boost:0 };
+    document.querySelectorAll('.rppi-bet-chip').forEach(function(b){ b.classList.remove('rppi-selected'); });
+    var btn = document.getElementById('rppi-launch-bet-btn');
+    if (btn) {
+        btn.disabled=true; btn.style.borderColor='rgba(0,188,255,0.35)';
+        btn.style.color='rgba(0,188,255,0.4)'; btn.style.cursor='not-allowed';
+        btn.textContent='SELECCIONÁ LAS OPCIONES';
+    }
+    var st = document.getElementById('rppi-bet-status');
+    if (st) st.textContent='';
+    document.getElementById('rppi-bet-modal').classList.remove('game-menu-hidden');
+    document.getElementById('rppi-bet-modal').classList.add('game-menu-visible');
+}
+
+function rppiCloseBetModal() {
+    document.getElementById('rppi-bet-modal').classList.add('game-menu-hidden');
+    document.getElementById('rppi-bet-modal').classList.remove('game-menu-visible');
+}
+
+function rppiSelectBetOpt(el, type, val) {
+    document.querySelectorAll('.rppi-bet-chip[data-type="'+type+'"]').forEach(function(b){
+        b.classList.remove('rppi-selected');
+    });
+    el.classList.add('rppi-selected');
+    _rppiBet[type] = val;
+    if (type === 'amount') {
+        var prev = document.getElementById('rppi-bet-amount-preview');
+        if (prev) prev.textContent = val + ' RPPI-C = ARS ' + (val*145).toLocaleString('es-AR');
+    }
+    if (_rppiBet.amount > 0 && _rppiBet.time > 0 && _rppiBet.boost > 0) {
+        var credits = window._rppiUser ? (window._rppiUser.credits || 0) : 0;
+        var btn = document.getElementById('rppi-launch-bet-btn');
+        var st  = document.getElementById('rppi-bet-status');
+        if (_rppiBet.amount > credits) {
+            if (btn) { btn.disabled=true; btn.style.borderColor='rgba(255,45,120,0.5)';
+                btn.style.color='rgba(255,45,120,0.6)'; btn.style.cursor='not-allowed';
+                btn.textContent='RPPI-C INSUFICIENTES'; }
+            if (st) st.textContent = 'Necesitás '+_rppiBet.amount+' RPPI-C. Tenés '+credits+'.';
+        } else {
+            if (btn) { btn.disabled=false; btn.style.borderColor='#00BCFF';
+                btn.style.color='#00BCFF'; btn.style.cursor='pointer';
+                btn.style.textShadow='0 0 10px #00BCFF';
+                btn.style.boxShadow='0 0 18px rgba(0,188,255,0.3)';
+                btn.textContent='⚡ LANZAR DESAFÍO RAPPIA CRÉDITO'; }
+            if (st) st.textContent='';
+        }
+    }
+}
+
+function rppiLaunchBet() {
+    var user = window._rppiUser;
+    if (!user || _rppiBet.amount<=0 || _rppiBet.time<=0 || _rppiBet.boost<=0) return;
+    if (_rppiBet.amount > (user.credits||0)) return;
+    var st = document.getElementById('rppi-bet-status');
+    if (st) { st.style.color='rgba(0,255,65,0.7)'; st.textContent='⏳ Creando desafío...'; }
+    user.credits -= _rppiBet.amount;
+    window._rppiUser = user;
+    localStorage.setItem('rppi_user', JSON.stringify(user));
+    var balEl = document.getElementById('rppi-bet-balance');
+    if (balEl) balEl.textContent = user.credits + ' RPPI-C';
+    var betId = 'RPPI-BET-'+Date.now()+'-'+Math.random().toString(16).slice(2,6).toUpperCase();
+    var FB = 'https://rappibellion-comments-default-rtdb.firebaseio.com';
+    var betData = {
+        id:betId, type:'rppi_credit', creator:user.email, uid:user.uid,
+        amount:_rppiBet.amount, currency:'RPPI-C',
+        timeLimit:_rppiBet.time*60, boostLimit:_rppiBet.boost, boostCost:10,
+        game:window._rppiBetGameId||null, status:'open', createdAt:Date.now()
+    };
+    fetch(FB+'/t2e_bets/'+betId+'.json', {
+        method:'PUT', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(betData)
+    }).then(function(){ 
+        if (st) st.textContent='✅ Desafío abierto — esperando rival...';
+        rppiCloseBetModal();
+        if (typeof window.fpOpenArena === 'function') {
+            window.fpState = window.fpState || {};
+            window.fpState.betMode=true; window.fpState.betId=betId;
+            window.fpState.betAmount=_rppiBet.amount; window.fpState.currency='RPPI-C';
+            window.fpState.timeLimit=_rppiBet.time*60; window.fpState.boostLimit=_rppiBet.boost;
+            window.fpState.gameType=window._rppiBetGameId;
+            window.fpOpenArena(betId, window._rppiBetGameId);
+        }
+    }).catch(function(){
+        user.credits += _rppiBet.amount;
+        window._rppiUser = user;
+        localStorage.setItem('rppi_user', JSON.stringify(user));
+        if (st) { st.style.color='rgba(255,45,120,0.8)'; st.textContent='⚠ Error. Créditos revertidos.'; }
+    });
+}
+
 </script>
 
 </body>
