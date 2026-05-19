@@ -1748,7 +1748,18 @@ function _rppiLoadDynQR() {
                 catch(e) { imgEl.textContent='⚠ Error generando QR'; }
             }
         }
-        if (amtEl)  amtEl.textContent='Monto exacto: ARS '+d.finalAmount+' → '+amountRppi+' RPPI-C';
+        if (amtEl) amtEl.innerHTML =
+    'Monto exacto: <strong style="color:#FFD700;">ARS '+d.finalAmount+'</strong> → '+amountRppi+' RPPI-C<br>'
+    +'<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">'
+    +'<a href="'+d.paymentLink+'" target="_blank" '
+    +'style="background:#009ee3;color:#fff;font-family:Orbitron,monospace;font-size:11px;'
+    +'font-weight:700;letter-spacing:0.15em;padding:9px 16px;border-radius:4px;'
+    +'text-decoration:none;display:inline-block;">PAGAR CON MERCADO PAGO</a>'
+    +'<button onclick="navigator.clipboard.writeText(\''+d.paymentLink+'\')" '
+    +'style="background:transparent;border:1px solid rgba(0,188,255,0.5);color:#00BCFF;'
+    +'font-family:Orbitron,monospace;font-size:10px;padding:9px 12px;border-radius:4px;'
+    +'cursor:pointer;letter-spacing:0.1em;">📋 COPIAR LINK</button>'
+    +'</div>';
         if (wrapEl) wrapEl.style.display='block';
         if (statusEl) { statusEl.style.color='rgba(0,255,65,0.75)'; statusEl.textContent='✅ QR listo — escaneá con MP, Lemon o Uala'; }
     }).catch(function(){
