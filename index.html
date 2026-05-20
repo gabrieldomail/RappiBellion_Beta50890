@@ -1735,6 +1735,7 @@ function _rppiLoadDynQR() {
     var genBtn = document.getElementById('rppi-gen-qr-btn');
     if (statusEl) { statusEl.style.color='rgba(255,165,0,0.7)'; statusEl.textContent='⏳ Generando QR real...'; }
     if (genBtn)   { genBtn.disabled=true; genBtn.textContent='...'; }
+    
     fetch(WORKER_URL + '/rappia/qr-dynamic', {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({centId:centId, amountRppi:amountRppi})
