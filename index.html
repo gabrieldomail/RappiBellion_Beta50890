@@ -1431,6 +1431,7 @@ function typeHTML(element, htmlString, speed) {
 var _rppiUser = null;
 var WORKER_URL = 'https://rapid-figemini-proxy.gabrieldomail.workers.dev';
 var RAPPIA_PER_ARS = 145; // ARS 145 = 1 RPPI-C
+var _rppiSyncInterval = null; // ⏱️ El reloj del radar en vivo
 
 // Cargar QR lib
 (function() {
@@ -1610,6 +1611,40 @@ function _rppiFetchOrCreateUser(email, alias, onOk, onErr) {
         .catch(function() { onErr('Sin conexión con el servidor.'); });
 }
 
+function _rppiStartLiveSync() {
+    // Si ya hay un radar corriendo, lo apagamos para no duplicar procesos
+    if (_rppiSyncInterval) clearInterval(_rppiSyncInterval);
+    
+    // Encendemos el radar: va a mirar el búnker cada 3 segundos
+    _rppiSyncInterval = setInterval(function() {
+        // Escudo protector: Si el usuario cerró sesión, apagamos el reloj solo
+        if (!_rppiUser) {
+            clearInterval(_rppiSyncInterval);
+            _rppiSyncInterval = null;
+            return;
+        }
+        
+        // Le pedimos el saldo real al Worker en segundo plano
+        fetch(WORKER_URL + '/rappia/balance', {
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: _rppiUser.email })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            var c = document.getElementById('rppi-user-credits');
+            // 🎯 SI EL SALDO CAMBIÓ: Actualizamos la pantalla al toque sin recargar
+            if (d.ok && c && d.credits !== _rppiUser.credits) {
+                console.log("🔄 [Radar] ¡Saldo actualizado en vivo! Cambió de " + _rppiUser.credits + " a " + d.credits);
+                c.textContent = d.credits;
+                _rppiUser.credits = d.credits;
+                localStorage.setItem('rppi_user', JSON.stringify(_rppiUser));
+            }
+        })
+        .catch(function(){}); // Falla silenciosa si se corta internet un segundo
+    }, 3000); 
+}
+
 function _rppiUpdateUI() {
     if (!_rppiUser) return;
     var g = document.getElementById('rppi-user-greeting');
@@ -1632,6 +1667,8 @@ function _rppiUpdateUI() {
             localStorage.setItem('rppi_user', JSON.stringify(_rppiUser));
         }
     }).catch(function(){});
+    // 🚀 ¡NUEVO! Encendemos la sincronización en vivo para que siga revisando sola
+    _rppiStartLiveSync();
 }
 
 function _rppiComputeCentId(uid) {
