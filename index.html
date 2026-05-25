@@ -522,18 +522,35 @@
 (function(){
     var el = document.getElementById('intro-screen');
     if (!el) return;
-    if (sessionStorage.getItem('intro-seen')) { el.style.display='none'; return; }
-
-    // Modo elegido por el usuario: 'web25' o 'web30'
+    // Intro SIEMPRE visible — obligatorio elegir modo WEB2.5 / WEB3.0
     window.rappibellionMode = sessionStorage.getItem('rappibellion-mode') || null;
 
     function dismiss(mode) {
         if (mode) {
             window.rappibellionMode = mode;
             sessionStorage.setItem('rappibellion-mode', mode);
-            // Mostrar u ocultar elementos según el modo
-            document.querySelectorAll('.only-web25').forEach(function(e){ e.style.display = mode==='web25' ? '' : 'none'; });
-            document.querySelectorAll('.only-web30').forEach(function(e){ e.style.display = mode==='web30' ? '' : 'none'; });
+
+            if (mode === 'web25') {
+                // WEB2.5: solo RPPI-C, sin blockchain ni MetaMask
+                document.querySelectorAll('.only-web25').forEach(function(e){ e.style.display = ''; });
+                document.querySelectorAll('.only-web30').forEach(function(e){ e.style.display = 'none'; });
+                ['connect-wallet-button','duel-trigger-btn'].forEach(function(id){
+                    var el2 = document.getElementById(id);
+                    if (el2) el2.style.display = 'none';
+                });
+                document.body.classList.add('mode-web25');
+                document.body.classList.remove('mode-web30');
+            } else {
+                // WEB3.0: blockchain habitual, sin modales RPPI-C
+                document.querySelectorAll('.only-web30').forEach(function(e){ e.style.display = ''; });
+                document.querySelectorAll('.only-web25').forEach(function(e){ e.style.display = 'none'; });
+                ['login-float-btn'].forEach(function(id){
+                    var el2 = document.getElementById(id);
+                    if (el2) el2.style.display = 'none';
+                });
+                document.body.classList.add('mode-web30');
+                document.body.classList.remove('mode-web25');
+            }
         }
         sessionStorage.setItem('intro-seen','1');
         el.style.transition='opacity 0.7s ease';
@@ -1431,7 +1448,6 @@ function typeHTML(element, htmlString, speed) {
 var _rppiUser = null;
 var WORKER_URL = 'https://rapid-figemini-proxy.gabrieldomail.workers.dev';
 var RAPPIA_PER_ARS = 145; // ARS 145 = 1 RPPI-C
-var _rppiSyncInterval = null; // ⏱️ El reloj del radar en vivo
 
 // Cargar QR lib
 (function() {
@@ -1611,40 +1627,6 @@ function _rppiFetchOrCreateUser(email, alias, onOk, onErr) {
         .catch(function() { onErr('Sin conexión con el servidor.'); });
 }
 
-function _rppiStartLiveSync() {
-    // Si ya hay un radar corriendo, lo apagamos para no duplicar procesos
-    if (_rppiSyncInterval) clearInterval(_rppiSyncInterval);
-    
-    // Encendemos el radar: va a mirar el búnker cada 3 segundos
-    _rppiSyncInterval = setInterval(function() {
-        // Escudo protector: Si el usuario cerró sesión, apagamos el reloj solo
-        if (!_rppiUser) {
-            clearInterval(_rppiSyncInterval);
-            _rppiSyncInterval = null;
-            return;
-        }
-        
-        // Le pedimos el saldo real al Worker en segundo plano
-        fetch(WORKER_URL + '/rappia/balance', {
-            method: 'POST', 
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: _rppiUser.email })
-        })
-        .then(function(r) { return r.json(); })
-        .then(function(d) {
-            var c = document.getElementById('rppi-user-credits');
-            // 🎯 SI EL SALDO CAMBIÓ: Actualizamos la pantalla al toque sin recargar
-            if (d.ok && c && d.credits !== _rppiUser.credits) {
-                console.log("🔄 [Radar] ¡Saldo actualizado en vivo! Cambió de " + _rppiUser.credits + " a " + d.credits);
-                c.textContent = d.credits;
-                _rppiUser.credits = d.credits;
-                localStorage.setItem('rppi_user', JSON.stringify(_rppiUser));
-            }
-        })
-        .catch(function(){}); // Falla silenciosa si se corta internet un segundo
-    }, 3000); 
-}
-
 function _rppiUpdateUI() {
     if (!_rppiUser) return;
     var g = document.getElementById('rppi-user-greeting');
@@ -1667,8 +1649,6 @@ function _rppiUpdateUI() {
             localStorage.setItem('rppi_user', JSON.stringify(_rppiUser));
         }
     }).catch(function(){});
-    // 🚀 ¡NUEVO! Encendemos la sincronización en vivo para que siga revisando sola
-    _rppiStartLiveSync();
 }
 
 function _rppiComputeCentId(uid) {
@@ -2245,7 +2225,7 @@ function rppiLogout() {
             <p class="space-promo-tagline">Rompe el espacio, quebranta el código<br>antes que el vacuum te consuma.</p>
             <div class="space-promo-date-box" style="background:none;border:none;padding:0;margin:10px 0;">
                 <button id="make-bet-spacebreaker-promo"
-                    onclick="document.getElementById('space-promo-window').style.display='none'; requireWalletThenBet('make-bet-spacebreaker');"
+                    onclick="document.getElementById('space-promo-window').style.display='none'; (window.rappibellionMode==='web25'||sessionStorage.getItem('rappibellion-mode')==='web25') ? rppiOpenGameModal('make-bet-spacebreaker') : requireWalletThenBet('make-bet-spacebreaker');"
                     style="background:#000;border:1.5px solid rgba(255,255,255,0.75);
                            color:#fff;font-family:var(--fuente-titulos,Orbitron,monospace);
                            font-size:0.85em;font-weight:700;letter-spacing:0.2em;
@@ -5438,7 +5418,13 @@ function fpCloseArena() {
     betButtons.forEach(buttonId => {
         const btn = document.getElementById(buttonId);
         if (btn) {
-            btn.addEventListener('click', () => requireWalletThenBet(buttonId));
+            btn.addEventListener('click', () => {
+                if (window.rappibellionMode === 'web25' || sessionStorage.getItem('rappibellion-mode') === 'web25') {
+                    rppiOpenGameModal(buttonId);
+                } else {
+                    requireWalletThenBet(buttonId);
+                }
+            });
         }
     });
 
@@ -14334,6 +14320,150 @@ function zeusCloseReal() {
 
 
 
+
+// ── RPPI-C GAME MODALS ENGINE ──────────────────────────────
+var _rppiGmColors = {
+    pachack:      { main:'#FF2D78', rgb:'255,45,120' },
+    spacebreaker: { main:'#00BCFF', rgb:'0,188,255'  },
+    tetriscipher: { main:'#00FF41', rgb:'0,255,65'   }
+};
+var _rppiGmGameType = {
+    pachack:      'pac-hack',
+    spacebreaker: 'space-breaker',
+    tetriscipher: 'tetris-cipher'
+};
+var _rppiGmState = {};
+var _rppiGmMap = {
+    'make-bet-pachack':      'pachack',
+    'make-bet-spacebreaker': 'spacebreaker',
+    'make-bet-tetriscipher': 'tetriscipher'
+};
+
+function rppiOpenGameModal(buttonId) {
+    if (!window._rppiUser) { rppiOpenLogin(); return; }
+    var game  = _rppiGmMap[buttonId] || buttonId.replace('make-bet-','');
+    var modal = document.getElementById('rppi-modal-'+game);
+    if (!modal) { rppiOpenBetModal(buttonId); return; }
+    _rppiGmState[game] = { amount:0, time:0, boost:0 };
+    document.querySelectorAll('.rppi-gm-chip[data-game="'+game+'"]').forEach(function(b){
+        var c = _rppiGmColors[game];
+        b.style.background='transparent'; b.style.borderColor='rgba('+c.rgb+',0.35)';
+        b.style.color='rgba('+c.rgb+',0.75)'; b.style.boxShadow='none';
+    });
+    var btn=document.getElementById('rppi-launch-'+game);
+    var c=_rppiGmColors[game];
+    if(btn){btn.disabled=true;btn.style.borderColor='rgba('+c.rgb+',0.25)';btn.style.color='rgba('+c.rgb+',0.3)';btn.style.cursor='not-allowed';btn.style.boxShadow='none';btn.textContent='SELECCIONA OPCIONES';}
+    var st=document.getElementById('rppi-status-'+game); if(st) st.textContent='';
+    var balEl=document.getElementById('bal-'+game);
+    if(balEl) balEl.textContent=(window._rppiUser.credits||0)+' RPPI-C';
+    modal.classList.add('open');
+    rppiGmLoadLobby(game);
+}
+function rppiCloseGameModal(game) {
+    var modal=document.getElementById('rppi-modal-'+game);
+    if(modal) modal.classList.remove('open');
+}
+function rppiGmSelect(el,game,type,val) {
+    var c=_rppiGmColors[game];
+    document.querySelectorAll('.rppi-gm-chip[data-game="'+game+'"][data-type="'+type+'"]').forEach(function(b){
+        b.style.background='transparent';b.style.borderColor='rgba('+c.rgb+',0.35)';b.style.color='rgba('+c.rgb+',0.75)';b.style.boxShadow='none';
+    });
+    el.style.background='rgba('+c.rgb+',0.15)';el.style.borderColor=c.main;el.style.color=c.main;el.style.boxShadow='0 0 10px rgba('+c.rgb+',0.4)';
+    if(!_rppiGmState[game]) _rppiGmState[game]={};
+    _rppiGmState[game][type]=val;
+    var s=_rppiGmState[game];
+    var btn=document.getElementById('rppi-launch-'+game);
+    var st=document.getElementById('rppi-status-'+game);
+    if(s.amount>0&&s.time>0&&s.boost>0){
+        var credits=window._rppiUser?(window._rppiUser.credits||0):0;
+        if(s.amount>credits){
+            if(btn){btn.disabled=true;btn.style.borderColor='rgba(255,45,120,0.5)';btn.style.color='rgba(255,45,120,0.6)';btn.style.cursor='not-allowed';btn.textContent='RPPI-C INSUFICIENTES';}
+            if(st) st.textContent='Necesitas '+s.amount+' RPPI-C. Tenes '+credits+'.';
+        } else {
+            if(btn){btn.disabled=false;btn.style.borderColor=c.main;btn.style.color=c.main;btn.style.cursor='pointer';btn.style.boxShadow='0 0 16px rgba('+c.rgb+',0.35)';btn.style.textShadow='0 0 10px '+c.main;btn.textContent='LANZAR DESAFIO RAPPIA CREDITO';}
+            if(st) st.textContent=s.amount+' RPPI-C — '+s.time+' min — '+s.boost+' boost(s)';
+        }
+    }
+}
+function rppiGmLaunch(game,gameType) {
+    var user=window._rppiUser, s=_rppiGmState[game];
+    if(!user||!s||s.amount<=0||s.time<=0||s.boost<=0) return;
+    if(s.amount>(user.credits||0)) return;
+    var st=document.getElementById('rppi-status-'+game);
+    if(st){st.style.color='rgba(0,255,65,0.7)';st.textContent='Creando desafio...';}
+    user.credits-=s.amount; window._rppiUser=user; localStorage.setItem('rppi_user',JSON.stringify(user));
+    var balEl=document.getElementById('bal-'+game); if(balEl) balEl.textContent=user.credits+' RPPI-C';
+    var mainBal=document.getElementById('rppi-user-credits'); if(mainBal) mainBal.textContent=user.credits;
+    var betId='RPPI-BET-'+Date.now()+'-'+Math.random().toString(16).slice(2,6).toUpperCase();
+    var FB='https://rappibellion-comments-default-rtdb.firebaseio.com';
+    fetch(FB+'/t2e_bets/'+betId+'.json',{
+        method:'PUT',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({id:betId,type:'rppi_credit',creator:user.email,uid:user.uid,amount:s.amount,currency:'RPPI-C',timeLimit:s.time*60,boostLimit:s.boost,boostCost:10,game:gameType,status:'open',createdAt:Date.now()})
+    }).then(function(){
+        if(st){st.style.color='rgba(0,255,65,0.7)';st.textContent='Desafio abierto — esperando rival...';}
+        rppiGmLoadLobby(game);
+        setTimeout(function(){rppiCloseGameModal(game);},1800);
+        if(typeof window.fpOpenArena==='function'){
+            window.fpState=window.fpState||{};
+            window.fpState.betMode=true;window.fpState.betId=betId;window.fpState.betAmount=s.amount;
+            window.fpState.currency='RPPI-C';window.fpState.timeLimit=s.time*60;window.fpState.boostLimit=s.boost;
+            window.fpState.gameType=gameType;window.fpState.myRole='p1';
+            window.fpOpenArena(betId,gameType);
+        }
+    }).catch(function(){
+        user.credits+=s.amount;window._rppiUser=user;localStorage.setItem('rppi_user',JSON.stringify(user));
+        if(st){st.style.color='rgba(255,45,120,0.8)';st.textContent='Error. Creditos revertidos.';}
+    });
+}
+function rppiGmLoadLobby(game) {
+    var FB='https://rappibellion-comments-default-rtdb.firebaseio.com';
+    var el=document.getElementById('rppi-lobby-'+game);
+    if(!el) return;
+    el.innerHTML='<span style="opacity:0.4;font-size:11px;">Cargando...</span>';
+    fetch(FB+'/t2e_bets.json')
+        .then(function(r){return r.json();})
+        .then(function(data){
+            var c=_rppiGmColors[game], gt=_rppiGmGameType[game];
+            var html='', count=0;
+            if(data) Object.keys(data).forEach(function(key){
+                var b=data[key];
+                if(b.type!=='rppi_credit'||b.status!=='open') return;
+                if(b.game&&b.game!==gt) return;
+                if(b.creator===(window._rppiUser&&window._rppiUser.email)) return;
+                count++;
+                html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;margin-bottom:6px;border-radius:3px;background:rgba('+c.rgb+',0.07);border:1px solid rgba('+c.rgb+',0.25);">'
+                    +'<div style="font-size:11px;"><span style="color:'+c.main+';font-family:Orbitron,monospace;font-size:10px;">'+((b.creator||'').split('@')[0]).toUpperCase()+'</span>'
+                    +' &mdash; <span style="color:rgba(255,255,255,0.6);">'+b.amount+' RPPI-C · '+(b.timeLimit/60)+' min · '+b.boostLimit+' boosts</span></div>'
+                    +'<button onclick="rppiGmAccept(''+key+'',''+game+'')" style="background:rgba('+c.rgb+',0.15);border:1px solid '+c.main+';color:'+c.main+';font-family:Orbitron,monospace;font-size:10px;letter-spacing:0.15em;padding:5px 10px;cursor:pointer;border-radius:2px;">ACEPTAR</button>'
+                    +'</div>';
+            });
+            el.innerHTML=count>0?html:'<span style="opacity:0.35;font-size:11px;">// SIN DESAFIOS ACTIVOS //</span>';
+        }).catch(function(){el.innerHTML='<span style="opacity:0.35;font-size:11px;">// ERROR //</span>';});
+}
+function rppiGmAccept(betId,game) {
+    var user=window._rppiUser;
+    if(!user){rppiOpenLogin();return;}
+    var FB='https://rappibellion-comments-default-rtdb.firebaseio.com';
+    fetch(FB+'/t2e_bets/'+betId+'.json').then(function(r){return r.json();}).then(function(bet){
+        if(!bet||bet.status!=='open'){alert('Apuesta ya aceptada o no existe.');return;}
+        if((user.credits||0)<bet.amount){alert('RPPI-C insuficientes. Necesitas '+bet.amount+'.');return;}
+        user.credits-=bet.amount;window._rppiUser=user;localStorage.setItem('rppi_user',JSON.stringify(user));
+        var mainBal=document.getElementById('rppi-user-credits');if(mainBal)mainBal.textContent=user.credits;
+        fetch(FB+'/t2e_bets/'+betId+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({status:'matched',acceptor:user.email,acceptorUid:user.uid,matchedAt:Date.now()})
+        }).then(function(){
+            rppiCloseGameModal(game);
+            if(typeof window.fpOpenArena==='function'){
+                window.fpState=window.fpState||{};
+                window.fpState.betMode=true;window.fpState.betId=betId;window.fpState.betAmount=bet.amount;
+                window.fpState.currency='RPPI-C';window.fpState.timeLimit=bet.timeLimit;window.fpState.boostLimit=bet.boostLimit;
+                window.fpState.gameType=bet.game;window.fpState.myRole='p2';
+                window.fpOpenArena(betId,bet.game);
+            }
+        });
+    });
+}
+
 /* ── RAPPIA CRÉDITO BET MODAL ──────────────────────────── */
 var _rppiBet = { amount: 0, time: 0, boost: 0 };
 
@@ -14433,6 +14563,558 @@ function rppiLaunchBet() {
     });
 }
 
+</script>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MODALES RPPI-C — PAC-HACK / SPACE-BREAKER / TETRIS-CIPHER
+     WEB2.5 mode · Cyberpunk · Sin iconos · Un color por juego
+════════════════════════════════════════════════════════════════ -->
+<style>
+.rppi-game-modal{display:none;position:fixed;inset:0;z-index:50000;align-items:center;justify-content:center;padding:12px;background:rgba(0,0,0,0.05);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-family:'Share Tech Mono','Courier New',monospace;}
+.rppi-game-modal.open{display:flex;}
+
+.rppi-gm-wrap{width:min(480px,96vw);max-height:90vh;overflow-y:auto;border-radius:4px;position:relative;backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);transform:translateZ(0);will-change:transform;background:rgba(12,0,10,0.045)!important;}
+
+.rppi-gm-scan{position:absolute;inset:0;pointer-events:none;z-index:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,0.012) 0px 1px,transparent 1px 3px);}
+.rppi-gm-body{padding:20px 18px;position:relative;z-index:1;}
+.rppi-gm-chip{background:transparent;font-family:'Orbitron',monospace;font-size:12px;font-weight:700;padding:7px 13px;border-radius:3px;cursor:pointer;transition:all 0.15s;letter-spacing:0.1em;}
+
+/* ═══════════════════════════════════════════════════════════
+   🔮 SÚPER HUD HOLOGRÁFICO CYBERPUNK - EFECTOS COMPLETOS
+   ═══════════════════════════════════════════════════════════ */
+.super-hud-container {
+    position: relative;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    background: rgba(11, 12, 16, 0.88);
+    padding: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    color: #f0f0f0;
+    overflow: hidden;
+    box-shadow: inset 0 0 24px rgba(0, 255, 255, 0.08), 0 0 15px rgba(0, 255, 255, 0.03);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform;
+    backdrop-filter: none !important;
+}
+
+/* Esquinas Holográficas */
+.super-hud-container::before,
+.super-hud-container::after,
+.super-hud-corner-bl,
+.super-hud-corner-br {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #00BCFF;
+    pointer-events: none;
+}
+.super-hud-container::before {
+    top: 0; left: 0;
+    border-right: none; border-bottom: none;
+}
+.super-hud-container::after {
+    top: 0; right: 0;
+    border-left: none; border-bottom: none;
+    border-color: #FF2D78;
+}
+.super-hud-corner-bl {
+    bottom: 0; left: 0;
+    border-right: none; border-top: none;
+    border-color: #F8FF2B;
+}
+.super-hud-corner-br {
+    bottom: 0; right: 0;
+    border-left: none; border-top: none;
+    border-color: #00FF41;
+}
+
+/* Línea Láser Dinám ica */
+.hud-laser-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00BCFF, transparent);
+    opacity: 0.4;
+    animation: superHudLaserScan 5s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes superHudLaserScan {
+    0% { top: -2%; opacity: 0; }
+    5% { opacity: 0.7; }
+    95% { opacity: 0.7; }
+    100% { top: 102%; opacity: 0; }
+}
+
+/* Header HUD */
+.hud-header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed rgba(0, 255, 255, 0.2);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+.hud-title-tech {
+    font-size: 0.8em;
+    letter-spacing: 3px;
+    color: #F8FF2B;
+    text-shadow: 0 0 8px rgba(248, 255, 43, 0.4);
+    margin: 0 !important;
+}
+
+.hud-status-blink {
+    font-size: 0.65em;
+    font-family: 'Courier New', monospace;
+    color: #00FF41;
+    background: rgba(0, 255, 0, 0.08);
+    padding: 2px 6px;
+    border: 1px solid rgba(0, 255, 0, 0.25);
+    letter-spacing: 1px;
+    animation: superHudBlink 1.2s steps(2, start) infinite;
+}
+
+@keyframes superHudBlink {
+    to { visibility: hidden; }
+}
+
+/* Grid de Datos */
+.hud-data-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+    font-family: 'Courier New', monospace;
+}
+
+.hud-data-card {
+    background: rgba(5, 10, 15, 0.6);
+    border-left: 3px solid #00BCFF;
+    padding: 10px;
+    transition: transform 0.2s ease;
+}
+
+.hud-data-card:hover {
+    transform: translateX(3px);
+}
+
+.hud-data-label {
+    font-size: 0.65em;
+    color: rgba(240, 240, 240, 0.4);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.hud-data-value {
+    font-size: 1.15em;
+    font-weight: bold;
+    color: #f0f0f0;
+    font-family: 'Orbitron', monospace;
+}
+
+@keyframes rppiScan{0%{top:-10%}100%{top:110%}}
+</style>
+
+<div id="rppi-modal-pachack" class="rppi-game-modal">
+ <div class="rppi-gm-wrap" style="background:rgba(12,0,10,0.045);border:2px solid #FF2D78;box-shadow:0 0 35px rgba(255,45,120,0.3),inset 0 0 20px rgba(255,45,120,0.05);">
+  <div class="rppi-gm-scan"></div>
+  <div style="position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#FF2D78,transparent);opacity:0.7;animation:rppiScan 3s linear infinite;pointer-events:none;z-index:2;"></div>
+  
+<div style="border-bottom:1px solid rgba(255,45,120,0.3);padding:14px 18px;position:relative;z-index:3;background:rgba(255,45,120,0.20);">
+    <div style="font-family:'Orbitron',monospace;font-weight:900;font-size:15px;color:#FFFFFF;letter-spacing:0.3em;text-shadow:0 0 12px #FF2D78;">PAC-HACK_ARENA</div>
+    <div style="font-size:9px;color:rgba(255,45,120,0.5);letter-spacing:0.4em;margin-top:2px;">RPPI-C // LABERINTO // WEB2.5</div>
+    <button onclick="rppiCloseGameModal('pachack')" style="position:absolute;top:12px;right:14px;background:transparent;border:1px solid rgba(255,45,120,0.4);color:#FF2D78;width:28px;height:28px;border-radius:3px;cursor:pointer;font-size:14px;">✕</button>
+</div>
+
+  <div class="rppi-gm-body">
+   <div style="font-size:10px;color:rgba(255,45,120,0.5);letter-spacing:0.2em;margin-bottom:6px;">TELEMETRÍA DE ARENA</div>
+   
+   <div id="rppi-lobby-pachack" class="super-hud-container" style="margin-bottom:14px; min-height:100px; padding:15px; background:transparent;">
+    <div class="super-hud-corner-bl"></div>
+    <div class="super-hud-corner-br"></div>
+    <div class="hud-laser-line"></div>
+
+    <div class="hud-header-wrapper" style="margin-bottom: 10px;">
+     <h5 class="hud-title-tech">// HOLOGRAPHIC_HUD_v5.0 //</h5>
+     <span class="hud-status-blink" style="color: var(--color-caos-amarillo); background: transparent; border-color: rgba(248,255,43,0.3);">SCANNING_NET</span>
+    </div>
+
+    <div class="hud-data-grid">
+     <div class="hud-data-card" style="border-left-color: var(--color-azul-glitch); padding: 6px 10px; background:transparent;">
+      <div class="hud-data-label">LOBBY_STATUS</div>
+      <div class="hud-data-value" style="font-size:0.9em; color: var(--color-azul-glitch);">IDLE</div>
+     </div>
+     <div class="hud-data-card" style="border-left-color: var(--color-caos-rosa); padding: 6px 10px; background:transparent;">
+      <div class="hud-data-label">SECTOR</div>
+      <div class="hud-data-value" style="font-size:0.9em; color: var(--color-caos-rosa);">PK-78</div>
+     </div>
+     <div class="hud-data-card" style="border-left-color: var(--color-caos-verde); padding: 6px 10px; background:transparent;">
+      <div class="hud-data-label">ROOM_FPS</div>
+      <div class="hud-data-value" style="font-size:0.9em; color: var(--color-caos-verde);">60.00</div>
+     </div>
+    </div>
+
+    <div style="text-align:center; margin-top:12px; font-family:'Courier New', monospace; font-size:11px; color:rgba(255,45,120,0.45); letter-spacing: 1px;">
+     <span style="opacity:0.5;">[ SYSTEM ]</span> WAITING_FOR_OPPONENTS...
+    </div>
+   </div>
+
+   <div style="border-top:1px dashed rgba(255,45,120,0.25);padding-top:14px;margin-bottom:14px;font-family:'Orbitron',monospace;font-size:11px;color:#FF2D78;letter-spacing:0.2em;text-shadow:0 0 8px #FF2D78;">CREAR DESAFIO</div>
+   <div style="display:flex;justify-content:space-between;align-items:center;background:transparent;border:1px solid rgba(255,45,120,0.25);border-radius:3px;padding:10px 14px;margin-bottom:14px;">
+    <span style="font-size:10px;color:rgba(255,45,120,0.5);letter-spacing:0.2em;">RPPI-C</span>
+    <span id="bal-pachack" style="font-family:'Orbitron',monospace;font-size:20px;color:#FF2D78;font-weight:900;text-shadow:0 0 10px #FF2D78;">90 RPPI-C</span>
+   </div>
+
+   <div style="margin-bottom:13px;">
+    <div style="font-size:10px;color:rgba(255,45,120,0.5);letter-spacing:0.2em;margin-bottom:7px;">APUESTA (RPPI-C)</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+     <button class="rppi-gm-chip" data-game="pachack" data-type="amount" data-val="10"  onclick="rppiGmSelect(this,'pachack','amount',10)"  style="border:1px solid rgba(255,45,120,0.4);color:rgba(255,45,120,0.75);">10</button>
+     <button class="rppi-gm-chip" data-game="pachack" data-type="amount" data-val="25"  onclick="rppiGmSelect(this,'pachack','amount',25)"  style="border:1px solid rgba(255,45,120,0.4);color:rgba(255,45,120,0.75);">25</button>
+     <button class="rppi-gm-chip" data-game="pachack" data-type="amount" data-val="50"  onclick="rppiGmSelect(this,'pachack','amount',50)"  style="border:1px solid rgba(255,45,120,0.4);color:rgba(255,45,120,0.75);">50</button>
+     <button class="rppi-gm-chip" data-game="pachack" data-type="amount" data-val="100" onclick="rppiGmSelect(this,'pachack','amount',100)" style="border:1px solid rgba(255,45,120,0.4);color:rgba(255,45,120,0.75);">100</button>
+    </div>
+   </div>
+
+   <div style="margin-bottom:13px;">
+    <div style="font-size:10px;color:rgba(255,45,120,0.5);letter-spacing:0.2em;margin-bottom:7px;">TIEMPO</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+     <button class="rppi-gm-chip" data-game="pachack" data-type="time" data-val="5"  onclick="rppiGmSelect(this,'pachack','time',5)"  style="border:1px solid rgba(255,45,120,0.4);color:rgba(255,45,120,0.75);">5 MIN</button>
+     <button class="rppi-gm-chip" data-game="pachack" data-type="time" data-val="10" onclick="rppiGmSelect(this,'pachack','time',10)" style="border:1px solid rgba(255,45,120,0.4);color:rgba(255,45,120,0.75);">10 MIN</button>
+     <button class="rppi-gm-chip" data-game="pachack" data-type="time" data-val="15" onclick="rppiGmSelect(this,'pachack','time',15)" style="border:1px solid rgba(255,45,120,0.4);color:rgba(255,45,120,0.75);">15 MIN</button>
+    </div>
+   </div>
+
+   <div style="margin-bottom:18px;">
+    <div style="font-size:10px;color:rgba(255,45,120,0.5);letter-spacing:0.2em;margin-bottom:7px;">BOOSTS — 1 BOOST = 10 RPPI-C</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+     <button class="rppi-gm-chip" data-game="pachack" data-type="boost" data-val="1" onclick="rppiGmSelect(this,'pachack','boost',1)" style="border:1px solid rgba(255,45,120,0.4);color:rgba(255,45,120,0.75);">1</button>
+     <button class="rppi-gm-chip" data-game="pachack" data-type="boost" data-val="3" onclick="rppiGmSelect(this,'pachack','boost',3)" style="border:1px solid rgba(255,45,120,0.4);color:rgba(255,45,120,0.75);">3</button>
+     <button class="rppi-gm-chip" data-game="pachack" data-type="boost" data-val="5" onclick="rppiGmSelect(this,'pachack','boost',5)" style="border:1px solid rgba(255,45,120,0.4);color:rgba(255,45,120,0.75);">5 MAX</button>
+    </div>
+   </div>
+
+   <button id="rppi-launch-pachack" onclick="rppiGmLaunch('pachack','pac-hack')" disabled style="width:100%;background:transparent;border:2px solid rgba(255,45,120,0.25);color:rgba(255,45,120,0.3);font-family:'Orbitron',monospace;font-weight:700;font-size:13px;letter-spacing:0.28em;padding:14px;cursor:not-allowed;border-radius:3px;transition:all 0.2s;text-transform:uppercase;">SELECCIONA OPCIONES</button>
+   <div id="rppi-status-pachack" style="margin-top:8px;font-size:10px;text-align:center;color:rgba(255,45,120,0.5);letter-spacing:0.1em;min-height:16px;"></div>
+  </div>
+ </div>
+</div>
+
+<div id="rppi-modal-spacebreaker" class="rppi-game-modal">
+ <div class="rppi-gm-wrap" style="background:rgba(0,8,20,0.045);border:2px solid #00BCFF;box-shadow:0 0 35px rgba(0,188,255,0.3),inset 0 0 20px rgba(0,188,255,0.05);">
+  <div class="rppi-gm-scan"></div>
+  <div style="position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#00BCFF,transparent);opacity:0.7;animation:rppiScan 2.5s linear infinite;animation-delay:0.8s;pointer-events:none;z-index:2;"></div>
+  
+<div style="border-bottom:1px solid rgba(0,188,255,0.25);padding:14px 18px;position:relative;z-index:3;background:rgba(0,188,255,0.10);">
+    <div style="font-family:'Orbitron',monospace;font-weight:900;font-size:15px;color:#FFFFFF;letter-spacing:0.3em;text-shadow:0 0 12px #00BCFF;">SPACE-BREAKER_ARENA</div>
+    <div style="font-size:9px;color:rgba(0,188,255,0.5);letter-spacing:0.4em;margin-top:2px;">RPPI-C // LA FLOTA // WEB2.5</div>
+    <button onclick="rppiCloseGameModal('spacebreaker')" style="position:absolute;top:12px;right:14px;background:transparent;border:1px solid rgba(0,188,255,0.35);color:#00BCFF;width:28px;height:28px;border-radius:3px;cursor:pointer;font-size:14px;">✕</button>
+</div>
+
+  <div class="rppi-gm-body">
+   <div style="font-size:10px;color:rgba(0,188,255,0.5);letter-spacing:0.2em;margin-bottom:6px;">TELEMETRÍA DE ARENA</div>
+   
+   <div id="rppi-lobby-spacebreaker" class="super-hud-container" style="margin-bottom:14px; min-height:100px; padding:15px; background:transparent;">
+    <div class="super-hud-corner-bl"></div>
+    <div class="super-hud-corner-br"></div>
+    <div class="hud-laser-line"></div>
+
+    <div class="hud-header-wrapper" style="margin-bottom: 10px;">
+     <h5 class="hud-title-tech">// HOLOGRAPHIC_HUD_v5.0 //</h5>
+     <span class="hud-status-blink" style="color: var(--color-caos-amarillo); background: transparent; border-color: rgba(248,255,43,0.3);">SCANNING_NET</span>
+    </div>
+
+    <div class="hud-data-grid">
+     <div class="hud-data-card" style="border-left-color: var(--color-azul-glitch); padding: 6px 10px; background:transparent;">
+      <div class="hud-data-label">LOBBY_STATUS</div>
+      <div class="hud-data-value" style="font-size:0.9em; color: var(--color-azul-glitch);">IDLE</div>
+     </div>
+     <div class="hud-data-card" style="border-left-color: var(--color-caos-rosa); padding: 6px 10px; background:transparent;">
+      <div class="hud-data-label">SECTOR</div>
+      <div class="hud-data-value" style="font-size:0.9em; color: var(--color-caos-rosa);">BR-26</div>
+     </div>
+     <div class="hud-data-card" style="border-left-color: var(--color-caos-verde); padding: 6px 10px; background:transparent;">
+      <div class="hud-data-label">ROOM_FPS</div>
+      <div class="hud-data-value" style="font-size:0.9em; color: var(--color-caos-verde);">60.00</div>
+     </div>
+    </div>
+
+    <div style="text-align:center; margin-top:12px; font-family:'Courier New', monospace; font-size:11px; color:rgba(0,188,255,0.45); letter-spacing: 1px;">
+     <span style="opacity:0.5;">[ SYSTEM ]</span> WAITING_FOR_OPPONENTS...
+    </div>
+   </div>
+
+   <div style="border-top:1px dashed rgba(0,188,255,0.2);padding-top:14px;margin-bottom:14px;font-family:'Orbitron',monospace;font-size:11px;color:#00BCFF;letter-spacing:0.2em;text-shadow:0 0 8px #00BCFF;">CREAR DESAFIO</div>
+   <div style="display:flex;justify-content:space-between;align-items:center;background:transparent;border:1px solid rgba(0,188,255,0.22);border-radius:3px;padding:10px 14px;margin-bottom:14px;">
+    <span style="font-size:10px;color:rgba(0,188,255,0.55);letter-spacing:0.2em;">RPPI-C</span>
+    <span id="bal-spacebreaker" style="font-family:'Orbitron',monospace;font-size:20px;color:#00BCFF;font-weight:900;text-shadow:0 0 10px #00BCFF;">90 RPPI-C</span>
+   </div>
+
+   <div style="margin-bottom:13px;">
+    <div style="font-size:10px;color:rgba(0,188,255,0.5);letter-spacing:0.2em;margin-bottom:7px;">APUESTA (RPPI-C)</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+     <button class="rppi-gm-chip" data-game="spacebreaker" data-type="amount" data-val="10" onclick="rppiGmSelect(this,'spacebreaker','amount',10)" style="border: 1px solid rgba(0, 188, 255, 0.35); color: rgba(0, 188, 255, 0.75);">10</button>
+     <button class="rppi-gm-chip" data-game="spacebreaker" data-type="amount" data-val="25" onclick="rppiGmSelect(this,'spacebreaker','amount',25)" style="border: 1px solid rgba(0, 188, 255, 0.35); color: rgba(0, 188, 255, 0.75);">25</button>
+     <button class="rppi-gm-chip" data-game="spacebreaker" data-type="amount" data-val="50" onclick="rppiGmSelect(this,'spacebreaker','amount',50)" style="border: 1px solid rgba(0, 188, 255, 0.35); color: rgba(0, 188, 255, 0.75);">50</button>
+     <button class="rppi-gm-chip" data-game="spacebreaker" data-type="amount" data-val="100" onclick="rppiGmSelect(this,'spacebreaker','amount',100)" style="border: 1px solid rgba(0, 188, 255, 0.35); color: rgba(0, 188, 255, 0.75);">100</button>
+    </div>
+   </div>
+
+   <div style="margin-bottom:13px;">
+    <div style="font-size:10px;color:rgba(0,188,255,0.5);letter-spacing:0.2em;margin-bottom:7px;">TIEMPO</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+     <button class="rppi-gm-chip" data-game="spacebreaker" data-type="time" data-val="5" onclick="rppiGmSelect(this,'spacebreaker','time',5)" style="border: 1px solid rgba(0, 188, 255, 0.35); color: rgba(0, 188, 255, 0.75);">5 MIN</button>
+     <button class="rppi-gm-chip" data-game="spacebreaker" data-type="time" data-val="10" onclick="rppiGmSelect(this,'spacebreaker','time',10)" style="border: 1px solid rgba(0, 188, 255, 0.35); color: rgba(0, 188, 255, 0.75);">10 MIN</button>
+     <button class="rppi-gm-chip" data-game="spacebreaker" data-type="time" data-val="15" onclick="rppiGmSelect(this,'spacebreaker','time',15)" style="border: 1px solid rgba(0, 188, 255, 0.35); color: rgba(0, 188, 255, 0.75);">15 MIN</button>
+    </div>
+   </div>
+
+   <div style="margin-bottom:18px;">
+    <div style="font-size:10px;color:rgba(0,188,255,0.5);letter-spacing:0.2em;margin-bottom:7px;">BOOSTS — 1 BOOST = 10 RPPI-C</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+     <button class="rppi-gm-chip" data-game="spacebreaker" data-type="boost" data-val="1" onclick="rppiGmSelect(this,'spacebreaker','boost',1)" style="border: 1px solid rgba(0, 188, 255, 0.35); color: rgba(0, 188, 255, 0.75);">1</button>
+     <button class="rppi-gm-chip" data-game="spacebreaker" data-type="boost" data-val="3" onclick="rppiGmSelect(this,'spacebreaker outlook','boost',3)" style="border: 1px solid rgba(0, 188, 255, 0.35); color: rgba(0, 188, 255, 0.75);">3</button>
+     <button class="rppi-gm-chip" data-game="spacebreaker" data-type="boost" data-val="5" onclick="rppiGmSelect(this,'spacebreaker','boost',5)" style="border: 1px solid rgba(0, 188, 255, 0.35); color: rgba(0, 188, 255, 0.75);">5 MAX</button>
+    </div>
+   </div>
+
+   <button id="rppi-launch-spacebreaker" onclick="rppiGmLaunch('spacebreaker','space-breaker')" disabled="" style="width: 100%; background: transparent; border: 2px solid rgba(0, 188, 255, 0.25); color: rgba(0, 188, 255, 0.3); font-family: Orbitron, monospace; font-weight: 700; font-size: 13px; letter-spacing: 0.28em; padding: 14px; cursor: not-allowed; border-radius: 3px; transition: 0.2s; text-transform: uppercase;">SELECCIONA OPCIONES</button>
+   <div id="rppi-status-spacebreaker" style="margin-top:8px;font-size:10px;text-align:center;color:rgba(0,188,255,0.45);letter-spacing:0.1em;min-height:16px;"></div>
+  </div>
+ </div>
+</div>
+
+<div id="rppi-modal-tetriscipher" class="rppi-game-modal">
+ <div class="rppi-gm-wrap" style="background:rgba(0,15,5,0.045);border:2px solid #00FF41;box-shadow:0 0 35px rgba(0,255,65,0.3),inset 0 0 20px rgba(0,255,65,0.05);">
+  <div class="rppi-gm-scan"></div>
+  <div style="position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#00FF41,transparent);opacity:0.6;animation:rppiScan 3.5s linear infinite;animation-delay:1.2s;pointer-events:none;z-index:2;"></div>
+  
+<div style="border-bottom:1px solid rgba(0,255,65,0.25);padding:14px 18px;position:relative;z-index:3;background:rgba(0,255,65,0.20);">
+    <div style="font-family:'Orbitron',monospace;font-weight:900;font-size:15px;color:#FFFFFF;letter-spacing:0.3em;text-shadow:0 0 12px #00FF41;">TETRIS-CIPHER_ARENA</div>
+    <div style="font-size:9px;color:rgba(0,255,65,0.45);letter-spacing:0.4em;margin-top:2px;">RPPI-C // EL CODIGO // WEB2.5</div>
+    <button onclick="rppiCloseGameModal('tetriscipher')" style="position:absolute;top:12px;right:14px;background:transparent;border:1px solid rgba(0,255,65,0.35);color:#00FF41;width:28px;height:28px;border-radius:3px;cursor:pointer;font-size:14px;">✕</button>
+</div>
+
+  <div class="rppi-gm-body">
+   <div style="font-size:10px;color:rgba(0,255,65,0.45);letter-spacing:0.2em;margin-bottom:6px;">TELEMETRÍA DE ARENA</div>
+   
+   <div id="rppi-lobby-tetriscipher" class="super-hud-container" style="margin-bottom:14px; min-height:100px; padding:15px; background:transparent;">
+    <div class="super-hud-corner-bl"></div>
+    <div class="super-hud-corner-br"></div>
+    <div class="hud-laser-line"></div>
+
+    <div class="hud-header-wrapper" style="margin-bottom: 10px;">
+     <h5 class="hud-title-tech">// HOLOGRAPHIC_HUD_v5.0 //</h5>
+     <span class="hud-status-blink" style="color: var(--color-caos-amarillo); background: transparent; border-color: rgba(248,255,43,0.3);">SCANNING_NET</span>
+    </div>
+
+    <div class="hud-data-grid">
+     <div class="hud-data-card" style="border-left-color: var(--color-azul-glitch); padding: 6px 10px; background:transparent;">
+      <div class="hud-data-label">LOBBY_STATUS</div>
+      <div class="hud-data-value" style="font-size:0.9em; color: var(--color-azul-glitch);">IDLE</div>
+     </div>
+     <div class="hud-data-card" style="border-left-color: var(--color-caos-rosa); padding: 6px 10px; background:transparent;">
+      <div class="hud-data-label">SECTOR</div>
+      <div class="hud-data-value" style="font-size:0.9em; color: var(--color-caos-rosa);">TC-09</div>
+     </div>
+     <div class="hud-data-card" style="border-left-color: var(--color-caos-verde); padding: 6px 10px; background:transparent;">
+      <div class="hud-data-label">ROOM_FPS</div>
+      <div class="hud-data-value" style="font-size:0.9em; color: var(--color-caos-verde);">60.00</div>
+     </div>
+    </div>
+
+    <div style="text-align:center; margin-top:12px; font-family:'Courier New', monospace; font-size:11px; color:rgba(0,255,65,0.45); letter-spacing: 1px;">
+     <span style="opacity:0.5;">[ SYSTEM ]</span> WAITING_FOR_OPPONENTS...
+    </div>
+   </div>
+
+   <div style="border-top:1px dashed rgba(0,255,65,0.2);padding-top:14px;margin-bottom:14px;font-family:'Orbitron',monospace;font-size:11px;color:#00FF41;letter-spacing:0.2em;text-shadow:0 0 8px #00FF41;">CREAR DESAFIO</div>
+   <div style="display:flex;justify-content:space-between;align-items:center;background:transparent;border:1px solid rgba(0,255,65,0.25);border-radius:3px;padding:10px 14px;margin-bottom:14px;">
+    <span style="font-size:10px;color:rgba(0,255,65,0.5);letter-spacing:0.2em;">RPPI-C</span>
+    <span id="bal-tetriscipher" style="font-family:'Orbitron',monospace;font-size:20px;color:#00FF41;font-weight:900;text-shadow:0 0 10px #00FF41;">—</span>
+   </div>
+
+   <div style="margin-bottom:13px;">
+    <div style="font-size:10px;color:rgba(0,255,65,0.45);letter-spacing:0.2em;margin-bottom:7px;">APUESTA (RPPI-C)</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+     <button class="rppi-gm-chip" data-game="tetriscipher" data-type="amount" data-val="10"  onclick="rppiGmSelect(this,'tetriscipher','amount',10)"  style="border:1px solid rgba(0,255,65,0.3);color:rgba(0,255,65,0.75);">10</button>
+     <button class="rppi-gm-chip" data-game="tetriscipher" data-type="amount" data-val="25"  onclick="rppiGmSelect(this,'tetriscipher','amount',25)"  style="border:1px solid rgba(0,255,65,0.3);color:rgba(0,255,65,0.75);">25</button>
+     <button class="rppi-gm-chip" data-game="tetriscipher" data-type="amount" data-val="50"  onclick="rppiGmSelect(this,'tetriscipher','amount',50)"  style="border:1px solid rgba(0,255,65,0.3);color:rgba(0,255,65,0.75);">50</button>
+     <button class="rppi-gm-chip" data-game="tetriscipher" data-type="amount" data-val="100" onclick="rppiGmSelect(this,'tetriscipher','amount',100)" style="border:1px solid rgba(0,255,65,0.3);color:rgba(0,255,65,0.75);">100</button>
+    </div>
+   </div>
+
+   <div style="margin-bottom:13px;">
+    <div style="font-size:10px;color:rgba(0,255,65,0.45);letter-spacing:0.2em;margin-bottom:7px;">TIEMPO</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+     <button class="rppi-gm-chip" data-game="tetriscipher" data-type="time" data-val="5"  onclick="rppiGmSelect(this,'tetriscipher','time',5)"  style="border:1px solid rgba(0,255,65,0.3);color:rgba(0,255,65,0.75);">5 MIN</button>
+     <button class="rppi-gm-chip" data-game="tetriscipher" data-type="time" data-val="10" onclick="rppiGmSelect(this,'tetriscipher','time',10)" style="border:1px solid rgba(0,255,65,0.3);color:rgba(0,255,65,0.75);">10 MIN</button>
+     <button class="rppi-gm-chip" data-game="tetriscipher" data-type="time" data-val="15" onclick="rppiGmSelect(this,'tetriscipher','time',15)" style="border:1px solid rgba(0,255,65,0.3);color:rgba(0,255,65,0.75);">15 MIN</button>
+    </div>
+   </div>
+
+   <div style="margin-bottom:18px;">
+    <div style="font-size:10px;color:rgba(0,255,65,0.45);letter-spacing:0.2em;margin-bottom:7px;">BOOSTS — 1 BOOST = 10 RPPI-C</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+     <button class="rppi-gm-chip" data-game="tetriscipher" data-type="boost" data-val="1" onclick="rppiGmSelect(this,'tetriscipher','boost',1)" style="border:1px solid rgba(0,255,65,0.3);color:rgba(0,255,65,0.75);">1</button>
+     <button class="rppi-gm-chip" data-game="tetriscipher" data-type="boost" data-val="3" onclick="rppiGmSelect(this,'tetriscipher','boost',3)" style="border:1px solid rgba(0,255,65,0.3);color:rgba(0,255,65,0.75);">3</button>
+     <button class="rppi-gm-chip" data-game="tetriscipher" data-type="boost" data-val="5" onclick="rppiGmSelect(this,'tetriscipher','boost',5)" style="border:1px solid rgba(0,255,65,0.3);color:rgba(0,255,65,0.75);">5 MAX</button>
+    </div>
+   </div>
+
+   <button id="rppi-launch-tetriscipher" onclick="rppiGmLaunch('tetriscipher','tetris-cipher')" disabled style="width:100%;background:transparent;border:2px solid rgba(0,255,65,0.22);color:rgba(0,255,65,0.28);font-family:'Orbitron',monospace;font-weight:700;font-size:13px;letter-spacing:0.28em;padding:14px;cursor:not-allowed;border-radius:3px;transition:all 0.2s;text-transform:uppercase;">SELECCIONA OPCIONES</button>
+   <div id="rppi-status-tetriscipher" style="margin-top:8px;font-size:10px;text-align:center;color:rgba(0,255,65,0.4);letter-spacing:0.1em;min-height:16px;"></div>
+  </div>
+ </div>
+</div>
+
+<script>
+/* ── RPPI-C GAME MODALS ENGINE ─────────────────────────── */
+var _rppiGmColors={pachack:{main:'#FF2D78',rgb:'255,45,120'},spacebreaker:{main:'#00BCFF',rgb:'0,188,255'},tetriscipher:{main:'#00FF41',rgb:'0,255,65'}};
+var _rppiGmGameType={pachack:'pac-hack',spacebreaker:'space-breaker',tetriscipher:'tetris-cipher'};
+var _rppiGmState={};
+var _rppiGmMap={'make-bet-pachack':'pachack','make-bet-spacebreaker':'spacebreaker','make-bet-tetriscipher':'tetriscipher'};
+
+function rppiOpenGameModal(buttonId) {
+    if(!window._rppiUser){rppiOpenLogin();return;}
+    var game=_rppiGmMap[buttonId]||buttonId.replace('make-bet-','');
+    var modal=document.getElementById('rppi-modal-'+game);
+    if(!modal){rppiOpenBetModal&&rppiOpenBetModal(buttonId);return;}
+    _rppiGmState[game]={amount:0,time:0,boost:0};
+    document.querySelectorAll('.rppi-gm-chip[data-game="'+game+'"]').forEach(function(b){var c=_rppiGmColors[game];b.style.background='transparent';b.style.borderColor='rgba('+c.rgb+',0.35)';b.style.color='rgba('+c.rgb+',0.75)';b.style.boxShadow='none';});
+    var btn=document.getElementById('rppi-launch-'+game),c=_rppiGmColors[game];
+    if(btn){btn.disabled=true;btn.style.borderColor='rgba('+c.rgb+',0.25)';btn.style.color='rgba('+c.rgb+',0.3)';btn.style.cursor='not-allowed';btn.style.boxShadow='none';btn.textContent='SELECCIONA OPCIONES';}
+    var st=document.getElementById('rppi-status-'+game);if(st)st.textContent='';
+    var balEl=document.getElementById('bal-'+game);if(balEl)balEl.textContent=(window._rppiUser.credits||0)+' RPPI-C';
+    modal.classList.add('open');
+    rppiGmLoadLobby(game);
+}
+function rppiCloseGameModal(game){var m=document.getElementById('rppi-modal-'+game);if(m)m.classList.remove('open');}
+
+function rppiGmSelect(el, game, type, val) {
+    // 1. Mapeo de color de facción seguro
+    var c = _rppiGmColors[game];
+    if (!c) return; // Control de daños por si cambia el ID de la arena
+
+    // 2. Limpieza de chips hermanos (Transparencia pura y reseteo de filtros)
+    document.querySelectorAll('.rppi-gm-chip[data-game="'+game+'"][data-type="'+type+'"]').forEach(function(b) {
+        b.style.background = 'transparent';
+        b.style.borderColor = 'rgba('+c.rgb+',0.35)';
+        b.style.color = 'rgba('+c.rgb+',0.75)';
+        b.style.boxShadow = 'none';
+        b.style.backdropFilter = 'none';
+        b.style.webkitBackdropFilter = 'none';
+    });
+
+    // 3. Activación Estilo "Holo-Glass" (Fondo ultra-traslúcido + Blur de capa aislado)
+    el.style.background = 'rgba('+c.rgb+',0.06)'; // Capa base mínima para teñir el cristal
+    el.style.borderColor = c.main;
+    el.style.color = '#ffffff'; // Texto en blanco puro para que resalte el HUD
+    el.style.backdropFilter = 'blur(6px)'; // Desenfoque de hardware directo al chip activo
+    el.style.webkitBackdropFilter = 'blur(6px)';
+    el.style.boxShadow = '0 0 15px rgba('+c.rgb+',0.4), inset 0 0 8px rgba('+c.rgb+',0.2)';
+
+    // 4. Inyección en la Máquina de Estados de la Arena (Parseo numérico de seguridad)
+    if (!_rppiGmState[game]) _rppiGmState[game] = {};
+    _rppiGmState[game][type] = (type === 'amount' || type === 'time' || type === 'boost') ? Number(val) : val;
+
+    // 5. Telemetría y validación de la Billetera (Rappi-Créditos)
+    var s = _rppiGmState[game],
+        btn = document.getElementById('rppi-launch-'+game),
+        st = document.getElementById('rppi-status-'+game);
+
+    if (s.amount > 0 && s.time > 0 && s.boost > 0) {
+        var credits = window._rppiUser ? (window._rppiUser.credits || 0) : 0;
+
+        if (s.amount > credits) {
+            // ESTADO: Quiebra de saldo (Líneas neón de advertencia rosa/glitch)
+            if (btn) {
+                btn.disabled = true;
+                btn.style.borderColor = 'rgba(255,45,120,0.5)';
+                btn.style.color = 'rgba(255,45,120,0.6)';
+                btn.style.cursor = 'not-allowed';
+                btn.style.boxShadow = 'none';
+                btn.style.textShadow = 'none';
+                btn.textContent = 'RPPI-C INSUFICIENTES';
+            }
+            if (st) st.textContent = 'Necesitas ' + s.amount + ' RPPI-C. Tenes ' + credits + '.';
+        } else {
+            // ESTADO: Sistema listo para el deploy (Sobrecarga de brillo facción)
+            if (btn) {
+                btn.disabled = false;
+                btn.style.borderColor = c.main;
+                btn.style.color = '#ffffff';
+                btn.style.cursor = 'pointer';
+                btn.style.boxShadow = '0 0 20px rgba('+c.rgb+',0.4), inset 0 0 10px rgba('+c.rgb+',0.2)';
+                btn.style.textShadow = '0 0 8px ' + c.main;
+                btn.textContent = 'LANZAR DESAFIO RAPPIA CREDITO';
+            }
+            if (st) st.textContent = s.amount + ' RPPI-C — ' + s.time + ' min — ' + s.boost + ' boost(s)';
+        }
+    }
+}
+
+function rppiGmLaunch(game,gameType){
+    var user=window._rppiUser,s=_rppiGmState[game];
+    if(!user||!s||s.amount<=0||s.time<=0||s.boost<=0)return;
+    if(s.amount>(user.credits||0))return;
+    var st=document.getElementById('rppi-status-'+game);
+    if(st){st.style.color='rgba(0,255,65,0.7)';st.textContent='Creando desafio...';}
+    user.credits-=s.amount;window._rppiUser=user;localStorage.setItem('rppi_user',JSON.stringify(user));
+    var balEl=document.getElementById('bal-'+game);if(balEl)balEl.textContent=user.credits+' RPPI-C';
+    var mainBal=document.getElementById('rppi-user-credits');if(mainBal)mainBal.textContent=user.credits;
+    var betId='RPPI-BET-'+Date.now()+'-'+Math.random().toString(16).slice(2,6).toUpperCase();
+    var FB='https://rappibellion-comments-default-rtdb.firebaseio.com';
+    fetch(FB+'/t2e_bets/'+betId+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({id:betId,type:'rppi_credit',creator:user.email,uid:user.uid,amount:s.amount,currency:'RPPI-C',timeLimit:s.time*60,boostLimit:s.boost,boostCost:10,game:gameType,status:'open',createdAt:Date.now()})
+    }).then(function(){
+        if(st){st.style.color='rgba(0,255,65,0.7)';st.textContent='Desafio abierto — esperando rival...';}
+        rppiGmLoadLobby(game);
+        setTimeout(function(){rppiCloseGameModal(game);},1800);
+        if(typeof window.fpOpenArena==='function'){window.fpState=window.fpState||{};window.fpState.betMode=true;window.fpState.betId=betId;window.fpState.betAmount=s.amount;window.fpState.currency='RPPI-C';window.fpState.timeLimit=s.time*60;window.fpState.boostLimit=s.boost;window.fpState.gameType=gameType;window.fpState.myRole='p1';window.fpOpenArena(betId,gameType);}
+    }).catch(function(){user.credits+=s.amount;window._rppiUser=user;localStorage.setItem('rppi_user',JSON.stringify(user));if(st){st.style.color='rgba(255,45,120,0.8)';st.textContent='Error. Creditos revertidos.';}});
+}
+
+function rppiGmLoadLobby(game){
+    var FB='https://rappibellion-comments-default-rtdb.firebaseio.com';
+    var el=document.getElementById('rppi-lobby-'+game);if(!el)return;
+    el.innerHTML='<span style="opacity:0.4;font-size:11px;">Cargando...</span>';
+    fetch(FB+'/t2e_bets.json').then(function(r){return r.json();}).then(function(data){
+        var c=_rppiGmColors[game],gt=_rppiGmGameType[game],html='',count=0;
+        if(data)Object.keys(data).forEach(function(key){
+            var b=data[key];
+            if(b.type!=='rppi_credit'||b.status!=='open')return;
+            if(b.game&&b.game!==gt)return;
+            if(b.creator===(window._rppiUser&&window._rppiUser.email))return;
+            count++;
+            html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;margin-bottom:6px;border-radius:3px;background:rgba('+c.rgb+',0.07);border:1px solid rgba('+c.rgb+',0.25);">'
+                +'<div style="font-size:11px;"><span style="color:'+c.main+';font-family:Orbitron,monospace;font-size:10px;">'+((b.creator||'').split('@')[0]).toUpperCase()+'</span>'
+                +' — <span style="color:rgba(255,255,255,0.6);">'+b.amount+' RPPI-C · '+(b.timeLimit/60)+' min · '+b.boostLimit+' boosts</span></div>'
+                +'<button onclick="rppiGmAccept(\''+key+'\',\''+game+'\')" style="background:rgba('+c.rgb+',0.15);border:1px solid '+c.main+';color:'+c.main+';font-family:Orbitron,monospace;font-size:10px;letter-spacing:0.15em;padding:5px 10px;cursor:pointer;border-radius:2px;">ACEPTAR</button>'
+                +'</div>';
+        });
+        el.innerHTML=count>0?html:'<span style="opacity:0.35;font-size:11px;">// SIN DESAFIOS ACTIVOS //</span>';
+    }).catch(function(){el.innerHTML='<span style="opacity:0.35;font-size:11px;">// ERROR //</span>';});
+}
+
+function rppiGmAccept(betId,game){
+    var user=window._rppiUser;if(!user){rppiOpenLogin();return;}
+    var FB='https://rappibellion-comments-default-rtdb.firebaseio.com';
+    fetch(FB+'/t2e_bets/'+betId+'.json').then(function(r){return r.json();}).then(function(bet){
+        if(!bet||bet.status!=='open'){alert('Apuesta ya aceptada.');return;}
+        if((user.credits||0)<bet.amount){alert('RPPI-C insuficientes. Necesitas '+bet.amount+'.');return;}
+        user.credits-=bet.amount;window._rppiUser=user;localStorage.setItem('rppi_user',JSON.stringify(user));
+        var mb=document.getElementById('rppi-user-credits');if(mb)mb.textContent=user.credits;
+        fetch(FB+'/t2e_bets/'+betId+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({status:'matched',acceptor:user.email,acceptorUid:user.uid,matchedAt:Date.now()})
+        }).then(function(){
+            rppiCloseGameModal(game);
+            if(typeof window.fpOpenArena==='function'){window.fpState=window.fpState||{};window.fpState.betMode=true;window.fpState.betId=betId;window.fpState.betAmount=bet.amount;window.fpState.currency='RPPI-C';window.fpState.timeLimit=bet.timeLimit;window.fpState.boostLimit=bet.boostLimit;window.fpState.gameType=bet.game;window.fpState.myRole='p2';window.fpOpenArena(betId,bet.game);}
+        });
+    });
+}
 </script>
 
 </body>
