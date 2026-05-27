@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Slot Machine Zeus Treasures</title>
+        <link rel="stylesheet" href="css/reset.css" type="text/css">
+        <link rel="stylesheet" href="css/main.css" type="text/css">
+        <link rel="stylesheet" href="css/orientation_utils.css" type="text/css">
+        <link rel="stylesheet" href="css/ios_fullscreen.css" type="text/css">
+        <link rel='shortcut icon' type='image/x-icon' href='./favicon.ico' />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui" />
+	<meta name="msapplication-tap-highlight" content="no"/>
+
+        <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>        
+        <script type="text/javascript" src="js/createjs.min.js"></script>
+        <script type="text/javascript" src="js/howler.min.js"></script>         
+        <script type="text/javascript" src="js/screenfull.js"></script> 
+        <script type="text/javascript" src="js/platform.js"></script>
+        <script type="text/javascript" src="js/ios_fullscreen.js"></script>
+        <script type="text/javascript" src="js/ctl_utils.js"></script>
+        <script type="text/javascript" src="js/sprite_lib.js"></script>
+        <script type="text/javascript" src="js/settings.js"></script>
+        <script type="text/javascript" src="js/CAPIController.js"></script>
+        <script type="text/javascript" src="js/CSlotSettings.js"></script>
+        <script type="text/javascript" src="js/CMenu.js"></script>
+        <script type="text/javascript" src="js/CCreditsPanel.js"></script>
+        <script type="text/javascript" src="js/CAreYouSurePanel.js"></script>
+        <script type="text/javascript" src="js/CCTLText.js"></script>
+        <script type="text/javascript" src="js/CLang.min.js"></script>
+        <script type="text/javascript" src="js/CPreloader.js"></script>
+        <script type="text/javascript" src="js/CMain.js"></script>
+        <script type="text/javascript" src="js/CSpriteSheetTextButton.js"></script>
+        <script type="text/javascript" src="js/CGfxButton.js"></script>
+        <script type="text/javascript" src="js/CToggle.js"></script>
+        <script type="text/javascript" src="js/CBetBut.js"></script>
+        <script type="text/javascript" src="js/CGame.js"></script>
+        <script type="text/javascript" src="js/CReelColumn.js"></script>
+        <script type="text/javascript" src="js/CInterface.js"></script>
+        <script type="text/javascript" src="js/CPayTablePanel.js"></script>
+        <script type="text/javascript" src="js/CStaticSymbolCell.js"></script>
+        <script type="text/javascript" src="js/CTweenController.js"></script>
+        <script type="text/javascript" src="js/CMsgBox.js"></script>
+        <script type="text/javascript" src="js/CBonusPanel.js"></script>
+        <script type="text/javascript" src="js/CBonusResultPanel.js"></script>
+        <script type="text/javascript" src="js/CBonusBut.js"></script>
+        <script type="text/javascript" src="js/CBonusCloud.js"></script>
+        <script type="text/javascript" src="js/CScoreText.js"></script>
+        <script type="text/javascript" src="js/CFreespinPanel.js"></script>
+        <script type="text/javascript" src="js/CAvatar.js"></script>
+        <script type="text/javascript" src="js/CResultFreespin.js"></script>
+        <script type="text/javascript" src="js/CBigWin.js"></script>
+        <script type="text/javascript" src="js/CRollingScore.js"></script>
+        <script type="text/javascript" src="js/CRechargePanel.js"></script>
+        <script type="text/javascript" src="js/CSuspanceEffect.js"></script>
+    </head>
+    <body ondragstart="return false;" ondrop="return false;" >
+	<div style="position: fixed; background-color: transparent; top: 0px; left: 0px; width: 100%; height: 100%"></div>
+          <script>
+              
+            $(document).ready(function(){
+                     var oMain = new CMain({
+                                    start_credit:100,          //STARTING CREDIT WHEN PLAYER PLAYS THE FIRST TIME
+                                    min_reel_loop:0,           //NUMBER OF REEL LOOPS BEFORE SLOT STOPS  
+                                    reel_delay: 6,             //NUMBER OF FRAMES TO DELAY THE REELS THAT START AFTER THE FIRST ONE
+                                    time_show_win:2000,        //DURATION IN MILLISECONDS OF THE WINNING COMBO SHOWING
+                                    time_show_all_wins: 2000,  //DURATION IN MILLISECONDS OF ALL WINNING COMBO
+                                    restart_credit:false,      //IF YOU WANT TO RESTART USER CREDIT WITH DEFAULT VALUE SET THIS TO TRUE   
+                                    check_orientation:false,    //SET TO FALSE IF YOU DON'T WANT TO SHOW ORIENTATION ALERT ON MOBILE DEVICES
+                                    audio_enable_on_startup:false, //ENABLE/DISABLE AUDIO WHEN GAME STARTS 
+                                    show_credits:true,              //SHOW CREDITS ON/OFF
+                                    num_spin_for_ads: 20        //NUMBER OF TURNS PLAYED BEFORE AD SHOWING //
+                                    
+                                    //////// THIS FEATURE  IS ACTIVATED ONLY WITH CTL ARCADE PLUGIN./////////////////////////// 
+                                    /////////////////// YOU CAN GET IT AT: ////////////////////////////////////////////////////
+                                    // http://codecanyon.net/item/ctl-arcade-wordpress-plugin/13856421
+                                });
+
+               
+                     $(oMain).on("bet_placed",function(evt,oData){
+                        var fCoin = oData.bet;
+                        var fTotBet = oData.tot_bet;
+                        var iLinesBet = oData.payline;
+                       
+                        APIAttemptSpin(fTotBet,fCoin,iLinesBet,s_oGame.onSpinReceived, s_oGame );
+                    });
+                    
+                    $(oMain).on("bonus_call",function(evt,oData){
+                        var fCoin = oData.bet;
+                        apiAttemptBonus(fCoin,s_oGame.onBonusStart,s_oGame);
+                    });
+                    
+                    $(oMain).on("recharge", function(evt) {
+                        //INSERT HERE YOUR RECHARGE SCRIPT THAT RETURN MONEY TO RECHARGE
+                        var iMoney = START_MONEY;
+
+                        refreshCredit(iMoney,s_oGame.refreshMoney,s_oGame);
+                    });
+                    
+                    $(oMain).on("start_session", function(evt) {
+                            if(getParamValue('ctl-arcade') === "true"){
+                                parent.__ctlArcadeStartSession();
+                            }
+                            //...ADD YOUR CODE HERE EVENTUALLY
+                    });
+   
+                    $(oMain).on("end_session", function(evt) {
+                           if(getParamValue('ctl-arcade') === "true"){
+                               parent.__ctlArcadeEndSession();
+                           }
+                           //...ADD YOUR CODE HERE EVENTUALLY
+                    });
+
+                    $(oMain).on("save_score", function(evt,iScore) {
+                           if(getParamValue('ctl-arcade') === "true"){
+                               parent.__ctlArcadeSaveScore({score:iScore});
+                           }
+                           //...ADD YOUR CODE HERE EVENTUALLY
+                    });
+
+                    
+                    $(oMain).on("show_interlevel_ad", function(evt) {
+                           if(getParamValue('ctl-arcade') === "true"){
+                               parent.__ctlArcadeShowInterlevelAD();
+                           }
+                           //...ADD YOUR CODE HERE EVENTUALLY
+                    });
+                   
+                    
+                    if(isIOS()){
+                        setTimeout(function(){sizeHandler();},200); 
+                    }else{ 
+                        sizeHandler(); 
+                    }
+           });
+
+        </script>
+        
+        <div class="check-fonts">
+            <p class="check-font-1">test 1</p>
+        </div>
+        
+         <canvas id="canvas" class='ani_hack' width="1920" height="1080"> </canvas>
+        <div data-orientation="landscape" class="orientation-msg-container"><p class="orientation-msg-text">Please rotate your device</p></div>
+        <div id="block_game" style="position: fixed; background-color: transparent; top: 0px; left: 0px; width: 100%; height: 100%; display:none"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         RAPPIBELLION T2E BRIDGE — TIMBER ZEUS
+         Protocolo idéntico a Pac-Hack / Tetris-Cipher / Space-Breaker
+    ════════════════════════════════════════════════════════════════ -->
+    <style>
+        @keyframes tzFadeIn  { from{opacity:0} to{opacity:1} }
+        @keyframes tzGlow    { 0%,100%{text-shadow:0 0 20px currentColor} 50%{text-shadow:0 0 45px currentColor,0 0 70px currentColor} }
+        @keyframes tzRival   { 0%{opacity:0;transform:translate(-50%,-50%) scale(0.85)} 15%{opacity:1;transform:translate(-50%,-50%) scale(1)} 85%{opacity:1} 100%{opacity:0} }
+    </style>
+
+    <script>
+    (function() {
+        'use strict';
+
+        var IS_IFRAME = window.self !== window.top;
+        if (!IS_IFRAME) return;
+
+        // ── 1. ROL del jugador ──────────────────────────────────────────
+        var PLAYER       = (new URLSearchParams(window.location.search)).get('player') || 'p1';
+        var _isBetMode   = false;
+        var _boostLimit  = 0;
+        var _boostsUsed  = 0;
+        var _matchFrozen = false;
+        var _lastScore   = 0;
+
+        console.info('[TimberZeus T2E] Activo como', PLAYER.toUpperCase());
+
+        // ── 2. Helper _send (inyecta player en todos los mensajes) ──────
+        function _send(data) {
+            if (!data.player) data.player = PLAYER;
+            try { window.parent.postMessage(data, '*'); } catch(e) {}
+        }
+
+        // ── 3. Polling de crédito → SCORE_UPDATE ────────────────────────
+        // TOTAL_MONEY es la global de CMain.js / settings.js
+        setInterval(function() {
+            if (_matchFrozen) return;
+            var cur = 0;
+            try { cur = Math.round((window.TOTAL_MONEY || 0) * 100); } catch(e) {}
+            if (cur !== _lastScore) {
+                _lastScore = cur;
+                _send({ type: 'SCORE_UPDATE', score: cur });
+            }
+        }, 250);
+
+        // ── 4. Freeze + overlay ─────────────────────────────────────────
+        function _freezeGame() {
+            _matchFrozen = true;
+            // Activar el div bloqueador que ya existe en el HTML
+            var blocker = document.getElementById('block_game');
+            if (blocker) blocker.style.display = 'block';
+        }
+
+        function _showMatchResult(winner) {
+            var isWinner = winner === PLAYER;
+            var isDraw   = winner === 'draw';
+            var color    = isDraw ? '#FFD700' : isWinner ? '#00BCFF' : '#FF2D78';
+            var title    = isDraw ? '⚡ EMPATE' : isWinner ? '▶ VICTORIA' : '✕ DERROTA';
+            var score    = _lastScore;
+
+            var ov = document.createElement('div');
+            ov.style.cssText = 'position:fixed;inset:0;z-index:2147483647;'
+                + 'display:flex;flex-direction:column;align-items:center;justify-content:center;'
+                + 'background:rgba(2,4,8,0.93);'
+                + 'font-family:Orbitron,Courier New,monospace;animation:tzFadeIn 0.4s ease;';
+            ov.innerHTML = '<div style="font-size:clamp(28px,7vw,62px);font-weight:900;color:'
+                + color + ';letter-spacing:6px;animation:tzGlow 1.5s ease-in-out infinite;margin-bottom:16px;">'
+                + title + '</div>'
+                + '<div style="color:rgba(0,255,65,0.65);font-size:14px;letter-spacing:4px;'
+                + 'font-family:\'Share Tech Mono\',monospace;">CRÉDITO FINAL // '
+                + (score / 100).toFixed(2) + ' RPPI</div>'
+                + '<div style="margin-top:16px;color:rgba(0,188,255,0.35);font-size:10px;'
+                + 'letter-spacing:5px;font-family:\'Share Tech Mono\',monospace;">'
+                + 'RAPPIBELLION // TIMBER ZEUS T2E</div>';
+            document.body.appendChild(ov);
+        }
+
+        function _showRivalBoostWarning() {
+            var warn = document.createElement('div');
+            warn.style.cssText = 'position:fixed;top:50%;left:50%;'
+                + 'z-index:2147483646;pointer-events:none;white-space:nowrap;'
+                + 'background:rgba(255,45,120,0.14);border:1px solid rgba(255,45,120,0.65);'
+                + 'color:#FF2D78;font-family:Orbitron,monospace;'
+                + 'font-size:clamp(10px,2vw,14px);letter-spacing:3px;padding:10px 24px;'
+                + 'animation:tzRival 2.4s ease forwards;';
+            warn.textContent = '⚡ RIVAL — BOOST ACTIVO';
+            document.body.appendChild(warn);
+            setTimeout(function() { if (warn.parentNode) warn.remove(); }, 2400);
+        }
+
+        // ── 5. Listener de mensajes del padre ───────────────────────────
+        window.addEventListener('message', function(ev) {
+            var d = ev.data;
+            if (!d || !d.type) return;
+
+            // BET_CONFIG: recibir parámetros de la apuesta
+            if (d.type === 'BET_CONFIG') {
+                _isBetMode  = true;
+                _boostLimit = (typeof d.boostLimit === 'number') ? d.boostLimit : 0;
+                _boostsUsed = 0;
+                // Sobrescribir crédito inicial si el padre lo define
+                if (typeof d.startCredit === 'number' && window.TOTAL_MONEY !== undefined) {
+                    window.TOTAL_MONEY = d.startCredit;
+                    if (window.s_oGame && window.s_oGame.refreshMoney) {
+                        window.s_oGame.refreshMoney(d.startCredit, window.s_oGame);
+                    }
+                }
+                console.info('[TimberZeus T2E] BET_CONFIG — boostLimit:', _boostLimit, 'player:', PLAYER);
+                return;
+            }
+
+            // START_MATCH: el padre inicia la partida
+            if (d.type === 'START_MATCH') {
+                // TimberZeus ya está corriendo — simplemente descongelar si estaba frozen
+                _matchFrozen = false;
+                var blocker = document.getElementById('block_game');
+                if (blocker) blocker.style.display = 'none';
+                console.info('[TimberZeus T2E] START_MATCH recibido');
+                return;
+            }
+
+            // MATCH_ENDED: congelar, notificar, mostrar overlay
+            if (d.type === 'MATCH_ENDED') {
+                _freezeGame();
+                _send({ type: 'GAME_OVER', score: _lastScore });
+                setTimeout(function() { _showMatchResult(d.winner); }, 400);
+                return;
+            }
+
+            // RIVAL_BOOST: aviso visual de boost del rival
+            if (d.type === 'RIVAL_BOOST') {
+                _showRivalBoostWarning();
+                return;
+            }
+
+            // TRIGGER_BOOST: el padre activó un boost (compatible con protocolo Pac-Hack)
+            if (d.type === 'TRIGGER_BOOST') {
+                if (_isBetMode && _boostsUsed >= _boostLimit) {
+                    console.warn('[TimberZeus T2E] TRIGGER_BOOST bloqueado — límite:', _boostLimit);
+                    return;
+                }
+                _boostsUsed++;
+                // En Timber Zeus el boost = otorgar free spins o bonus
+                // Intentamos activar el bono interno si CGame lo expone
+                try {
+                    if (window.s_oGame && typeof window.s_oGame.onBonusStart === 'function') {
+                        window.s_oGame.onBonusStart({ freeSpins: 3 });
+                    }
+                } catch(e) {}
+                _send({ type: 'BOOST_USED' });
+                return;
+            }
+        });
+
+        // ── 6. GAME_OVER cuando el jugador se queda sin crédito ─────────
+        var _gameoverSent = false;
+        setInterval(function() {
+            if (_matchFrozen || _gameoverSent) return;
+            try {
+                var money = window.TOTAL_MONEY || 0;
+                // Sin crédito y el juego intentó hacer un spin = game over
+                if (money <= 0 && _isBetMode) {
+                    _gameoverSent = true;
+                    _send({ type: 'GAME_OVER', score: _lastScore });
+                    console.info('[TimberZeus T2E] GAME_OVER — sin crédito');
+                }
+            } catch(e) {}
+        }, 500);
+
+        console.info('[TimberZeus T2E] Bridge inicializado. Player:', PLAYER.toUpperCase());
+    })();
+    </script>
+
+    </body>
+</html>

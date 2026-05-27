@@ -3367,14 +3367,14 @@ function rppiLaunchBet() {
 </div>
 
 <script>
-// ????????????????????????????????????????????????????
+// ====================================================
 //  EL CIRCUITO - STANDALONE
-//  Toda la l�gica de la secci�n casino aislada
-// ????????????????????????????????????????????????????
+//  Toda la lógica de la sección casino aislada
+// ====================================================
 
-// ??????????????????????????????????????????????????????????????????????????
-//  ?? S�PER HUD HOLOGR�FICO CYBERPUNK v5.6 - MOTOR DE ACOPLAMIENTO DE CABINA
-// ??????????????????????????????????????????????????????????????????????????
+// ==========================================================================
+//  ⚡️ SÚPER HUD HOLOGRÁFICO CYBERPUNK v5.6 - MOTOR DE ACOPLAMIENTO DE CABINA
+// ==========================================================================
 class HoloHUD {
     constructor() {
         // Mapeo al nuevo contenedor maestro de las columnas 3D
@@ -3384,7 +3384,7 @@ class HoloHUD {
         this.gameStartTime = null;
         this.gameTimer     = null;
         
-        // ??? Retrocompatibilidad total: Mantenemos los objetos con el mismo nombre 
+        // 🔄 Retrocompatibilidad total: Mantenemos los objetos con el mismo nombre 
         // por si tus scripts externos los modifican directamente.
         this.playerStats   = { level: 1, score: 0, rppi: 0.00, chaos: 0 };
         this.rivalStats    = { name: 'SEARCHING...', level: 1, score: 0 };
@@ -3394,11 +3394,11 @@ class HoloHUD {
 
     initialize() {
         this.setupEventListeners();
-        console.log('?? HoloHUD System v5.6 Active - 3D Meca Cockpit View Engaged');
+        console.log('🛸 HoloHUD System v5.6 Active - 3D Meca Cockpit View Engaged');
     }
 
     setupEventListeners() {
-        // Enlazamos los botones interactivos hologr�ficos si existen en el DOM
+        // Enlazamos los botones interactivos holográficos si existen en el DOM
         const exitBtn = document.getElementById('hud-exit-btn');
         const boostBtn = document.getElementById('hud-boost-btn');
         const pauseBtn = document.getElementById('hud-pause-btn');
@@ -3419,7 +3419,7 @@ class HoloHUD {
         this.currentGame   = gameType || 'T2E_CIRCUIT';
         this.gameStartTime = Date.now();
         
-        // Estado inicial del Radar L�ser de tu CSS (Buscando Rival)
+        // Estado inicial del Radar Láser de tu CSS (Buscando Rival)
         const radar = document.getElementById('holo-rival-radar');
         const statsBlock = document.getElementById('holo-rival-stats-block');
         const statusEl = document.getElementById('rival-status');
@@ -3429,7 +3429,7 @@ class HoloHUD {
         if (statusEl) statusEl.textContent = '[ BUSCANDO OBJETIVO ]';
 
         this.startTimer();
-        this.showNotification('PROYECCI�N MECA HOLOGR�FICA: ONLINE');
+        this.showNotification('PROYECCIÓN MECA HOLOGRÁFICA: ONLINE');
     }
 
     hideHUD() {
@@ -3438,7 +3438,7 @@ class HoloHUD {
             this.holoWrapper.style.display = 'none'; // Apaga el HUD 3D de la pantalla
         }
         
-        // Preservamos la limpieza de la interfaz del casino que ten�as originalmente
+        // Preservamos la limpieza de la interfaz del casino que tenías originalmente
         const topbar = document.querySelector('.casino-topbar');
         if (topbar) topbar.classList.remove('visible');
         
@@ -3451,7 +3451,7 @@ class HoloHUD {
             if (!this.gameStartTime) return;
             
             let minutes = "00", seconds = "00";
-            // Si fpState global est� corriendo y maneja la cuenta regresiva, la usamos:
+            // Si fpState global está corriendo y maneja la cuenta regresiva, la usamos:
             if (window.fpState && typeof window.fpState.timeLeft !== 'undefined') {
                 const tl = window.fpState.timeLeft;
                 const m = Math.max(0, Math.floor(tl / 60));
@@ -3459,7 +3459,7 @@ class HoloHUD {
                 minutes = String(m).padStart(2, '0');
                 seconds = String(s).padStart(2, '0');
             } else {
-                // Modo Pr�ctica / Fallback incremental
+                // Modo Práctica / Fallback incremental
                 const elapsed = Math.floor((Date.now() - this.gameStartTime) / 1000);
                 const m = Math.floor(elapsed / 60), s = elapsed % 60;
                 minutes = String(m).padStart(2, '0');
@@ -3479,7 +3479,7 @@ class HoloHUD {
         this.showNotification('SISTEMA EN PAUSA'); 
     }
 
-    // Ejecuta la l�gica interna y actualiza el contador en pantalla
+    // Ejecuta la lógica interna y actualiza el contador en pantalla
     activateBoost() {
         if (this.boostSystem.available <= 0) { 
             this.showNotification('SIN BALAS DE BOOST EN EL CARGADOR'); 
@@ -3497,7 +3497,7 @@ class HoloHUD {
         }
     }
 
-    // M�todo reactivo para cuando llega el SCORE_UPDATE del postMessage
+    // Método reactivo para cuando llega el SCORE_UPDATE del postMessage
     updatePlayerScore(score) {
         this.playerStats.score = score;
         const pScoreEl = document.getElementById('holo-player-score');
@@ -3513,11 +3513,11 @@ class HoloHUD {
             if (level < 30) chaosVal.style.color = 'var(--color-caos-verde)';
             else if (level < 60) chaosVal.style.color = 'var(--color-caos-amarillo)';
             else if (level < 80) chaosVal.style.color = 'var(--color-caos-rosa)';
-            else chaosVal.style.color = '#ff0000'; // Alerta de colapso cr�tico
+            else chaosVal.style.color = '#ff0000'; // Alerta de colapso crítico
         }
     }
 
-    // Actualiza los indicadores num�ricos de boosts en el panel izquierdo
+    // Actualiza los indicadores numéricos de boosts en el panel izquierdo
     updateAvailableBoosts(remaining) {
         this.boostSystem.available = remaining;
         const bCount = document.getElementById('hud-boost-count');
@@ -3527,7 +3527,7 @@ class HoloHUD {
         }
     }
 
-    // Reacci�n inmediata cuando Firebase confirma que el rival se conect�
+    // Reacción inmediata cuando Firebase confirma que el rival se conectó
     revealRivalConnected(rivalAddress) {
         const radar = document.getElementById('holo-rival-radar');
         const statsBlock = document.getElementById('holo-rival-stats-block');
@@ -3536,13 +3536,13 @@ class HoloHUD {
 
         if (radar) radar.style.display = 'none'; // Apaga el haz de escaneo infinito
         if (statsBlock) statsBlock.style.display = 'grid'; // Despliega las tarjetas holo del rival
-        if (statusEl) statusEl.textContent = '?? OBJETIVO FIJADO';
+        if (statusEl) statusEl.textContent = '🎯 OBJETIVO FIJADO';
         if (nickEl && rivalAddress) {
             nickEl.textContent = rivalAddress.slice(0, 6) + '...' + rivalAddress.slice(-4);
         }
     }
 
-    // Inyector de alertas optimizado para tu layout hologr�fico
+    // Inyector de alertas optimizado para tu layout holográfico
     showNotification(message) {
         const container = document.getElementById('hud-notifications');
         if (!container) return;
@@ -3569,6 +3569,19 @@ class HoloHUD {
         }, 3200);
     }
 }
+
+// ==========================================================================
+// 🛡️ ENLACE DE SEGURIDAD Y RETROCOMPATIBILIDAD ABSOLUTA
+// ==========================================================================
+// Instanciamos el motor de la cabina
+const holoCabinaMeca = new HoloHUD();
+holoCabinaMeca.initialize();
+
+// Mapeamos la instancia a todas las variables posibles para congelar errores en el index
+window.cyberpunkHUD = holoCabinaMeca;
+window.holoHUD      = holoCabinaMeca;
+window.holo         = holoCabinaMeca;
+
 
 // ??? IMPORTANTE: Mantenemos el nombre de la instancia global "cyberpunkHUD"
 // para que absolutamente ninguna otra funci�n de tus scripts falle al invocarla.

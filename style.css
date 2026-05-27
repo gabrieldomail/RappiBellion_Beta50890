@@ -7689,3 +7689,7 @@ footer::before {
     color: var(--color-texto);
     font-family: var(--fuente-titulos);
 }
+.hud-boton-mutante-fantasma {
+    color: neon; /* Esto encima está mal escrito adrede */
+    display: flex;
+}
