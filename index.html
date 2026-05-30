@@ -15113,15 +15113,7 @@ function rppiGmInputAmount(game) {
         btn.textContent = 'SELECCIONA OPCIONES'; // <--- Vuelve a pedir datos
     }
 }
-</script>
 
-</body>
-</html>
-
-/* ══════════════════════════════════════════════════════════════
-⚠️ NOTA PARA ROGER: incluir esto en el código porque falta 
-la lógica de créditos insuficientes y la unificación de los chips.
-══════════════════════════════════════════════════════════════
 function rppiGmInputAmount(game) {
     var input = document.getElementById('rppi-input-' + game);
     if (!_rppiGmState[game]) _rppiGmState[game] = { amount: 0, time: 0, boost: 0 };
@@ -15148,6 +15140,7 @@ function _rppiGmCheckReady(game) {
 
     if (s && s.amount > 0 && s.time > 0 && s.boost > 0) {
         if (s.amount > credits) {
+            // Si el monto de la apuesta supera sus créditos disponibles
             btn.disabled = true;
             btn.style.borderColor = 'rgba(255,45,120,0.5)';
             btn.style.color = 'rgba(255,45,120,0.6)';
@@ -15160,9 +15153,10 @@ function _rppiGmCheckReady(game) {
                 st.textContent = 'Necesitás ' + s.amount + ' RPPI-C. Tenés ' + credits + '.';
             }
         } else {
+            // Todo ok, saldo aprobado
             btn.disabled = false;
-            btn.style.borderColor = c.main; 
-            btn.style.color = '#fff'; 
+            btn.style.borderColor = c.main;
+            btn.style.color = '#fff';
             btn.style.textShadow = '0 0 8px ' + c.main;
             btn.style.boxShadow = '0 0 15px rgba(' + c.rgb + ',0.3)';
             btn.style.cursor = 'pointer';
@@ -15170,9 +15164,10 @@ function _rppiGmCheckReady(game) {
             if (st) st.textContent = '';
         }
     } else {
+        // Faltan seleccionar opciones en el modal
         btn.disabled = true;
-        btn.style.borderColor = 'rgba(' + c.rgb + ',0.25)'; 
-        btn.style.color = 'rgba(' + c.rgb + ',0.3)'; 
+        btn.style.borderColor = 'rgba(' + c.rgb + ',0.25)';
+        btn.style.color = 'rgba(' + c.rgb + ',0.3)';
         btn.style.textShadow = 'none';
         btn.style.boxShadow = 'none';
         btn.style.cursor = 'not-allowed';
@@ -15180,4 +15175,10 @@ function _rppiGmCheckReady(game) {
         if (st) st.textContent = '';
     }
 }
-*/
+</script>
+
+</body>
+</html>
+
+
+
