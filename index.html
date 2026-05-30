@@ -15140,20 +15140,23 @@ function _rppiGmCheckReady(game) {
 
     if (s && s.amount > 0 && s.time > 0 && s.boost > 0) {
         if (s.amount > credits) {
-            // Si el monto de la apuesta supera sus créditos disponibles
+            // ========================================================
+            // ¡ROSA FOSFORESCENTE ELÉCTRICO CON GLOW CYBERPUNK!
+            // ========================================================
             btn.disabled = true;
-            btn.style.borderColor = 'rgba(255,45,120,0.5)';
-            btn.style.color = 'rgba(255,45,120,0.6)';
-            btn.style.textShadow = 'none';
-            btn.style.boxShadow = 'none';
+            btn.style.borderColor = '#ff007f'; // Borde rosa neón puro
+            btn.style.color = '#fff'; // Texto blanco para que resalte con el fondo rosa
+            btn.style.textShadow = '0 0 8px #ff007f, 0 0 15px #ff007f'; // El texto brilla en rosa
+            btn.style.boxShadow = '0 0 20px rgba(255, 0, 127, 0.6), inset 0 0 10px rgba(255, 0, 127, 0.4)'; // Brillo exterior e interior
             btn.style.cursor = 'not-allowed';
             btn.textContent = 'RPPI-C INSUFICIENTES';
             if (st) {
-                st.style.color = 'rgba(255,45,120,0.8)';
+                st.style.color = '#ff3399';
+                st.style.textShadow = '0 0 5px rgba(255, 0, 127, 0.5)';
                 st.textContent = 'Necesitás ' + s.amount + ' RPPI-C. Tenés ' + credits + '.';
             }
         } else {
-            // Todo ok, saldo aprobado
+            // Todo ok, saldo aprobado (mantiene el color del juego)
             btn.disabled = false;
             btn.style.borderColor = c.main;
             btn.style.color = '#fff';
