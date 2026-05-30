@@ -15076,53 +15076,6 @@ function rppiGmAccept(betId,game) {
 }
 
 function rppiGmInputAmount(game) {
-    var input = document.getElementById('rppi-input-'+game);
-    if (!_rppiGmState[game]) _rppiGmState[game] = {};
-    
-    // Si hay un valor válido ingresado
-    if(input && input.value && !isNaN(input.value) && input.value > 0) {
-        _rppiGmState[game].amount = parseFloat(input.value);
-        var prev = document.getElementById('rppi-input-preview-'+game);
-        if(prev) prev.textContent = _rppiGmState[game].amount + ' RPPI-C INGRESADOS';
-    } else {
-        // Si borra el input, reseteamos a 0
-        _rppiGmState[game].amount = 0;
-        var prev = document.getElementById('rppi-input-preview-'+game);
-        if(prev) prev.textContent = '';
-    }
-    
-    // VALIDACIÓN Y ACTIVACIÓN DEL BOTÓN
-    var btn = document.getElementById('rppi-launch-'+game);
-    var c = _rppiGmColors[game];
-    if(_rppiGmState[game].amount > 0 && _rppiGmState[game].time > 0 && _rppiGmState[game].boost > 0 && btn) {
-        btn.disabled = false;
-        btn.style.borderColor = c.main; 
-        btn.style.color = '#fff'; 
-        btn.style.textShadow = '0 0 8px ' + c.main;
-        btn.style.boxShadow = '0 0 15px rgba('+c.rgb+',0.3)';
-        btn.style.cursor = 'pointer';
-        btn.textContent = 'LANZAR DESAFIO RPPI-C'; // <--- El FIX del texto
-    } else if (btn) {
-        // Si borró un dato, volvemos a bloquear el botón
-        btn.disabled = true;
-        btn.style.borderColor = 'rgba('+c.rgb+',0.25)'; 
-        btn.style.color = 'rgba('+c.rgb+',0.3)'; 
-        btn.style.textShadow = 'none';
-        btn.style.boxShadow = 'none';
-        btn.style.cursor = 'not-allowed';
-        btn.textContent = 'SELECCIONA OPCIONES'; // <--- Vuelve a pedir datos
-    }
-}
-</script>
-
-</body>
-</html>
-
-/* ══════════════════════════════════════════════════════════════
-⚠️ NOTA PARA ROGER: incluir esto en el código porque falta 
-la lógica de créditos insuficientes y la unificación de los chips.
-══════════════════════════════════════════════════════════════
-function rppiGmInputAmount(game) {
     var input = document.getElementById('rppi-input-' + game);
     if (!_rppiGmState[game]) _rppiGmState[game] = { amount: 0, time: 0, boost: 0 };
     if (input && input.value) {
@@ -15161,8 +15114,8 @@ function _rppiGmCheckReady(game) {
             }
         } else {
             btn.disabled = false;
-            btn.style.borderColor = c.main; 
-            btn.style.color = '#fff'; 
+            btn.style.borderColor = c.main;
+            btn.style.color = '#fff';
             btn.style.textShadow = '0 0 8px ' + c.main;
             btn.style.boxShadow = '0 0 15px rgba(' + c.rgb + ',0.3)';
             btn.style.cursor = 'pointer';
@@ -15171,8 +15124,8 @@ function _rppiGmCheckReady(game) {
         }
     } else {
         btn.disabled = true;
-        btn.style.borderColor = 'rgba(' + c.rgb + ',0.25)'; 
-        btn.style.color = 'rgba(' + c.rgb + ',0.3)'; 
+        btn.style.borderColor = 'rgba(' + c.rgb + ',0.25)';
+        btn.style.color = 'rgba(' + c.rgb + ',0.3)';
         btn.style.textShadow = 'none';
         btn.style.boxShadow = 'none';
         btn.style.cursor = 'not-allowed';
@@ -15180,4 +15133,7 @@ function _rppiGmCheckReady(game) {
         if (st) st.textContent = '';
     }
 }
-*/
+</script>
+
+</body>
+</html>
