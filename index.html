@@ -15113,7 +15113,75 @@ function rppiGmInputAmount(game) {
         btn.textContent = 'SELECCIONA OPCIONES'; // <--- Vuelve a pedir datos
     }
 }
+
+function rppiGmInputAmount(game) {
+    var input = document.getElementById('rppi-input-' + game);
+    if (!_rppiGmState[game]) _rppiGmState[game] = { amount: 0, time: 0, boost: 0 };
+    if (input && input.value) {
+        _rppiGmState[game].amount = parseFloat(input.value);
+        var prev = document.getElementById('rppi-input-preview-' + game);
+        if (prev) prev.textContent = _rppiGmState[game].amount + ' RPPI-C INGRESADOS';
+    } else {
+        _rppiGmState[game].amount = 0;
+        var prev = document.getElementById('rppi-input-preview-' + game);
+        if (prev) prev.textContent = '';
+    }
+    _rppiGmCheckReady(game);
+}
+
+function _rppiGmCheckReady(game) {
+    var btn = document.getElementById('rppi-launch-' + game);
+    var st = document.getElementById('rppi-status-' + game);
+    var c = _rppiGmColors[game];
+    var s = _rppiGmState[game];
+    var user = window._rppiUser;
+    var credits = user ? (user.credits || 0) : 0;
+    if (!btn) return;
+
+    if (s && s.amount > 0 && s.time > 0 && s.boost > 0) {
+        if (s.amount > credits) {
+            // ========================================================
+            // ¡ROSA FOSFORESCENTE ELÉCTRICO CON GLOW CYBERPUNK!
+            // ========================================================
+            btn.disabled = true;
+            btn.style.borderColor = '#ff007f'; // Borde rosa neón puro
+            btn.style.color = '#fff'; // Texto blanco para que resalte con el fondo rosa
+            btn.style.textShadow = '0 0 8px #ff007f, 0 0 15px #ff007f'; // El texto brilla en rosa
+            btn.style.boxShadow = '0 0 20px rgba(255, 0, 127, 0.6), inset 0 0 10px rgba(255, 0, 127, 0.4)'; // Brillo exterior e interior
+            btn.style.cursor = 'not-allowed';
+            btn.textContent = 'RPPI-C INSUFICIENTES';
+            if (st) {
+                st.style.color = '#ff3399';
+                st.style.textShadow = '0 0 5px rgba(255, 0, 127, 0.5)';
+                st.textContent = 'Necesitás ' + s.amount + ' RPPI-C. Tenés ' + credits + '.';
+            }
+        } else {
+            // Todo ok, saldo aprobado (mantiene el color del juego)
+            btn.disabled = false;
+            btn.style.borderColor = c.main;
+            btn.style.color = '#fff';
+            btn.style.textShadow = '0 0 8px ' + c.main;
+            btn.style.boxShadow = '0 0 15px rgba(' + c.rgb + ',0.3)';
+            btn.style.cursor = 'pointer';
+            btn.textContent = 'LANZAR DESAFIO RPPI-C';
+            if (st) st.textContent = '';
+        }
+    } else {
+        // Faltan seleccionar opciones en el modal
+        btn.disabled = true;
+        btn.style.borderColor = 'rgba(' + c.rgb + ',0.25)';
+        btn.style.color = 'rgba(' + c.rgb + ',0.3)';
+        btn.style.textShadow = 'none';
+        btn.style.boxShadow = 'none';
+        btn.style.cursor = 'not-allowed';
+        btn.textContent = 'SELECCIONA OPCIONES';
+        if (st) st.textContent = '';
+    }
+}
 </script>
 
 </body>
 </html>
+
+
+
