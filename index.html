@@ -1439,7 +1439,7 @@ function typeHTML(element, htmlString, speed) {
                           style="width:100%;background:#020408;border:1px solid rgba(0,188,255,0.4);
                                  color:rgba(0,188,255,0.9);font-family:'Share Tech Mono',monospace;
                                  font-size:15px;padding:9px 11px;border-radius:3px;outline:none;box-sizing:border-box;"
-                          oninput="var amt=parseInt(this.value)||0;var el=document.getElementById('rppi-burn-preview');if(el)el.textContent=amt>0?'&rarr; Devoluci&oacute;n inmediata: ARS '+(amt*145).toLocaleString('es-AR'):'';">
+                          oninput="var amt=parseInt(this.value)||0;var el=document.getElementById('rppi-burn-preview');if(el)el.textContent=amt>0?'→ Devolución inmediata: ARS '+(amt*145).toLocaleString('es-AR'):'';">
                   </div>
                   <div id="rppi-burn-preview" style="margin-top:10px;font-size:11px;color:rgba(0,255,65,0.6);letter-spacing:0.1em;min-height:18px;"></div>
                   <button onclick="rppiDoInitialBurn()"
@@ -1972,13 +1972,16 @@ function _rppiOpenBurnPanel(type) {
 }
 
 // ─── INITIAL CREDIT BURN ───────────────────────────────────────────────────
+var _rppiBurnInFlight = false;
 function rppiDoInitialBurn() {
     if (!_rppiUser) return;
+    if (_rppiBurnInFlight) return;
     var amt = parseInt(document.getElementById('rppi-burn-amount').value) || 0;
     if (amt < 1) return;
     if (amt > (_rppiUser.credits || 0)) {
         alert('RPPI-C insuficientes'); return;
     }
+    _rppiBurnInFlight = true;
     fetch(WORKER_URL + '/rappia/withdraw', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: _rppiUser.email, credits: amt, type: 'initial' })
@@ -1993,7 +1996,7 @@ function rppiDoInitialBurn() {
         } else {
             alert('⚠ ' + (d.error || 'Error al procesar'));
         }
-    }).catch(function() { alert('Sin conexión'); });
+    }).catch(function() { alert('Sin conexión'); }).finally(function() { _rppiBurnInFlight = false; });
 }
 
 // ─── REWARDS CREDIT BURN ───────────────────────────────────────────────────
@@ -2016,37 +2019,86 @@ function rppiDoRewardsBurn() {
     }
     if (status) status.style.display = 'none';
 
-    // Llamada real al worker en paralelo
+    // Llamada real al worker
     fetch(WORKER_URL + '/rappia/withdraw', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: _rppiUser.email, credits: amt, alias: alias, type: 'rewards' })
-    }).catch(function(){});
-
-    // Spinner falso: 3.5 segundos antes de mostrar el mensaje de éxito
-    setTimeout(function() {
-        if (btn) { btn.innerHTML = '✅ EN COLA DE VALIDACI&Oacute;N'; }
+    }).then(function(r) {
+        if (!r.ok) {
+            return r.json().catch(function() { return { error: 'Error de red' }; });
+        }
+        return r.json();
+    }).then(function(d) {
+        if (d && d.ok) {
+            // Spinner falso: 3.5 segundos antes de mostrar el mensaje de éxito
+            setTimeout(function() {
+                if (btn) { btn.innerHTML = '✅ EN COLA DE VALIDACI&Oacute;N'; }
+                if (status) {
+                    status.style.display = 'block';
+                    status.innerHTML = [
+                        '<div style="background:rgba(255,165,0,0.07);border:1px solid rgba(255,165,0,0.4);',
+                        'border-radius:4px;padding:14px;text-align:left;">',
+                        '<div style="font-family:\'Orbitron\',monospace;font-size:11px;color:#FFD700;',
+                        'letter-spacing:0.2em;margin-bottom:8px;">⚠ PROCESANDO RECOMPENSA</div>',
+                        '<div style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.8;">',
+                        'Tus créditos de recompensa entraron en la cola de validación de la red.<br>',
+                        'Debido a la sincronización de bloques y disponibilidad de los servidores,<br>',
+                        '<strong style="color:#FFD700;">la acreditación puede demorar hasta 24 hs hábiles.</strong><br>',
+                        '<span style="color:rgba(255,165,0,0.7);">Destino registrado: <strong><span id="rppi-alias-target"></span></strong></span><br><br>',
+                        '¡Gracias por tu paciencia, jugador!',
+                        '</div></div>'
+                    ].join('');
+                    var aliasTarget = document.getElementById('rppi-alias-target');
+                    if (aliasTarget) aliasTarget.textContent = alias;
+                }
+                // Descontar créditos localmente
+                _rppiUser.credits = (_rppiUser.credits || 0) - amt;
+                localStorage.setItem('rppi_user', JSON.stringify(_rppiUser));
+                var c = document.getElementById('rppi-user-credits');
+                if (c) c.textContent = _rppiUser.credits;
+            }, 3500);
+        } else {
+            // Error del backend
+            if (btn) {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                btn.innerHTML = 'CONFIRMAR RETIRO';
+            }
+            if (status) {
+                status.style.display = 'block';
+                status.innerHTML = [
+                    '<div style="background:rgba(255,0,0,0.07);border:1px solid rgba(255,0,0,0.4);',
+                    'border-radius:4px;padding:14px;text-align:left;">',
+                    '<div style="font-family:\'Orbitron\',monospace;font-size:11px;color:#FF6B6B;',
+                    'letter-spacing:0.2em;margin-bottom:8px;">⚠ ERROR</div>',
+                    '<div style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.8;">',
+                    (d.error || 'Error al procesar la solicitud'),
+                    '</div></div>'
+                ].join('');
+            }
+        }
+    }).catch(function(err) {
+        console.error('Error en retiro de recompensas:', err);
+        if (btn) {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+            btn.innerHTML = 'CONFIRMAR RETIRO';
+        }
         if (status) {
             status.style.display = 'block';
             status.innerHTML = [
-                '<div style="background:rgba(255,165,0,0.07);border:1px solid rgba(255,165,0,0.4);',
+                '<div style="background:rgba(255,0,0,0.07);border:1px solid rgba(255,0,0,0.4);',
                 'border-radius:4px;padding:14px;text-align:left;">',
-                '<div style="font-family:\'Orbitron\',monospace;font-size:11px;color:#FFD700;',
-                'letter-spacing:0.2em;margin-bottom:8px;">⚠ PROCESANDO RECOMPENSA</div>',
+                '<div style="font-family:\'Orbitron\',monospace;font-size:11px;color:#FF6B6B;',
+                'letter-spacing:0.2em;margin-bottom:8px;">⚠ ERROR DE CONEXIÓN</div>',
                 '<div style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.8;">',
-                'Tus créditos de recompensa entraron en la cola de validación de la red.<br>',
-                'Debido a la sincronización de bloques y disponibilidad de los servidores,<br>',
-                '<strong style="color:#FFD700;">la acreditación puede demorar hasta 24 hs hábiles.</strong><br>',
-                '<span style="color:rgba(255,165,0,0.7);">Destino registrado: <strong>' + alias + '</strong></span><br><br>',
-                '¡Gracias por tu paciencia, jugador!',
+                'No se pudo conectar con el servidor. Verificá tu conexión e intentá nuevamente.',
                 '</div></div>'
             ].join('');
         }
-        // Descontar créditos localmente
-        _rppiUser.credits = (_rppiUser.credits || 0) - amt;
-        localStorage.setItem('rppi_user', JSON.stringify(_rppiUser));
-        var c = document.getElementById('rppi-user-credits');
-        if (c) c.textContent = _rppiUser.credits;
-    }, 3500);
+    });
 }
 
 function rppiLogout() {
