@@ -7548,6 +7548,363 @@ footer::before {
     -webkit-tap-highlight-color: transparent;
 }
 
+/* ==========================================================================
+   🔮 SÚPER HUD HOLOGRÁFICO CYBERPUNK v5.6 - FULL UNIFICADO, DERECHO & HOLO
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CONTENEDOR MAESTRO DE LA COLUMNA DERECHA
+   -------------------------------------------------------------------------- */
+.fp-col-right {
+    background: rgba(11, 12, 16, 0.85) !important; /* Integración con tu color de fondo polarizado */
+    border-left: 1px solid rgba(0, 255, 255, 0.15);
+    
+    /* 🚫 Anti-Flickering Target: Apaga el filtro heredado que ahoga el iframe */
+    backdrop-filter: none !important; 
+    
+    /* 🚀 Hardware Acceleration Patch: Renderizado directo en hilos de la GPU */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform;
+    
+    /* 🎯 Alineación Flush-Right General */
+    text-align: right !important;
+    display: block;
+}
+
+/* --------------------------------------------------------------------------
+   2. EL PANEL CONTENEDOR CON TUS ESQUINAS Y TU ESCANEO LÁSER
+   -------------------------------------------------------------------------- */
+.super-hud-container {
+    position: relative;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    background: rgba(11, 12, 16, 0.88); /* Tu fondo integrado */
+    padding: 20px;
+    font-family: var(--fuente-titulos);
+    color: var(--color-texto);
+    overflow: hidden;
+    box-shadow: inset 0 0 24px rgba(0, 255, 255, 0.08), 0 0 15px rgba(0, 255, 255, 0.03);
+    
+    /* Forzado de flujo hacia la derecha */
+    text-align: right; 
+
+    /* Aceleración por hardware para mantener los 60 FPS estables con el láser corriendo */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform;
+    backdrop-filter: none !important; 
+}
+
+/* Esquinas Holográficas de Precisión (Preservadas) */
+.super-hud-container::before,
+.super-hud-container::after,
+.super-hud-corner-bl,
+.super-hud-corner-br {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--color-azul-glitch);
+    pointer-events: none;
+}
+/* Arriba Izquierda */
+.super-hud-container::before {
+    top: 0; left: 0;
+    border-right: none; border-bottom: none;
+}
+/* Arriba Derecha (Contraste Rosa Caos) */
+.super-hud-container::after {
+    top: 0; right: 0;
+    border-left: none; border-bottom: none;
+    border-color: var(--color-caos-rosa);
+}
+/* Abajo Izquierda (Amarillo Caos) */
+.super-hud-corner-bl {
+    bottom: 0; left: 0;
+    border-right: none; border-top: none;
+    border-color: var(--color-caos-amarillo);
+}
+/* Abajo Derecha (Verde Caos) */
+.super-hud-corner-br {
+    bottom: 0; right: 0;
+    border-left: none; border-top: none;
+    border-color: var(--color-caos-verde);
+}
+
+/* Línea Láser Dinámica de Escaneo Animada */
+.hud-laser-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-azul-glitch), transparent);
+    opacity: 0.4;
+    animation: superHudLaserScan 5s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes superHudLaserScan {
+    0% { top: -2%; opacity: 0; }
+    5% { opacity: 0.7; }
+    95% { opacity: 0.7; }
+    100% { top: 102%; opacity: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   3. HEADERS Y TEXTOS COMPACTADOS A LA DERECHA
+   -------------------------------------------------------------------------- */
+.hud-header-wrapper {
+    display: flex;
+    justify-content: flex-end; /* Alinea los subcomponentes del título al borde derecho */
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px dashed rgba(0, 255, 255, 0.2);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+.hud-title-tech {
+    font-size: 0.8em;
+    letter-spacing: 3px;
+    color: var(--color-caos-amarillo);
+    text-shadow: 0 0 8px rgba(248, 255, 43, 0.4);
+    margin: 0 !important;
+    text-align: right;
+}
+
+.hud-status-blink {
+    font-size: 0.65em;
+    font-family: 'Courier New', monospace;
+    color: var(--color-caos-verde);
+    background: rgba(0, 255, 0, 0.08);
+    padding: 2px 6px;
+    border: 1px solid rgba(0, 255, 0, 0.25);
+    letter-spacing: 1px;
+    animation: superHudBlink 1.2s steps(2, start) infinite;
+}
+
+@keyframes superHudBlink {
+    to { visibility: hidden; }
+}
+
+/* Etiquetas generales del sistema de apuestas */
+.rppi-telemetry-tag,
+.rppi-section-divider,
+.rppi-label-sub,
+.rppi-status-footer {
+    text-align: right !important;
+    width: 100%;
+    display: block;
+    font-family: var(--fuente-titulos), monospace;
+}
+
+/* --------------------------------------------------------------------------
+   4. GRID DE DATOS MODULARES REINGENIERADA
+   -------------------------------------------------------------------------- */
+.hud-data-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+    font-family: 'Courier New', monospace;
+    justify-content: end;
+}
+
+.hud-data-card {
+    background: rgba(5, 10, 15, 0.6);
+    border-right: 3px solid var(--color-primario); /* 🌟 Cambiado a la derecha para anclarse a la pantalla */
+    border-left: none;
+    padding: 10px;
+    text-align: right; /* Textos internos hacia la derecha */
+    transition: transform 0.2s ease;
+}
+
+.hud-data-card:hover {
+    transform: translateX(-3px); /* 🌟 Desplazamiento orgánico hacia adentro (izquierda) */
+}
+
+.hud-data-label {
+    font-size: 0.65em;
+    color: rgba(240, 240, 240, 0.4);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.hud-data-value {
+    font-size: 1.15em;
+    font-weight: bold;
+    color: var(--color-texto);
+    font-family: var(--fuente-titulos);
+}
+
+/* --------------------------------------------------------------------------
+   5. SELECCIÓN DE CHIPS Y BOTONES DE APUESTA (ALIGN-RIGHT)
+   -------------------------------------------------------------------------- */
+.rppi-chips-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end; /* Empuja los botones de apuestas al borde */
+    margin-top: 6px;
+    margin-bottom: 14px;
+}
+
+/* Panel de Balance de Rappi-Créditos */
+.rppi-balance-panel {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end; /* Mueve el bloque de saldo completo a la derecha */
+    align-items: center;
+    gap: 14px;
+    background: rgba(0, 255, 255, 0.03);
+    border: 1px solid rgba(0, 255, 255, 0.18);
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+/* El diseño base de los botones interactivos */
+.rppi-gm-chip {
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: rgba(0, 255, 255, 0.7);
+    background: rgba(5, 10, 15, 0.4);
+    padding: 8px 14px;
+    font-size: 11px;
+    font-family: var(--fuente-titulos), monospace;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rppi-gm-chip:hover {
+    background: rgba(0, 255, 255, 0.08);
+    color: #ffffff;
+    border-color: rgba(0, 255, 255, 0.7);
+}
+
+/* Inyección dinámica cuando el chip de apuesta/tiempo está activo */
+.rppi-gm-chip.active {
+    border: 1px solid var(--color-azul-glitch) !important;
+    color: #ffffff !important;
+    background: rgba(0, 255, 255, 0.08) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.4), inset 0 0 8px rgba(0, 255, 255, 0.2) !important;
+}
+
+/* Botón CTA de Lanzamiento Principal */
+.rppi-cta-launch {
+    width: 100%;
+    background: transparent;
+    border: 2px solid var(--color-azul-glitch);
+    color: #ffffff;
+    font-family: var(--fuente-titulos), monospace;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    padding: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.35), inset 0 0 10px rgba(0, 255, 255, 0.15);
+    text-shadow: 0 0 8px var(--color-azul-glitch);
+}
+
+.rppi-cta-launch:hover:not(:disabled) {
+    background: rgba(0, 255, 255, 0.05);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.5), inset 0 0 12px rgba(0, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+/* --------------------------------------------------------------------------
+   ⚡ 6. SISTEMA DE PROYECCIÓN HOLOGRÁFICA (HUD HOLO IN-GAME)
+   -------------------------------------------------------------------------- */
+.rppi-hud-holo-wrapper {
+    position: fixed;
+    inset: 0;
+    z-index: 9995;
+    pointer-events: none; /* No bloquea los clicks en el juego de fondo */
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    perspective: 1000px; /* Activa el renderizado 3D para la inclinación */
+    font-family: var(--fuente-titulos), monospace;
+}
+
+/* Base común estructural de los paneles flotantes */
+.hud-holo-panel {
+    pointer-events: auto; /* Permite interactuar con los elementos del HUD */
+    width: 290px;
+    height: calc(100vh - 40px);
+    background: rgba(6, 10, 18, 0.55);
+    backdrop-filter: blur(4px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 22px;
+    color: #ffffff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    animation: holoProjectionFlicker 7s infinite ease-in-out;
+}
+
+/* Panel Izquierdo: Inclinación angular hacia el usuario (Perspectiva Cabina) */
+.hud-holo-panel.left {
+    transform: rotateY(14deg) translateZ(5px);
+    border-left: 3px solid var(--color-azul-glitch);
+    background: linear-gradient(90deg, rgba(0, 255, 255, 0.06), transparent);
+}
+
+/* Panel Derecho: Ángulo invertido (Efecto de telemetría rival) */
+.hud-holo-panel.right {
+    transform: rotateY(-14deg) translateZ(5px);
+    border-right: 3px solid var(--color-caos-rosa);
+    background: linear-gradient(-90deg, rgba(255, 45, 120, 0.06), transparent);
+}
+
+/* Texto de Incógnita parpadeante estilo terminal inestable */
+.hud-rival-incognita {
+    color: var(--color-caos-amarillo);
+    font-size: 13px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    text-transform: uppercase;
+    animation: rivalRadarBlink 1.4s steps(2, start) infinite;
+    text-shadow: 0 0 8px rgba(248, 255, 43, 0.5);
+}
+
+/* Láser horizontal infinito del buscador en el bloque Incógnita */
+.hud-search-beam {
+    position: absolute;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--color-caos-rosa), transparent);
+    animation: scanBeamLoop 2s ease-in-out infinite;
+}
+
+/* --- KEYFRAMES CRÍTICOS DEL MUNDO HOLOGRÁFICO --- */
+
+/* Simula fluctuaciones de energía reales en la proyección de luz */
+@keyframes holoProjectionFlicker {
+    0%, 100% { opacity: 0.98; filter: brightness(1); }
+    32% { opacity: 0.95; filter: brightness(0.97); }
+    33% { opacity: 0.78; filter: brightness(1.25) blur(0.3px); } /* Micro-salto de tensión */
+    34% { opacity: 0.97; filter: brightness(1); }
+    78% { opacity: 0.99; }
+    79% { opacity: 0.88; filter: blur(0.6px); }
+    80% { opacity: 0.96; filter: none; }
+}
+
+/* Parpadeo clásico binario (on/off) sin transiciones suaves */
+@keyframes rivalRadarBlink {
+    to { visibility: hidden; }
+}
+
+/* Movimiento de vaivén para el barrido del radar de emparejamiento */
+@keyframes scanBeamLoop {
+    0% { left: -40%; }
+    50% { left: 100%; }
+    100% { left: -40%; }
+}
+
 /* ============================================================
    🔮 SÚPER HUD HOLOGRÁFICO CYBERPUNK - MODULAR & ENERGIZADO 
    ============================================================ */
@@ -7692,4 +8049,85 @@ footer::before {
 .hud-boton-mutante-fantasma {
     color: neon; /* Esto encima está mal escrito adrede */
     display: flex;
+}
+
+/* 🌐 CONTENEDOR GENERAL CENTRADO EN EL HERO */
+.live-sync-hero-container {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0 25px 0;
+}
+
+/* EL BADGE ADAPTADO */
+.rppi-sync-satellite-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(6, 10, 18, 0.8);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(0, 255, 100, 0.3);
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-family: 'Orbitron', monospace;
+    box-shadow: 0 0 15px rgba(0, 255, 100, 0.15);
+}
+
+/* 🌟 TEXTO AMARILLO CON ESCRITURA Y LUEGO TITILEO */
+.satellite-text {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #f8ff2b; /* Amarillo Cyberpunk (idéntico a tu tagline) */
+    text-shadow: 0 0 6px rgba(248, 255, 43, 0.6);
+    font-weight: 700;
+    
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    width: 0; /* Arranca invisible para el efecto máquina de escribir */
+    
+    /* 🔥 MAGIA: Corre 'rppiTyping' por 2 segundos y cuando termina, arranca 'rppiTitileo' de forma infinita */
+    animation: 
+        rppiTyping 1.8s steps(16) forwards, 
+        rppiTitileo 1.2s ease-in-out infinite alternate 2.0s;
+}
+
+/* 🟢 PUNTITO VERDE REFORZADO */
+.satellite-pulse {
+    width: 7px;
+    height: 7px;
+    background-color: #00ff64; /* Verde puro de estado */
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 8px #00ff64;
+    flex-shrink: 0; /* Evita que se deforme mientras se escribe el texto */
+}
+
+.satellite-pulse::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 1px solid #00ff64;
+    border-radius: 50%;
+    animation: satellitePing 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* 🎬 SECCIÓN DE ANIMACIONES */
+
+/* Máquina de escribir: expande el ancho hasta revelar las 16 letras */
+@keyframes rppiTyping {
+    from { width: 0; }
+    to { width: 172px; } /* Ancho exacto calculado para 'LIVE SYNC ACTIVE' con su espaciado */
+}
+
+/* Titileo / Respiración del texto */
+@keyframes rppiTitileo {
+    0%, 100% { opacity: 1; text-shadow: 0 0 8px rgba(248, 255, 43, 0.8); }
+    50% { opacity: 0.25; text-shadow: 0 0 1px rgba(248, 255, 43, 0); }
+}
+
+/* Ondas expansivas del punto verde */
+@keyframes satellitePing {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(2.6); opacity: 0; }
 }
