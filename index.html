@@ -15355,7 +15355,46 @@ function _rppiGmCheckReady(game) {
  </div>
 </div>
 
+<!-- ==========================================
+     SCRIPT PARA OCULTAR/MOSTRAR EL FONDO FLOTANTE
+     ========================================== -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Buscamos el contenedor por su clase
+    const syncHeroContainer = document.querySelector('.live-sync-hero-container');
+    
+    // Si el contenedor existe, aplicamos la lógica
+    if (syncHeroContainer) {
+        
+        // 1. Ocultar al entrar a la arena (Botón Comenzar/Start Beta)
+        const startBetaBtn = document.getElementById('start-beta-button');
+        if (startBetaBtn) {
+            startBetaBtn.addEventListener('click', function() {
+                syncHeroContainer.style.opacity = '0';
+            });
+        }
 
+        // Si tenés otros botones que también abren la arena (ej. "MAKE YOUR BET"), 
+        // podés agregarles la misma lógica acá abajo:
+        /*
+        const makeBetBtn = document.getElementById('tu-boton-de-apuesta');
+        if (makeBetBtn) {
+            makeBetBtn.addEventListener('click', function() {
+                syncHeroContainer.style.opacity = '0';
+            });
+        }
+        */
+
+        // 2. Volver a mostrar al salir de la arena
+        const exitGameBtn = document.getElementById('exit-game-button');
+        if (exitGameBtn) {
+            exitGameBtn.addEventListener('click', function() {
+                syncHeroContainer.style.opacity = '1';
+            });
+        }
+    }
+});
+</script>
 
 </body>
 </html>
