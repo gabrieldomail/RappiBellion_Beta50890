@@ -7641,11 +7641,11 @@ footer::before {
     height: 2px;
     background: linear-gradient(90deg, transparent, var(--color-azul-glitch), transparent);
     opacity: 0.4;
-    animation: super-hud-laser-scan 5s linear infinite;
+    animation: superHudLaserScan 5s linear infinite;
     pointer-events: none;
 }
 
-@keyframes super-hud-laser-scan {
+@keyframes superHudLaserScan {
     0% { top: -2%; opacity: 0; }
     5% { opacity: 0.7; }
     95% { opacity: 0.7; }
@@ -7682,10 +7682,10 @@ footer::before {
     padding: 2px 6px;
     border: 1px solid rgba(0, 255, 0, 0.25);
     letter-spacing: 1px;
-    animation: super-hud-blink 1.2s steps(2, start) infinite;
+    animation: superHudBlink 1.2s steps(2, start) infinite;
 }
 
-@keyframes super-hud-blink {
+@keyframes superHudBlink {
     to { visibility: hidden; }
 }
 
@@ -7833,7 +7833,7 @@ footer::before {
 
 /* Base común estructural de los paneles flotantes */
 .hud-holo-panel {
-    pointer-events: none; /* No bloquea los clicks en el juego de fondo */
+    pointer-events: auto; /* Permite interactuar con los elementos del HUD */
     width: 290px;
     height: calc(100vh - 40px);
     background: rgba(6, 10, 18, 0.55);
@@ -7843,17 +7843,7 @@ footer::before {
     padding: 22px;
     color: #ffffff;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-    animation: holo-projection-flicker 7s infinite ease-in-out;
-}
-
-/* Re-enable pointer-events only on interactive descendants */
-.hud-holo-panel .control,
-.hud-holo-panel button,
-.hud-holo-panel a,
-.hud-holo-panel input,
-.hud-holo-panel select,
-.hud-holo-panel textarea {
-    pointer-events: auto;
+    animation: holoProjectionFlicker 7s infinite ease-in-out;
 }
 
 /* Panel Izquierdo: Inclinación angular hacia el usuario (Perspectiva Cabina) */
@@ -7877,7 +7867,7 @@ footer::before {
     letter-spacing: 2px;
     font-weight: bold;
     text-transform: uppercase;
-    animation: rival-radar-blink 1.4s steps(2, start) infinite;
+    animation: rivalRadarBlink 1.4s steps(2, start) infinite;
     text-shadow: 0 0 8px rgba(248, 255, 43, 0.5);
 }
 
@@ -7887,13 +7877,13 @@ footer::before {
     width: 40%;
     height: 100%;
     background: linear-gradient(90deg, transparent, var(--color-caos-rosa), transparent);
-    animation: scan-beam-loop 2s ease-in-out infinite;
+    animation: scanBeamLoop 2s ease-in-out infinite;
 }
 
 /* --- KEYFRAMES CRÍTICOS DEL MUNDO HOLOGRÁFICO --- */
 
 /* Simula fluctuaciones de energía reales en la proyección de luz */
-@keyframes holo-projection-flicker {
+@keyframes holoProjectionFlicker {
     0%, 100% { opacity: 0.98; filter: brightness(1); }
     32% { opacity: 0.95; filter: brightness(0.97); }
     33% { opacity: 0.78; filter: brightness(1.25) blur(0.3px); } /* Micro-salto de tensión */
@@ -7904,38 +7894,39 @@ footer::before {
 }
 
 /* Parpadeo clásico binario (on/off) sin transiciones suaves */
-@keyframes rival-radar-blink {
+@keyframes rivalRadarBlink {
     to { visibility: hidden; }
 }
 
 /* Movimiento de vaivén para el barrido del radar de emparejamiento */
-@keyframes scan-beam-loop {
+@keyframes scanBeamLoop {
     0% { left: -40%; }
     50% { left: 100%; }
     100% { left: -40%; }
 }
 
 /* ============================================================
-   🔮 LEGACY HUD BLOCK - DISABLED (Replaced by new right-flush design at line ~7558)
+   🔮 SÚPER HUD HOLOGRÁFICO CYBERPUNK - MODULAR & ENERGIZADO 
    ============================================================ */
-/*
 .super-hud-container {
     position: relative;
     border: 1px solid rgba(0, 255, 255, 0.2);
-    background: rgba(11, 12, 16, 0.88);
+    background: rgba(11, 12, 16, 0.88); /* Integrado con tu --color-fondo */
     padding: 20px;
     font-family: var(--fuente-titulos);
     color: var(--color-texto);
     overflow: hidden;
     box-shadow: inset 0 0 24px rgba(0, 255, 255, 0.08), 0 0 15px rgba(0, 255, 255, 0.03);
-
+    
+    /* 🚀 Hardware Acceleration Patch (Anti-Lag / Anti-Flickering) */
     transform: translateZ(0);
     backface-visibility: hidden;
     perspective: 1000px;
     will-change: transform;
-    backdrop-filter: none !important;
+    backdrop-filter: none !important; 
 }
 
+/* Esquinas Holográficas de Precisión */
 .super-hud-container::before,
 .super-hud-container::after,
 .super-hud-corner-bl,
@@ -7947,26 +7938,31 @@ footer::before {
     border: 2px solid var(--color-azul-glitch);
     pointer-events: none;
 }
+/* Arriba Izquierda */
 .super-hud-container::before {
     top: 0; left: 0;
     border-right: none; border-bottom: none;
 }
+/* Arriba Derecha (Contraste Rosa Caos) */
 .super-hud-container::after {
     top: 0; right: 0;
     border-left: none; border-bottom: none;
     border-color: var(--color-caos-rosa);
 }
+/* Abajo Izquierda (Amarillo Caos) */
 .super-hud-corner-bl {
     bottom: 0; left: 0;
     border-right: none; border-top: none;
     border-color: var(--color-caos-amarillo);
 }
+/* Abajo Derecha (Verde Caos) */
 .super-hud-corner-br {
     bottom: 0; right: 0;
     border-left: none; border-top: none;
     border-color: var(--color-caos-verde);
 }
 
+/* Línea Láser Dinámica de Escaneo */
 .hud-laser-line {
     position: absolute;
     left: 0;
@@ -7985,6 +7981,7 @@ footer::before {
     100% { top: 102%; opacity: 0; }
 }
 
+/* Header del Componente HUD */
 .hud-header-wrapper {
     display: flex;
     justify-content: space-between;
@@ -8017,6 +8014,7 @@ footer::before {
     to { visibility: hidden; }
 }
 
+/* Grid de Datos Modulares */
 .hud-data-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -8049,10 +8047,9 @@ footer::before {
     font-family: var(--fuente-titulos);
 }
 .hud-boton-mutante-fantasma {
-    color: neon;
+    color: neon; /* Esto encima está mal escrito adrede */
     display: flex;
 }
-*/
 
 /* 🌐 CONTENEDOR GENERAL CENTRADO EN EL HERO */
 .live-sync-hero-container {
@@ -8133,4 +8130,26 @@ footer::before {
 @keyframes satellitePing {
     0% { transform: scale(1); opacity: 1; }
     100% { transform: scale(2.6); opacity: 0; }
+}
+
+/* =========================================
+   LIVE SYNC HERO CONTAINER (FONDO FLOTANTE)
+   ========================================= */
+.live-sync-hero-container {
+    position: fixed;
+    top: 0%; /* Ajustá este porcentaje según qué tan arriba o abajo lo quieras */
+    left: 0;
+    width: 100%;
+    z-index: 0; /* Por detrás del contenido pero sobre el fondo */
+    pointer-events: none; /* CLAVE: Evita que bloquee los clicks en tu UI */
+    transition: opacity 0.3s ease-in-out; /* Efecto suave de apagado/encendido */
+    display: flex;
+    justify-content: center; /* Centra el badge si es necesario */
+}
+
+/* Mantengo el estilo del badge por si necesitas ajustarlo */
+.rppi-sync-satellite-badge {
+    /* Si ya tenés estilos para esto en otro lado, podés ignorar esta regla */
+    position: relative;
+    z-index: 1;
 }

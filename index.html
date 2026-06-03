@@ -166,9 +166,16 @@
 <body>
 
 <div class="live-sync-hero-container">
-  <div class="rppi-sync-satellite-badge">
-  <div class="satellite-pulse"></div>
-     <span class="satellite-text">LIVE SYNC ACTIVE</span>
+  <div class="rppi-sync-satellite-badge" style="display: inline-flex; align-items: center; gap: 8px;">
+    <div class="satellite-pulse"></div>
+    <span class="satellite-text">LIVE SYNC ACTIVE</span>
+    
+    <div class="live-rt-credits-wrapper" style="display: inline-flex; align-items: center; margin-left: 8px; font-family: 'Orbitron', monospace; font-size: 0.9em; border-left: 1px solid rgba(0, 255, 255, 0.3); padding-left: 8px; gap: 5px;">
+      <span style="color: var(--color-azul-glitch); font-weight: bold; font-size: 0.85em;">RT:</span>
+      <span id="live-satellite-credits" style="color: #ffffff; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5); min-width: 40px; display: inline-block; text-align: right;">0.00</span>
+      <span style="color: rgba(255, 255, 255, 0.4); font-size: 0.75em; font-weight: bold;">CR</span>
+      <button id="btn-ocultar-live" style="background: none; border: none; cursor: pointer; font-size: 1.1em; padding: 0 0 0 4px; display: inline-flex; align-items: center; filter: drop-shadow(0 0 3px rgba(0,255,255,0.6)); outline: none;">👁️</button>
+    </div>
   </div>
 </div>
 
@@ -15355,43 +15362,69 @@ function _rppiGmCheckReady(game) {
  </div>
 </div>
 
-<!-- ==========================================
-     SCRIPT PARA OCULTAR/MOSTRAR EL FONDO FLOTANTE
-     ========================================== -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Buscamos el contenedor por su clase
-    const syncHeroContainer = document.querySelector('.live-sync-hero-container');
+// ══ VARIABLES GLOBALES PARA MANTENER EL ESTADO ══
+window.liveCreditsValue = "0.00"; 
+window.liveCreditsHidden = false;  
+
+// Renderizador inteligente del satélite (Números vs Asteriscos)
+function renderizarSaldoSatelite() {
+    const elSaldo = document.getElementById('live-satellite-credits');
+    if (!elSaldo) return;
     
-    // Si el contenedor existe, aplicamos la lógica
+    if (window.liveCreditsHidden) {
+        elSaldo.textContent = "••••";
+        elSaldo.style.letterSpacing = "2px";
+    } else {
+        elSaldo.textContent = window.liveCreditsValue;
+        elSaldo.style.letterSpacing = "normal";
+    }
+}
+
+// ══ CONTROLADORES CUANDO EL DOM ESTÁ LISTO ══
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. Visibilidad en la Arena (Ocultar/Mostrar Satélite)
+    const syncHeroContainer = document.querySelector('.live-sync-hero-container');
     if (syncHeroContainer) {
-        
-        // 1. Ocultar al entrar a la arena (Botón Comenzar/Start Beta)
-        const startBetaBtn = document.getElementById('start-beta-button');
-        if (startBetaBtn) {
-            startBetaBtn.addEventListener('click', function() {
-                syncHeroContainer.style.opacity = '0';
-            });
-        }
+        document.getElementById('start-beta-button')?.addEventListener('click', function() {
+            syncHeroContainer.style.opacity = '0';
+        });
+        document.getElementById('exit-game-button')?.addEventListener('click', function() {
+            syncHeroContainer.style.opacity = '1';
+        });
+    }
 
-        // Si tenés otros botones que también abren la arena (ej. "MAKE YOUR BET"), 
-        // podés agregarles la misma lógica acá abajo:
-        /*
-        const makeBetBtn = document.getElementById('tu-boton-de-apuesta');
-        if (makeBetBtn) {
-            makeBetBtn.addEventListener('click', function() {
-                syncHeroContainer.style.opacity = '0';
-            });
-        }
-        */
+    // 2. El Ojito (Modo Streamer con esteroides)
+    const btnOcultarLive = document.getElementById('btn-ocultar-live');
+    if (btnOcultarLive) {
+        btnOcultarLive.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation(); // Frena cualquier evento raro del HUD de Roger
+            window.liveCreditsHidden = !window.liveCreditsHidden;
+            e.target.textContent = window.liveCreditsHidden ? "🙈" : "👁️";
+            renderizarSaldoSatelite();
+        };
+    }
 
-        // 2. Volver a mostrar al salir de la arena
-        const exitGameBtn = document.getElementById('exit-game-button');
-        if (exitGameBtn) {
-            exitGameBtn.addEventListener('click', function() {
-                syncHeroContainer.style.opacity = '1';
+    // 🔥 3. EL ESPÍA "MODO EASY" (MutationObserver) 🔥
+    const sourceCredits = document.getElementById('rppi-user-credits');
+    if (sourceCredits) {
+        // Sincronización inicial por si los créditos ya cargaron antes
+        window.liveCreditsValue = sourceCredits.textContent.trim() || "0.00";
+        renderizarSaldoSatelite();
+
+        // Creamos el espía que vigila los créditos de Gabriel
+        const espiaDOM = new MutationObserver(function(mutations) {
+            mutations.forEach(function() {
+                // Al más mínimo cambio en el div original, copiamos el valor al satélite
+                window.liveCreditsValue = sourceCredits.textContent.trim() || "0.00";
+                renderizarSaldoSatelite();
             });
-        }
+        });
+
+        // Activamos el espía para que mire el texto interno de rppi-user-credits
+        espiaDOM.observe(sourceCredits, { characterData: true, childList: true, subtree: true });
     }
 });
 </script>
