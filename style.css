@@ -8047,15 +8047,8 @@ footer::before {
     font-family: var(--fuente-titulos);
 }
 .hud-boton-mutante-fantasma {
-    color: neon; /* Esto encima está mal escrito adrede */
+    color: var(--color-azul-glitch);
     display: flex;
-}
-
-/* 🌐 CONTENEDOR GENERAL CENTRADO EN EL HERO */
-.live-sync-hero-container {
-    display: flex;
-    justify-content: center;
-    margin: 15px 0 25px 0;
 }
 
 /* EL BADGE ADAPTADO */
@@ -8071,6 +8064,8 @@ footer::before {
     border-radius: 4px;
     font-family: 'Orbitron', monospace;
     box-shadow: 0 0 15px rgba(0, 255, 100, 0.15);
+    position: relative;
+    z-index: 1;
 }
 
 /* 🌟 TEXTO AMARILLO CON ESCRITURA Y LUEGO TITILEO */
@@ -8147,9 +8142,3 @@ footer::before {
     justify-content: center; /* Centra el badge si es necesario */
 }
 
-/* Mantengo el estilo del badge por si necesitas ajustarlo */
-.rppi-sync-satellite-badge {
-    /* Si ya tenés estilos para esto en otro lado, podés ignorar esta regla */
-    position: relative;
-    z-index: 1;
-}

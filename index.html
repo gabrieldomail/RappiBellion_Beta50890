@@ -15402,7 +15402,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation(); // Frena cualquier evento raro del HUD de Roger
             window.liveCreditsHidden = !window.liveCreditsHidden;
-            e.target.textContent = window.liveCreditsHidden ? "🙈" : "👁️";
+            e.currentTarget.textContent = window.liveCreditsHidden ? "🙈" : "👁️";
             renderizarSaldoSatelite();
         };
     }
