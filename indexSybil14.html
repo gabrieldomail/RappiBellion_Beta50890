@@ -4491,6 +4491,10 @@ body.bt-node-focus { overflow: hidden; }
   modal.addEventListener('click', function(e){
     if(e.target === modal) closeRektModal();
   });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeRektModal();
+  });
 })();
 </script>
 
