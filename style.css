@@ -3146,10 +3146,10 @@ footer::before {
     display: flex;
     justify-content: center;
     align-items: flex-start; /* Cambiado de center a flex-start */
-    padding: 40px 20px 40px 20px; /* Reducido el padding superior */
+    padding: 40px 20px 40px 20px; /* Original */
     box-sizing: border-box;
     position: relative;
-    overflow: visible; /* Cambiado para mejor compatibilidad de scroll */
+    overflow: hidden; /* Prevent animations from causing scrollbar jumps */
 }
 
 /* 2. El Fondo (Conceptual del Cap 3) */
@@ -3192,6 +3192,299 @@ footer::before {
     animation: gridPulse 3s ease-in-out infinite;
     pointer-events: none;
     z-index: 3;
+}
+
+/* ═══════════════════════════════════════════════════════
+   HOLO HERO — Holographic Particles & Background System
+   ═══════════════════════════════════════════════════════ */
+
+/* Holographic radial glow overlay on hero background */
+.hero-v2-holo-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background:
+        radial-gradient(circle at 30% 25%, rgba(0, 255, 255, 0.10), transparent 60%),
+        radial-gradient(circle at 75% 80%, rgba(255, 45, 120, 0.08), transparent 60%),
+        radial-gradient(circle at 55% 50%, rgba(248, 255, 43, 0.04), transparent 50%);
+    animation: heroHoloFlicker 6s ease-in-out infinite;
+    mix-blend-mode: screen;
+}
+
+@keyframes heroHoloFlicker {
+    0%, 100% { opacity: 0.85; filter: brightness(1); }
+    30% { opacity: 0.70; filter: brightness(1.08); }
+    60% { opacity: 0.90; filter: brightness(0.95); }
+    85% { opacity: 0.75; filter: brightness(1.12); }
+}
+
+/* Particle container */
+.hero-holo-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 4;
+}
+
+/* Base particle */
+.hero-holo-particle {
+    position: absolute;
+    opacity: 0;
+    mix-blend-mode: screen;
+    will-change: transform, opacity;
+}
+
+/* === Particle shapes === */
+
+/* Circle (default) */
+.hero-holo-particle--circle {
+    border-radius: 50%;
+}
+
+/* Diamond */
+.hero-holo-particle--diamond {
+    border-radius: 2px;
+    transform: rotate(45deg);
+}
+
+/* Spark / line */
+.hero-holo-particle--spark {
+    border-radius: 1px;
+    height: 1px !important;
+}
+
+/* Hexagon via clip-path */
+.hero-holo-particle--hex {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+/* Cross / plus */
+.hero-holo-particle--cross {
+    background: transparent !important;
+    border-radius: 0;
+}
+.hero-holo-particle--cross::before,
+.hero-holo-particle--cross::after {
+    content: '';
+    position: absolute;
+    background: inherit;
+    border-radius: 1px;
+}
+.hero-holo-particle--cross::before {
+    width: 100%; height: 30%;
+    top: 35%; left: 0;
+    background: var(--p-color);
+}
+.hero-holo-particle--cross::after {
+    width: 30%; height: 100%;
+    top: 0; left: 35%;
+    background: var(--p-color);
+}
+
+/* === Particle animations === */
+
+@keyframes holoFloat {
+    0%   { transform: translateY(100vh) translateX(0) scale(var(--p-scale, 1)); opacity: 0; }
+    10%  { opacity: var(--p-opacity, 0.5); }
+    50%  { transform: translateY(40vh) translateX(var(--p-drift, 15px)) scale(calc(var(--p-scale, 1) * 1.1)); }
+    90%  { opacity: var(--p-opacity, 0.5); }
+    100% { transform: translateY(-10vh) translateX(0) scale(var(--p-scale, 1)); opacity: 0; }
+}
+
+@keyframes holoPulseParticle {
+    0%, 100% { filter: drop-shadow(0 0 var(--p-glow, 4px) var(--p-color)); opacity: var(--p-opacity, 0.5); }
+    50%      { filter: drop-shadow(0 0 calc(var(--p-glow, 4px) * 2.5) var(--p-color)); opacity: calc(var(--p-opacity, 0.5) + 0.25); }
+}
+
+@keyframes holoDrift {
+    0%   { transform: translateY(100vh) translateX(var(--p-drift, -20px)) rotate(0deg); opacity: 0; }
+    15%  { opacity: var(--p-opacity, 0.4); }
+    50%  { transform: translateY(45vh) translateX(calc(var(--p-drift, -20px) * -1)) rotate(180deg); }
+    85%  { opacity: var(--p-opacity, 0.4); }
+    100% { transform: translateY(-10vh) translateX(var(--p-drift, -20px)) rotate(360deg); opacity: 0; }
+}
+
+@keyframes holoBlink {
+    0%, 100% { opacity: 0; }
+    20%      { opacity: 0; }
+    25%      { opacity: var(--p-opacity, 0.7); }
+    30%      { opacity: 0; }
+    55%      { opacity: var(--p-opacity, 0.7); }
+    60%      { opacity: 0; }
+    80%      { opacity: var(--p-opacity, 0.7); }
+    85%      { opacity: 0; }
+}
+
+/* === Glassmorphism upgrade for hero buttons === */
+.hero-v2 .hero-button,
+.hero-v2 .hero-button-disabled,
+.hero-v2 .hero-button-buy {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(11, 12, 16, 0.15); /* Very light base if no specific color is applied */
+    box-shadow:
+        inset 0 0 18px rgba(255, 255, 255, 0.04),
+        0 0 20px rgba(255, 255, 255, 0.06);
+    border-width: 2px;
+    border-style: solid;
+    transition: all 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Glass reflection effect */
+.hero-v2 .hero-button::after,
+.hero-v2 .hero-button-buy::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.25) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: skewX(-25deg);
+    animation: glassReflection 5s infinite;
+    pointer-events: none;
+}
+
+@keyframes glassReflection {
+    0%, 75% { left: -100%; }
+    100% { left: 200%; }
+}
+
+.hero-v2 .hero-button.caos-rosa {
+    border-color: rgba(255, 0, 255, 0.6);
+    box-shadow: inset 0 0 20px rgba(255, 0, 255, 0.08), 0 0 28px rgba(255, 0, 255, 0.25);
+    background: rgba(255, 0, 255, 0.12);
+    color: var(--color-caos-rosa);
+    text-shadow: 0 0 8px rgba(255, 0, 255, 0.6);
+}
+.hero-v2 .hero-button.caos-rosa:hover {
+    box-shadow: inset 0 0 30px rgba(255, 0, 255, 0.25), 0 0 50px rgba(255, 0, 255, 0.55);
+    background: rgba(255, 0, 255, 0.25);
+    transform: scale(1.04) translateY(-2px);
+    color: #fff;
+    text-shadow: 0 0 12px rgba(255, 0, 255, 0.8);
+}
+
+.hero-v2 .hero-button.caos-verde {
+    border-color: rgba(0, 255, 0, 0.6);
+    box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.08), 0 0 28px rgba(0, 255, 0, 0.25);
+    background: rgba(0, 255, 0, 0.12);
+    color: var(--color-caos-verde);
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
+}
+.hero-v2 .hero-button.caos-verde:hover {
+    box-shadow: inset 0 0 30px rgba(0, 255, 0, 0.25), 0 0 50px rgba(0, 255, 0, 0.55);
+    background: rgba(0, 255, 0, 0.25);
+    transform: scale(1.04) translateY(-2px);
+    color: #fff;
+    text-shadow: 0 0 12px rgba(0, 255, 0, 0.8);
+}
+
+.hero-v2 .hero-button.caos-amarillo {
+    border-color: rgba(248, 255, 43, 0.6);
+    box-shadow: inset 0 0 20px rgba(248, 255, 43, 0.08), 0 0 28px rgba(248, 255, 43, 0.25);
+    background: rgba(248, 255, 43, 0.12);
+    color: var(--color-caos-amarillo);
+    text-shadow: 0 0 8px rgba(248, 255, 43, 0.6);
+}
+.hero-v2 .hero-button.caos-amarillo:hover {
+    box-shadow: inset 0 0 30px rgba(248, 255, 43, 0.25), 0 0 50px rgba(248, 255, 43, 0.55);
+    background: rgba(248, 255, 43, 0.25);
+    transform: scale(1.04) translateY(-2px);
+    color: #fff;
+    text-shadow: 0 0 12px rgba(248, 255, 43, 0.8);
+}
+
+.hero-v2 .hero-button.rappia-naranja {
+    border-color: rgba(255, 60, 94, 0.6);
+    box-shadow: inset 0 0 20px rgba(255, 60, 94, 0.08), 0 0 28px rgba(255, 60, 94, 0.25);
+    background: rgba(255, 60, 94, 0.12);
+    color: var(--color-primario);
+    text-shadow: 0 0 8px rgba(255, 60, 94, 0.6);
+}
+.hero-v2 .hero-button.rappia-naranja:hover {
+    box-shadow: inset 0 0 30px rgba(255, 60, 94, 0.25), 0 0 50px rgba(255, 60, 94, 0.55);
+    background: rgba(255, 60, 94, 0.25);
+    transform: scale(1.04) translateY(-2px);
+    color: #fff;
+    text-shadow: 0 0 12px rgba(255, 60, 94, 0.8);
+}
+
+.hero-v2 .hero-button.rappia-azul {
+    border-color: rgba(0, 255, 255, 0.6);
+    box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.08), 0 0 28px rgba(0, 255, 255, 0.25);
+    background: rgba(0, 255, 255, 0.12);
+    color: var(--color-azul-glitch);
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+}
+.hero-v2 .hero-button.rappia-azul:hover {
+    box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.25), 0 0 50px rgba(0, 255, 255, 0.55);
+    background: rgba(0, 255, 255, 0.25);
+    transform: scale(1.04) translateY(-2px);
+    color: #fff;
+    text-shadow: 0 0 12px rgba(0, 255, 255, 0.8);
+}
+
+/* Hero title holographic glitch upgrade */
+.hero-v2-title {
+    animation: heroHoloGlitch 5s linear infinite !important;
+}
+
+@keyframes heroHoloGlitch {
+    0%, 39%, 44%, 89%, 100% {
+        text-shadow:
+            0 0 10px var(--color-caos-rosa),
+            3px 0 0 rgba(255, 0, 255, 0.5),
+            -3px 0 0 rgba(0, 255, 255, 0.5);
+        transform: none;
+        filter: none;
+    }
+    40%, 90% {
+        text-shadow:
+            -10px 0 0 rgba(255, 0, 0, 1),
+            10px 0 0 rgba(0, 255, 255, 1),
+            0 0 30px rgba(255, 0, 255, 0.8);
+        transform: skewX(-10deg) scale(1.02);
+    }
+    41%, 91% {
+        text-shadow:
+            15px 0 0 rgba(255, 0, 0, 1),
+            -15px 0 0 rgba(0, 255, 255, 1);
+        transform: skewX(12deg) scale(0.98);
+        filter: hue-rotate(90deg) saturate(4);
+    }
+    42%, 92% {
+        text-shadow:
+            -6px 3px 0 rgba(255, 0, 255, 0.9),
+            6px -3px 0 rgba(0, 255, 255, 0.9);
+        transform: skewX(-5deg);
+        filter: none;
+    }
+    43%, 93% {
+        text-shadow:
+            8px 0 0 rgba(255, 0, 0, 0.9),
+            -8px 0 0 rgba(0, 255, 255, 0.9);
+        transform: skewX(5deg);
+    }
+}
+
+/* Mobile: reduce particle count via CSS (JS handles most) */
+@media (max-width: 768px) {
+    .hero-holo-particles .hero-holo-particle:nth-child(n+30) {
+        display: none;
+    }
+    .hero-v2-holo-glow {
+        opacity: 0.6;
+    }
 }
 
 /* Scanlines en el contenedor hero */
@@ -3251,7 +3544,7 @@ footer::before {
     display: grid;
     grid-template-columns: 1fr; /* 1 columna en móvil */
     gap: 40px;
-    margin-top: 60px; /* Reducido de 120px a 60px para acercar aún más los logos al título */
+    margin-top: 70px; /* Aumentado para más aire标题-columnas */
     position: relative; /* Para el pseudo-elemento de la línea */
 }
 
@@ -3261,8 +3554,8 @@ footer::before {
         content: '';
         position: absolute;
         left: 50%;
-        top: 0;
-        height: 100%;
+        top: 320px;
+        height: calc(100% - 320px);
         width: 8px;
         background: radial-gradient(circle at 50% 50%, rgba(255,0,255,0.85) 60%, rgba(255,0,255,0.35) 80%, rgba(255,0,255,0.08) 100%);
         box-shadow:
@@ -3327,12 +3620,16 @@ footer::before {
     flex-direction: column;
     align-items: center; /* Centra todo el contenido de las columnas */
     width: 100%;
-    padding-top: 180px; /* Ajustado para lograr 1220px total */
+    padding-top: 320px; /* Bajado fuerte para separar logos del graffiti */
 }
 
 /* Ajuste específico para la columna derecha */
 .hero-column-right {
-    padding-top: 2px; /* Reducido casi a 0 para alinear botones */
+    padding-top: 320px;
+}
+/* Columna izquierda: logo más grande, alineada con botones de la derecha */
+.hero-column-left {
+    padding-top: 488px;
 }
 
 /* Añadir padding-top a los botones de la columna izquierda */
@@ -7174,7 +7471,7 @@ footer::before {
         z-index: 1 !important;
     }
 
-    #t2eplay-arena.show .caos-terminal {
+    #t2eplay-arena.show .cyber-tilt-panel {
         width: 100% !important;
         height: 100% !important;
         max-width: none !important;
@@ -7184,7 +7481,7 @@ footer::before {
         border-radius: 0 !important;
     }
 
-    #t2eplay-arena.show .terminal-header-caos {
+    #t2eplay-arena.show .holo-ui-layer {
         display: none !important;
     }
 
@@ -7311,7 +7608,7 @@ footer::before {
 }
 /* ── FIX FINAL TETRIS MOBILE (SISTEMA DE MÁSCARA) ── */
 @media (max-width: 768px) {
-    .fp-game-wrap--tetris .caos-terminal {
+    .fp-game-wrap--tetris .cyber-tilt-panel {
         width: 460px !important;      /* Lo que el usuario ve */
         height: 850px !important;
         position: absolute !important;
@@ -7324,7 +7621,7 @@ footer::before {
         display: block !important;
     }
 
-    .fp-game-wrap--tetris iframe {
+    .fp-game-wrap--tetris .game-iframe {
         /* 1. Le damos un ancho enorme para que el juego interno renderice el panel NEXT */
         width: 1000px !important; 
         height: 1800px !important;
@@ -8142,3 +8439,62 @@ footer::before {
     justify-content: center; /* Centra el badge si es necesario */
 }
 
+/* Mantengo el estilo del badge por si necesitas ajustarlo */
+.rppi-sync-satellite-badge {
+    /* Si ya tenés estilos para esto en otro lado, podés ignorar esta regla */
+    position: relative;
+    z-index: 1;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   [ PROTOCOLO DE ENFRIAMIENTO MOBILE ]
+   Desactivación de artillería pesada para evitar derretimiento de CPU
+   ══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+    /* 1. Apagar el motor 3D y estabilizar los paneles de la cabina */
+    .eva-terminal-chamber,
+    .cyber-tilt-panel,
+    .rppi-hud-holo-wrapper,
+    .hud-holo-panel {
+        transform: none !important;
+        perspective: none !important;
+        transition: none !important;
+        animation: none !important;
+    }
+
+    /* 2. Congelar el Glitch asíncrono en la sección #world (CLASSIFIED) 
+          Mantenemos la estética, pero con un glow estático y barato */
+    .world-classified-title,
+    .decomposer-tag {
+        animation: none !important; 
+        transform: none !important; 
+        text-shadow: 0 0 8px #ff0000, 2px 2px 0 #00BCFF !important; 
+    }
+
+    /* 3. Asesino de baterías #1: Eliminar backdrop-filter (blur) 
+          y reemplazarlo por fondos sólidos oscuros y sombras planas */
+    .cyber-tilt-panel,
+    .pinboard-card,
+    .hud-holo-panel {
+        backdrop-filter: none !important; 
+        -webkit-backdrop-filter: none !important;
+        background: rgba(10, 10, 10, 0.98) !important; 
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8) !important; 
+    }
+
+    /* 4. Apagar el Hover/Pulse constante en los Boost Buttons y Pinboard */
+    .holo-boost-btn,
+    .pinboard-card::before,
+    .pinboard-card::after {
+        animation: none !important;
+        box-shadow: 0 0 10px currentColor !important; /* Brillo fijo, cero cálculo */
+    }
+    
+    /* Evitar que las cards de la pared floten locamente en mobile */
+    .pinboard-card.active,
+    .pinboard-card.left-1,
+    .pinboard-card.right-1 {
+        transform: scale(1) translate(0) !important;
+    }
+}
