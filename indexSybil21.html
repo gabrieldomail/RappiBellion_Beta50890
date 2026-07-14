@@ -4218,6 +4218,564 @@ function loadLeaderboard(){
 </script>
 
 <!-- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+     RA9P1A [RPPI] T0KΞN — TOKENOMICS SOBERANO
+     Preámbulo cyberpunk a WALL STREET [ THE CASINO GAME ]
+     Paleta oficial: Cian Terminal oklch(0.76 0.29 140) ·
+     Naranja Radiactivo oklch(0.65 0.32 35) — SB CARTEL
+     OMEGA GENERAL · MISIÓN: WALL STREET THE CASINO GAME · FASE 2
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+<section id="tokenomics" class="tk-section">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   RA9P1A TOKEN — CSS SOBERANO · Herencia directa de Black Terminal
+   para que la transición HACIA esa sección sea invisible.
+═══════════════════════════════════════════════════════════ */
+#tokenomics {
+  --tk-cyan:   oklch(0.76 0.29 140);
+  --tk-orange: oklch(0.65 0.32 35);
+  --tk-void:   oklch(8% 0.012 160);
+  --tk-panel:  oklch(11% 0.015 160);
+}
+.tk-section {
+  background: var(--tk-void);
+  border-top: 2px solid var(--tk-orange);
+  border-bottom: 2px solid var(--tk-cyan);
+  box-shadow: 0 0 80px oklch(0.65 0.32 35 / 0.12), inset 0 0 200px oklch(5% 0.01 160 / 0.9);
+  position: relative; overflow: hidden; padding: 0 0 50px;
+}
+.tk-section::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px; z-index:10;
+  background: linear-gradient(in oklch 90deg, var(--tk-orange), var(--tk-cyan), var(--tk-orange));
+  background-size:300% 100%; animation: tkIriSweep 8s linear infinite; pointer-events:none;
+}
+@keyframes tkIriSweep { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
+.tk-bg-grid {
+  position:absolute; inset:0; pointer-events:none; z-index:0;
+  background:
+    repeating-linear-gradient(0deg,  oklch(0.76 0.29 140 / 0.02) 0px, oklch(0.76 0.29 140 / 0.02) 1px, transparent 1px, transparent 40px),
+    repeating-linear-gradient(90deg, oklch(0.65 0.32 35 / 0.02) 0px, oklch(0.65 0.32 35 / 0.02) 1px, transparent 1px, transparent 40px);
+}
+.tk-scan-beam {
+  position:absolute; left:0; width:100%; height:2px; z-index:1; pointer-events:none;
+  background:linear-gradient(90deg,transparent,oklch(0.76 0.29 140 / 0.5),transparent);
+  animation: tkScanMove 9s linear infinite;
+}
+@keyframes tkScanMove { 0%{top:-6%} 100%{top:106%} }
+
+/* ── Ticker de vitales ── */
+.tk-ticker {
+  width:100%; background:#000; border-bottom:1px solid oklch(0.65 0.32 35 / 0.3);
+  overflow:hidden; height:28px; display:flex; align-items:center; position:relative; z-index:2;
+}
+.tk-ticker-inner { display:flex; white-space:nowrap; animation:tkTickerScroll 32s linear infinite; }
+.tk-ticker-item { padding:0 24px; font-family:'Share Tech Mono',monospace; font-size:18px; letter-spacing:0.08em; border-right:1px solid oklch(0.76 0.29 140 / 0.15); color:rgba(255,255,255,0.5); }
+.tk-ticker-item b { color:var(--tk-cyan); font-weight:700; }
+.tk-ticker-item.tk-t-orange b { color:var(--tk-orange); }
+@keyframes tkTickerScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ── Header ── */
+.tk-header { position:relative; z-index:2; text-align:center; padding:36px 20px 28px; }
+.tk-eyebrow {
+  font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:4px;
+  color: var(--tk-cyan); text-transform:uppercase; margin-bottom:10px;
+  text-shadow:0 0 8px oklch(0.76 0.29 140 / 0.5);
+}
+.tk-eyebrow .dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--tk-orange); box-shadow:0 0 6px var(--tk-orange); margin-right:8px; animation:tkDotFlash 1.2s step-end infinite; }
+@keyframes tkDotFlash { 0%,100%{opacity:1} 50%{opacity:0.2} }
+.tk-title-main {
+  font-family:'Orbitron',monospace; font-weight:900;
+  font-size:clamp(30px, 6vw, 58px); letter-spacing:0.04em;
+  margin:0; line-height:1.05;
+  background:linear-gradient(90deg, var(--tk-orange) 0%, #fff 35%, var(--tk-cyan) 70%, var(--tk-orange) 100%);
+  background-size:300% 100%;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  animation:tkTitleShift 6s linear infinite;
+  filter:drop-shadow(0 0 20px oklch(0.65 0.32 35 / 0.35)) drop-shadow(0 0 20px oklch(0.76 0.29 140 / 0.25));
+}
+@keyframes tkTitleShift { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
+.tk-title-sub {
+  font-family:'Share Tech Mono',monospace; font-size:clamp(11px,1.4vw,14px);
+  letter-spacing:0.35em; color:rgba(255,255,255,0.55); margin-top:10px; text-transform:uppercase;
+}
+.tk-next-node {
+  display:inline-flex; align-items:center; gap:8px; margin-top:18px;
+  padding:6px 16px; border:1px dashed oklch(0.76 0.29 140 / 0.4);
+  font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:2px;
+  color:oklch(0.76 0.29 140 / 0.75); border-radius:2px;
+}
+.tk-next-node .arrow { color:var(--tk-orange); animation:tkArrowPulse 1.4s ease-in-out infinite; }
+@keyframes tkArrowPulse { 0%,100%{transform:translateX(0)} 50%{transform:translateX(5px)} }
+
+/* ── Supply hero ── */
+.tk-supply-hero { text-align:center; position:relative; z-index:2; margin:0 0 34px; }
+.tk-supply-label { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:3px; color:rgba(255,255,255,0.4); margin-bottom:6px; }
+.tk-supply-num {
+  font-family:'Orbitron',monospace; font-weight:900; font-size:clamp(28px,5.5vw,46px);
+  color:#fff; letter-spacing:2px; text-shadow:0 0 20px var(--tk-cyan), 0 0 40px oklch(0.76 0.29 140/0.4);
+}
+.tk-supply-num span.unit { font-size:0.5em; color:var(--tk-orange); text-shadow:0 0 14px var(--tk-orange); margin-left:8px; }
+
+/* ── Node grid — clip-path bisected, herencia directa de Black Terminal ── */
+.tk-grid { display:grid; grid-template-columns: 1.15fr 1fr; gap:26px; padding:0 22px; position:relative; z-index:2; max-width:1240px; margin:0 auto; }
+@media(max-width:900px){ .tk-grid{grid-template-columns:1fr;} }
+
+.tk-node {
+  background: oklch(11% 0.015 160 / 0.85);
+  backdrop-filter: blur(10px) saturate(1.3);
+  border: 1px solid oklch(0.76 0.29 140 / 0.3);
+  border-top: 2px solid oklch(0.76 0.29 140 / 0.7);
+  clip-path: polygon(24px 0,100% 0,100% calc(100% - 24px),calc(100% - 24px) 100%,0 100%,0 24px);
+  position: relative; overflow: hidden;
+  animation: tkNodeGlow 5s ease-in-out infinite;
+}
+@keyframes tkNodeGlow {
+  0%,100%{ box-shadow:0 0 14px oklch(0.76 0.29 140/0.15), inset 0 0 20px oklch(0.76 0.29 140/0.04); }
+  50%    { box-shadow:0 0 25px oklch(0.76 0.29 140/0.3), inset 0 0 25px oklch(0.76 0.29 140/0.08); }
+}
+.tk-node.tk-node--burn {
+  border-color: oklch(0.65 0.32 35 / 0.35);
+  border-top-color: oklch(0.65 0.32 35 / 0.8);
+  animation: tkNodeGlowOrange 5s ease-in-out infinite;
+}
+@keyframes tkNodeGlowOrange {
+  0%,100%{ box-shadow:0 0 14px oklch(0.65 0.32 35/0.18), inset 0 0 20px oklch(0.65 0.32 35/0.05); }
+  50%    { box-shadow:0 0 25px oklch(0.65 0.32 35/0.35), inset 0 0 25px oklch(0.65 0.32 35/0.1); }
+}
+.tk-node-header {
+  display:flex; align-items:center; justify-content:center; padding:12px 16px;
+  border-bottom:1px solid oklch(0.76 0.29 140 / 0.2); background:oklch(0.76 0.29 140 / 0.05);
+}
+.tk-node--burn .tk-node-header { border-bottom-color:oklch(0.65 0.32 35/0.2); background:oklch(0.65 0.32 35/0.05); }
+.tk-node-id { font-family:'Orbitron',monospace; font-weight:700; font-size:14px; letter-spacing:3px; color:oklch(0.76 0.29 140/0.6); }
+.tk-node--burn .tk-node-id { color:oklch(0.65 0.32 35/0.7); }
+.tk-node-title { font-family:'Share Tech Mono',monospace; font-size:16px; letter-spacing:2px; color:#fff; text-shadow:0 0 6px oklch(0.76 0.29 140/0.5); }
+.tk-node-dot { width:7px;height:7px;border-radius:50%;background:var(--tk-cyan); box-shadow:0 0 6px var(--tk-cyan); animation:tkDotFlash 1.8s ease-in-out infinite; }
+.tk-node--burn .tk-node-dot { background:var(--tk-orange); box-shadow:0 0 6px var(--tk-orange); }
+.tk-node-body { padding:20px; }
+
+/* ── NODO 01: gauge holográfico + breakdown ── */
+.tk-hud-shadow {
+  filter: drop-shadow(0 0 6px oklch(0.76 0.29 140 / 0.5))
+          drop-shadow(0 0 14px oklch(0.76 0.29 140 / 0.2));
+  margin-top: 24px;
+}
+.tk-node--hud {
+  clip-path: polygon(
+    0 0, 100% 0,
+    100% 85%, 95% 100%,
+    5% 100%, 0 90%,
+    0 40%, 4% 37%, 4% 13%, 0 10%
+  );
+  border: none;
+  border-top: none;
+  background: oklch(11% 0.015 160 / 0.45);
+  animation: tkNodeGlowHud 5s ease-in-out infinite;
+}
+@keyframes tkNodeGlowHud {
+  0%,100%{ box-shadow:0 0 6px oklch(0.76 0.29 140/0.08), inset 0 0 10px oklch(0.76 0.29 140/0.02); }
+  50%    { box-shadow:0 0 10px oklch(0.76 0.29 140/0.15), inset 0 0 12px oklch(0.76 0.29 140/0.04); }
+}
+.tk-node--hud .tk-node-body {
+  background: rgba(4, 15, 25, 0.5);
+}
+.tk-node--hud::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 255, 255, 0.03) 2px,
+    rgba(0, 255, 255, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+.tk-gauge-row { display:flex; gap:20px; align-items:center; flex-wrap:wrap; justify-content:center; margin-bottom:18px; }
+.tk-gauge-wrap { position:relative; width:150px; height:150px; flex-shrink:0; }
+.tk-gauge-svg { width:150px; height:150px; transform:rotate(-90deg); }
+.tk-gauge-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.tk-gauge-center-val { font-family:'Orbitron',monospace; font-weight:900; font-size:22px; color:#fff; text-shadow:0 0 12px var(--tk-cyan); }
+.tk-gauge-center-lbl { font-family:'Share Tech Mono',monospace; font-size:8px; letter-spacing:2px; color:rgba(255,255,255,0.4); margin-top:2px; }
+
+.tk-legend { flex:1; min-width:200px; display:flex; flex-direction:column; gap:10px; }
+.tk-legend-row { display:flex; align-items:center; gap:10px; }
+.tk-legend-dot { width:10px;height:10px;border-radius:2px;flex-shrink:0; box-shadow:0 0 6px currentColor; }
+.tk-legend-name { font-family:'Share Tech Mono',monospace; font-size:14px; color:rgba(255,255,255,0.75); flex:1; }
+.tk-legend-pct { font-family:'Orbitron',monospace; font-weight:700; font-size:13px; min-width:42px; text-align:right; }
+
+.tk-bar-track { height:6px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; display:flex; gap:1px; margin-top:16px; }
+.tk-bar-block { flex:1; border-radius:1px; background:rgba(255,255,255,0.06); transition:background 0.15s, box-shadow 0.15s; }
+.tk-bar-block.lit { box-shadow:0 0 4px currentColor; }
+
+/* ── NODO 02: Sink & Burn ── */
+.tk-burn-visual {
+  position:relative; height:90px; margin-bottom:16px; border-radius:3px; overflow:hidden;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.35) 0px, rgba(0,0,0,0.35) 2px, transparent 2px, transparent 22px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.4) 0px, rgba(0,0,0,0.4) 2px, transparent 2px, transparent 46px),
+    linear-gradient(160deg, oklch(0.35 0.15 35) 0%, oklch(0.18 0.08 35) 100%);
+}
+.tk-burn-embers { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.tk-ember { position:absolute; bottom:0; width:3px; height:3px; border-radius:50%; background:var(--tk-orange); box-shadow:0 0 6px var(--tk-orange); animation:tkEmberRise linear infinite; }
+@keyframes tkEmberRise { 0%{transform:translateY(0) translateX(0);opacity:0.9} 100%{transform:translateY(-90px) translateX(var(--ex,8px));opacity:0} }
+.tk-burn-crack { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:3px; color:oklch(0.9 0.1 85); text-shadow:0 0 10px var(--tk-orange); animation:tkCrackFlicker 3s ease-in-out infinite; }
+@keyframes tkCrackFlicker { 0%,93%,100%{opacity:0.5} 94%{opacity:0.15} 96%{opacity:0.7} }
+
+.tk-burn-counter-row { text-align:center; margin-bottom:14px; }
+.tk-burn-counter-lbl { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:2px; color:rgba(255,255,255,0.4); }
+.tk-burn-counter { font-family:'Orbitron',monospace; font-weight:900; font-size:28px; color:var(--tk-orange); text-shadow:0 0 16px var(--tk-orange); }
+.tk-burn-desc { font-family:'Share Tech Mono',monospace; font-size:14px; line-height:1.7; color:rgba(255,255,255,0.6); text-align:center; padding:0 6px; }
+.tk-burn-desc b { color:#fff; }
+
+/* ── Ventajas — border gradiente cyan→orange EXACTO per paper ── */
+.tk-adv-row { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; padding:34px 22px 0; max-width:1240px; margin:0 auto; position:relative; z-index:2; }
+@media(max-width:820px){ .tk-adv-row{grid-template-columns:1fr;} }
+.tk-adv-card {
+  position:relative; padding:2px; clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px);
+  background:linear-gradient(135deg, var(--tk-cyan) 0%, var(--tk-orange) 100%);
+}
+.tk-adv-inner {
+  background: var(--tk-panel); clip-path:polygon(15px 0,100% 0,100% calc(100% - 15px),calc(100% - 15px) 100%,0 100%,0 15px);
+  padding:22px 18px; height:100%; box-sizing:border-box; text-align:center;
+}
+.tk-adv-icon {
+  font-family:'Share Tech Mono',monospace; font-size:22px; font-weight:700;
+  margin-bottom:10px; letter-spacing:2px;
+  color:var(--tk-cyan);
+  text-shadow:0 0 8px var(--tk-cyan), 0 0 20px oklch(0.76 0.29 140/0.4);
+}
+.tk-adv-icon--orange {
+  color:var(--tk-orange);
+  text-shadow:0 0 8px var(--tk-orange), 0 0 20px oklch(0.65 0.32 35/0.4);
+}
+.tk-adv-icon--cyan {
+  color:#00FFFF;
+  text-shadow:0 0 8px #00FFFF, 0 0 20px rgba(0,255,255,0.4);
+}
+.tk-adv-title { font-family:'Orbitron',monospace; font-weight:700; font-size:16px; letter-spacing:1.5px; color:#fff; margin-bottom:8px; }
+.tk-adv-text { font-family:'Share Tech Mono',monospace; font-size:14px; line-height:1.6; color:rgba(255,255,255,0.55); }
+
+/* ── CTA row — naranja atómico con glow controlado, per paper ── */
+.tk-cta-row { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; padding:36px 22px 0; position:relative; z-index:2; }
+.tk-cta-btn {
+  font-family:'Orbitron',monospace; font-weight:700; font-size:13px; letter-spacing:2px;
+  padding:14px 32px; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+  clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
+  transition:all 0.2s ease;
+}
+.tk-cta-primary {
+  background:oklch(0.65 0.32 35 / 0.12); border:1.5px solid var(--tk-orange); color:var(--tk-orange);
+  filter:drop-shadow(0 0 10px oklch(0.65 0.32 35/0.5));
+}
+.tk-cta-primary:hover { background:oklch(0.65 0.32 35/0.22); filter:drop-shadow(0 0 20px oklch(0.65 0.32 35/0.8)); transform:translateY(-2px); }
+.tk-cta-secondary {
+  background:oklch(0.76 0.29 140 / 0.08); border:1.5px solid var(--tk-cyan); color:var(--tk-cyan);
+}
+.tk-cta-secondary:hover { background:oklch(0.76 0.29 140/0.18); box-shadow:0 0 18px oklch(0.76 0.29 140/0.4); transform:translateY(-2px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tk-section *, .tk-section *::before, .tk-section *::after { animation-play-state:paused !important; }
+}
+</style>
+
+<div class="tk-bg-grid"></div>
+<div class="tk-scan-beam"></div>
+
+<!-- Ticker de vitales -->
+<div class="tk-ticker">
+  <div class="tk-ticker-inner">
+    <span class="tk-ticker-item">SUPPLY_TOTAL: <b>150,000,000 $RPPI</b></span>
+    <span class="tk-ticker-item tk-t-orange">SINK_&_BURN: <b>PROTOCOLO ACTIVO</b></span>
+    <span class="tk-ticker-item">T2E_ALLOCATION: <b>45%</b></span>
+    <span class="tk-ticker-item tk-t-orange">RED: <b>OPTIMISM SUPERCHAIN</b></span>
+    <span class="tk-ticker-item">LIQUIDEZ: <b>GARANTIZADA</b></span>
+    <span class="tk-ticker-item tk-t-orange">CONTRATO: <b>0xB2f681Ba...ABDdC</b></span>
+    <!-- Duplicado para loop continuo -->
+    <span class="tk-ticker-item">SUPPLY_TOTAL: <b>150,000,000 $RPPI</b></span>
+    <span class="tk-ticker-item tk-t-orange">SINK_&_BURN: <b>PROTOCOLO ACTIVO</b></span>
+    <span class="tk-ticker-item">T2E_ALLOCATION: <b>45%</b></span>
+    <span class="tk-ticker-item tk-t-orange">RED: <b>OPTIMISM SUPERCHAIN</b></span>
+    <span class="tk-ticker-item">LIQUIDEZ: <b>GARANTIZADA</b></span>
+    <span class="tk-ticker-item tk-t-orange">CONTRATO: <b>0xB2f681Ba...ABDdC</b></span>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="tk-header">
+  <div class="tk-eyebrow"><span class="dot"></span>SB CARTEL · OFICINA DE INTELIGENCIA FINANCIERA</div>
+  <h2 class="tk-title-main">RA9P1A [RPPI] T0KΞN</h2>
+  <div class="tk-title-sub">// SINK &amp; BURN PROTOCOL · MUNICIÓN DE LA RESISTENCIA //</div>
+  <div class="tk-next-node">PREÁMBULO A <b style="color:#fff;margin:0 4px;">WALL STREET [ THE CASINO GAME ]</b><span class="arrow">→</span></div>
+</div>
+
+<!-- Supply hero -->
+<div class="tk-supply-hero">
+  <div class="tk-supply-label">// SUMINISTRO TOTAL FIJO //</div>
+  <div class="tk-supply-num">150,000,000<span class="unit">$RPPI</span></div>
+</div>
+
+<!-- Node grid -->
+<div class="tk-grid">
+
+  <!-- NODO 01: Distribution Matrix -->
+  <div class="tk-hud-shadow">
+  <div class="tk-node tk-node--hud" id="tk-node-distribution">
+    <div class="tk-node-header">
+      <span class="tk-node-id">NODO 01</span>
+      <span class="tk-node-title">DISTRIBUTION MATRIX</span>
+      <div class="tk-node-dot"></div>
+    </div>
+    <div class="tk-node-body">
+      <div class="tk-gauge-row">
+        <div class="tk-gauge-wrap">
+          <svg class="tk-gauge-svg" viewBox="0 0 150 150">
+            <circle cx="75" cy="75" r="64" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="14"/>
+            <circle id="tk-gauge-arc-1" cx="75" cy="75" r="64" fill="none" stroke="var(--tk-cyan)" stroke-width="14" stroke-dasharray="402" stroke-dashoffset="402" stroke-linecap="butt" style="filter:drop-shadow(0 0 6px var(--tk-cyan));"/>
+            <circle id="tk-gauge-arc-2" cx="75" cy="75" r="64" fill="none" stroke="var(--tk-orange)" stroke-width="14" stroke-dasharray="402" stroke-dashoffset="402" stroke-linecap="butt" style="filter:drop-shadow(0 0 6px var(--tk-orange));"/>
+            <circle id="tk-gauge-arc-3" cx="75" cy="75" r="64" fill="none" stroke="#BF00FF" stroke-width="14" stroke-dasharray="402" stroke-dashoffset="402" stroke-linecap="butt" style="filter:drop-shadow(0 0 6px #BF00FF);"/>
+          </svg>
+          <div class="tk-gauge-center">
+            <div class="tk-gauge-center-val" id="tk-gauge-center-val">5</div>
+            <div class="tk-gauge-center-lbl">CATEGORÍAS</div>
+          </div>
+        </div>
+        <div class="tk-legend">
+          <div class="tk-legend-row">
+            <div class="tk-legend-dot" style="background:var(--tk-cyan);color:var(--tk-cyan);"></div>
+            <span class="tk-legend-name">T2E Rewards</span>
+            <span class="tk-legend-pct" data-target="45" style="color:var(--tk-cyan);">0%</span>
+          </div>
+          <div class="tk-legend-row">
+            <div class="tk-legend-dot" style="background:var(--tk-orange);color:var(--tk-orange);"></div>
+            <span class="tk-legend-name">Tesoro (Treasury)</span>
+            <span class="tk-legend-pct" data-target="20" style="color:var(--tk-orange);">0%</span>
+          </div>
+          <div class="tk-legend-row">
+            <div class="tk-legend-dot" style="background:#BF00FF;color:#BF00FF;"></div>
+            <span class="tk-legend-name">Equipo (Team)</span>
+            <span class="tk-legend-pct" data-target="20" style="color:#BF00FF;">0%</span>
+          </div>
+          <div class="tk-legend-row">
+            <div class="tk-legend-dot" style="background:#FFD700;color:#FFD700;"></div>
+            <span class="tk-legend-name">Venta Estratégica</span>
+            <span class="tk-legend-pct" data-target="10" style="color:#FFD700;">0%</span>
+          </div>
+          <div class="tk-legend-row">
+            <div class="tk-legend-dot" style="background:#00FF41;color:#00FF41;"></div>
+            <span class="tk-legend-name">Liquidez Inicial</span>
+            <span class="tk-legend-pct" data-target="5" style="color:#00FF41;">0%</span>
+          </div>
+        </div>
+      </div>
+      <div class="tk-bar-track" data-bar="45" style="--bar-color:var(--tk-cyan);"></div>
+    </div>
+  </div>
+  </div>
+
+  <!-- NODO 02: Sink & Burn Protocol -->
+  <div class="tk-node tk-node--burn" id="tk-node-burn">
+    <div class="tk-node-header">
+      <span class="tk-node-id">NODO 02</span>
+      <span class="tk-node-title">SINK &amp; BURN PROTOCOL</span>
+      <div class="tk-node-dot"></div>
+    </div>
+    <div class="tk-node-body">
+      <div class="tk-burn-visual">
+        <div class="tk-burn-embers" id="tk-burn-embers"></div>
+        <div class="tk-burn-crack">[ MOTOR DE QUEMA // ACTIVO ]</div>
+      </div>
+      <div class="tk-burn-counter-row">
+        <div class="tk-burn-counter-lbl">// $RPPI QUEMADOS ACUMULADO //</div>
+        <div class="tk-burn-counter" id="tk-burn-num" data-burn-target="284750">0</div>
+      </div>
+      <div class="tk-burn-desc">
+        Cada transacción del ecosistema T2E alimenta el <b>motor de quema</b>.
+        Menos supply circulante, más presión alcista estructural —
+        no es promesa, es <b>código verificable en cadena</b>.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Ventajas del contrato -->
+<div class="tk-adv-row">
+  <div class="tk-adv-card">
+    <div class="tk-adv-inner">
+      <div class="tk-adv-icon tk-adv-icon--orange">[■■■]</div>
+      <div class="tk-adv-title">SUMINISTRO FIJO</div>
+      <div class="tk-adv-text">150M $RPPI. Sin minteo oculto, sin inflación sorpresa. Lo que ves en el contrato es lo que hay.</div>
+    </div>
+  </div>
+  <div class="tk-adv-card">
+    <div class="tk-adv-inner">
+      <div class="tk-adv-icon tk-adv-icon--cyan">[>>>]</div>
+      <div class="tk-adv-title">SUPERCHAIN NATIVO</div>
+      <div class="tk-adv-text">Construido sobre Optimism. Fees mínimos, velocidad real, seguridad heredada de Ethereum L1.</div>
+    </div>
+  </div>
+  <div class="tk-adv-card">
+    <div class="tk-adv-inner">
+      <div class="tk-adv-icon">[≈≈≈]</div>
+      <div class="tk-adv-title">LIQUIDEZ GARANTIZADA</div>
+      <div class="tk-adv-text">Pool de liquidez inicial bloqueado. El Cartel no corre con tu salida — la asegura desde el día uno.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="tk-cta-row">
+  <a href="#circuit-beta" class="tk-cta-btn tk-cta-primary">[BUY] COMPRAR $RPPI</a>
+  <a href="#" class="tk-cta-btn tk-cta-secondary" onclick="return false;">[DOC] WHITEPAPER</a>
+</div>
+
+<script>
+(function tokenomicsEngine() {
+    'use strict';
+
+    /* ── Count-up genérico ── */
+    function tkAnimateNumber(el, from, to, duration, formatter) {
+        if (!el) return;
+        var startTime = null;
+        function step(ts) {
+            if (!startTime) startTime = ts;
+            var progress = Math.min((ts - startTime) / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            var val = Math.round(from + (to - from) * eased);
+            el.textContent = formatter ? formatter(val) : val;
+            if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+
+    /* ── Barras LED dot-matrix ── */
+    function tkRenderBars(track, pct, color) {
+        track.innerHTML = '';
+        var totalBlocks = 40;
+        var lit = Math.round((pct / 100) * totalBlocks);
+        for (var i = 0; i < totalBlocks; i++) {
+            var b = document.createElement('div');
+            b.className = 'tk-bar-block' + (i < lit ? ' lit' : '');
+            if (i < lit) b.style.color = color || 'var(--tk-cyan)';
+            track.appendChild(b);
+        }
+    }
+
+    /* ── Embers del burn visual ── */
+    function tkSpawnEmbers() {
+        var wrap = document.getElementById('tk-burn-embers');
+        if (!wrap) return;
+        for (var i = 0; i < 5; i++) {
+            var em = document.createElement('div');
+            em.className = 'tk-ember';
+            em.style.left = (Math.random() * 100) + '%';
+            em.style.setProperty('--ex', (Math.random() * 16 - 8) + 'px');
+            em.style.animationDelay = (Math.random() * 2.6) + 's';
+            em.style.animationDuration = (2 + Math.random() * 1.5) + 's';
+            wrap.appendChild(em);
+        }
+    }
+    tkSpawnEmbers();
+    setInterval(function() {
+        var wrap = document.getElementById('tk-burn-embers');
+        if (wrap && wrap.children.length < 24) tkSpawnEmbers();
+    }, 2800);
+
+    /* ── Gauge holográfico: 3 arcos concéntricos representando
+       T2E (cyan) / Treasury+Team (naranja) / resto (violeta) ── */
+    function tkDrawGauge() {
+        var CIRC = 402; // 2 * PI * 64
+        var arc1 = document.getElementById('tk-gauge-arc-1'); // T2E 45%
+        var arc2 = document.getElementById('tk-gauge-arc-2'); // Treasury+Team 40%
+        var arc3 = document.getElementById('tk-gauge-arc-3'); // Resto 15%
+        if (arc1) {
+            var off1 = CIRC - (CIRC * 45 / 100);
+            setTimeout(function() { arc1.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(0.22,0.61,0.36,1)'; arc1.style.strokeDashoffset = off1; }, 100);
+        }
+        if (arc2) {
+            var off2 = CIRC - (CIRC * 40 / 100);
+            arc2.style.transform = 'rotate(' + (45 * 3.6) + 'deg)';
+            arc2.style.transformOrigin = '75px 75px';
+            setTimeout(function() { arc2.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(0.22,0.61,0.36,1)'; arc2.style.strokeDashoffset = off2; }, 250);
+        }
+        if (arc3) {
+            var off3 = CIRC - (CIRC * 15 / 100);
+            arc3.style.transform = 'rotate(' + ((45 + 40) * 3.6) + 'deg)';
+            arc3.style.transformOrigin = '75px 75px';
+            setTimeout(function() { arc3.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(0.22,0.61,0.36,1)'; arc3.style.strokeDashoffset = off3; }, 400);
+        }
+    }
+
+    /* ── Disparo al entrar en viewport ── */
+    var tkSection = document.getElementById('tokenomics');
+    var tkDone = false;
+    function tkTriggerAll() {
+        if (tkDone) return;
+        tkDone = true;
+
+        document.querySelectorAll('#tokenomics .tk-legend-pct[data-target]').forEach(function(el, idx) {
+            var target = parseInt(el.getAttribute('data-target'), 10) || 0;
+            setTimeout(function() {
+                tkAnimateNumber(el, 0, target, 1100, function(v) { return v + '%'; });
+            }, idx * 110);
+        });
+
+        var mainBar = document.querySelector('#tokenomics .tk-bar-track[data-bar]');
+        if (mainBar) {
+            setTimeout(function() { tkRenderBars(mainBar, 100, null); }, 300);
+            // Colorear multi-segmento: reconstruimos con los 5 colores reales
+            setTimeout(function() {
+                mainBar.innerHTML = '';
+                var segments = [
+                    { pct: 45, color: 'var(--tk-cyan)' },
+                    { pct: 20, color: 'var(--tk-orange)' },
+                    { pct: 20, color: '#BF00FF' },
+                    { pct: 10, color: '#FFD700' },
+                    { pct: 5,  color: '#00FF41' }
+                ];
+                var totalBlocks = 40;
+                segments.forEach(function(seg) {
+                    var blocks = Math.round((seg.pct / 100) * totalBlocks);
+                    for (var i = 0; i < blocks; i++) {
+                        var b = document.createElement('div');
+                        b.className = 'tk-bar-block lit';
+                        b.style.color = seg.color;
+                        b.style.background = 'currentColor';
+                        mainBar.appendChild(b);
+                    }
+                });
+            }, 320);
+        }
+
+        tkDrawGauge();
+
+        var burnEl = document.getElementById('tk-burn-num');
+        if (burnEl) {
+            var burnTarget = parseInt(burnEl.getAttribute('data-burn-target'), 10) || 0;
+            setTimeout(function() {
+                tkAnimateNumber(burnEl, 0, burnTarget, 2000, function(v) { return v.toLocaleString('es-AR'); });
+            }, 200);
+        }
+
+        var gaugeCenter = document.getElementById('tk-gauge-center-val');
+        if (gaugeCenter) tkAnimateNumber(gaugeCenter, 0, 5, 900, null);
+    }
+
+    if (tkSection && 'IntersectionObserver' in window) {
+        var tkObs = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting) { tkTriggerAll(); tkObs.disconnect(); }
+        }, { threshold: 0.2 });
+        tkObs.observe(tkSection);
+    } else {
+        setTimeout(tkTriggerAll, 1200);
+    }
+})();
+</script>
+
+</section>
+<!-- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
      BLACK TERMINAL V2 — FINANCIAL INTELLIGENCE SOVEREIGN
      SB CYBERCARTEL · OFICINA CLANDESTINA DE INTELIGENCIA
      6 NODES · THERMAL ALGO · FORENSIC FREEZE · WEB WORKER
@@ -4408,7 +4966,6 @@ function loadLeaderboard(){
 }
 /* Logo grande: 25% más que el de 72px del box original → 90px */
 .bt-gate-logo-wrap--big { width:160px; height:160px; }
-.bt-gate-logo-wrap--big img { width:90px; height:90px; }
 @media (max-width:1100px) { .bt-gate-side-rappia { display:none !important; } }
 
 .bt-gate-box {
@@ -4437,6 +4994,7 @@ function loadLeaderboard(){
   will-change:transform,filter;
   --gy: 0deg;
 }
+.bt-gate-logo-wrap--big img { width:117px; height:117px; }
 .bt-gate-ring {
   position:absolute; inset:-8px;
   border-radius:50%;
@@ -4646,7 +5204,7 @@ function loadLeaderboard(){
     <div class="bt-gate-logo-wrap bt-gate-logo-wrap--big">
       <div class="bt-gate-ring"></div>
       <div class="bt-gate-ring-rev"></div>
-      <img src="images/RAPPIA-2.png" alt="RAPPIA-C — Currency Core" onerror="this.onerror=null;this.src='images/rappibellion_logo_movil.png';">
+      <img src="images/holo-boost-core.png" alt="RAPPIA-C — Currency Core" onerror="this.onerror=null;this.src='images/rappibellion_logo_movil.png';">
     </div>
     <div class="bt-gate-side-rappia-ticker">RPPI-C · OPTIMISM L2 · LIVE</div>
   </div>
@@ -13381,478 +13939,6 @@ function fpCloseArena() {
 </div>
 </div><!-- /world-outer -->
 
-<section id="tokenomics" class="container section-separator" style="position:relative;overflow:hidden;">
-
-<style>
-@keyframes tkBorderPulse { 0%,100%{box-shadow:inset 0 0 40px rgba(255,140,0,0.05),0 0 0 1px rgba(255,140,0,0.15)} 50%{box-shadow:inset 0 0 40px rgba(0,188,255,0.06),0 0 0 1px rgba(0,188,255,0.18)} }
-@keyframes tkScan { 0%{top:-6%} 100%{top:106%} }
-@keyframes tkRingRotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-@keyframes tkCountGlow { 0%,100%{text-shadow:0 0 10px currentColor} 50%{text-shadow:0 0 22px currentColor,0 0 36px currentColor} }
-@keyframes tkRebelBorder { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
-@keyframes tkBarFlicker { 0%,100%{opacity:1} 50%{opacity:0.82} }
-@keyframes tkBarShimmer { 0%{background-position:-200px 0} 100%{background-position:200px 0} }
-@keyframes burnFlamePulse { 0%,100%{opacity:0.7;transform:scale(1)} 50%{opacity:1;transform:scale(1.08)} }
-@keyframes burnEmber { 0%{transform:translateY(0) translateX(0);opacity:0.8} 100%{transform:translateY(-70px) translateX(var(--ex,8px));opacity:0} }
-@keyframes burnCrackFlicker { 0%,93%,100%{opacity:0.35} 94%{opacity:0.1} 96%{opacity:0.5} }
-
-/* ── Dot-matrix LED bars dentro de cada legend card ── */
-.tk-bar-track {
-    display:flex; gap:2px; margin-top:7px; height:9px;
-}
-.tk-bar-block {
-    flex:1; max-width:7px; border-radius:1px;
-    background:rgba(255,255,255,0.06);
-    transition:background 0.4s;
-}
-.tk-bar-block.lit {
-    background:var(--lc,#FF8C00);
-    box-shadow:0 0 4px var(--lc,#FF8C00);
-    animation:tkBarFlicker 2.4s ease-in-out infinite;
-}
-.tk-legend-card:hover .tk-bar-block.lit { animation-duration:0.5s; }
-
-/* ── Ghost transaction ticker (RappibellionLED) ── */
-.tk-ghost-wrap {
-    position:relative; z-index:1; margin:22px 0 6px;
-    background:#000; border-top:1px solid rgba(0,255,65,0.18);
-    border-bottom:1px solid rgba(0,255,65,0.18); overflow:hidden;
-    padding:3px 0;
-}
-.tk-ghost-label {
-    text-align:center; font-family:'Share Tech Mono',monospace; font-size:11px;
-    letter-spacing:0.35em; color:rgba(0,255,65,0.35); margin-bottom:4px;
-}
-
-/* ── SINK & BURN — graffiti sobre ladrillo con mix-blend-mode ── */
-.tk-burn-wrap {
-    position:relative; z-index:1; margin-top:26px;
-    border-radius:6px; overflow:hidden; min-height:190px;
-    display:flex; align-items:center; justify-content:center;
-    /* Textura de ladrillo generada 100% en CSS */
-    background:
-        repeating-linear-gradient(0deg, rgba(0,0,0,0.45) 0px, rgba(0,0,0,0.45) 2px, transparent 2px, transparent 34px),
-        repeating-linear-gradient(90deg, rgba(0,0,0,0.5) 0px, rgba(0,0,0,0.5) 2px, transparent 2px, transparent 68px),
-        repeating-linear-gradient(0deg, transparent 0px, transparent 34px, rgba(0,0,0,0.3) 34px, rgba(0,0,0,0.3) 36px),
-        linear-gradient(135deg, #2a1410 0%, #1a0d0a 50%, #120705 100%);
-    box-shadow:inset 0 0 60px rgba(0,0,0,0.75), inset 0 0 2px rgba(255,80,0,0.15);
-}
-.tk-burn-cracks {
-    position:absolute; inset:0; pointer-events:none;
-    background:radial-gradient(ellipse 40% 30% at 20% 70%, rgba(255,80,0,0.07) 0%, transparent 70%),
-               radial-gradient(ellipse 30% 25% at 80% 30%, rgba(255,45,120,0.05) 0%, transparent 70%);
-    animation:burnCrackFlicker 4s ease-in-out infinite;
-}
-.tk-burn-content {
-    position:relative; z-index:1; text-align:center; padding:26px 20px;
-}
-.tk-burn-title {
-    font-family:'Permanent Marker','Orbitron',cursive,sans-serif;
-    font-size:clamp(28px,6vw,48px); font-weight:900; letter-spacing:0.03em;
-    color:#FF2D78; transform:rotate(-2deg); display:inline-block;
-    mix-blend-mode:screen; text-shadow:0 0 18px rgba(255,45,120,0.7);
-    text-transform:uppercase;
-}
-.tk-burn-sub {
-    font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:0.3em;
-    color:rgba(255,140,0,0.6); margin-top:6px; mix-blend-mode:screen;
-}
-.tk-burn-counter {
-    font-family:'Orbitron',monospace; font-weight:900; font-size:clamp(22px,4.5vw,32px);
-    color:#FF8C00; margin-top:14px; mix-blend-mode:screen;
-    text-shadow:0 0 16px rgba(255,140,0,0.7);
-}
-.tk-burn-counter span { font-size:0.4em; letter-spacing:0.2em; color:rgba(255,140,0,0.5); display:block; margin-top:2px; }
-.tk-burn-flame { font-size:22px; display:inline-block; animation:burnFlamePulse 1.4s ease-in-out infinite; filter:drop-shadow(0 0 8px #FF6B00); }
-.tk-burn-embers { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
-.tk-ember {
-    position:absolute; bottom:6%; width:3px; height:3px; border-radius:50%;
-    background:#FF8C00; box-shadow:0 0 6px #FF8C00;
-    animation:burnEmber 2.6s ease-out infinite;
-}
-
-.tk-bg-grid {
-    position:absolute; inset:0; z-index:0; pointer-events:none;
-    background:
-        radial-gradient(ellipse 70% 50% at 15% 20%, rgba(255,140,0,0.06) 0%, transparent 65%),
-        radial-gradient(ellipse 60% 45% at 85% 75%, rgba(0,188,255,0.07) 0%, transparent 65%),
-        repeating-linear-gradient(0deg, rgba(255,255,255,0.01) 0px 1px, transparent 1px 4px);
-}
-.tk-scan { position:absolute; left:0; width:100%; height:1px; z-index:0; pointer-events:none;
-    background:linear-gradient(90deg,transparent,rgba(255,140,0,0.4),rgba(0,188,255,0.4),transparent);
-    animation:tkScan 6s linear infinite; }
-.tk-corner { position:absolute; width:16px; height:16px; pointer-events:none; z-index:2; }
-.tk-corner.tl{top:6px;left:6px;border-top:2px solid #FF8C00;border-left:2px solid #FF8C00;}
-.tk-corner.tr{top:6px;right:6px;border-top:2px solid #00BCFF;border-right:2px solid #00BCFF;}
-.tk-corner.bl{bottom:6px;left:6px;border-bottom:2px solid #00BCFF;border-left:2px solid #00BCFF;}
-.tk-corner.br{bottom:6px;right:6px;border-bottom:2px solid #FF8C00;border-right:2px solid #FF8C00;}
-
-.tk-header { position:relative; z-index:1; text-align:center; margin-bottom:10px; }
-.tk-header-row { display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap; }
-.tk-title {
-    font-family:'Orbitron',monospace; font-weight:900; font-size:clamp(20px,4.2vw,34px);
-    letter-spacing:0.08em; text-transform:uppercase; margin:0;
-    background:linear-gradient(100deg,#FF8C00 0%,#FFA94D 30%,#00BCFF 70%,#00E5FF 100%);
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-    filter:drop-shadow(0 0 14px rgba(255,140,0,0.4)) drop-shadow(0 0 22px rgba(0,188,255,0.3));
-}
-.tk-subtitle {
-    font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:0.15em;
-    color:rgba(255,255,255,0.4); margin-top:6px;
-}
-.tk-mini-r {
-    width:42px; height:42px; border-radius:50%; position:relative; flex-shrink:0;
-    background:radial-gradient(circle at 35% 30%, rgba(0,188,255,0.15), rgba(0,0,0,0.92) 70%);
-}
-.tk-mini-r::before {
-    content:''; position:absolute; inset:-2px; border-radius:50%;
-    background:conic-gradient(from 0deg,#FF8C00,#00BCFF,#FF8C00);
-    animation:tkRingRotate 5s linear infinite;
-    -webkit-mask:radial-gradient(circle,transparent 60%,black 62%);
-    mask:radial-gradient(circle,transparent 60%,black 62%);
-}
-.tk-mini-r canvas { position:relative; z-index:1; width:34px!important; height:34px!important; margin:4px; }
-
-.tokenomics-container { position:relative; z-index:1; }
-
-/* ── Glass panel base (naranja/cyan disciplinados) ── */
-.tk-glass {
-    background:rgba(8,10,14,0.55); backdrop-filter:blur(6px);
-    border-radius:6px; padding:18px 20px;
-    animation:tkBorderPulse 5s ease-in-out infinite;
-    position:relative;
-}
-
-/* ── Pie chart wrap — único lugar con el toque rebelde rainbow ── */
-.tk-pie-wrap {
-    text-align:center; margin-bottom:18px; position:relative;
-}
-.tk-pie-frame {
-    display:inline-block; position:relative; padding:14px;
-    border-radius:50%;
-}
-.tk-pie-frame::before {
-    content:''; position:absolute; inset:-3px; border-radius:50%;
-    background:conic-gradient(from 0deg,#FF2D78,#00BCFF,#00FF41,#FFD700,#BF00FF,#FF2D78);
-    animation:tkRebelBorder 8s linear infinite; opacity:0.65;
-    -webkit-mask:radial-gradient(circle,transparent 72%,black 74%);
-    mask:radial-gradient(circle,transparent 72%,black 74%);
-}
-.tk-pie-label {
-    font-family:'Orbitron',monospace; font-size:11px; letter-spacing:0.35em;
-    color:rgba(255,255,255,0.25); margin-top:10px; text-transform:uppercase;
-}
-
-.tk-advantages { margin-top:8px; }
-.tk-advantages h4 {
-    font-family:'Orbitron',monospace; font-size:12px; letter-spacing:0.2em;
-    color:#FF8C00; text-shadow:0 0 8px rgba(255,140,0,0.5); margin-bottom:12px;
-    text-transform:uppercase;
-}
-.tk-adv-item {
-    border-left:2px solid rgba(0,188,255,0.4); padding:8px 0 8px 12px;
-    margin-bottom:10px; font-size:12.5px; color:rgba(255,255,255,0.65); line-height:1.55;
-}
-.tk-adv-item strong { color:#00BCFF; }
-
-/* ── Legend side ── */
-.tk-legend-title {
-    font-family:'Orbitron',monospace; font-weight:900; font-size:16px;
-    letter-spacing:0.1em; color:#fff; margin-bottom:16px; text-transform:uppercase;
-    text-shadow:0 0 8px rgba(255,140,0,0.3);
-}
-.tk-legend-card {
-    display:flex; align-items:center; gap:14px;
-    padding:13px 16px; margin-bottom:10px; border-radius:5px;
-    background:rgba(255,255,255,0.025);
-    border-left:3px solid var(--lc,#FF8C00);
-    transition:all 0.18s; position:relative; overflow:hidden;
-}
-.tk-legend-card:hover { background:rgba(255,255,255,0.05); transform:translateX(4px); }
-.tk-legend-pct {
-    font-family:'Orbitron',monospace; font-weight:900; font-size:22px;
-    color:var(--lc,#FF8C00); min-width:58px; text-align:center;
-    animation:tkCountGlow 3s ease-in-out infinite;
-}
-.tk-legend-text strong {
-    display:block; font-family:'Orbitron',monospace; font-size:11.5px;
-    letter-spacing:0.04em; color:#fff; margin-bottom:3px; text-transform:uppercase;
-}
-.tk-legend-text p { margin:0; font-size:11.5px; color:rgba(255,255,255,0.45); line-height:1.45; }
-
-/* Toque rebelde puntual — ribbon multicolor solo en la card más grande (45% T2E) */
-.tk-rebel-ribbon {
-    position:absolute; top:0; right:0; font-family:'Orbitron',monospace;
-    font-size:7px; letter-spacing:0.2em; padding:2px 8px; border-radius:0 5px 0 6px;
-    background:linear-gradient(90deg,#FF2D78,#00BCFF,#00FF41,#FFD700,#BF00FF);
-    background-size:300% 100%; animation:tkRebelBorder 4s linear infinite;
-    color:#000; font-weight:900;
-}
-
-.tk-whitepaper-btn {
-    display:inline-block; width:100%; text-align:center; margin-top:8px;
-    padding:13px; border-radius:5px; cursor:pointer; text-decoration:none;
-    font-family:'Orbitron',monospace; font-weight:900; font-size:11px;
-    letter-spacing:0.25em; text-transform:uppercase;
-    background:linear-gradient(100deg,rgba(255,140,0,0.12),rgba(0,188,255,0.12));
-    border:1.5px solid rgba(255,140,0,0.4); color:#fff;
-    transition:all 0.2s;
-}
-.tk-whitepaper-btn:hover {
-    border-color:#00BCFF; box-shadow:0 0 22px rgba(0,188,255,0.35),0 0 22px rgba(255,140,0,0.2);
-    background:linear-gradient(100deg,rgba(255,140,0,0.2),rgba(0,188,255,0.2));
-}
-
-@media(max-width:700px){ .tokenomics-container{display:block;} }
-</style>
-
-<div class="tk-bg-grid"></div>
-<div class="tk-scan"></div>
-<div class="tk-corner tl"></div>
-<div class="tk-corner tr"></div>
-<div class="tk-corner bl"></div>
-<div class="tk-corner br"></div>
-
-<div class="tk-header">
-    <div class="tk-header-row">
-        <div class="tk-mini-r"><canvas id="tk-mini-r-canvas" width="34" height="34"></canvas></div>
-        <h2 class="tk-title">TOKENOMICS: LA ECONOMÍA T2E</h2>
-    </div>
-    <p class="tk-subtitle">// UNA ECONOMÍA SOSTENIBLE DISEÑADA PARA RECOMPENSAR LA HABILIDAD Y EL PENSAMIENTO ESTRATÉGICO //</p>
-</div>
-
-<div class="tokenomics-container" style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;">
-
-    <div class="token-chart-side">
-
-        <div class="tk-pie-wrap">
-            <div class="tk-pie-frame">
-                <div class="pie-chart-interactive terminal-searching">
-                    <svg viewBox="0 0 220 220" class="pie-svg">
-                        <polygon class="pie-slice" data-percent="45" data-name="Recompensas T2E"
-                                 points="110,110 90,20 130,20" fill="#FF2D78"/>
-                        <polygon class="pie-slice" data-percent="20" data-name="Tesorería del Ecosistema"
-                                 points="110,110 180,60 200,90" fill="#00BCFF"/>
-                        <polygon class="pie-slice" data-percent="20" data-name="Equipo y Fundadores"
-                                 points="110,110 200,130 180,160" fill="#BF00FF"/>
-                        <polygon class="pie-slice" data-percent="10" data-name="Venta Privada"
-                                 points="110,110 140,200 100,200" fill="#FF8C00"/>
-                        <polygon class="pie-slice" data-percent="5" data-name="Liquidez Inicial"
-                                 points="110,110 80,200 60,180" fill="#FFD700"/>
-                        <circle cx="110" cy="110" r="30" fill="#060608" stroke="none"/>
-                    </svg>
-                    <img src="images/rappia_logo_tokenomics.PNG" class="tokenomics-logo" alt="Rappia Logo">
-                    <div class="pie-tooltip" id="pieTooltip">
-                        <div class="tooltip-name"></div>
-                        <div class="tooltip-percent"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="tk-pie-label">// 150.000.000 $RPPI — SUMINISTRO TOTAL FIJO //</div>
-        </div>
-
-        <div class="tk-glass tk-advantages">
-            <h4>Ventajas Clave del Contrato</h4>
-            <div class="tk-adv-item"><strong>SUMINISTRO FIJO:</strong> El contrato no permite crear nuevos tokens. El suministro total de 150,000,000 $RPPI es fijo para siempre.</div>
-            <div class="tk-adv-item"><strong>CONSTRUIDO EN SUPERCHAIN:</strong> Nuestro contrato opera en la red Optimism (OP Mainnet), garantizando transacciones ultra-rápidas y de bajo costo.</div>
-            <div class="tk-adv-item"><strong>LIQUIDEZ ASEGURADA:</strong> Cumplimos con nuestro compromiso al destinar un 5% del suministro total para la liquidez inicial en Uniswap.</div>
-        </div>
-
-    </div>
-
-    <div class="token-legend-side">
-        <div class="tk-legend-title">Distribución Total: 150M $RPPI</div>
-
-        <div class="tk-legend-card" style="--lc:#FF2D78;">
-            <span class="tk-rebel-ribbon">REBEL CORE</span>
-            <div class="tk-legend-pct" data-target="45">0%</div>
-            <div class="tk-legend-text">
-                <strong>Recompensas "Think-to-Earn" (T2E)</strong>
-                <p>El motor de la economía. Pagos por misiones y premios de "The Circuit".</p>
-                <div class="tk-bar-track" data-bar="45"></div>
-            </div>
-        </div>
-
-        <div class="tk-legend-card" style="--lc:#00BCFF;">
-            <div class="tk-legend-pct" data-target="20">0%</div>
-            <div class="tk-legend-text">
-                <strong>Tesorería del Ecosistema</strong>
-                <p>Marketing, recompensas de comunidad (Discord) y alianzas estratégicas.</p>
-                <div class="tk-bar-track" data-bar="20"></div>
-            </div>
-        </div>
-
-        <div class="tk-legend-card" style="--lc:#BF00FF;">
-            <div class="tk-legend-pct" data-target="20">0%</div>
-            <div class="tk-legend-text">
-                <strong>Equipo y Fundadores</strong>
-                <p>Bloqueados con un calendario de 2-3 años para demostrar nuestro compromiso a largo plazo.</p>
-                <div class="tk-bar-track" data-bar="20"></div>
-            </div>
-        </div>
-
-        <div class="tk-legend-card" style="--lc:#FF8C00;">
-            <div class="tk-legend-pct" data-target="10">0%</div>
-            <div class="tk-legend-text">
-                <strong>Venta Estratégica</strong>
-                <p>Fondos para acelerar el desarrollo y hacer crecer el equipo.</p>
-                <div class="tk-bar-track" data-bar="10"></div>
-            </div>
-        </div>
-
-        <div class="tk-legend-card" style="--lc:#FFD700;">
-            <div class="tk-legend-pct" data-target="5">0%</div>
-            <div class="tk-legend-text">
-                <strong>Liquidez Inicial (Uniswap)</strong>
-                <p>El "pool" inicial para establecer el mercado y permitir las primeras compras.</p>
-                <div class="tk-bar-track" data-bar="5"></div>
-            </div>
-        </div>
-
-        <a href="docs/WHITEPAPER$RPPI (Tokenomicon v1.0) .pdf" target="_blank" class="tk-whitepaper-btn">📄 TOKENOMICON V1.0</a>
-    </div>
-
-</div>
-
-<!-- ── Ghost Transaction Ticker — reutiliza RappibellionLED ── -->
-<div class="tk-ghost-wrap">
-    <div class="tk-ghost-label">// MONITOR DE RED — OPTIMISM MAINNET — TIEMPO REAL //</div>
-    <canvas id="tk-ghost-ticker" width="1200" height="22" style="width:100%;display:block;"></canvas>
-</div>
-
-<!-- ── SINK & BURN PROTOCOL — graffiti sobre ladrillo (mix-blend-mode) ── -->
-<div class="tk-burn-wrap">
-    <div class="tk-burn-cracks"></div>
-    <div class="tk-burn-embers" id="tk-burn-embers"></div>
-    <div class="tk-burn-content">
-        <span class="tk-burn-flame">🔥</span>
-        <div class="tk-burn-title">SINK &amp; BURN</div>
-        <div class="tk-burn-sub">// PROTOCOLO DE QUEMA — TOKENS REMOVIDOS DE CIRCULACIÓN PARA SIEMPRE //</div>
-        <div class="tk-burn-counter" data-burn-target="2847650">
-            <span id="tk-burn-num">0</span>
-            <span>$RPPI QUEMADOS PERMANENTEMENTE</span>
-        </div>
-    </div>
-</div>
-
-<script>
-(function(){
-    var c = document.getElementById('tk-mini-r-canvas');
-    if (c && window.RappibellionLED) {
-        new RappibellionLED(c, {
-            ledSize:3, ledGap:1, rows:13, fps:8,
-            bgColor:'rgba(0,0,0,0)', ledOff:'rgba(255,255,255,0.03)',
-            mode:'logo', colors:['#FF8C00','#00BCFF','#FF8C00','#FFA94D'], colorCycle:true, ledGlow:true,
-        });
-    }
-
-    /* ── Ghost Transaction Ticker — bloques falsos de la red ── */
-    var ghostCanvas = document.getElementById('tk-ghost-ticker');
-    if (ghostCanvas && window.RappibellionLED) {
-        ghostCanvas.width = ghostCanvas.parentElement.offsetWidth || 1200;
-        var blockNum = 48291;
-        var ghostMsgs = [
-            'BURN: 2.500 $RPPI', 'REWARD DISTRIBUTED', 'STAKE CONFIRMED',
-            'T2E PAYOUT SUCCESS', 'LIQUIDITY SYNCED', 'BOOST FEE BURNED',
-        ];
-        var ghostText = '';
-        for (var i=0;i<14;i++) {
-            ghostText += '[BLOCK #'+(blockNum+i)+'] '+ghostMsgs[i%ghostMsgs.length]+' :: SUCCESS  ★  ';
-        }
-        window._tkGhostLED = new RappibellionLED(ghostCanvas, {
-            ledSize:3, ledGap:2, rows:5, fps:30, scrollSpeed:0.9,
-            bgColor:'rgba(0,0,0,0)', ledOff:'rgba(255,255,255,0.025)',
-            mode:'scroll', text:ghostText, colors:['#00FF41'], colorCycle:false, ledGlow:false,
-        });
-        window.addEventListener('resize', function(){
-            ghostCanvas.width = ghostCanvas.parentElement.offsetWidth || 1200;
-            if (window._tkGhostLED) window._tkGhostLED._resize();
-        });
-    }
-
-    /* ── animateNumber standalone (cubic-out, sin depender de cyberpunkHUD) ── */
-    function tkAnimateNumber(el, from, to, duration, formatter) {
-        if (!el) return;
-        duration = duration || 1400;
-        var startTime = performance.now();
-        function step(now) {
-            var t = Math.min(1, (now - startTime) / duration);
-            var eased = 1 - Math.pow(1 - t, 3);
-            var val = Math.round(from + (to - from) * eased);
-            el.textContent = formatter ? formatter(val) : String(val);
-            if (t < 1) requestAnimationFrame(step);
-        }
-        requestAnimationFrame(step);
-    }
-
-    /* ── Dot-matrix bars: genera bloques LED según porcentaje ── */
-    function tkRenderBars(track, pct) {
-        if (!track) return;
-        var totalBlocks = 20;
-        var lit = Math.round((pct/100) * totalBlocks);
-        var html = '';
-        for (var i=0;i<totalBlocks;i++) {
-            html += '<div class="tk-bar-block' + (i < lit ? ' lit' : '') + '" style="animation-delay:'+(i*0.04)+'s;"></div>';
-        }
-        track.innerHTML = html;
-    }
-
-    /* ── Embers del bloque Burn ── */
-    function tkSpawnEmbers() {
-        var wrap = document.getElementById('tk-burn-embers');
-        if (!wrap) return;
-        for (var i=0;i<6;i++) {
-            var em = document.createElement('div');
-            em.className = 'tk-ember';
-            em.style.left = (10 + Math.random()*80) + '%';
-            em.style.setProperty('--ex', (Math.random()*16-8)+'px');
-            em.style.animationDelay = (Math.random()*2.6) + 's';
-            em.style.animationDuration = (2 + Math.random()*1.5) + 's';
-            wrap.appendChild(em);
-        }
-    }
-    tkSpawnEmbers();
-    setInterval(function(){
-        var wrap = document.getElementById('tk-burn-embers');
-        if (wrap && wrap.children.length < 24) tkSpawnEmbers();
-    }, 2800);
-
-    /* ── Disparo del count-up al entrar en viewport ── */
-    var tkSection = document.getElementById('tokenomics');
-    var tkDone = false;
-    function tkTriggerCountUp() {
-        if (tkDone) return;
-        tkDone = true;
-        document.querySelectorAll('.tk-legend-pct[data-target]').forEach(function(el, idx){
-            var target = parseInt(el.getAttribute('data-target'), 10) || 0;
-            setTimeout(function(){
-                tkAnimateNumber(el, 0, target, 1200, function(v){ return v + '%'; });
-            }, idx * 110);
-        });
-        document.querySelectorAll('.tk-bar-track[data-bar]').forEach(function(track, idx){
-            var pct = parseInt(track.getAttribute('data-bar'), 10) || 0;
-            setTimeout(function(){ tkRenderBars(track, pct); }, idx * 110 + 200);
-        });
-        var burnEl = document.querySelector('.tk-burn-counter[data-burn-target]');
-        if (burnEl) {
-            var numEl = document.getElementById('tk-burn-num');
-            var burnTarget = parseInt(burnEl.getAttribute('data-burn-target'), 10) || 0;
-            tkAnimateNumber(numEl, 0, burnTarget, 2200, function(v){
-                return v.toLocaleString('es-AR');
-            });
-        }
-    }
-    if (tkSection && 'IntersectionObserver' in window) {
-        var tkObs = new IntersectionObserver(function(entries){
-            if (entries[0].isIntersecting) { tkTriggerCountUp(); tkObs.disconnect(); }
-        }, {threshold:0.2});
-        tkObs.observe(tkSection);
-    } else {
-        setTimeout(tkTriggerCountUp, 1200);
-    }
-})();
-</script>
-
-</section>
 
 
 
