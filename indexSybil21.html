@@ -4036,7 +4036,7 @@ body.ultra-dark #ultra-dark-toggle {
 }
 .cd-overlay-jp {
     font-family: 'Share Tech Mono', monospace;
-    font-size: clamp(14px, 2.5vw, 20px);
+    font-size: clamp(21px, 3.7vw, 32px);
     color: #00FFFF;
     text-shadow: 0 0 8px rgba(0,255,255,0.6), 0 0 16px rgba(0,255,255,0.3);
     letter-spacing: 0.1em;
@@ -4045,7 +4045,7 @@ body.ultra-dark #ultra-dark-toggle {
 }
 .cd-overlay-es {
     font-family: 'Share Tech Mono', monospace;
-    font-size: clamp(10px, 1.8vw, 14px);
+    font-size: clamp(15px, 2.6vw, 21px);
     color: rgba(255,255,255,0.55);
     font-style: italic;
     margin-top: 4px;
@@ -24868,8 +24868,8 @@ window.initGammaBomb = function() {
         /* ── DOMINATOR DIALOGUE: quote data + state ── */
         var DOMINATOR_QUOTES = [
             { jp: '犯罪係数スキャン開始', es: 'Iniciando escaneo de coeficiente criminal', trigger: 0 },
-            { jp: 'リーサル・イミテーター、起動', es: 'Modo Lethal Eliminator activado', trigger: 150 },
-            { jp: 'ターゲットの処分が承認されました。慎重に進言します。', es: 'Destino designado para eliminación - proceda con precaución', trigger: 300 }
+            { jp: 'リーサル・イミテーター、起動', es: 'Modo Lethal Eliminator activado', trigger: 50 },
+            { jp: 'ターゲットの処分が承認されました。慎重に進言します。', es: 'Destino designado para eliminación - proceda con precaución', trigger: 170 }
         ];
         var _lastQuoteIdx = -1;
         var _dialogueEl = null;
@@ -24949,13 +24949,13 @@ window.initGammaBomb = function() {
                     var rampVol = 0.3 + (current / TARGET) * (maxVol - 0.3);
                     _domAudio.volume = Math.min(rampVol, maxVol);
                 }
-                /* ── DOMINATOR DIALOGUE: trigger quotes ── */
-                for (var qi = 0; qi < DOMINATOR_QUOTES.length; qi++) {
-                    if (current >= DOMINATOR_QUOTES[qi].trigger && _lastQuoteIdx < qi) {
-                        _lastQuoteIdx = qi;
-                        showDialogue(qi);
-                        break;
-                    }
+            }
+            /* ── DOMINATOR DIALOGUE: trigger quotes (runs on every tick) ── */
+            for (var qi = 0; qi < DOMINATOR_QUOTES.length; qi++) {
+                if (current >= DOMINATOR_QUOTES[qi].trigger && _lastQuoteIdx < qi) {
+                    _lastQuoteIdx = qi;
+                    showDialogue(qi);
+                    break;
                 }
             }
         }, TICK);
