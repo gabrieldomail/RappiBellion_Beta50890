@@ -4014,12 +4014,12 @@ body.ultra-dark #ultra-dark-toggle {
 
 /* ── Dominator Psycho-Pass Dialogue Overlay ── */
 #crime-dialogue-overlay {
-    position: absolute;
-    bottom: 18%;
+    position: fixed;
+    bottom: 6%;
     left: 0;
     width: 100%;
     text-align: center;
-    z-index: 5;
+    z-index: 9999;
     pointer-events: none;
     opacity: 0;
     transform: translateY(8px);
@@ -24878,8 +24878,7 @@ window.initGammaBomb = function() {
             if (!_dialogueEl) {
                 _dialogueEl = document.createElement('div');
                 _dialogueEl.id = 'crime-dialogue-overlay';
-                var panel = document.querySelector('.crime-panel');
-                if (panel) panel.appendChild(_dialogueEl);
+                document.body.appendChild(_dialogueEl);
             }
             if (_dialogueEl.classList.contains('show')) {
                 _dialogueEl.classList.remove('show');
