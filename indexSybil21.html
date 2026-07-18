@@ -4012,6 +4012,58 @@ body.ultra-dark #ultra-dark-toggle {
     animation: gammaFatalGlitch 0.65s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
 }
 
+/* ── Dominator Psycho-Pass Dialogue Overlay ── */
+#crime-dialogue-overlay {
+    position: absolute;
+    bottom: 18%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+#crime-dialogue-overlay.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+#crime-dialogue-overlay.hide {
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.cd-overlay-jp {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(14px, 2.5vw, 20px);
+    color: #00FFFF;
+    text-shadow: 0 0 8px rgba(0,255,255,0.6), 0 0 16px rgba(0,255,255,0.3);
+    letter-spacing: 0.1em;
+    display: block;
+    animation: cdGlitchIn 0.3s ease both;
+}
+.cd-overlay-es {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(10px, 1.8vw, 14px);
+    color: rgba(255,255,255,0.55);
+    font-style: italic;
+    margin-top: 4px;
+    display: block;
+    animation: cdFadeIn 0.4s ease 0.1s both;
+}
+@keyframes cdGlitchIn {
+    0% { opacity: 0; clip-path: inset(0 0 100% 0); }
+    30% { opacity: 1; clip-path: inset(20% 0 40% 0); }
+    50% { clip-path: inset(60% 0 10% 0); }
+    70% { clip-path: inset(0 0 0 0); }
+    100% { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+@keyframes cdFadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
 </style>
 
 <!-- ═══════════════════════════════════════════════════════════════
@@ -24769,6 +24821,9 @@ window.initGammaBomb = function() {
             if (_ds.freeplayEl) _ds.freeplayEl.muted = _ds.prevFreeplay;
             window._domDucking = null;
         }
+        /* ── DOMINATOR DIALOGUE: remove on skip ── */
+        var _cdEl = document.getElementById('crime-dialogue-overlay');
+        if (_cdEl) _cdEl.remove();
         scanner.style.opacity = '0';
         scanner.style.pointerEvents = 'none';
         ticker.style.opacity = '0';
@@ -24809,6 +24864,34 @@ window.initGammaBomb = function() {
         }).catch(function() {
             /* Autoplay blocked — user hasn't interacted yet. Audio won't play. */
         });
+
+        /* ── DOMINATOR DIALOGUE: quote data + state ── */
+        var DOMINATOR_QUOTES = [
+            { jp: '犯罪係数スキャン開始', es: 'Iniciando escaneo de coeficiente criminal', trigger: 0 },
+            { jp: 'リーサル・イミテーター、起動', es: 'Modo Lethal Eliminator activado', trigger: 150 },
+            { jp: 'ターゲットの処分が承認されました。慎重に進言します。', es: 'Destino designado para eliminación - proceda con precaución', trigger: 300 }
+        ];
+        var _lastQuoteIdx = -1;
+        var _dialogueEl = null;
+
+        function showDialogue(idx) {
+            if (!_dialogueEl) {
+                _dialogueEl = document.createElement('div');
+                _dialogueEl.id = 'crime-dialogue-overlay';
+                var panel = document.querySelector('.crime-panel');
+                if (panel) panel.appendChild(_dialogueEl);
+            }
+            if (_dialogueEl.classList.contains('show')) {
+                _dialogueEl.classList.remove('show');
+                _dialogueEl.classList.add('hide');
+            }
+            setTimeout(function() {
+                _dialogueEl.innerHTML = '<span class="cd-overlay-jp">' + DOMINATOR_QUOTES[idx].jp + '</span>'
+                                      + '<span class="cd-overlay-es">' + DOMINATOR_QUOTES[idx].es + '</span>';
+                _dialogueEl.classList.remove('hide');
+                _dialogueEl.classList.add('show');
+            }, 220);
+        }
 
         if (_aborted) return;
         scanner.classList.add('active');
@@ -24867,6 +24950,14 @@ window.initGammaBomb = function() {
                     var rampVol = 0.3 + (current / TARGET) * (maxVol - 0.3);
                     _domAudio.volume = Math.min(rampVol, maxVol);
                 }
+                /* ── DOMINATOR DIALOGUE: trigger quotes ── */
+                for (var qi = 0; qi < DOMINATOR_QUOTES.length; qi++) {
+                    if (current >= DOMINATOR_QUOTES[qi].trigger && _lastQuoteIdx < qi) {
+                        _lastQuoteIdx = qi;
+                        showDialogue(qi);
+                        break;
+                    }
+                }
             }
         }, TICK);
 
@@ -24896,6 +24987,9 @@ window.initGammaBomb = function() {
                 if (ds.freeplayEl) ds.freeplayEl.muted = ds.prevFreeplay;
                 window._domDucking = null;
             }, 700);
+            /* ── DOMINATOR DIALOGUE: remove on disintegration ── */
+            var _cdEl3 = document.getElementById('crime-dialogue-overlay');
+            if (_cdEl3) _cdEl3.remove();
             scanner.classList.remove('active');
             scanner.classList.add('disintegrating');
 
