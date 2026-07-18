@@ -7345,19 +7345,31 @@ body.bt-node-focus { overflow: hidden; }
 
     /* ── Node Reveal on Scroll ── */
     var econSection = document.getElementById('economy');
-    if (!econSection || !('IntersectionObserver' in window)) return;
+    if (!econSection) return;
 
-    var obs = new IntersectionObserver(function(entries) {
-        if (entries[0].isIntersecting) {
-            econSection.querySelectorAll('.econ-node[data-reveal]').forEach(function(node) {
-                var delay = parseInt(node.getAttribute('data-reveal'), 10) || 0;
-                setTimeout(function() { node.classList.add('revealed'); }, delay * 200);
-            });
-            setTimeout(econRenderBars, 600);
-            obs.disconnect();
-        }
-    }, { threshold: 0.2 });
-    obs.observe(econSection);
+    function revealNodes() {
+        econSection.querySelectorAll('.econ-node[data-reveal]').forEach(function(node) {
+            var delay = parseInt(node.getAttribute('data-reveal'), 10) || 0;
+            setTimeout(function() { node.classList.add('revealed'); }, delay * 200);
+        });
+        setTimeout(econRenderBars, 600);
+    }
+
+    if ('IntersectionObserver' in window) {
+        var obs = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting) {
+                revealNodes();
+                obs.disconnect();
+            }
+        }, { threshold: 0.1 });
+        obs.observe(econSection);
+        /* Fallback: if section is already visible, reveal immediately */
+        setTimeout(function() {
+            if (!econSection.querySelector('.econ-node.revealed')) revealNodes();
+        }, 500);
+    } else {
+        revealNodes();
+    }
 })();
 </script>
 
