@@ -1792,7 +1792,7 @@ footer::before {
    THE INTELLIGENCE MATRIX — Economy Section Restyling
    Military Intel Terminal · SB CARTEL · 2026-07-19
 ═══════════════════════════════════════════════════════════ */
-#economy {
+.econ-section, #economy {
   --econ-cyan: oklch(0.76 0.29 140);
   --econ-orange: oklch(0.65 0.32 35);
   --econ-purple: #BF00FF;
