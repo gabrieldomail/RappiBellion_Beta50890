@@ -1851,8 +1851,31 @@ footer::before {
   display: grid; grid-template-columns: 1fr; gap: 26px;
   padding: 0 22px; position: relative; z-index: 2;
   max-width: 1240px; margin: 0 auto 40px;
+  overflow: hidden;
 }
 @media(min-width:900px){ .econ-nodes-grid{grid-template-columns:repeat(3,1fr);} }
+
+/* ═══ SINGLE LIGHT SWEEP — one beam across all 3 nodes ═══ */
+.econ-nodes-grid::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -30%;
+  width: 15%; height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.18) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  transform: skewX(-20deg);
+  animation: econSingleSweep 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+@keyframes econSingleSweep {
+  0%   { left: -30%; }
+  100% { left: 130%; }
+}
 
 /* ── Node Card ── */
 .econ-node {
@@ -1930,27 +1953,7 @@ footer::before {
   animation-name: econNodeGlowPurple;
 }
 
-/* ═══ GLASS REFLECTION EFFECT — economy nodes only ═══ */
-.econ-node::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 60%; height: 100%;
-  background: linear-gradient(
-    to right,
-    rgba(255,255,255,0) 0%,
-    rgba(255,255,255,0.12) 50%,
-    rgba(255,255,255,0) 100%
-  );
-  transform: skewX(-25deg);
-  animation: econGlassReflection 6s infinite;
-  pointer-events: none;
-  z-index: 2;
-}
-@keyframes econGlassReflection {
-  0%, 70% { left: -100%; }
-  100% { left: 200%; }
-}
+/* ═══ GLASS REFLECTION — single sweep on grid container ═══ */
 
 /* Node header */
 .econ-node-header {
