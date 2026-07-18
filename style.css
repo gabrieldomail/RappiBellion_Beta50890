@@ -1865,8 +1865,20 @@ footer::before {
   animation: econNodeGlow 5s ease-in-out infinite;
   opacity: 0; transform: translateY(20px);
   transition: opacity 0.5s ease, transform 0.5s ease;
+  filter: drop-shadow(0 0 8px oklch(0.76 0.29 140 / 0.3));
 }
 .econ-node.revealed { opacity: 1; transform: translateY(0); }
+/* Scanline overlay for all nodes */
+.econ-node::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px, transparent 2px,
+    rgba(0, 255, 255, 0.03) 2px, rgba(0, 255, 255, 0.03) 4px
+  );
+  pointer-events: none; z-index: 1;
+}
 .econ-node:hover {
   transform: translateY(-4px) scale(1.02);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -1895,24 +1907,43 @@ footer::before {
   50%    { box-shadow:0 0 25px oklch(0.76 0.29 140/0.3), inset 0 0 25px oklch(0.76 0.29 140/0.08); }
 }
 
-/* Node color variants */
+/* ═══ NODE 01: HABILIDAD — Stealth cut top-left ═══ */
+.econ-node--cyan {
+  clip-path: polygon(
+    30px 0, 100% 0,
+    100% calc(100% - 20px), calc(100% - 20px) 100%,
+    0 100%, 0 30px
+  );
+  animation-name: econNodeGlow;
+  filter: drop-shadow(0 0 8px oklch(0.76 0.29 140 / 0.4));
+}
+
+/* ═══ NODE 02: ESTRATEGIA — Military notches ═══ */
 .econ-node--orange {
+  clip-path: polygon(
+    0 0, 100% 0,
+    100% 85%, 92% 100%,
+    8% 100%, 0 90%,
+    0 55%, 5% 50%, 0 45%
+  );
   border-color: oklch(0.65 0.32 35 / 0.35);
   border-top-color: oklch(0.65 0.32 35 / 0.8);
   animation-name: econNodeGlowOrange;
+  filter: drop-shadow(0 0 8px oklch(0.65 0.32 35 / 0.4));
 }
-@keyframes econNodeGlowOrange {
-  0%,100%{ box-shadow:0 0 14px oklch(0.65 0.32 35/0.18), inset 0 0 20px oklch(0.65 0.32 35/0.05); }
-  50%    { box-shadow:0 0 25px oklch(0.65 0.32 35/0.35), inset 0 0 25px oklch(0.65 0.32 35/0.1); }
-}
+
+/* ═══ NODE 03: INVERSIÓN — Double chevron ═══ */
 .econ-node--purple {
+  clip-path: polygon(
+    15px 0, 100% 0,
+    100% 100%, 15px 100%,
+    0 calc(100% - 15px), 10px 50%,
+    0 15px
+  );
   border-color: rgba(191,0,255,0.35);
   border-top-color: rgba(191,0,255,0.8);
   animation-name: econNodeGlowPurple;
-}
-@keyframes econNodeGlowPurple {
-  0%,100%{ box-shadow:0 0 14px rgba(191,0,255,0.18), inset 0 0 20px rgba(191,0,255,0.05); }
-  50%    { box-shadow:0 0 25px rgba(191,0,255,0.35), inset 0 0 25px rgba(191,0,255,0.1); }
+  filter: drop-shadow(0 0 8px rgba(191,0,255,0.4));
 }
 
 /* Node header */
