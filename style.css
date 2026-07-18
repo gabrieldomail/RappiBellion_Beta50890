@@ -1977,7 +1977,7 @@ footer::before {
 .econ-node-body { padding: 20px; }
 .econ-node-desc {
   font-family: 'Share Tech Mono', monospace; font-size: 14px;
-  line-height: 1.7; color: rgba(255,255,255,0.6);
+  line-height: 1.7; color: rgba(255,255,255,0.05);
 }
 
 /* Node data float */
