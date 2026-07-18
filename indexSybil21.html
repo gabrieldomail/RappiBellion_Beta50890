@@ -24756,6 +24756,19 @@ window.initGammaBomb = function() {
         clearInterval(_scanInterval);
         clearTimeout(_phase2Timer);
         clearTimeout(_phase3Timer);
+        /* ── DOMINATOR AUDIO: immediate stop on skip ── */
+        if (window._dominatorAudio) {
+            window._dominatorAudio.pause();
+            window._dominatorAudio.currentTime = 0;
+            window._dominatorAudio = null;
+        }
+        /* Restore ducked audio immediately */
+        var _ds = window._domDucking;
+        if (_ds) {
+            if (_ds.tangoEl) _ds.tangoEl.muted = _ds.prevTango;
+            if (_ds.freeplayEl) _ds.freeplayEl.muted = _ds.prevFreeplay;
+            window._domDucking = null;
+        }
         scanner.style.opacity = '0';
         scanner.style.pointerEvents = 'none';
         ticker.style.opacity = '0';
@@ -24776,6 +24789,27 @@ window.initGammaBomb = function() {
 
     /* ── FASE 2: Crime scanner override (t=16s) ── */
     _phase2Timer = setTimeout(function() {
+        /* ── DOMINATOR AUDIO: init + ducking ── */
+        var _domAudio = new Audio('sounds/dominator.mp3');
+        _domAudio.volume = 0;
+        _domAudio.preload = 'auto';
+        window._dominatorAudio = _domAudio;
+
+        var _prevTangoMuted = false;
+        var _prevFreeplayMuted = false;
+        var _tangoEl = document.getElementById('tango-audio');
+        var _freeplayEl = document.getElementById('freeplay-audio');
+        if (_tangoEl && !_tangoEl.paused) { _prevTangoMuted = _tangoEl.muted; _tangoEl.muted = true; }
+        if (_freeplayEl && !_freeplayEl.paused) { _prevFreeplayMuted = _freeplayEl.muted; _freeplayEl.muted = true; }
+        /* Expose ducking state for skipAll() which lives in outer scope */
+        window._domDucking = { prevTango: _prevTangoMuted, prevFreeplay: _prevFreeplayMuted, tangoEl: _tangoEl, freeplayEl: _freeplayEl };
+
+        _domAudio.play().then(function() {
+            _domAudio.volume = 0.3;
+        }).catch(function() {
+            /* Autoplay blocked — user hasn't interacted yet. Audio won't play. */
+        });
+
         if (_aborted) return;
         scanner.classList.add('active');
         scanner.setAttribute('aria-hidden', 'false');
@@ -24817,10 +24851,22 @@ window.initGammaBomb = function() {
                 var execEl = document.getElementById('crime-execution-label');
                 if (execEl) { execEl.textContent = 'EXECUTION'; execEl.classList.add('critical'); }
                 updateLed(300, true);
+                /* ── DOMINATOR AUDIO: critical peak ── */
+                if (_domAudio && !_domAudio.paused) {
+                    var isMobileCrit = window.innerWidth < 768;
+                    _domAudio.volume = isMobileCrit ? 0.7 : 0.95;
+                }
                 clearInterval(_scanInterval);
                 _scanInterval = null;
             } else {
                 updateLed(current, false);
+                /* ── DOMINATOR AUDIO: volume ramp ── */
+                if (_domAudio && !_domAudio.paused) {
+                    var isMobile = window.innerWidth < 768;
+                    var maxVol = isMobile ? 0.7 : 0.85;
+                    var rampVol = 0.3 + (current / TARGET) * (maxVol - 0.3);
+                    _domAudio.volume = Math.min(rampVol, maxVol);
+                }
             }
         }, TICK);
 
@@ -24828,6 +24874,28 @@ window.initGammaBomb = function() {
         _phase3Timer = setTimeout(function() {
             if (_aborted) return;
             clearInterval(_scanInterval);
+            /* ── DOMINATOR AUDIO: fade-out + restore ducking ── */
+            if (_domAudio && !_domAudio.paused) {
+                var fadeStart = _domAudio.volume;
+                var fadeStep = fadeStart / 12; // 12 steps over ~600ms (50ms each)
+                var fadeInterval = setInterval(function() {
+                    if (_domAudio.volume > fadeStep) {
+                        _domAudio.volume -= fadeStep;
+                    } else {
+                        _domAudio.volume = 0;
+                        _domAudio.pause();
+                        _domAudio.currentTime = 0;
+                        clearInterval(fadeInterval);
+                    }
+                }, 50);
+            }
+            /* Restore ducked audio after fade completes */
+            var ds = window._domDucking || {};
+            setTimeout(function() {
+                if (ds.tangoEl) ds.tangoEl.muted = ds.prevTango;
+                if (ds.freeplayEl) ds.freeplayEl.muted = ds.prevFreeplay;
+                window._domDucking = null;
+            }, 700);
             scanner.classList.remove('active');
             scanner.classList.add('disintegrating');
 
