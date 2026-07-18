@@ -1803,6 +1803,7 @@ footer::before {
   border-bottom: 2px solid var(--econ-cyan);
   position: relative;
   overflow: hidden;
+  padding: 0 0 100px;
 }
 .econ-bg-grid {
   position: absolute; inset: 0; pointer-events: none; z-index: 0;
@@ -1850,7 +1851,7 @@ footer::before {
 .econ-nodes-grid {
   display: grid; grid-template-columns: 1fr; gap: 26px;
   padding: 0 22px; position: relative; z-index: 2;
-  max-width: 1240px; margin: 0 auto 40px;
+  max-width: 1240px; margin: 20px auto 40px;
   overflow: hidden;
 }
 @media(min-width:900px){ .econ-nodes-grid{grid-template-columns:repeat(3,1fr);} }
@@ -2032,7 +2033,7 @@ footer::before {
 .econ-mc-inner {
   background: rgba(0, 8, 12, 0.9); backdrop-filter: blur(12px);
   clip-path: polygon(13px 0, 100% 0, 100% calc(100% - 13px), calc(100% - 13px) 100%, 0 100%, 0 13px);
-  padding: 24px 30px; text-align: center;
+  padding: 36px 40px; text-align: center;
 }
 .econ-mc-header {
   font-family: 'Orbitron', monospace; font-weight: 700; font-size: 14px;
@@ -2046,9 +2047,9 @@ footer::before {
 }
 .econ-mc-status .online { color: #00FF41; text-shadow: 0 0 6px #00FF41; }
 .econ-mc-cta {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: 'Orbitron', monospace; font-weight: 700; font-size: 13px;
-  letter-spacing: 2px; padding: 14px 32px; cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: 'Orbitron', monospace; font-weight: 700; font-size: 15px;
+  letter-spacing: 3px; padding: 18px 40px; cursor: pointer; text-decoration: none;
   background: oklch(0.65 0.32 35 / 0.12); border: 1.5px solid var(--econ-orange);
   color: var(--econ-orange); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   filter: drop-shadow(0 0 10px oklch(0.65 0.32 35 / 0.5));
@@ -2061,6 +2062,36 @@ footer::before {
 }
 .econ-mc-cta .arrow { animation: econArrowPulse 1.4s ease-in-out infinite; }
 @keyframes econArrowPulse { 0%,100%{transform:translateX(0)} 50%{transform:translateX(4px)} }
+
+/* ═══ HOLOGRAPHIC PARTICLES — Mission Control ═══ */
+.econ-mc-particles {
+  position: absolute; inset: 0;
+  pointer-events: none; overflow: hidden; z-index: 0;
+}
+.econ-mc-p {
+  position: absolute; opacity: 0;
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+.econ-mc-p--circle { border-radius: 50%; }
+.econ-mc-p--diamond { border-radius: 2px; transform: rotate(45deg); }
+.econ-mc-p--spark { border-radius: 1px; height: 1px !important; }
+@keyframes mcParticleFloat {
+  0%   { transform: translateY(100%) translateX(0) scale(var(--bp-scale,1)); opacity: 0; }
+  8%   { opacity: var(--bp-opacity,0.6); }
+  50%  { transform: translateY(40%) translateX(var(--bp-drift,15px)) scale(calc(var(--bp-scale,1) * 1.2)); }
+  92%  { opacity: var(--bp-opacity,0.6); }
+  100% { transform: translateY(-10%) translateX(0) scale(var(--bp-scale,1)); opacity: 0; }
+}
+@keyframes mcParticlePulse {
+  0%, 100% { filter: drop-shadow(0 0 var(--bp-glow,6px) #fff); opacity: var(--bp-opacity,0.6); }
+  50%      { filter: drop-shadow(0 0 calc(var(--bp-glow,6px) * 3) #fff) drop-shadow(0 0 calc(var(--bp-glow,6px) * 6) rgba(0,255,204,0.4)); opacity: calc(var(--bp-opacity,0.6) + 0.3); }
+}
+@keyframes mcParticleBlink {
+  0%, 90%, 100% { opacity: var(--bp-opacity,0.6); }
+  93% { opacity: 0; }
+  96% { opacity: var(--bp-opacity,0.6); }
+}
 
 /* ── Mobile fix: #beta-start-screen overflow horizontal ── */
 @media (max-width: 768px) {

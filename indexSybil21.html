@@ -7309,6 +7309,7 @@ body.bt-node-focus { overflow: hidden; }
 
 <!-- Mission Control -->
 <div class="econ-mission-control">
+  <div class="econ-mc-particles" id="econ-mc-particles"></div>
   <div class="econ-mc-inner">
     <div class="econ-mc-header">MISSION CONTROL</div>
     <div class="econ-mc-status">STATUS: <span class="online">OPERATIONAL</span> // REWARD: $RPPI</div>
@@ -7342,6 +7343,43 @@ body.bt-node-focus { overflow: hidden; }
             }
         });
     }
+
+    /* ── Holographic Particles for Mission Control ── */
+    function econSpawnParticles() {
+        var container = document.getElementById('econ-mc-particles');
+        if (!container) return;
+        var shapes = ['circle','circle','circle','diamond','spark'];
+        for (var i = 0; i < 20; i++) {
+            var pt = document.createElement('div');
+            var shape = shapes[Math.floor(Math.random() * shapes.length)];
+            var w = 3 + Math.random() * 8;
+            var h = 3 + Math.random() * 8;
+            var glow = 4 + Math.random() * 12;
+            var opacity = 0.3 + Math.random() * 0.5;
+            var dur = 4 + Math.random() * 8;
+            var del = Math.random() * 10;
+            var drift = -30 + Math.random() * 60;
+            var scale = 0.7 + Math.random() * 1;
+            var anims = ['mcParticleFloat','mcParticlePulse','mcParticleBlink'];
+            var anim = anims[Math.floor(Math.random() * anims.length)];
+
+            pt.className = 'econ-mc-p econ-mc-p--' + shape;
+            pt.style.cssText = [
+                'width:'+w.toFixed(1)+'px',
+                'height:'+h.toFixed(1)+'px',
+                'left:'+(1 + Math.random() * 98).toFixed(1)+'%',
+                'background:#fff',
+                'box-shadow:0 0 '+glow.toFixed(0)+'px rgba(255,255,255,0.9), 0 0 '+(glow*2.5).toFixed(0)+'px rgba(255,255,255,0.4), 0 0 '+(glow*4).toFixed(0)+'px rgba(0,255,204,0.2)',
+                '--bp-scale:'+scale.toFixed(2),
+                '--bp-opacity:'+opacity.toFixed(2),
+                '--bp-drift:'+drift.toFixed(0)+'px',
+                '--bp-glow:'+glow.toFixed(0)+'px',
+                'animation:'+anim+' '+dur.toFixed(1)+'s linear '+del.toFixed(1)+'s infinite'
+            ].join(';');
+            container.appendChild(pt);
+        }
+    }
+    econSpawnParticles();
 
     /* ── Node Reveal on Scroll ── */
     var econSection = document.getElementById('economy');
