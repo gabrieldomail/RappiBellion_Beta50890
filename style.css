@@ -1928,7 +1928,7 @@ footer::before {
 
 /* Node data float */
 .econ-node-data {
-  position: absolute; top: 12px; right: 16px;
+  display: block; text-align: right; margin-bottom: 12px;
   font-family: 'Orbitron', monospace; font-weight: 700; font-size: 13px;
   letter-spacing: 1px; padding: 4px 10px; border-radius: 2px;
   background: oklch(0.76 0.29 140 / 0.1); border: 1px solid oklch(0.76 0.29 140 / 0.3);
