@@ -1788,6 +1788,216 @@ footer::before {
     }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   THE INTELLIGENCE MATRIX — Economy Section Restyling
+   Military Intel Terminal · SB CARTEL · 2026-07-19
+═══════════════════════════════════════════════════════════ */
+#economy {
+  --econ-cyan: oklch(0.76 0.29 140);
+  --econ-orange: oklch(0.65 0.32 35);
+  --econ-purple: #BF00FF;
+  --econ-void: oklch(8% 0.012 160);
+  --econ-panel: oklch(11% 0.015 160);
+  background: var(--econ-void);
+  border-top: 2px solid var(--econ-orange);
+  border-bottom: 2px solid var(--econ-cyan);
+  position: relative;
+  overflow: hidden;
+}
+.econ-bg-grid {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    repeating-linear-gradient(0deg, oklch(0.76 0.29 140 / 0.02) 0px, oklch(0.76 0.29 140 / 0.02) 1px, transparent 1px, transparent 40px),
+    repeating-linear-gradient(90deg, oklch(0.65 0.32 35 / 0.02) 0px, oklch(0.65 0.32 35 / 0.02) 1px, transparent 1px, transparent 40px);
+}
+.econ-scan-beam {
+  position: absolute; left: 0; width: 100%; height: 2px; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, transparent, oklch(0.76 0.29 140 / 0.4), transparent);
+  animation: econScanMove 9s linear infinite;
+}
+@keyframes econScanMove { 0%{top:-6%} 100%{top:106%} }
+
+/* ── Header ── */
+.econ-header { position: relative; z-index: 2; text-align: center; padding: 36px 20px 28px; }
+.econ-eyebrow {
+  font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 4px;
+  color: var(--econ-cyan); text-transform: uppercase; margin-bottom: 10px;
+  text-shadow: 0 0 8px oklch(0.76 0.29 140 / 0.5);
+}
+.econ-eyebrow .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--econ-orange); box-shadow: 0 0 6px var(--econ-orange);
+  margin-right: 8px; animation: econDotFlash 1.2s step-end infinite;
+}
+@keyframes econDotFlash { 0%,100%{opacity:1} 50%{opacity:0.2} }
+.econ-title {
+  font-family: 'Orbitron', monospace; font-weight: 900;
+  font-size: clamp(28px, 5vw, 48px); letter-spacing: 0.04em;
+  margin: 0; line-height: 1.05;
+  background: linear-gradient(90deg, var(--econ-orange) 0%, #fff 35%, var(--econ-cyan) 70%, var(--econ-orange) 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  animation: econTitleShift 6s linear infinite;
+  filter: drop-shadow(0 0 20px oklch(0.65 0.32 35 / 0.35)) drop-shadow(0 0 20px oklch(0.76 0.29 140 / 0.25));
+}
+@keyframes econTitleShift { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
+.econ-subtitle {
+  font-family: 'Share Tech Mono', monospace; font-size: clamp(12px, 1.5vw, 16px);
+  letter-spacing: 0.2em; color: rgba(255,255,255,0.5); margin-top: 12px;
+}
+
+/* ── Node Grid ── */
+.econ-nodes-grid {
+  display: grid; grid-template-columns: 1fr; gap: 26px;
+  padding: 0 22px; position: relative; z-index: 2;
+  max-width: 1240px; margin: 0 auto 40px;
+}
+@media(min-width:900px){ .econ-nodes-grid{grid-template-columns:repeat(3,1fr);} }
+
+/* ── Node Card ── */
+.econ-node {
+  background: oklch(11% 0.015 160 / 0.85);
+  backdrop-filter: blur(10px) saturate(1.3);
+  border: 1px solid oklch(0.76 0.29 140 / 0.3);
+  border-top: 2px solid oklch(0.76 0.29 140 / 0.7);
+  clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+  position: relative; overflow: hidden;
+  animation: econNodeGlow 5s ease-in-out infinite;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.econ-node.revealed { opacity: 1; transform: translateY(0); }
+@keyframes econNodeGlow {
+  0%,100%{ box-shadow:0 0 14px oklch(0.76 0.29 140/0.15), inset 0 0 20px oklch(0.76 0.29 140/0.04); }
+  50%    { box-shadow:0 0 25px oklch(0.76 0.29 140/0.3), inset 0 0 25px oklch(0.76 0.29 140/0.08); }
+}
+
+/* Node color variants */
+.econ-node--orange {
+  border-color: oklch(0.65 0.32 35 / 0.35);
+  border-top-color: oklch(0.65 0.32 35 / 0.8);
+  animation-name: econNodeGlowOrange;
+}
+@keyframes econNodeGlowOrange {
+  0%,100%{ box-shadow:0 0 14px oklch(0.65 0.32 35/0.18), inset 0 0 20px oklch(0.65 0.32 35/0.05); }
+  50%    { box-shadow:0 0 25px oklch(0.65 0.32 35/0.35), inset 0 0 25px oklch(0.65 0.32 35/0.1); }
+}
+.econ-node--purple {
+  border-color: rgba(191,0,255,0.35);
+  border-top-color: rgba(191,0,255,0.8);
+  animation-name: econNodeGlowPurple;
+}
+@keyframes econNodeGlowPurple {
+  0%,100%{ box-shadow:0 0 14px rgba(191,0,255,0.18), inset 0 0 20px rgba(191,0,255,0.05); }
+  50%    { box-shadow:0 0 25px rgba(191,0,255,0.35), inset 0 0 25px rgba(191,0,255,0.1); }
+}
+
+/* Node header */
+.econ-node-header {
+  display: flex; align-items: center; justify-content: center; padding: 12px 16px;
+  border-bottom: 1px solid oklch(0.76 0.29 140 / 0.2);
+  background: oklch(0.76 0.29 140 / 0.05);
+}
+.econ-node--orange .econ-node-header { border-bottom-color: oklch(0.65 0.32 35/0.2); background: oklch(0.65 0.32 35/0.05); }
+.econ-node--purple .econ-node-header { border-bottom-color: rgba(191,0,255,0.2); background: rgba(191,0,255,0.05); }
+.econ-node-id {
+  font-family: 'Orbitron', monospace; font-weight: 700; font-size: 14px;
+  letter-spacing: 3px; color: oklch(0.76 0.29 140/0.6);
+}
+.econ-node--orange .econ-node-id { color: oklch(0.65 0.32 35/0.7); }
+.econ-node--purple .econ-node-id { color: rgba(191,0,255,0.7); }
+.econ-node-title {
+  font-family: 'Share Tech Mono', monospace; font-size: 16px;
+  letter-spacing: 2px; color: #fff;
+  text-shadow: 0 0 6px oklch(0.76 0.29 140/0.5);
+}
+.econ-node-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--econ-cyan); box-shadow: 0 0 6px var(--econ-cyan);
+  animation: econDotFlash 1.8s ease-in-out infinite;
+}
+.econ-node--orange .econ-node-dot { background: var(--econ-orange); box-shadow: 0 0 6px var(--econ-orange); }
+.econ-node--purple .econ-node-dot { background: var(--econ-purple); box-shadow: 0 0 6px var(--econ-purple); }
+
+/* Node body */
+.econ-node-body { padding: 20px; }
+.econ-node-desc {
+  font-family: 'Share Tech Mono', monospace; font-size: 14px;
+  line-height: 1.7; color: rgba(255,255,255,0.6);
+}
+
+/* Node data float */
+.econ-node-data {
+  position: absolute; top: 12px; right: 16px;
+  font-family: 'Orbitron', monospace; font-weight: 700; font-size: 13px;
+  letter-spacing: 1px; padding: 4px 10px; border-radius: 2px;
+  background: oklch(0.76 0.29 140 / 0.1); border: 1px solid oklch(0.76 0.29 140 / 0.3);
+  color: var(--econ-cyan); text-shadow: 0 0 8px oklch(0.76 0.29 140 / 0.5);
+  animation: econDataFloat 4s ease-in-out infinite;
+}
+.econ-node--orange .econ-node-data {
+  background: oklch(0.65 0.32 35 / 0.1); border-color: oklch(0.65 0.32 35 / 0.3);
+  color: var(--econ-orange); text-shadow: 0 0 8px oklch(0.65 0.32 35 / 0.5);
+}
+.econ-node--purple .econ-node-data {
+  background: rgba(191,0,255,0.1); border-color: rgba(191,0,255,0.3);
+  color: var(--econ-purple); text-shadow: 0 0 8px rgba(191,0,255,0.5);
+}
+@keyframes econDataFloat {
+  0%,100%{ opacity:0.8; transform:translateY(0); }
+  50%{ opacity:1; transform:translateY(-3px); }
+}
+
+/* Node LED bar */
+.econ-node-bar {
+  height: 6px; background: rgba(255,255,255,0.06); border-radius: 2px;
+  overflow: hidden; display: flex; gap: 1px; margin: 0 20px 20px;
+}
+.econ-bar-block {
+  flex: 1; border-radius: 1px; background: rgba(255,255,255,0.06);
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.econ-bar-block.lit { box-shadow: 0 0 4px currentColor; }
+
+/* ── Mission Control ── */
+.econ-mission-control {
+  position: relative; z-index: 2; max-width: 800px; margin: 0 auto;
+  padding: 2px; background: linear-gradient(135deg, var(--econ-cyan) 0%, var(--econ-orange) 100%);
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+}
+.econ-mc-inner {
+  background: rgba(0, 8, 12, 0.9); backdrop-filter: blur(12px);
+  clip-path: polygon(13px 0, 100% 0, 100% calc(100% - 13px), calc(100% - 13px) 100%, 0 100%, 0 13px);
+  padding: 24px 30px; text-align: center;
+}
+.econ-mc-header {
+  font-family: 'Orbitron', monospace; font-weight: 700; font-size: 14px;
+  letter-spacing: 3px; color: var(--econ-cyan);
+  text-shadow: 0 0 10px oklch(0.76 0.29 140 / 0.5);
+  margin-bottom: 8px;
+}
+.econ-mc-status {
+  font-family: 'Share Tech Mono', monospace; font-size: 11px;
+  letter-spacing: 2px; color: rgba(255,255,255,0.4); margin-bottom: 16px;
+}
+.econ-mc-status .online { color: #00FF41; text-shadow: 0 0 6px #00FF41; }
+.econ-mc-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Orbitron', monospace; font-weight: 700; font-size: 13px;
+  letter-spacing: 2px; padding: 14px 32px; cursor: pointer; text-decoration: none;
+  background: oklch(0.65 0.32 35 / 0.12); border: 1.5px solid var(--econ-orange);
+  color: var(--econ-orange); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  filter: drop-shadow(0 0 10px oklch(0.65 0.32 35 / 0.5));
+  transition: all 0.2s ease;
+}
+.econ-mc-cta:hover {
+  background: oklch(0.65 0.32 35 / 0.22);
+  filter: drop-shadow(0 0 20px oklch(0.65 0.32 35 / 0.8));
+  transform: translateY(-2px);
+}
+.econ-mc-cta .arrow { animation: econArrowPulse 1.4s ease-in-out infinite; }
+@keyframes econArrowPulse { 0%,100%{transform:translateX(0)} 50%{transform:translateX(4px)} }
+
 /* ── Mobile fix: #beta-start-screen overflow horizontal ── */
 @media (max-width: 768px) {
     #beta-start-screen {
@@ -2919,22 +3129,372 @@ footer::before {
 /* --- ESTILOS PARA LA NUEVA "START SCREEN" DE LA BETA --- */
 
 #beta-start-screen {
-    position: relative; /* Para controlar z-index */
-    z-index: 0; /* Neutral, hereda del padre */
-    /* Usamos la imagen RB1 (Space Invaders) como fondo */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)), url('RB1.jpg');
-    background-size: cover;
+    position: relative;
+    z-index: 0;
+    background-image: url('images/casino-retro/vegas-retro.jpg');
+    background-size: 75% 75%;
     background-position: center;
-    padding: 100px 40px; /* Mucho padding para que se vea grande */
-    border: 2px solid var(--color-caos-amarillo); /* Borde Caos */
-    box-shadow: 0 0 20px var(--color-caos-amarillo);
-    border-radius: 5px;
+    padding: 100px 40px;
     text-align: center;
-    transition: transform 0.4s ease, box-shadow 0.4s ease; /* Transición suave */
-    overflow: hidden; /* Para contener el scanline */
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
-/* Scanlines agresivas sobre la caja beta */
+/* ═══════════════════════════════════════════════════════════════
+   NEON TUBE BORDER + "TO FABULOUS" — Billy 1959 Vegas Sign
+   Técnica: OKLCH + multicapa box-shadow/text-shadow
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Borde neon amarillo dorado (tubo exterior) ── */
+#beta-start-screen::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 3px solid oklch(0.85 0.15 85);
+    border-radius: 12px;
+    pointer-events: none;
+    z-index: 5;
+    box-shadow:
+        0 0 5px oklch(0.85 0.15 85),
+        0 0 10px oklch(0.85 0.15 85),
+        0 0 20px oklch(0.85 0.15 85 / 0.8),
+        0 0 40px oklch(0.85 0.15 85 / 0.5),
+        0 0 80px oklch(0.85 0.15 85 / 0.3),
+        inset 0 0 5px oklch(0.85 0.15 85),
+        inset 0 0 10px oklch(0.85 0.15 85 / 0.5);
+    animation: neonTubeFlicker 4s ease-in-out infinite alternate;
+}
+
+/* ── Borde neon rosa/rosa (tubo interior) ── */
+#beta-start-screen::after {
+    content: '';
+    position: absolute;
+    inset: 16px;
+    border: 2px solid oklch(0.65 0.25 15);
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 5;
+    box-shadow:
+        0 0 4px oklch(0.65 0.25 15),
+        0 0 8px oklch(0.65 0.25 15),
+        0 0 16px oklch(0.65 0.25 15 / 0.7),
+        0 0 32px oklch(0.65 0.25 15 / 0.4),
+        inset 0 0 4px oklch(0.65 0.25 15),
+        inset 0 0 8px oklch(0.65 0.25 15 / 0.4);
+    animation: neonTubeFlickerPink 5s ease-in-out infinite alternate;
+}
+
+/* ── "TO FABULOUS" — Overlay tipográfico Billy 1959 ── */
+.neon-fabulous-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    pointer-events: none;
+    text-align: center;
+}
+
+.neon-fab-text {
+    font-family: 'Yellowtail', cursive;
+    font-size: clamp(36px, 7vw, 72px);
+    font-weight: 400;
+    color: oklch(0.75 0.15 195);
+    letter-spacing: 0.05em;
+    text-shadow:
+        0 0 4px oklch(0.75 0.15 195),
+        0 0 8px oklch(0.75 0.15 195),
+        0 0 16px oklch(0.75 0.15 195 / 0.9),
+        0 0 32px oklch(0.75 0.15 195 / 0.7),
+        0 0 64px oklch(0.75 0.15 195 / 0.5),
+        0 0 100px oklch(0.75 0.15 195 / 0.3);
+    animation: neonTextFlicker 6s ease-in-out infinite alternate;
+    white-space: nowrap;
+}
+
+/* ── Keyframes: parpadeo tubo amarillo ── */
+@keyframes neonTubeFlicker {
+    0%, 100% {
+        opacity: 1;
+        box-shadow:
+            0 0 5px oklch(0.85 0.15 85),
+            0 0 10px oklch(0.85 0.15 85),
+            0 0 20px oklch(0.85 0.15 85 / 0.8),
+            0 0 40px oklch(0.85 0.15 85 / 0.5),
+            0 0 80px oklch(0.85 0.15 85 / 0.3),
+            inset 0 0 5px oklch(0.85 0.15 85),
+            inset 0 0 10px oklch(0.85 0.15 85 / 0.5);
+    }
+    5% {
+        opacity: 0.85;
+        box-shadow:
+            0 0 3px oklch(0.85 0.15 85),
+            0 0 6px oklch(0.85 0.15 85),
+            0 0 12px oklch(0.85 0.15 85 / 0.6),
+            0 0 24px oklch(0.85 0.15 85 / 0.3),
+            inset 0 0 3px oklch(0.85 0.15 85);
+    }
+    10% { opacity: 1; }
+    50% { opacity: 0.95; }
+}
+
+/* ── Keyframes: parpadeo tubo rosa (fase diferente) ── */
+@keyframes neonTubeFlickerPink {
+    0%, 100% {
+        opacity: 1;
+        box-shadow:
+            0 0 4px oklch(0.65 0.25 15),
+            0 0 8px oklch(0.65 0.25 15),
+            0 0 16px oklch(0.65 0.25 15 / 0.7),
+            0 0 32px oklch(0.65 0.25 15 / 0.4),
+            inset 0 0 4px oklch(0.65 0.25 15),
+            inset 0 0 8px oklch(0.65 0.25 15 / 0.4);
+    }
+    8% {
+        opacity: 0.8;
+        box-shadow:
+            0 0 2px oklch(0.65 0.25 15),
+            0 0 4px oklch(0.65 0.25 15),
+            0 0 8px oklch(0.65 0.25 15 / 0.5),
+            inset 0 0 2px oklch(0.65 0.25 15);
+    }
+    12% { opacity: 1; }
+    60% { opacity: 0.92; }
+}
+
+/* ── Keyframes: parpadeo texto cyan (fase diferente) ── */
+@keyframes neonTextFlicker {
+    0%, 100% {
+        opacity: 1;
+        text-shadow:
+            0 0 4px oklch(0.75 0.15 195),
+            0 0 8px oklch(0.75 0.15 195),
+            0 0 16px oklch(0.75 0.15 195 / 0.9),
+            0 0 32px oklch(0.75 0.15 195 / 0.7),
+            0 0 64px oklch(0.75 0.15 195 / 0.5),
+            0 0 100px oklch(0.75 0.15 195 / 0.3);
+    }
+    4% {
+        opacity: 0.7;
+        text-shadow:
+            0 0 2px oklch(0.75 0.15 195),
+            0 0 4px oklch(0.75 0.15 195),
+            0 0 8px oklch(0.75 0.15 195 / 0.6);
+    }
+    6% { opacity: 1; }
+    42% { opacity: 0.95; }
+    44% {
+        opacity: 0.75;
+        text-shadow:
+            0 0 3px oklch(0.75 0.15 195),
+            0 0 6px oklch(0.75 0.15 195),
+            0 0 12px oklch(0.75 0.15 195 / 0.7);
+    }
+    46% { opacity: 1; }
+}
+
+/* ── HOVER — Intensificación neon ── */
+#beta-start-screen:hover {
+    transform: scale(1.01);
+}
+#beta-start-screen:hover::before {
+    box-shadow:
+        0 0 8px oklch(0.85 0.15 85),
+        0 0 16px oklch(0.85 0.15 85),
+        0 0 32px oklch(0.85 0.15 85 / 0.9),
+        0 0 64px oklch(0.85 0.15 85 / 0.6),
+        0 0 100px oklch(0.85 0.15 85 / 0.4),
+        inset 0 0 8px oklch(0.85 0.15 85),
+        inset 0 0 16px oklch(0.85 0.15 85 / 0.6);
+    transition: box-shadow 0.3s ease;
+}
+#beta-start-screen:hover::after {
+    box-shadow:
+        0 0 6px oklch(0.65 0.25 15),
+        0 0 12px oklch(0.65 0.25 15),
+        0 0 24px oklch(0.65 0.25 15 / 0.8),
+        0 0 48px oklch(0.65 0.25 15 / 0.5),
+        inset 0 0 6px oklch(0.65 0.25 15),
+        inset 0 0 12px oklch(0.65 0.25 15 / 0.5);
+    transition: box-shadow 0.3s ease;
+}
+#beta-start-screen:hover .neon-fab-text {
+    text-shadow:
+        0 0 6px oklch(0.75 0.15 195),
+        0 0 12px oklch(0.75 0.15 195),
+        0 0 24px oklch(0.75 0.15 195),
+        0 0 48px oklch(0.75 0.15 195 / 0.8),
+        0 0 80px oklch(0.75 0.15 195 / 0.6),
+        0 0 120px oklch(0.75 0.15 195 / 0.4);
+    transition: text-shadow 0.3s ease;
+}
+
+/* ── PROTOCOLO DE ENFRIAMIENTO MOBILE ── */
+@media (max-width: 768px) {
+    #beta-start-screen::before,
+    #beta-start-screen::after,
+    .neon-fab-text {
+        animation: none !important;
+    }
+    #beta-start-screen::before {
+        box-shadow: 0 0 8px oklch(0.85 0.15 85 / 0.4) !important;
+        border-width: 2px;
+    }
+    #beta-start-screen::after {
+        box-shadow: 0 0 6px oklch(0.65 0.25 15 / 0.3) !important;
+        border-width: 1px;
+    }
+    .neon-fab-text {
+        text-shadow: 0 0 8px oklch(0.75 0.15 195 / 0.5) !important;
+        font-size: clamp(24px, 6vw, 48px);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SIGNAL DEGRADATION — Efecto conexión inestable
+   5 capas asincrónicas sobre la imagen de fondo
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── CAPA 1: Ruido estático (noise) — parpadeo rápido ── */
+.signal-noise {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+    mix-blend-mode: overlay;
+    animation: signalNoise 8s step-end infinite;
+}
+
+@keyframes signalNoise {
+    0%    { opacity: 0; }
+    2%    { opacity: 0.15; }
+    4%    { opacity: 0; }
+    30%   { opacity: 0; }
+    31%   { opacity: 0.1; }
+    32%   { opacity: 0; }
+    65%   { opacity: 0; }
+    66%   { opacity: 0.12; }
+    67%   { opacity: 0; }
+    67.5% { opacity: 0.08; }
+    68%   { opacity: 0; }
+    100%  { opacity: 0; }
+}
+
+/* ── CAPA 2: Líneas de interferencia — scroll vertical lento ── */
+.signal-interference {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 40px,
+        oklch(0.9 0.05 85 / 0.12) 40px,
+        oklch(0.9 0.05 85 / 0.12) 100px
+    );
+    background-size: 100% 140px;
+    animation: signalInterference 12s linear infinite;
+}
+
+@keyframes signalInterference {
+    0%    { opacity: 0; background-position: 0 0; }
+    10%   { opacity: 0; }
+    12%   { opacity: 0.35; }
+    14%   { opacity: 0; }
+    50%   { opacity: 0; background-position: 0 200px; }
+    52%   { opacity: 0.25; }
+    54%   { opacity: 0; }
+    80%   { opacity: 0; background-position: 0 400px; }
+    82%   { opacity: 0.3; }
+    84%   { opacity: 0; }
+    100%  { opacity: 0; background-position: 0 600px; }
+}
+
+/* ── CAPA 3+4: Blackout + Hue shift — aplicados al elemento padre ── */
+#beta-start-screen {
+    animation:
+        signalBlackout 10s step-end infinite,
+        signalHueShift 14s ease-in-out infinite;
+    filter: hue-rotate(0deg);
+}
+
+@keyframes signalHueShift {
+    0%    { filter: hue-rotate(0deg); }
+    60%   { filter: hue-rotate(0deg); }
+    62%   { filter: hue-rotate(40deg); }
+    64%   { filter: hue-rotate(-30deg); }
+    66%   { filter: hue-rotate(0deg); }
+    85%   { filter: hue-rotate(0deg); }
+    87%   { filter: hue-rotate(-25deg); }
+    89%   { filter: hue-rotate(0deg); }
+    100%  { filter: hue-rotate(0deg); }
+}
+
+@keyframes signalBlackout {
+    0%    { opacity: 1; }
+    40%   { opacity: 1; }
+    40.5% { opacity: 0; }
+    41%   { opacity: 0.6; }
+    41.5% { opacity: 0; }
+    42%   { opacity: 1; }
+    75%   { opacity: 1; }
+    75.3% { opacity: 0.2; }
+    75.6% { opacity: 1; }
+    100%  { opacity: 1; }
+}
+
+/* ── CAPA 5: Scan line sweep — línea luminosa CRT ── */
+.signal-scanline-sweep {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    z-index: 6;
+    pointer-events: none;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        oklch(0.9 0.08 85 / 0.6) 20%,
+        oklch(0.95 0.1 85 / 0.9) 50%,
+        oklch(0.9 0.08 85 / 0.6) 80%,
+        transparent 100%
+    );
+    box-shadow:
+        0 0 8px oklch(0.9 0.1 85 / 0.5),
+        0 0 20px oklch(0.9 0.1 85 / 0.3),
+        0 -1px 0 oklch(0.9 0.1 85 / 0.2),
+        0 1px 0 oklch(0.9 0.1 85 / 0.2);
+    opacity: 0;
+    animation: signalScanSweep 7s linear infinite;
+}
+
+@keyframes signalScanSweep {
+    0%    { top: -3%; opacity: 0; }
+    5%    { opacity: 0.8; }
+    50%   { opacity: 0.6; }
+    95%   { opacity: 0.8; }
+    100%  { top: 103%; opacity: 0; }
+}
+
+/* ── PROTOCOLO DE ENFRIAMIENTO MOBILE — Signal effects + Canvas LED ── */
+@media (max-width: 768px) {
+    .signal-noise,
+    .signal-interference,
+    .signal-scanline-sweep,
+    .led-conflict-canvas {
+        animation: none !important;
+        display: none !important;
+    }
+    #beta-start-screen {
+        animation: none !important;
+        filter: none !important;
+    }
+}
+
+/* Scanlines agresivas sobre la caja beta — DESHABILITADOS temporalmente
 #beta-start-screen::before {
     content: '';
     position: absolute;
@@ -2944,17 +3504,16 @@ footer::before {
     height: 100%;
     background: repeating-linear-gradient(
         0deg,
-        rgba(0, 0, 0, 0.6), /* MUCHO más oscuras - 60% opacidad */
-        rgba(0, 0, 0, 0.6) 3px, /* Líneas más gruesas */
+        rgba(0, 0, 0, 0.6),
+        rgba(0, 0, 0, 0.6) 3px,
         transparent 3px,
-        transparent 4px /* Espaciado más pequeño = más líneas */
+        transparent 4px
     );
     pointer-events: none;
-    animation: scanlineAggressive 3s linear infinite; /* MUCHO más rápido - 3s en vez de 6s */
-    z-index: 10; /* Por encima del contenido de la caja */
+    animation: scanlineAggressive 3s linear infinite;
+    z-index: 10;
 }
 
-/* Segundo layer de scanlines - diagonales para más caos */
 #beta-start-screen::after {
     content: '';
     position: absolute;
@@ -2963,24 +3522,27 @@ footer::before {
     width: 100%;
     height: 100%;
     background: repeating-linear-gradient(
-        45deg, /* Diagonal para más locura */
-        rgba(248, 255, 43, 0.1), /* Amarillo translúcido */
+        45deg,
+        rgba(248, 255, 43, 0.1),
         rgba(248, 255, 43, 0.1) 1px,
         transparent 1px,
         transparent 5px
     );
     pointer-events: none;
-    animation: scanlineAggressive 2s linear infinite reverse; /* Dirección opuesta */
-    z-index: 11; /* Encima del primer scanline */
+    animation: scanlineAggressive 2s linear infinite reverse;
+    z-index: 11;
 }
+*/
 
+/* #beta-start-screen:hover — DESHABILITADO temporalmente
 #beta-start-screen:hover {
-    transform: scale(1.03); /* Agrandamiento del 3% */
-    box-shadow: 
+    transform: scale(1.03);
+    box-shadow:
         0 0 30px var(--color-caos-amarillo),
         0 0 50px var(--color-caos-amarillo),
-        0 10px 40px rgba(248, 255, 43, 0.3); /* Sombra más intensa */
+        0 10px 40px rgba(248, 255, 43, 0.3);
 }
+*/
 
 #beta-start-screen h2 {
     position: relative;
@@ -7780,6 +8342,7 @@ footer::before {
 
 .terminal-toggle-btn {
     width: 100%;
+    margin-top: 144px;
     background: #050a0f;
     border: 1px solid var(--color-primario);
     color: var(--color-primario);
@@ -8444,6 +9007,106 @@ footer::before {
     /* Si ya tenés estilos para esto en otro lado, podés ignorar esta regla */
     position: relative;
     z-index: 1;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   MOTOR HOLOGRÁFICO OKLCH — OPERACIÓN IRIDISCENCIA
+   Revestimiento prismático de la cabina de la Arena 3D
+   Erradicación total del RGB / Capas de refracción cristalina
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Cabina de contención 3D — cámara de perspectiva */
+.eva-terminal-chamber {
+    perspective: 1200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+}
+
+/* Panel holográfico flotante — transform-style 3D + clip angular */
+.cyber-tilt-panel {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out;
+    border: 2px solid oklch(0.65 0.25 25 / 0.8);
+    box-shadow:
+        0 0 30px oklch(0.5 0.2 25 / 0.3),
+        inset 0 0 15px oklch(0.5 0.2 25 / 0.4);
+    background: transparent;
+    overflow: hidden;
+    clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+}
+
+/* OKLCH Iridiscence — capa holográfica prismática (Brillo Direccional + Refracción) */
+.cyber-tilt-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            in oklch,
+            oklch(0.65 0.18 0 / 0.06),
+            oklch(0.7 0.2 90 / 0.08),
+            oklch(0.65 0.18 180 / 0.06),
+            oklch(0.7 0.2 270 / 0.08),
+            oklch(0.65 0.18 360 / 0.06)
+        ),
+        conic-gradient(
+            in oklch,
+            oklch(0.7 0.15 0 / 0.04),
+            oklch(0.7 0.15 120 / 0.06),
+            oklch(0.7 0.15 240 / 0.04),
+            oklch(0.7 0.15 360 / 0.06)
+        );
+    background-size: 200% 200%, 150% 150%;
+    animation: holoIridiscence 8s ease-in-out infinite alternate;
+    mix-blend-mode: color-dodge;
+    opacity: 0.7;
+}
+
+/* Motor de animación — shimmer elástico del fondo holográfico */
+@keyframes holoIridiscence {
+    0%   { background-position: 0% 0%, 50% 50%; }
+    50%  { background-position: 100% 50%, 0% 100%; }
+    100% { background-position: 50% 100%, 100% 0%; }
+}
+
+/* Esquina cortada inferior derecha — firma angular cyberpunk */
+.cyber-tilt-panel::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 14px; height: 14px;
+    background: oklch(0.65 0.25 25 / 0.45);
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    z-index: 20;
+    pointer-events: none;
+}
+
+/* Iframe del juego dentro del panel */
+.cyber-tilt-panel .game-iframe,
+.cyber-tilt-panel #fp-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+/* Modo peligro — alerta roja sobre el panel holográfico */
+.cyber-tilt-panel.danger-mode {
+    animation: holoRedAlert 1.2s infinite alternate !important;
+}
+@keyframes holoRedAlert {
+    from { border-color: oklch(0.55 0.25 25 / 0.6); box-shadow: 0 0 20px oklch(0.5 0.25 25 / 0.3), inset 0 0 15px oklch(0.5 0.25 25 / 0.2); }
+    to   { border-color: oklch(0.55 0.3 25 / 1); box-shadow: 0 0 60px oklch(0.5 0.3 25 / 0.8), inset 0 0 40px oklch(0.5 0.3 25 / 0.6); }
 }
 
 /* ══════════════════════════════════════════════════════════════════
