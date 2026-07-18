@@ -26120,6 +26120,8 @@ function rppiDoRewardsBurn() {
     overflow: hidden;
     user-select: none;
 }
+/* Protocolo de escape: margen de seguridad para que la terminal no muerda contenido en mobile */
+body { padding-bottom: 140px; }
 /* Corte diagonal inferior-derecho que complementa el clip-path */
 .omega-sybil-terminal::after {
     content: '';
