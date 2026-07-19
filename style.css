@@ -2024,52 +2024,66 @@ footer::before {
 }
 .econ-bar-block.lit { box-shadow: 0 0 4px currentColor; }
 
-/* ── Mission Control ── */
-.econ-mission-control {
-  position: relative; z-index: 2; max-width: 800px; margin: 40px auto 0;
-  padding: 2px; background: linear-gradient(135deg, var(--econ-cyan) 0%, var(--econ-orange) 100%);
-  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
-  min-height: 200px;
+/* ═══ MISSION CONTROL v2 — Clean Terminal Style ═══ */
+.econ-mc-wrap {
+  position: relative; z-index: 5; max-width: 700px; margin: 50px auto 0;
+  padding: 3px;
+  background: linear-gradient(135deg, var(--econ-cyan), var(--econ-orange));
 }
-.econ-mc-inner {
-  background: none;
-  clip-path: polygon(13px 0, 100% 0, 100% calc(100% - 13px), calc(100% - 13px) 100%, 0 100%, 0 13px);
-  padding: 50px 40px 60px; text-align: center;
-  position: relative; z-index: 2;
+.econ-mc-box {
+  background: rgba(0, 4, 8, 0.92);
+  padding: 40px 36px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
 }
-.econ-mc-header {
-  font-family: 'Orbitron', monospace; font-weight: 700; font-size: 14px;
-  letter-spacing: 3px; color: var(--econ-cyan);
-  text-shadow: 0 0 10px oklch(0.76 0.29 140 / 0.5);
-  margin-bottom: 8px;
-  position: relative; z-index: 3;
+/* Scanline overlay */
+.econ-mc-box::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px, transparent 3px,
+    rgba(0, 255, 255, 0.02) 3px, rgba(0, 255, 255, 0.02) 4px
+  );
+  pointer-events: none;
 }
-.econ-mc-status {
+.econ-mc-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; letter-spacing: 5px; color: var(--econ-cyan);
+  text-transform: uppercase; margin-bottom: 12px;
+  text-shadow: 0 0 8px oklch(0.76 0.29 140 / 0.4);
+}
+.econ-mc-title {
+  font-family: 'Orbitron', monospace; font-weight: 900;
+  font-size: clamp(18px, 3vw, 28px); letter-spacing: 3px;
+  color: #fff; margin: 0 0 8px;
+  text-shadow: 0 0 20px var(--econ-cyan), 0 0 40px oklch(0.76 0.29 140 / 0.3);
+}
+.econ-mc-line {
   font-family: 'Share Tech Mono', monospace; font-size: 11px;
-  letter-spacing: 2px; color: rgba(255,255,255,0.4); margin-bottom: 16px;
-  position: relative; z-index: 3;
+  letter-spacing: 2px; color: rgba(255,255,255,0.35);
+  margin-bottom: 24px;
 }
-.econ-mc-status .online { color: #00FF41; text-shadow: 0 0 6px #00FF41; }
-.econ-mc-cta {
+.econ-mc-line .on { color: #00FF41; text-shadow: 0 0 6px #00FF41; }
+.econ-mc-btn {
   display: inline-flex; align-items: center; gap: 10px;
-  font-family: 'Orbitron', monospace; font-weight: 700; font-size: 15px;
-  letter-spacing: 3px; padding: 18px 40px; cursor: pointer; text-decoration: none;
-  background: oklch(0.65 0.32 35 / 0.12); border: 1.5px solid var(--econ-orange);
-  color: var(--econ-orange); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-  filter: drop-shadow(0 0 10px oklch(0.65 0.32 35 / 0.5));
-  transition: all 0.2s ease;
-  position: relative; z-index: 3;
+  font-family: 'Orbitron', monospace; font-weight: 700; font-size: 14px;
+  letter-spacing: 3px; padding: 16px 36px;
+  background: transparent; border: 1.5px solid var(--econ-orange);
+  color: var(--econ-orange); text-decoration: none; cursor: pointer;
+  position: relative; z-index: 1;
+  transition: all 0.25s ease;
 }
-.econ-mc-cta:hover {
-  background: oklch(0.65 0.32 35 / 0.22);
-  filter: drop-shadow(0 0 20px oklch(0.65 0.32 35 / 0.8));
+.econ-mc-btn:hover {
+  background: oklch(0.65 0.32 35 / 0.15);
+  box-shadow: 0 0 20px oklch(0.65 0.32 35 / 0.4), inset 0 0 20px oklch(0.65 0.32 35 / 0.08);
   transform: translateY(-2px);
 }
-.econ-mc-cta .arrow { animation: econArrowPulse 1.4s ease-in-out infinite; }
-@keyframes econArrowPulse { 0%,100%{transform:translateX(0)} 50%{transform:translateX(4px)} }
+.econ-mc-btn .arr { animation: mcBtnPulse 1.4s ease-in-out infinite; }
+@keyframes mcBtnPulse { 0%,100%{transform:translateX(0)} 50%{transform:translateX(4px)} }
 
-/* ═══ HOLOGRAPHIC PARTICLES — Mission Control ═══ */
-.econ-mc-particles {
+/* Node header */
   position: absolute; inset: 0;
   pointer-events: none; overflow: hidden; z-index: 1;
 }
