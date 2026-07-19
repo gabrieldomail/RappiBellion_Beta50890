@@ -1803,7 +1803,7 @@ footer::before {
   border-bottom: 2px solid var(--econ-cyan);
   position: relative;
   overflow: visible;
-  padding: 0 0 120px;
+  padding: 0 0 150px;
 }
 .econ-bg-grid {
   position: absolute; inset: 0; pointer-events: none; z-index: 0;
@@ -2029,11 +2029,12 @@ footer::before {
   position: relative; z-index: 2; max-width: 800px; margin: 40px auto 0;
   padding: 2px; background: linear-gradient(135deg, var(--econ-cyan) 0%, var(--econ-orange) 100%);
   clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  min-height: 200px;
 }
 .econ-mc-inner {
   background: none;
   clip-path: polygon(13px 0, 100% 0, 100% calc(100% - 13px), calc(100% - 13px) 100%, 0 100%, 0 13px);
-  padding: 40px; text-align: center;
+  padding: 50px 40px 60px; text-align: center;
   position: relative; z-index: 2;
 }
 .econ-mc-header {
