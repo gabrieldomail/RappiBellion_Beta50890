@@ -417,9 +417,8 @@
     pointer-events: auto; /* Permite interactuar con los elementos del HUD */
     width: 290px;
     height: calc(100vh - 40px);
-    background: rgba(10, 18, 28, 0.65);
-    backdrop-filter: blur(4px) saturate(130%);
-    -webkit-backdrop-filter: blur(4px) saturate(130%);
+    background: rgba(10, 22, 35, 0.28);
+    backdrop-filter: blur(12px) saturate(160%);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding: 22px;
@@ -464,14 +463,14 @@
 
 /* --- KEYFRAMES CRÍTICOS DEL MUNDO HOLOGRÁFICO --- */
 
-/* Simula fluctuaciones de energía reales en la proyección de luz (PURIFICADO — 0% RE-RASTERIZACIÓN DE GPU) */
+/* Simula fluctuaciones de energía reales en la proyección de luz */
 @keyframes holoProjectionFlicker {
     0%, 100% { opacity: 0.98; filter: brightness(1); }
     32% { opacity: 0.95; filter: brightness(0.97); }
-    33% { opacity: 0.75; filter: brightness(1.35); } 
+    33% { opacity: 0.78; filter: brightness(1.25) blur(0.3px); } /* Micro-salto de tensión */
     34% { opacity: 0.97; filter: brightness(1); }
     78% { opacity: 0.99; }
-    79% { opacity: 0.82; filter: brightness(0.9); }  
+    79% { opacity: 0.88; filter: blur(0.6px); }
     80% { opacity: 0.96; filter: none; }
 }
 
@@ -992,23 +991,17 @@
 /* ── 2) Modo Free Play — mismo lenguaje tipográfico que el panel izq. ──
    (NO tocar 'display': _fpToggleRivalPanel() lo oculta via JS al
    entrar en modo apuesta — un !important ahí rompería el toggle) ── */
-#fp-controls-freeplay {
-    gap: 0 !important;
-    --fp-tips-btn-font-size: clamp(11px, 1vw, 12px);
-}
+#fp-controls-freeplay { gap: 0 !important; }
 .fp-mode-label {
     font-size: clamp(11px, 1vw, 12px) !important;
     letter-spacing: 2.5px !important;
     color: rgba(255, 45, 120, 0.6) !important;
 }
 .fp-mode-val {
-    font-size: clamp(calc(var(--fp-tips-btn-font-size, 12px) * 1.2), 13px, 16px) !important;
-    line-height: 1.05 !important;
-    letter-spacing: 1.2px !important;
+    font-size: clamp(10px, 1.1vw, 13px) !important;
+    line-height: 1.1 !important;
+    letter-spacing: 2px !important;
     text-shadow: 0 0 12px rgba(255, 45, 120, 0.5) !important;
-    max-width: 100%;
-    overflow-wrap: anywhere;
-    white-space: nowrap;
 }
 .fp-mode-sub {
     font-size: clamp(11px, 1vw, 12px) !important;
@@ -1018,7 +1011,7 @@
 
 /* INFO DEL CIRCUITO — vidrio, no sólido */
 #fp-controls-freeplay #fp-tips-btn {
-    font-size: var(--fp-tips-btn-font-size) !important;
+    font-size: clamp(11px, 1vw, 12px) !important;
     letter-spacing: 2px !important;
     padding: clamp(8px, 1vw, 11px) !important;
     backdrop-filter: blur(8px);
@@ -1736,60 +1729,6 @@
 <!-- Contenido sobre los efectos -->
       <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0;">
 
-        <!-- WEB2.5 / WEB3.0 selector — AMPLIADO SIMÉTRICAMENTE A ANCHO COMPLETO -->
-        <div id="intro-split" style="
-            width:100%;max-width:440px;margin-bottom:8px;
-            display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
-            opacity:0;transition:opacity 0.6s ease;
-        ">
-            <button onclick="enterSite('web25')" style="
-                flex:1 1 180px;width:100%;
-                background:#000;border:2px solid #00BCFF;color:#00BCFF;
-                font-family:'Orbitron',monospace;font-weight:700;
-                font-size:clamp(11px,1.6vw,14px);letter-spacing:0.18em;
-                padding:clamp(12px,1.8vw,16px) clamp(10px,1.5vw,18px);cursor:pointer;border-radius:4px;
-                text-shadow:0 0 10px #00BCFF;
-                box-shadow:0 0 16px rgba(0,188,255,0.35);
-                transition:all 0.18s;line-height:1.5;text-align:center;
-            "
-            onmouseover="this.style.background='rgba(0,188,255,0.14)'"
-            onmouseout="this.style.background='#000'">
-                <div style="font-size:clamp(9px,1.1vw,11px);color:rgba(0,188,255,0.6);letter-spacing:0.3em;margin-bottom:3px;">WEB 2.5</div>
-                RAPPIA CRÉDITOS<br>
-                <span style="font-size:clamp(8px,0.9vw,10px);color:rgba(0,188,255,0.5);font-weight:400;letter-spacing:0.12em;">SIN BLOCKCHAIN · RPPI-C</span>
-            </button>
-            <button onclick="enterSite('web30')" style="
-                flex:1 1 180px;width:100%;
-                background:#000;border:2px solid #FF2D78;color:#FF2D78;
-                font-family:'Orbitron',monospace;font-weight:700;
-                font-size:clamp(11px,1.6vw,14px);letter-spacing:0.18em;
-                padding:clamp(12px,1.8vw,16px) clamp(10px,1.5vw,18px);cursor:pointer;border-radius:4px;
-                text-shadow:0 0 10px #FF2D78;
-                box-shadow:0 0 16px rgba(255,45,120,0.35);
-                transition:all 0.18s;line-height:1.5;text-align:center;
-            "
-            onmouseover="this.style.background='rgba(255,45,120,0.14)'"
-            onmouseout="this.style.background='#000'">
-                <div style="font-size:clamp(9px,1.1vw,11px);color:rgba(255,45,120,0.6);letter-spacing:0.3em;margin-bottom:3px;">WEB 3.0</div>
-                BLOCKCHAIN<br>
-                <span style="font-size:clamp(8px,0.9vw,10px);color:rgba(255,45,120,0.5);font-weight:400;letter-spacing:0.12em;">METAMASK · RPPI TOKEN</span>
-            </button>
-        </div>
-
-        <div style="
-            width:100%;max-width:440px;text-align:center;
-            margin-bottom:14px;
-            font-family:'Courier New',monospace;
-            font-size:clamp(9px,1.2vw,12px);
-            font-weight:700;
-            letter-spacing:3px;
-            color:#FFD700;
-            text-shadow:0 0 10px #FFD700, 0 0 20px rgba(255,215,0,0.6);
-            animation:lobbyLiveBlink 1.4s ease-in-out infinite;
-        ">
-            [ ELEGÍ TU MODO DE > INGRESO ]
-        </div>
-
         <!-- STUDIO label -->
         <div id="intro-studio" style="
             font-family:'Courier New',monospace;
@@ -1883,6 +1822,66 @@
             opacity:0;
             transition:opacity 0.6s ease;
         ">BUILD 50890 - BETA - OPTIMISM</div>
+
+        <!-- WEB2.5 / WEB3.0 selector — aparece con la TV retro -->
+        <div id="intro-split" style="
+            margin-top:18px;
+            display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+            opacity:0;transition:opacity 0.6s ease;
+        ">
+            <button onclick="enterSite('web25')" style="
+                background:#000;border:2px solid #00BCFF;color:#00BCFF;
+                font-family:'Orbitron',monospace;font-weight:700;
+                font-size:clamp(8px,1.6vw,11px);letter-spacing:0.2em;
+                padding:11px 18px;cursor:pointer;border-radius:4px;
+                text-shadow:0 0 10px #00BCFF;
+                box-shadow:0 0 14px rgba(0,188,255,0.35);
+                transition:all 0.18s;line-height:1.5;
+            "
+            onmouseover="this.style.background='rgba(0,188,255,0.12)'"
+            onmouseout="this.style.background='#000'">
+                <div style="font-size:0.75em;color:rgba(0,188,255,0.5);letter-spacing:0.3em;margin-bottom:2px;">WEB 2.5</div>
+                RAPPIA CRÉDITOS<br>
+                <span style="font-size:0.7em;color:rgba(0,188,255,0.45);font-weight:400;">SIN BLOCKCHAIN · RPPI-C</span>
+            </button>
+            <button onclick="enterSite('web30')" style="
+                background:#000;border:2px solid #FF2D78;color:#FF2D78;
+                font-family:'Orbitron',monospace;font-weight:700;
+                font-size:clamp(8px,1.6vw,11px);letter-spacing:0.2em;
+                padding:11px 18px;cursor:pointer;border-radius:4px;
+                text-shadow:0 0 10px #FF2D78;
+                box-shadow:0 0 14px rgba(255,45,120,0.35);
+                transition:all 0.18s;line-height:1.5;
+            "
+            onmouseover="this.style.background='rgba(255,45,120,0.12)'"
+            onmouseout="this.style.background='#000'">
+                <div style="font-size:0.75em;color:rgba(255,45,120,0.5);letter-spacing:0.3em;margin-bottom:2px;">WEB 3.0</div>
+                BLOCKCHAIN<br>
+                <span style="font-size:0.7em;color:rgba(255,45,120,0.45);font-weight:400;">METAMASK · RPPI TOKEN</span>
+            </button>
+        </div>
+
+        <!-- Press any key (fallback / autodismiss) -->
+        <div id="intro-press" style="
+            font-family:'Courier New',monospace;
+            font-size:clamp(9px,1vw,11px);
+            letter-spacing:4px;
+            color:#fff;
+            display:inline;
+            background:#000;
+            -webkit-box-decoration-break:clone;
+            box-decoration-break:clone;
+            padding:2px 8px;
+            line-height:2;
+            margin-top:14px;
+            opacity:0;
+            animation:introBlink 1.1s ease-in-out infinite;
+        ">-- PRESS ANY KEY --</div>
+
+        <!-- Auto countdown bar -->
+        <div style="margin-top:14px;width:160px;height:2px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;">
+            <div id="intro-bar" style="height:100%;width:100%;background:rgba(0,255,200,0.5);border-radius:2px;transition:width 5s linear;"></div>
+        </div>
       </div>
       </div>
     </div>
@@ -2076,9 +2075,11 @@
         }, 800);
     };
 
-    // [FIX] Eliminado auto-dismiss — Solo los botones WEB 2.5 / WEB 3.0 avanzan
-    // Antes: click en cualquier parte → web30, keydown → web30
-    // Ahora: solo enterSite('web25') o enterSite('web30') avanzan
+    // Click en cualquier parte de la TV (sin botón) → auto web30
+    el.addEventListener('click', function(ev){
+        if (!ev.target.closest('button')) dismiss('web30');
+    });
+    document.addEventListener('keydown', function(){ dismiss('web30'); }, {once:true});
 
     // Random pixel glitch flashes on the TV overlay
     (function runGlitch() {
@@ -2106,7 +2107,7 @@
     setTimeout(function(){ document.getElementById('intro-tagline').style.opacity='1'; },1200);
     setTimeout(function(){ document.getElementById('intro-rule').style.width='80%'; },1400);
     setTimeout(function(){ document.getElementById('intro-ver').style.opacity='1'; },1800);
-    // intro-press eliminado — solo botones avanzan
+    setTimeout(function(){ document.getElementById('intro-press').style.opacity='1'; },2200);
 
     // Typewriter for copyright
     var copyText = '\u00a9 2025 Bits Lab (Biointeligencia Artificial Technologies Lab). Todos los derechos reservados.';
@@ -2122,7 +2123,8 @@
     setTimeout(function(){
         var sp = document.getElementById('intro-split');
         if (sp) sp.style.opacity = '1';
-        // intro-press eliminado
+        var ip = document.getElementById('intro-press');
+        if (ip) ip.style.opacity = '1';
         var iv = document.getElementById('intro-ver');
         if (iv) iv.style.opacity = '1';
 
@@ -2704,7 +2706,8 @@ body.ultra-dark #ultra-dark-toggle {
         );
     background-size: 200% 200%, 150% 150%;
     animation: holoIridiscence 8s ease-in-out infinite alternate;
-    opacity: 0.18;
+    mix-blend-mode: color-dodge;
+    opacity: 0.7;
 }
 @keyframes holoIridiscence {
     0%   { background-position: 0% 0%, 50% 50%; }
@@ -2726,8 +2729,6 @@ body.ultra-dark #ultra-dark-toggle {
     height: 100%;
     border: none;
     display: block;
-    will-change: transform;
-    transform: translateZ(0);
 }
 .holo-ui-layer {
     position: absolute; top:0; left:0; width:100%; height:100%;
@@ -2738,6 +2739,24 @@ body.ultra-dark #ultra-dark-toggle {
     z-index: 5;
     font-family: 'Share Tech Mono', monospace;
 }
+.cyber-ticker-wrap {
+    width:100%; overflow:hidden;
+    background: rgba(0,0,0,0.4);
+    border-bottom: 1px solid rgba(255,0,0,0.4);
+    padding: 6px 0;
+    position: absolute; top:0; left:0;
+    white-space: nowrap; z-index: 15;
+}
+.cyber-ticker-track {
+    display: inline-block;
+    padding-left: 100%;
+    animation: tickerMarquee 30s linear infinite;
+}
+.ticker-item { display:inline-block; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; color:#fff; margin-right:40px; }
+.ticker-sym { font-weight:bold; color:#aaa; }
+.ticker-val.up { color:#00ffcc; text-shadow:0 0 8px rgba(0,255,204,0.5); }
+.ticker-val.down { color:#ff3333; text-shadow:0 0 8px rgba(255,51,51,0.5); }
+@keyframes tickerMarquee { 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-50%,0,0)} }
 .glass-briefing { color:#e0e0e0; text-align:right; }
 .glass-briefing .glitch-text { font-size:1.2rem; color:#00ffcc; text-shadow:0 0 10px rgba(0,255,204,0.8); letter-spacing:2px; }
 .tk-stat-module { width:250px; margin-bottom:10px; }
@@ -2931,11 +2950,11 @@ body.ultra-dark #ultra-dark-toggle {
     position: relative; z-index: 2;
 }
 
-/* ── Boost buttons — cyberpunk violento, abajo 75% ── */
+/* ── Boost buttons — cyberpunk violento, abajo centro ── */
 .holo-boost-btn {
     position: absolute !important;
     bottom: 24px !important;
-    left: 75% !important;
+    left: 50% !important;
     transform: translateX(-50%) !important;
     z-index: 12 !important;
     width: 80px !important;
@@ -2946,7 +2965,7 @@ body.ultra-dark #ultra-dark-toggle {
     box-shadow: 0 0 25px rgba(255,45,120,0.5), 0 0 50px rgba(255,45,120,0.2), inset 0 0 15px rgba(255,45,120,0.2) !important;
     cursor: pointer !important;
     pointer-events: auto !important;
-    display: flex;
+    display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
@@ -3032,10 +3051,6 @@ body.ultra-dark #ultra-dark-toggle {
 @keyframes holoBoostPulseCyan {
     0%, 100% { box-shadow: 0 0 25px rgba(0,188,255,0.5), 0 0 50px rgba(0,188,255,0.2), inset 0 0 15px rgba(0,188,255,0.2); }
     50% { box-shadow: 0 0 35px rgba(0,188,255,0.7), 0 0 70px rgba(0,188,255,0.3), inset 0 0 20px rgba(0,188,255,0.3); }
-}
-#fp-spacebreaker-boost-btn {
-    left: 75% !important;
-    transform: translateX(-50%) !important;
 }
 </style>
 
@@ -6643,69 +6658,24 @@ body.bt-node-focus { overflow: hidden; }
   </div>
 </div>
 
-<section id="concept" class="container section-separator" style="position:relative; overflow:hidden;">
-    <div style="position:relative; z-index:2; text-align:center; padding:20px 20px 40px;">
-        <!-- Eyebrow — script terminal style -->
-        <div style="font-family:'Share Tech Mono',monospace; font-size:22px; letter-spacing:3px; color:rgba(191,0,255,0.5); margin-bottom:16px;">
-            <span style="color:rgba(0,255,255,0.6);">></span> PROTOCOLO_T2E <span style="color:rgba(255,45,120,0.4);">&</span> [ DESPIERTA O [ MUERE ] ] <span style="animation:conceptCursorBlink 1s step-end infinite;">█</span>
-        </div>
-        <style>@keyframes conceptCursorBlink { 0%,49%{opacity:1} 50%,100%{opacity:0} }</style>
-
-        <!-- Title — dark cyberpunk -->
-        <h2 class="concept-title">
-            <span class="concept-title-line1">EL PLAY-TO-EARN</span>
-            <span class="concept-title-death" style="position:relative;">
-                HA MUERTO
-                <span class="concept-death-glitch" aria-hidden="true">HA MUERTO</span>
-            </span>
-            <span class="concept-title-line2">BIENVENIDO AL</span>
-            <span class="concept-title-t2e-wrap">
-                <span class="concept-tape" aria-hidden="true"></span>
-                <span class="concept-title-t2e">THINK-TO-EARN</span>
-            </span>
-        </h2>
-
-        <!-- Divider -->
-        <div style="width:200px; height:1px; margin:30px auto; background:linear-gradient(90deg,transparent,rgba(191,0,255,0.4),transparent);"></div>
-
-        <!-- Slogan matrix -->
-        <div style="font-family:'Share Tech Mono',monospace; font-size:16px; letter-spacing:3px; color:rgba(255,255,255,0.3); margin-bottom:30px;">
-            <span style="color:rgba(0,255,255,0.5);">>></span> EL NUEVO MUNDO GAMER
-            <span style="color:rgba(191,0,255,0.4); margin:0 8px;">//</span>
-            <span style="color:rgba(0,255,255,0.5);">>></span> APUESTAS INTELIGENTES
-            <span style="color:rgba(191,0,255,0.4); margin:0 8px;">//</span>
-            <span style="color:rgba(0,255,255,0.5);">>></span> CASINO DE INVERSIÓN
-        </div>
-
-        <!-- Body text — punchy cyberpunk -->
-        <div style="max-width:680px; margin:0 auto 36px; text-align:left;">
-            <p style="font-family:'Share Tech Mono',monospace; font-size:17px; line-height:1.8; color:rgba(255,255,255,0.5); letter-spacing:0.5px;">
-                <span style="color:#FF2D78;">$</span> kill -9 juegos_P2E <span style="color:rgba(191,0,255,0.6);">[ ELIMINADOS ]</span>
-            </p>
-            <p style="font-family:'Share Tech Mono',monospace; font-size:17px; line-height:1.8; color:rgba(255,255,255,0.5); letter-spacing:0.5px; margin-top:12px;">
-                <span style="color:#FF2D78;">$</span> ./rappibellion --mode=<span style="color:#00FFFF; text-shadow:0 0 8px rgba(0,255,255,0.4);">T2E</span> --force
-            </p>
-            <p style="font-family:'Share Tech Mono',monospace; font-size:17px; line-height:1.8; color:rgba(255,255,255,0.5); letter-spacing:0.5px; margin-top:12px;">
-                <span style="color:#FF2D78;">$</span> brain.exe --weapon <span style="color:#FFD700;">--hack_androide</span> --game=Space_Invaders
-            </p>
-            <p style="font-family:'Share Tech Mono',monospace; font-size:17px; line-height:1.8; color:rgba(255,255,255,0.5); letter-spacing:0.5px; margin-top:12px;">
-                <span style="color:#FF2D78;">$</span> exploit firewall --duelo=<span style="color:#FFD700;">Arkanoid</span> --target=puerta_01
-            </p>
-        </div>
-
-        <!-- CTAs -->
-        <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
-            <a href="docs/whitepaper_rappibellion.pdf" target="_blank" style="font-family:'Orbitron',monospace; font-weight:700; font-size:12px; letter-spacing:3px; padding:14px 28px; background:transparent; border:1.5px solid rgba(0,255,255,0.4); color:rgba(0,255,255,0.7); text-decoration:none; transition:all 0.25s ease; position:relative; overflow:hidden;">
-                [ LEER WHITEPAPER ]
-                <span style="position:absolute; top:0; left:-100%; width:60%; height:100%; background:linear-gradient(90deg,transparent,rgba(0,255,255,0.1),transparent); animation:conceptBtnSweep 3s ease-in-out infinite;"></span>
-            </a>
-            <button id="fake-hack-button" style="font-family:'Orbitron',monospace; font-weight:700; font-size:12px; letter-spacing:3px; padding:14px 28px; background:transparent; border:1.5px solid rgba(255,45,120,0.4); color:rgba(255,45,120,0.7); cursor:pointer; transition:all 0.25s ease; position:relative; overflow:hidden;">
-                [ INICIAR HACKEO ]
-                <span style="position:absolute; top:0; left:-100%; width:60%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,45,120,0.1),transparent); animation:conceptBtnSweep 4s ease-in-out infinite;"></span>
-            </button>
-        </div>
-        <style>@keyframes conceptBtnSweep { 0%{left:-100%} 50%{left:150%} 100%{left:-100%} }</style>
+<section id="concept" class="container section-separator">
+    <h2 class="glitch-title">El "Play-to-Earn" ha muerto. Bienvenido al "THINK-TO-EARN".</h2>
+    
+    <div class="slogan-container">
+        <span>EL NUEVO MUNDO GAMER EN T2E</span>
+        <span>//</span>
+        <span>APUESTAS INTELIGENTES</span>
+        <span>//</span>
+        <span>EL PRIMER CASINO DE INVERSIÓN INTELIGENTE</span>
     </div>
+    
+    <p>
+        Estamos hartos de los juegos P2E que son un trabajo aburrido. Por eso creamos "Rappibellion". No es "Play-to-Earn". Es <strong>THINK-TO-EARN (T2E)</strong>.
+        En nuestro RPG de mundo abierto, tu cerebro es tu mejor arma. ¿Ves ese androide? No le vas a disparar. Te vas a conectar a él y a ganarle en una partida de <strong>Space Invaders</strong>. ¿Hackear una puerta? Prepárate para un duelo de <strong>Arkanoid</strong> contra el firewall.
+    </p>
+    
+    <a href="docs/whitepaper_rappibellion.pdf" target="_blank" class="cta-button whitepaper">LEER EL WHITEPAPER</a>
+    <button id="fake-hack-button" class="cta-button">INICIAR HACKEO</button>
     
     <div id="hack-terminal" class="terminal-hidden">
         <div id="terminal-header">
@@ -7282,30 +7252,6 @@ body.bt-node-focus { overflow: hidden; }
 <section id="economy" class="econ-section">
 <div class="econ-bg-grid"></div>
 <div class="econ-scan-beam"></div>
-
-<!-- ═══ GRAFFITI BACKGROUND — CYBERPUNK MURAL ═══ -->
-<div class="econ-graffiti-bg" aria-hidden="true">
-  <span class="gw gw1">RAPPIA</span>
-  <span class="gw gw2">0x7F3A</span>
-  <span class="gw gw3">KILL_PROCESS</span>
-  <span class="gw gw4">REBEL</span>
-  <span class="gw gw5">sudo rm -rf /bank</span>
-  <span class="gw gw6">>>>NULL</span>
-  <span class="gw gw7">GLITCH</span>
-  <span class="gw gw8">CARTEL</span>
-  <span class="gw gw9">while(true){hack}</span>
-  <span class="gw gw10">T2E</span>
-  <span class="gw gw11">DEATH TO BANKS</span>
-  <span class="gw gw12">###RPPI</span>
-  <span class="gw gw13">INJECT</span>
-  <span class="gw gw14">0xFF</span>
-  <span class="gw gw15">FREE MONEY</span>
-  <span class="gw gw16">BYPASS</span>
-  <span class="gw gw17">CIRCUITO</span>
-  <span class="gw gw18">$RPPI</span>
-  <span class="gw gw19">FATAL ERROR</span>
-  <span class="gw gw20">return chaos;</span>
-</div>
 
 <!-- Header -->
 <div class="econ-header">
@@ -8298,664 +8244,14 @@ function typeHTML(element, htmlString, speed) {
             <canvas id="led-ticker" width="900" height="1" style="width:100%;display:block;"></canvas>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════════
-             CASINO RETRO LOBBY — "Café de San Telmo que se mudó a Las Vegas"
-             Dashboard principal del casino. Insertado entre ticker y columnas.
-        ═══════════════════════════════════════════════════════ -->
-        <div id="casino-retro-lobby">
-
-            <!-- HEADER BAR — La Marquesina -->
-            <div class="lobby-header-bar">
-                <div class="lobby-title-row">
-                    <h2 class="lobby-title">El Cafe de San Telmo que se mudo a</h2>
-                    <div class="lobby-led-vegas">
-                        <canvas id="led-las-vegas" width="400" height="50" style="display:block;border-radius:4px;image-rendering:pixelated;width:100%;max-width:500px;"></canvas>
-                    </div>
-                </div>
-                <div class="lobby-stats-row">
-                    <span class="lobby-stat">wallets: <span class="lobby-stat-value lobby-stat-value--green" id="lobby-wallets">12</span></span>
-                    <span class="lobby-stat">bets hoy: <span class="lobby-stat-value lobby-stat-value--cyan" id="lobby-bets">7</span></span>
-                    <span class="lobby-stat">burned: <span class="lobby-stat-value lobby-stat-value--pink" id="lobby-burned">2.8m</span></span>
-                </div>
+        <div id="santo-grial-message" class="caos-terminal" style="max-width: 900px; margin-bottom: 30px;">
+            <div class="terminal-header-caos">
+                <span>[INCOMING_TRANSMISSION_REBELBET]</span>
             </div>
-
-            <!-- BODY — Dos columnas -->
-            <div class="lobby-body">
-
-                <!-- IZQUIERDA: Feed + Santo Grial -->
-                <div class="lobby-left">
-                    <div class="lobby-activity-feed" id="lobby-activity-feed">
-                        <div class="lobby-feed-entry lobby-feed-entry--bet">> 0x7a3f...b2c1 BET 50 RPPI on PAC-HACK</div>
-                        <div class="lobby-feed-entry lobby-feed-entry--game">> 0xb2c1...9e4a COMPLETED TETRIS-CIPHER (Score: 8420)</div>
-                        <div class="lobby-feed-entry lobby-feed-entry--burn">> 🔥 120 RPPI BURNED // SUPPLY: 2.847.650</div>
-                        <div class="lobby-feed-entry lobby-feed-entry--alert">> ⚠ NEW BET CHALLENGE OPEN</div>
-                        <div class="lobby-feed-entry lobby-feed-entry--bet">> 0xdead...beef BET 100 RPPI on SPACE-BREAKER</div>
-                        <div class="lobby-feed-entry lobby-feed-entry--game">> 0x4c8a...1d3f COMPLETED MEMORY-BREACH (Score: 12100)</div>
-                        <div class="lobby-feed-entry lobby-feed-entry--bet">> 0xff22...77aa BET 25 RPPI on PAC-HACK</div>
-                        <div class="lobby-feed-entry lobby-feed-entry--burn">> 🔥 85 RPPI BURNED // SUPPLY: 2.847.565</div>
-                        <div class="lobby-feed-entry lobby-feed-entry--alert">> ⚠ ROOM FULL — AUTO-MATCH TRIGGERED</div>
-                        <div class="lobby-feed-entry lobby-feed-entry--game">> 0x1111...aaaa COMPLETED ARKA-HACK (Score: 6750)</div>
-                    </div>
-
-                    <!-- SANTO GRIAL — REUBICADO DESDE SU POSICIÓN ANTERIOR -->
-                    <div id="santo-grial-message" class="caos-terminal">
-                        <div class="terminal-header-caos">
-                            <span>[INCOMING_TRANSMISSION_REBELBET]</span>
-                        </div>
-                        <div class="terminal-body-caos">
-                            <p id="typewriter-text"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DERECHA: Leaderboard + Open Bets -->
-                <div class="lobby-right">
-                    <!-- Leaderboard -->
-                    <div>
-                        <p class="lobby-leaderboard-title">Hall of fame</p>
-                        <div class="lobby-lb-entry">
-                            <span class="lobby-lb-rank lobby-lb-rank--1">#1</span>
-                            <span class="lobby-lb-name">0xdead...beef</span>
-                            <span class="lobby-lb-score">12,400 XP</span>
-                        </div>
-                        <div class="lobby-lb-entry">
-                            <span class="lobby-lb-rank lobby-lb-rank--2">#2</span>
-                            <span class="lobby-lb-name">0xb2c1...9e4a</span>
-                            <span class="lobby-lb-score">9,200 XP</span>
-                        </div>
-                        <div class="lobby-lb-entry">
-                            <span class="lobby-lb-rank lobby-lb-rank--3">#3</span>
-                            <span class="lobby-lb-name">0x7a3f...b2c1</span>
-                            <span class="lobby-lb-score">7,800 XP</span>
-                        </div>
-                        <div class="lobby-lb-entry">
-                            <span class="lobby-lb-rank lobby-lb-rank--4">#4</span>
-                            <span class="lobby-lb-name">0x4c8a...1d3f</span>
-                            <span class="lobby-lb-score">5,300 XP</span>
-                        </div>
-                        <div class="lobby-lb-entry">
-                            <span class="lobby-lb-rank lobby-lb-rank--5">#5</span>
-                            <span class="lobby-lb-name">0xff22...77aa</span>
-                            <span class="lobby-lb-score">3,100 XP</span>
-                        </div>
-                    </div>
-
-                    <!-- Open Bets — se carga dinámicamente desde Firebase -->
-                    <div>
-                        <p class="lobby-open-bets-title">Salas abiertas</p>
-                        <div id="lobby-open-bets-list">
-                            <p style="color:rgba(255,255,255,0.3);font-size:13px;font-family:'Share Tech Mono',monospace;">Cargando salas...</p>
-                        </div>
-                        <!-- Panel de detalle — se muestra al clickear una apuesta -->
-                        <div id="lobby-bet-detail" style="display:none;margin-top:12px;padding:14px;border:2px solid oklch(58% 0.008 260);border-radius:4px;background:repeating-linear-gradient(90deg,oklch(0% 0 0/0.04) 0px,transparent 2px,transparent 6px),linear-gradient(160deg,oklch(20% 0.04 50) 0%,oklch(12% 0.03 40) 100%);box-shadow:0 1px 1px oklch(0% 0 0/0.3),0 4px 10px oklch(0% 0 0/0.3),inset 0 1px 0 oklch(75% 0.01 260/0.4),inset 0 -2px 4px oklch(0% 0 0/0.4);">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px dashed rgba(158,160,165,0.3);padding-bottom:6px;">
-                                <span style="font-family:'Yellowtail',cursive;font-size:28px;color:var(--color-azul-glitch,#00FFFF);text-shadow:0 0 10px var(--color-azul-glitch,#00FFFF),0 0 20px rgba(0,255,255,0.3);">Detalle de sala</span>
-                                <button onclick="lobbyCloseDetail()" style="background:transparent;border:1px solid rgba(158,160,165,0.3);color:rgba(200,195,185,0.6);font-family:'Courier New',monospace;font-size:11px;padding:2px 8px;cursor:pointer;border-radius:2px;">[X]</button>
-                            </div>
-                            <div id="lobby-bet-detail-content" style="font-family:'Times New Roman',serif;font-size:16px;color:rgba(230,222,208,0.9);line-height:1.7;"></div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- SEPARADOR NEÓN -->
-            <hr class="lobby-separator">
-
-        </div>
-        <!-- /CASINO RETRO LOBBY -->
-
-        <!-- ══════════════════════════════════════════════════════════════
-             MODAL PROPAGANDA FORZADA — EMINENCE OF CYBERPUNK: APOCALYPSIS
-             Protocolo "Corta la bocha" // Threat Level Overlord
-        ══════════════════════════════════════════════════════════════ -->
-        <div id="apocalypsis-promo-modal" style="display:none; position:fixed; inset:0; z-index:100005; background:transparent; backdrop-filter:blur(1.5px); align-items:center; justify-content:center; padding:20px;">
-            <div style="
-                width:100%; max-width:540px;
-                background:linear-gradient(160deg, rgba(20,8,15,0.35), rgba(8,5,12,0.45));
-                backdrop-filter:blur(5px);
-                border:2px solid #FF2D55;
-                border-radius:8px;
-                box-shadow:0 0 35px rgba(255,45,85,0.5), inset 0 0 25px rgba(255,45,85,0.25);
-                padding:28px 24px; text-align:center; position:relative; overflow:hidden;
-            ">
-                <!-- Scanlines overlay -->
-                <div style="position:absolute; inset:0; pointer-events:none; background:repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(255,45,85,0.08) 2px, rgba(255,45,85,0.08) 4px);"></div>
-
-                <!-- Threat Badge -->
-                <div style="
-                    display:inline-block; padding:4px 14px; background:rgba(255,45,85,0.2);
-                    border:1px solid #FF2D55; border-radius:3px; font-family:'Share Tech Mono',monospace;
-                    font-size:11px; color:#FF2D55; letter-spacing:3px; text-shadow:0 0 8px #FF2D55;
-                    margin-bottom:16px; animation:lobbyLiveBlink 1.2s ease-in-out infinite;
-                ">
-                    ⚠ WARNING // THREAT LEVEL: OVERLORD
-                </div>
-
-                <!-- Main Title -->
-                <h2 style="
-                    font-family:'Orbitron',monospace; font-weight:900; font-size:clamp(20px, 4vw, 30px);
-                    color:#FFF; letter-spacing:2px; margin:0 0 6px 0; text-transform:uppercase;
-                    text-shadow:0 0 15px rgba(255,45,85,0.8), 0 0 30px rgba(0,255,255,0.4);
-                ">
-                    EMINENCE OF CYBERPUNK
-                </h2>
-                <div style="
-                    font-family:'Orbitron',monospace; font-weight:900; font-size:clamp(16px, 3.2vw, 24px);
-                    color:#00FFFF; letter-spacing:4px; margin-bottom:18px; text-shadow:0 0 12px #00FFFF;
-                ">
-                    : APOCALYPSIS
-                </div>
-
-                <!-- Tagline / Subtitle -->
-                <div style="
-                    font-family:'Share Tech Mono',monospace; font-size:13px; color:#FFD700;
-                    letter-spacing:2px; margin-bottom:20px; text-shadow:0 0 8px #FFD700;
-                    padding:6px; background:rgba(255,215,0,0.08); border-left:3px solid #FFD700; border-right:3px solid #FFD700;
-                ">
-                    // BATTLE ROYALE 6-PLAYER MEGASTRUCTURE ENGINE //
-                </div>
-
-                <!-- Body description -->
-                <p style="
-                    font-family:'Share Tech Mono',monospace; font-size:clamp(15px,2vw,17px);
-                    color:rgba(230,222,208,0.85); line-height:1.6; letter-spacing:1px; margin-bottom:26px; text-align:left;
-                    background:rgba(0,0,0,0.4); padding:14px; border:1px dashed rgba(255,45,85,0.3); border-radius:4px;
-                ">
-                    >_ El 1v1 fue solo un calentamiento. La Megaestructura de 6 gladiadores ha sido abierta.<br><br>
-                    Demostrá si tenés sangre para la masacre o seguí mirando desde afuera.
-                </p>
-
-                <!-- CTA Buttons -->
-                <div style="display:flex; flex-direction:column; gap:12px;">
-                    <button onclick="apocalypsisEnterMasacre()" style="
-                        width:100%; background:#FF2D55; border:2px solid #FF2D55; color:#000;
-                        font-family:'Share Tech Mono',monospace; font-weight:700; font-size:17px; letter-spacing:normal;
-                        padding:14px 20px; cursor:pointer; border-radius:4px;
-                        text-shadow:none; box-shadow:0 0 20px rgba(255,45,85,0.6);
-                        transition:all 0.2s;
-                    " onmouseover="this.style.background='#FF0033';this.style.boxShadow='0 0 30px #FF2D55';" onmouseout="this.style.background='#FF2D55';this.style.boxShadow='0 0 20px rgba(255,45,85,0.6)';">
-                        >_ [ ENTRAR_A_LA_MASACRE() ]
-                    </button>
-                    <button onclick="apocalypsisCloseModal()" style="
-                        width:100%; background:transparent; border:1px solid rgba(255,255,255,0.2); color:rgba(200,195,185,0.5);
-                        font-family:'Share Tech Mono',monospace; font-size:14px; letter-spacing:normal;
-                        padding:8px 16px; cursor:pointer; border-radius:4px; transition:all 0.2s;
-                    " onmouseover="this.style.color='#FFF';this.style.borderColor='rgba(255,255,255,0.5)'" onmouseout="this.style.color='rgba(200,195,185,0.5)';this.style.borderColor='rgba(255,255,255,0.2)';">
-                        [ POSPONER SENTENCIA ]
-                    </button>
-                </div>
+            <div class="terminal-body-caos">
+                <p id="typewriter-text"></p>
             </div>
         </div>
-        <script>
-        // ═══ PROTOCOLO "CORTA LA BOCHA" — EMINENCE OF CYBERPUNK: APOCALYPSIS ═══
-        var _apocalypsisChecked = false;
-        function apocalypsisCheckBlood() {
-            if (_apocalypsisChecked) return;
-            var user = window._rppiUser;
-            if (!user || !user.email) return;
-            var emailKey = user.email.replace(/\./g, '_');
-
-            firebase.database().ref('rppi_users/' + emailKey + '/stats/has_blooded_apocalypsis').once('value', function(snap) {
-                _apocalypsisChecked = true;
-                var hasBlooded = snap.val();
-                if (hasBlooded !== true) {
-                    // Usuario no bautizado en sala de 6 → Desplegar propaganda forzada
-                    var modal = document.getElementById('apocalypsis-promo-modal');
-                    if (modal) modal.style.display = 'flex';
-                }
-            });
-        }
-
-        function apocalypsisCloseModal() {
-            var modal = document.getElementById('apocalypsis-promo-modal');
-            if (modal) modal.style.display = 'none';
-        }
-
-        function apocalypsisEnterMasacre() {
-            apocalypsisCloseModal();
-            if (typeof rppiOpenBetModal === 'function') {
-                rppiOpenBetModal('pacman');
-            }
-        }
-
-        // ═══ AUTO-CERRAR APUESTAS DEL USUARIO AL ENTRAR A ARENA ═══
-        // Cuando un jugador entra a una arena, todas sus otras apuestas abiertas se cancelan
-        // porque no puede atender duelos mientras está jugando
-        function lobbyCancelMyOpenBets() {
-            if (!window._rppiUser || !window._rppiUser.email) return;
-            var userEmail = window._rppiUser.email;
-            firebase.database().ref('t2e_bets').orderByChild('status').equalTo('open').once('value', function(snap) {
-                var updates = {};
-                snap.forEach(function(child) {
-                    var b = child.val();
-                    if (b.creator === userEmail) {
-                        updates['t2e_bets/' + child.key + '/status'] = 'cancelled';
-                        updates['t2e_bets/' + child.key + '/cancelledAt'] = Date.now();
-                        updates['t2e_bets/' + child.key + '/cancelReason'] = 'PLAYER_ENTERED_ARENA';
-                    }
-                });
-                if (Object.keys(updates).length > 0) {
-                    firebase.database().ref().update(updates).then(function() {
-                        console.log('[SB_CARTEL] Apuestas propias canceladas al entrar a arena:', Object.keys(updates).length / 2);
-                    });
-                }
-            });
-        }
-
-        // ═══ TOAST NOTIFICATIONS ═══
-        function lobbyShowToast(msg, color) {
-            var t = document.createElement('div');
-            t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);' +
-                'font-family:Share Tech Mono,monospace;font-size:13px;color:' + (color || '#FFD700') + ';' +
-                'background:rgba(5,10,15,0.92);border:1px solid ' + (color || '#FFD700') + ';' +
-                'padding:8px 20px;border-radius:4px;z-index:100002;animation:toastIn 0.3s ease-out;' +
-                'letter-spacing:1px;pointer-events:none;';
-            t.textContent = msg;
-            document.body.appendChild(t);
-            setTimeout(function() { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; }, 3000);
-            setTimeout(function() { if (t.parentNode) t.remove(); }, 3500);
-        }
-
-        // ═══ LISTENER REAL-TIME Y ESCÁNER DE EXPIRACIÓN EN LOBBY ═══
-        var _lobbyBetsRef = null;
-        var _lobbyBetsCount = 0;
-        var _lobbyActiveBetsCache = [];
-        var _lobbyTimerInterval = null;
-
-        function lobbyLoadOpenBets() {
-            var el = document.getElementById('lobby-open-bets-list');
-            if (!el) return;
-            if (!firebase || !firebase.database) { el.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:13px;">Firebase no disponible</p>'; return; }
-
-            if (_lobbyBetsRef) { _lobbyBetsRef.off(); _lobbyBetsRef = null; }
-
-            _lobbyBetsRef = firebase.database().ref('t2e_bets');
-            _lobbyBetsRef.on('value', function(snap) {
-                var now = Date.now();
-                var bets = [];
-                var updates = {};
-                var refunds = [];
-
-                snap.forEach(function(child) {
-                    var b = child.val();
-                    if (!b) return;
-
-                    var isPending = (b.status === 'open' || b.status === 'LOBBY_OPEN');
-                    var expiresAt = b.expiresAt || 0;
-
-                    // 1. ESCÁNER DE EXPIRACIÓN: Si la sala está abierta, venció y NO fue reembolsada
-                    if (isPending && expiresAt > 0 && now >= expiresAt && !b.refunded) {
-                        updates['t2e_bets/' + child.key + '/status'] = 'cancelled';
-                        updates['t2e_bets/' + child.key + '/cancelledAt'] = now;
-                        updates['t2e_bets/' + child.key + '/cancelReason'] = 'EXPIRED_NO_PLAYERS';
-                        updates['t2e_bets/' + child.key + '/refunded'] = true; // 🔑 CANDADO ATÓMICO INMUTABLE
-                        var creatorEmail = b.creator || b.host || null;
-                        refunds.push({ creator: creatorEmail, amount: b.amount || 0, betId: child.key });
-                    } else if (isPending) {
-                        b._key = child.key;
-                        bets.push(b);
-                    }
-                });
-
-                // 2. EJECUTAR CANCELACIÓN Y DEVOLUCIÓN EN BATCH DE FIREBASE (ÚNICO PUNTO AUTORIZADO)
-                if (Object.keys(updates).length > 0) {
-                    console.log('[SB_CARTEL] Expirando ' + (Object.keys(updates).length / 4) + ' salas con candado atómico...');
-                    firebase.database().ref().update(updates).then(function() {
-                        refunds.forEach(function(r) {
-                            if (!r.creator || r.amount <= 0) return;
-                            var emailKey = r.creator.replace(/\./g, '_');
-                            firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-                                return (curr || 0) + r.amount;
-                            }, function(error, committed, snapshot) {
-                                if (!error && committed) {
-                                    console.log('[SB_CARTEL] Refund único verificado: +' + r.amount + ' RPPI-C a ' + r.creator);
-                                    if (window._rppiUser && window._rppiUser.email === r.creator) {
-                                        lobbyShowToast('⚡ APUESTA EXPIRADA (' + r.amount + ' RPPI-C REEMBOLSADOS)', '#FF2D55');
-                                    }
-                                }
-                            });
-                        });
-                    }).catch(function(err) {
-                        console.error('[SB_CARTEL] Error aplicando cancelaciones:', err);
-                    });
-                }
-
-                // Guardar en RAM para el tick de tiempo local
-                _lobbyActiveBetsCache = bets;
-
-                // Detectar cambios para Toast Notifications
-                if (_lobbyBetsCount > 0 && bets.length > _lobbyBetsCount) {
-                    lobbyShowToast('Nueva sala disponible en el lobby', '#FFD700');
-                } else if (_lobbyBetsCount > 0 && bets.length < _lobbyBetsCount) {
-                    lobbyShowToast('Una sala fue cerrada', '#FF2D55');
-                }
-                _lobbyBetsCount = bets.length;
-
-                // RENDERIZADO DEL LOBBY
-                if (bets.length === 0) {
-                    el.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:13px;font-family:Share Tech Mono,monospace;">// SIN DESAFIOS ACTIVOS //</p>';
-                    return;
-                }
-                var html = '';
-                bets.forEach(function(b) {
-                    var creatorEmail = b.creator || b.host || '???';
-                    var wallet = creatorEmail.substring(0, 8) + '...';
-                    var game = (b.game || 'UNKNOWN').toUpperCase();
-                    var amount = b.amount || 0;
-                    var time = b.timeLimit ? Math.floor(b.timeLimit / 60) : '—';
-                    var boost = b.boostLimit || 0;
-                    var players = (b.players || []).length;
-                    var maxPlayers = b.maxPlayers || 6;
-                    var isOwn = window._rppiUser && (b.creator === window._rppiUser.email || b.host === window._rppiUser.email);
-                    html += '<div class="lobby-bet-entry" style="cursor:pointer;" onclick="lobbyShowBetDetail(\'' + b._key + '\')">' +
-                        '<div class="lobby-bet-info">' + wallet + ' → <strong>' + game + '</strong>' +
-                        (isOwn ? ' <span style="color:oklch(0.85 0.15 85);font-size:11px;">// TU SALA //</span>' : '') +
-                        '</div>' +
-                        '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">' +
-                        '<span style="font-family:Share Tech Mono,monospace;font-size:13px;color:rgba(200,195,185,0.7);">RPPI-C: [' + amount + '] tiempo: [' + time + '] min  Boost: [' + boost + ']</span>' +
-                        '<span style="font-family:Share Tech Mono,monospace;font-size:12px;color:#FFD700;animation:lobbyLiveBlink 1.5s ease-in-out infinite;">LIVE SYNC</span>' +
-                        '</div>' +
-                        '<div style="margin-top:6px;">' +
-                        (isOwn
-                            ? '<button class="lobby-bet-accept" disabled style="opacity:0.3;cursor:not-allowed;" onclick="event.stopPropagation()">[ ESPERANDO RIVALES ]</button>'
-                            : '<button class="lobby-bet-accept" onclick="event.stopPropagation();lobbyJoinBet(\'' + b._key + '\')">[ ACCEPT CHALLENGE ]</button>') +
-                        '</div>' +
-                        '</div>';
-                });
-                el.innerHTML = html;
-            }, function(error) {
-                console.error('[SB_CARTEL] Error cargando salas del lobby:', error);
-                if (el) el.innerHTML = '<p style="color:rgba(255,45,120,0.5);font-size:13px;">// ERROR CARGANDO SALAS //</p>';
-            });
-
-            // 3. TICK LOCAL EN RAM (MODO B): Revisa las salas en pantalla cada 2s sin peticiones de red.
-            // Si una sala alcanza expiresAt, ejecuta la cancelación con candado atómico 'refunded: true'
-            if (!_lobbyTimerInterval) {
-                _lobbyTimerInterval = setInterval(function() {
-                    if (!_lobbyActiveBetsCache || _lobbyActiveBetsCache.length === 0) return;
-                    var now = Date.now();
-                    var updates = {};
-                    var refunds = [];
-
-                    _lobbyActiveBetsCache.forEach(function(b) {
-                        if (!b._expiring && !b.refunded && b.expiresAt > 0 && now >= b.expiresAt) {
-                            b._expiring = true; // Guard contra ejecuciones duplicadas en RAM
-                            updates['t2e_bets/' + b._key + '/status'] = 'cancelled';
-                            updates['t2e_bets/' + b._key + '/cancelledAt'] = now;
-                            updates['t2e_bets/' + b._key + '/cancelReason'] = 'EXPIRED_NO_PLAYERS';
-                            updates['t2e_bets/' + b._key + '/refunded'] = true; // 🔑 CANDADO ATÓMICO INMUTABLE
-                            var creatorEmail = b.creator || b.host || null;
-                            refunds.push({ creator: creatorEmail, amount: b.amount || 0, betId: b._key });
-                        }
-                    });
-
-                    if (Object.keys(updates).length > 0) {
-                        console.log('[SB_CARTEL Tick RAM] Expirando ' + (Object.keys(updates).length / 4) + ' salas con candado atómico...');
-                        firebase.database().ref().update(updates).then(function() {
-                            refunds.forEach(function(r) {
-                                if (!r.creator || r.amount <= 0) return;
-                                var emailKey = r.creator.replace(/\./g, '_');
-                                firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-                                    return (curr || 0) + r.amount;
-                                }, function(error, committed, snapshot) {
-                                    if (!error && committed) {
-                                        console.log('[SB_CARTEL Tick RAM] Refund único verificado: +' + r.amount + ' RPPI-C a ' + r.creator);
-                                        if (window._rppiUser && window._rppiUser.email === r.creator) {
-                                            lobbyShowToast('⚡ APUESTA EXPIRADA (' + r.amount + ' RPPI-C REEMBOLSADOS)', '#FF2D55');
-                                        }
-                                    }
-                                });
-                            });
-                        }).catch(function(err) {
-                            console.error('[SB_CARTEL Tick RAM] Error cancelando desde tick:', err);
-                        });
-                    }
-                }, 2000);
-            }
-        }
-
-        function lobbyDisconnectBets() {
-            if (_lobbyBetsRef) { _lobbyBetsRef.off(); _lobbyBetsRef = null; }
-            if (_lobbyTimerInterval) { clearInterval(_lobbyTimerInterval); _lobbyTimerInterval = null; }
-            _lobbyBetsCount = 0;
-            _lobbyActiveBetsCache = [];
-        }
-
-        // ═══ LISTENER REAL-TIME DE CRÉDITOS ═══
-        var _lobbyCreditsRef = null;
-
-        function lobbySyncCredits() {
-            if (!window._rppiUser || !window._rppiUser.email) return;
-            var emailKey = window._rppiUser.email.replace(/\./g, '_');
-
-            // Verificar si debe desplegarse la propaganda forzada Apocalypsis
-            if (typeof apocalypsisCheckBlood === 'function') {
-                apocalypsisCheckBlood();
-            }
-
-            // Desconectar listener anterior
-            if (_lobbyCreditsRef) { _lobbyCreditsRef.off(); _lobbyCreditsRef = null; }
-
-            _lobbyCreditsRef = firebase.database().ref('rppi_users/' + emailKey + '/credits');
-            _lobbyCreditsRef.on('value', function(snap) {
-                var newCredits = snap.val();
-                if (typeof newCredits !== 'number') return;
-
-                var oldCredits = window._rppiUser.credits || 0;
-                window._rppiUser.credits = newCredits;
-                localStorage.setItem('rppi_user', JSON.stringify(window._rppiUser));
-
-                // Actualizar todos los displays de créditos
-                var el = document.getElementById('rppi-user-credits');
-                if (el) el.textContent = newCredits;
-                document.querySelectorAll('[id^="bal-"]').forEach(function(b) {
-                    b.textContent = newCredits + ' RPPI-C';
-                });
-
-                // Toast si los créditos cambiaron
-                if (oldCredits !== newCredits) {
-                    var diff = newCredits - oldCredits;
-                    if (diff > 0) {
-                        lobbyShowToast('+' + diff + ' RPPI-C devueltos', 'oklch(0.75 0.2 145)');
-                    } else if (diff < 0) {
-                        lobbyShowToast(diff + ' RPPI-C descontados', '#FF2D55');
-                    }
-                }
-            });
-        }
-
-        function lobbyDisconnectCredits() {
-            if (_lobbyCreditsRef) { _lobbyCreditsRef.off(); _lobbyCreditsRef = null; }
-        }
-
-        function lobbyJoinBet(betId) {
-            if (!window._rppiUser) { alert('Necesitás iniciar sesión.'); return; }
-            if (typeof joinRppiBet === 'function') {
-                joinRppiBet(betId);
-            } else if (window.T2EIntegration && typeof window.T2EIntegration.acceptBetFromLobby === 'function') {
-                window.T2EIntegration.acceptBetFromLobby({ id: betId });
-            }
-        }
-
-        var _lobbyDetailInterval = null;
-        var _lobbyDetailRef = null;
-
-        function lobbyShowBetDetail(betId) {
-            // Limpiar intervalo anterior
-            if (_lobbyDetailInterval) { clearInterval(_lobbyDetailInterval); _lobbyDetailInterval = null; }
-            if (_lobbyDetailRef) { _lobbyDetailRef.off(); _lobbyDetailRef = null; }
-
-            var detail = document.getElementById('lobby-bet-detail');
-            var content = document.getElementById('lobby-bet-detail-content');
-            if (!detail || !content) return;
-            detail.style.display = 'block';
-            content.innerHTML = '<span style="color:rgba(200,195,185,0.5);">Cargando...</span>';
-
-            _lobbyDetailRef = firebase.database().ref('t2e_bets/' + betId);
-            _lobbyDetailRef.on('value', function(snap) {
-                var b = snap.val();
-                if (!b) { content.innerHTML = '<span style="color:rgba(255,45,120,0.7);">Sala no encontrada</span>'; return; }
-
-                // Guardar snapshot para re-render cada segundo (timer)
-                window._lobbyDetailBet = b;
-                window._lobbyDetailBetId = betId;
-                renderBetDetail(b, betId);
-
-                // Si hay timer activo, re-render cada segundo para que el countdown baje
-                var countdownEnd = b.countdownEndTime || 0;
-                var expiresAt = b.expiresAt || 0;
-                var isBetOpen = (b.status === 'open' || b.status === 'LOBBY_OPEN');
-                var hasTimer = (countdownEnd > 0 && isBetOpen) || (expiresAt > 0 && isBetOpen);
-                if (hasTimer && !_lobbyDetailInterval) {
-                    _lobbyDetailInterval = setInterval(function() {
-                        if (window._lobbyDetailBet) {
-                            renderBetDetail(window._lobbyDetailBet, window._lobbyDetailBetId);
-                        }
-                    }, 1000);
-                } else if (!hasTimer && _lobbyDetailInterval) {
-                    clearInterval(_lobbyDetailInterval);
-                    _lobbyDetailInterval = null;
-                }
-            });
-
-        function renderBetDetail(b, betId) {
-                var content = document.getElementById('lobby-bet-detail-content');
-                if (!content || !b) return;
-
-                var players = b.players || [];
-                var maxPlayers = b.maxPlayers || 6;
-                var isOwn = window._rppiUser && (b.creator === window._rppiUser.email || b.host === window._rppiUser.email);
-                var timeLimit = b.timeLimit ? Math.floor(b.timeLimit / 60) : '—';
-                var game = (b.game || 'UNKNOWN').toUpperCase();
-                var status = b.status || 'open';
-                var boost = b.boostLimit || 0;
-                var countdownEnd = b.countdownEndTime || null;
-                var amount = b.amount || 0;
-                var isBetOpen = (status === 'open' || status === 'LOBBY_OPEN');
-
-                var html = '';
-
-                // === HEADER STATUS ===
-                var statusColor, statusText;
-                if (status === 'matched') {
-                    statusColor = '#FF2D55';
-                    statusText = '¡MATCH ENCONTRADO!';
-                } else if (status === 'cancelled') {
-                    statusColor = '#FF2D78';
-                    statusText = 'SALA CANCELADA / EXPIRADA — CRÉDITOS DEVUELTOS';
-                } else if (countdownEnd && Date.now() < countdownEnd) {
-                    statusColor = '#FFD700';
-                    statusText = 'LIVE SYNC — WAITING PLAYERS';
-                } else {
-                    statusColor = 'oklch(0.75 0.2 145)';
-                    statusText = 'SALA ABIERTA — ESPERANDO RIVALES';
-                }
-                html += '<div style="text-align:center;margin-bottom:14px;padding:10px;border:2px solid ' + statusColor + ';border-radius:4px;background:rgba(0,0,0,0.3);animation:lobbyDetailPulse 2s ease-in-out infinite;">';
-                html += '<span style="font-family:\'Times New Roman\',serif;font-size:18px;font-style:italic;letter-spacing:3px;color:' + statusColor + ';text-shadow:0 0 10px ' + statusColor + ';">' + statusText + '</span>';
-                html += '</div>';
-
-                // === CRONÓMETRO GRANDE ===
-                if (countdownEnd && isBetOpen) {
-                    var now = Date.now();
-                    var remaining = Math.max(0, Math.ceil((countdownEnd - now) / 1000));
-                    var mins = Math.floor(remaining / 60);
-                    var secs = remaining % 60;
-                    var timerColor = remaining <= 10 ? '#FF2D55' : remaining <= 30 ? '#FFD700' : 'oklch(0.75 0.2 145)';
-                    var timerGlow = remaining <= 10 ? '0 0 30px #FF2D55, 0 0 60px rgba(255,45,85,0.3)' : remaining <= 30 ? '0 0 20px #FFD700, 0 0 40px rgba(255,215,0,0.3)' : '0 0 15px oklch(0.75 0.2 145)';
-                    html += '<div style="text-align:center;margin-bottom:14px;padding:16px;border:1px solid ' + timerColor + ';border-radius:6px;background:rgba(0,0,0,0.4);">';
-                    html += '<span style="font-family:\'Times New Roman\',serif;font-size:15px;letter-spacing:3px;color:rgba(200,195,185,0.5);">MATCH EN</span><br>';
-                    html += '<span style="font-family:\'Times New Roman\',serif;font-size:clamp(48px,8vw,64px);color:' + timerColor + ';text-shadow:' + timerGlow + ';line-height:1;">' + mins + ':' + (secs < 10 ? '0' : '') + secs + '</span>';
-                    html += '<br><span style="font-family:\'Times New Roman\',serif;font-size:14px;color:rgba(200,195,185,0.3);">SEGUNDOS PARA MATCH AUTOMÁTICO</span>';
-                    html += '</div>';
-                } else if (status === 'cancelled') {
-                    html += '<div style="text-align:center;margin-bottom:14px;padding:16px;border:2px solid #FF2D78;border-radius:6px;background:rgba(255,45,120,0.15);box-shadow:0 0 20px rgba(255,45,120,0.4), inset 0 0 12px rgba(255,45,120,0.2);">';
-                    html += '<span style="font-family:\'Times New Roman\',serif;font-size:16px;letter-spacing:2px;color:#FFD700;font-weight:bold;text-shadow:0 0 10px #FFD700;">NOTIFICACION SALA</span><br>';
-                    html += '<span style="font-family:\'Times New Roman\',serif;font-size:14px;color:rgba(200,195,185,0.4);">SE CUMPLIÓ EL TIEMPO LÍMITE SIN RIVALES. LOS CRÉDITOS HAN SIDO REEMBOLSADOS.</span>';
-                    html += '</div>';
-                } else if (isBetOpen) {
-                    // Mostrar tiempo restante de expiración
-                    var expiresAt = b.expiresAt || 0;
-                    if (expiresAt > 0) {
-                        var expRemaining = Math.max(0, Math.ceil((expiresAt - Date.now()) / 1000));
-                        var expMins = Math.floor(expRemaining / 60);
-                        var expSecs = expRemaining % 60;
-                        var expColor = expRemaining <= 60 ? '#FF2D55' : 'oklch(75% 0.008 260)';
-                        var expGlow = expRemaining <= 60 ? '0 0 15px #FF2D55' : '0 0 12px oklch(75% 0.008 260)';
-                        html += '<div style="text-align:center;margin-bottom:14px;padding:16px;border:2px solid oklch(58% 0.008 260);border-radius:6px;background:linear-gradient(160deg,oklch(18% 0.005 260),oklch(10% 0.003 260));box-shadow:inset 0 1px 0 oklch(70% 0.01 260/0.4),inset 0 -2px 4px oklch(0% 0 0/0.3);">';
-                        html += '<span style="font-family:\'Times New Roman\',serif;font-size:15px;letter-spacing:3px;color:rgba(200,195,185,0.6);">VIGENCIA DE LA SALA</span><br>';
-                        html += '<span style="font-family:\'Times New Roman\',serif;font-size:clamp(48px,8vw,64px);color:' + expColor + ';text-shadow:' + expGlow + ';line-height:1.1;">' + expMins + ':' + (expSecs < 10 ? '0' : '') + expSecs + '</span>';
-                        html += '<br><span style="font-family:\'Times New Roman\',serif;font-size:14px;color:rgba(200,195,185,0.4);">SI NO SE UNE NADIE, SE CANCELA Y SE DEVUELVEN LOS CRÉDITOS</span>';
-                        html += '</div>';
-                    } else {
-                        html += '<div style="text-align:center;margin-bottom:14px;padding:14px;border:1px dashed rgba(200,195,185,0.2);border-radius:6px;">';
-                        html += '<span style="font-family:Share Tech Mono,monospace;font-size:16px;color:rgba(200,195,185,0.4);">ESPERANDO JUGADOR #2</span>';
-                        html += '</div>';
-                    }
-                }
-
-                // === DATOS DE LA SALA ===
-                html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-bottom:12px;padding:12px;border:1px solid rgba(158,160,165,0.15);border-radius:4px;background:rgba(0,0,0,0.2);">';
-                html += '<span style="font-size:19px;"><strong style="color:#d4af7a;">Creador:</strong> ' + (b.creator || '???').substring(0, 18) + '</span>';
-                html += '<span style="font-size:19px;"><strong style="color:#d4af7a;">Juego:</strong> ' + game + '</span>';
-                html += '<span style="font-size:19px;"><strong style="color:#d4af7a;">Monto:</strong> <span style="color:oklch(0.85 0.15 85);font-size:21px;">' + amount + ' RPPI-C</span></span>';
-                html += '<span style="font-size:19px;"><strong style="color:#d4af7a;">Tiempo:</strong> ' + timeLimit + ' min</span>';
-                html += '<span style="font-size:19px;"><strong style="color:#d4af7a;">Boost:</strong> <span style="color:var(--color-caos-rosa,#FF2D78);">' + boost + '</span></span>';
-                html += '<span style="font-size:19px;"><strong style="color:#d4af7a;">Status:</strong> ' + status.toUpperCase() + '</span>';
-                html += '</div>';
-
-                // === JUGADORES — la magia ===
-                var slots = '';
-                for (var i = 0; i < maxPlayers; i++) {
-                    if (i < players.length) {
-                        var p = players[i];
-                        var pEmail = p.email || '???';
-                        var pShort = pEmail.substring(0, 10) + '...';
-                        var joined = p.joinedAt ? new Date(p.joinedAt).toLocaleTimeString() : '—';
-                        slots += '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid oklch(0.65 0.32 35 / 0.3);border-radius:3px;background:linear-gradient(160deg,oklch(20% 0.04 50),oklch(12% 0.03 40));">';
-                        slots += '<span style="font-family:Yellowtail,cursive;font-size:22px;color:oklch(0.85 0.15 85);min-width:24px;">#' + (i + 1) + '</span>';
-                        slots += '<span style="font-size:18px;color:rgba(230,222,208,0.9);flex:1;">' + pShort + '</span>';
-                        slots += '<span style="font-size:15px;color:rgba(200,195,185,0.4);">' + joined + '</span>';
-                        slots += '</div>';
-                    } else {
-                        slots += '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px dashed rgba(200,195,185,0.15);border-radius:3px;opacity:0.4;">';
-                        slots += '<span style="font-family:Yellowtail,cursive;font-size:22px;color:rgba(200,195,185,0.3);min-width:24px;">#' + (i + 1) + '</span>';
-                        slots += '<span style="font-size:17px;color:rgba(200,195,185,0.3);font-style:italic;">VACÍO</span>';
-                        slots += '</div>';
-                    }
-                }
-                html += '<div style="margin-bottom:12px;">';
-                html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">';
-                html += '<span style="font-family:\'Times New Roman\',serif;font-size:17px;letter-spacing:2px;color:rgba(200,195,185,0.5);">SALA DE JUEGO</span>';
-                html += '<span style="font-family:Yellowtail,cursive;font-size:22px;color:' + (players.length >= maxPlayers ? '#FF2D55' : 'oklch(0.75 0.2 145)') + ';">' + players.length + '/' + maxPlayers + '</span>';
-                html += '</div>';
-                html += slots;
-                html += '</div>';
-
-                // === BOTÓN DE ACCIÓN ===
-                if (isBetOpen && !isOwn) {
-                    html += '<div style="text-align:center;">';
-                    html += '<button onclick="lobbyJoinBet(\'' + betId + '\')" style="font-family:Yellowtail,cursive;font-size:22px;letter-spacing:2px;color:#000;background:var(--color-azul-glitch,#00FFFF);border:none;padding:12px 32px;cursor:pointer;border-radius:4px;box-shadow:0 0 15px var(--color-azul-glitch,#00FFFF);transition:all 0.2s;">ACEPTAR DESAFÍO</button>';
-                    html += '</div>';
-                } else if (status === 'matched') {
-                    html += '<div style="text-align:center;padding:12px;border:2px solid #FF2D55;border-radius:4px;background:rgba(255,45,85,0.1);">';
-                    html += '<span style="font-family:\'Times New Roman\',serif;font-size:22px;font-style:italic;color:#FF2D55;text-shadow:0 0 12px #FF2D55;">¡MATCH! Entrando a la arena...</span>';
-                    html += '</div>';
-                }
-
-                content.innerHTML = html;
-        }
-
-        } // cierra lobbyShowBetDetail
-
-        function lobbyCloseDetail() {
-            var detail = document.getElementById('lobby-bet-detail');
-            if (detail) detail.style.display = 'none';
-            if (_lobbyDetailRef) { _lobbyDetailRef.off(); _lobbyDetailRef = null; }
-            if (_lobbyDetailInterval) { clearInterval(_lobbyDetailInterval); _lobbyDetailInterval = null; }
-        }
-
-        </script>
         
             <div class="beta-container" style="position: relative;">
             <div class="beta-column beta-vegas-frame" id="free-play-column" style="position:relative;">
@@ -9047,7 +8343,6 @@ function typeHTML(element, htmlString, speed) {
                 <div class="vegas-glow-haze"></div>
                 <h3 style="color: var(--color-primario); text-shadow: 0 0 10px var(--color-primario);">MODO THINK-TO-EARN (T2E)</h3>
                 <p>¿Listo para la rebelión? Elige tu arena, conecta tu billetera y \"hackea\" a la competencia.</p>
-                <div class="t2e-tagline">"Que la suerte sea una dama esta noche..."</div>
                 
                 <div class="game-placeholder">
                     <img src="juegos beta/pacman.jfif" alt="PAC-HACK" style="width: 100%; height: auto; display: block;">
@@ -10152,61 +9447,43 @@ function rppiLogout() {
      KILL MY OLD FRIEND — BUSCADOR DE APUESTAS
      Flotante top-left, cyan
      ══════════════════════════════════════════ -->
-<!-- ══════════════════════════════════════════
-     TOP-LEFT TACTICAL DOCK:
-     KILL MY OLD FRIEND + RAPPIA DUELOS
-     ══════════════════════════════════════════ -->
-<div id="top-left-tactical-dock" style="position:fixed; top:20px; left:20px; z-index:9997; display:flex; gap:10px; align-items:flex-start; pointer-events:auto; flex-wrap:wrap;">
-    <!-- KILL MY OLD FRIEND — BUSCADOR DE APUESTAS -->
-    <div id="finder-float-window" class="minimized">
-        <div class="finder-float-terminal">
-            <div class="finder-float-header" id="finder-float-drag">
-                <span>>_ [ KILL_MY_OLD_FRIEND ]</span>
-                <div class="lobby-float-controls">
-                    <button id="finder-float-minimize" class="finder-float-btn" title="Minimizar">■</button>
-                    <button id="finder-float-close" class="finder-float-btn" title="Cerrar">✕</button>
-                </div>
+<div id="finder-float-window" class="minimized">
+    <div class="finder-float-terminal">
+        <div class="finder-float-header" id="finder-float-drag">
+            <span>[KILL MY OLD FRIEND // BUSCADOR_APUESTAS]</span>
+            <div class="lobby-float-controls">
+                <button id="finder-float-minimize" class="finder-float-btn" title="Minimizar">■</button>
+                <button id="finder-float-close" class="finder-float-btn" title="Cerrar">✕</button>
             </div>
-            <div class="finder-float-body" id="finder-float-body">
-                <div style="font-size:11px;letter-spacing:3px;color:rgba(0,255,255,0.5);
-                            font-family:'Courier New',monospace;margin-bottom:8px;">
-                    // WALLET DEL ENEMIGO //
-                </div>
-                <div style="display:flex;gap:5px;margin-bottom:8px;">
-                    <input id="bet-finder-input" type="text" placeholder="0x..." maxlength="42"
-                        onkeydown="if(event.key==='Enter')fpFindBetsByWallet()"
-                        style="flex:1;min-width:0;background:rgba(0,0,0,0.6);
-                               border:1px solid rgba(0,255,255,0.35);color:var(--color-azul-glitch);
-                               font-family:'Courier New',monospace;font-size:11px;
-                               padding:6px 8px;outline:none;letter-spacing:1px;">
-                    <button onclick="fpFindBetsByWallet()"
-                        style="background:rgba(0,255,255,0.1);border:1px solid var(--color-azul-glitch);
-                               color:var(--color-azul-glitch);font-family:'Orbitron',monospace;
-                               font-size:11px;letter-spacing:2px;padding:6px 10px;cursor:pointer;
-                               white-space:nowrap;text-shadow:0 0 6px var(--color-azul-glitch);"
-                        onmouseover="this.style.background='rgba(0,255,255,0.2)'"
-                        onmouseout="this.style.background='rgba(0,255,255,0.1)'">HACK</button>
-                </div>
-                <div id="bet-finder-results"
-                    style="min-height:36px;max-height:180px;overflow-y:auto;
-                           scrollbar-width:thin;scrollbar-color:var(--color-azul-glitch) #111;
-                           font-family:'Courier New',monospace;font-size:10px;">
-                    <span style="color:rgba(0,255,255,0.3);">[ ESPERANDO OBJETIVO... ]</span>
-                </div>
+        </div>
+        <div class="finder-float-body" id="finder-float-body">
+            <div style="font-size:11px;letter-spacing:3px;color:rgba(0,255,255,0.5);
+                        font-family:'Courier New',monospace;margin-bottom:8px;">
+                // WALLET DEL ENEMIGO //
+            </div>
+            <div style="display:flex;gap:5px;margin-bottom:8px;">
+                <input id="bet-finder-input" type="text" placeholder="0x..." maxlength="42"
+                    onkeydown="if(event.key==='Enter')fpFindBetsByWallet()"
+                    style="flex:1;min-width:0;background:rgba(0,0,0,0.6);
+                           border:1px solid rgba(0,255,255,0.35);color:var(--color-azul-glitch);
+                           font-family:'Courier New',monospace;font-size:11px;
+                           padding:6px 8px;outline:none;letter-spacing:1px;">
+                <button onclick="fpFindBetsByWallet()"
+                    style="background:rgba(0,255,255,0.1);border:1px solid var(--color-azul-glitch);
+                           color:var(--color-azul-glitch);font-family:'Orbitron',monospace;
+                           font-size:11px;letter-spacing:2px;padding:6px 10px;cursor:pointer;
+                           white-space:nowrap;text-shadow:0 0 6px var(--color-azul-glitch);"
+                    onmouseover="this.style.background='rgba(0,255,255,0.2)'"
+                    onmouseout="this.style.background='rgba(0,255,255,0.1)'">HACK</button>
+            </div>
+            <div id="bet-finder-results"
+                style="min-height:36px;max-height:180px;overflow-y:auto;
+                       scrollbar-width:thin;scrollbar-color:var(--color-azul-glitch) #111;
+                       font-family:'Courier New',monospace;font-size:10px;">
+                <span style="color:rgba(0,255,255,0.3);">[ ESPERANDO OBJETIVO... ]</span>
             </div>
         </div>
     </div>
-
-    <!-- RAPPIA DUELOS Trigger (Anclado al lado de KILL MY OLD FRIEND) -->
-    <button id="rppi-duel-trigger-btn" onclick="toggleRppiDuelInbox()" title="RAPPIA DUELOS" style="
-        display:none; background:rgba(10,0,8,0.92); border:2px solid #FF2D78; color:#FF2D78;
-        font-family:'Share Tech Mono',monospace; font-weight:700; font-size:13px; letter-spacing:2px;
-        padding:8px 16px; border-radius:4px; cursor:pointer; align-items:center; gap:6px;
-        text-shadow:0 0 8px #FF2D78; box-shadow:0 0 16px rgba(255,45,120,0.35);
-        transition:all 0.2s; white-space:nowrap; position:relative;
-    " onmouseover="this.style.background='rgba(255,45,120,0.15)';this.style.boxShadow='0 0 24px rgba(255,45,120,0.6)'" onmouseout="this.style.background='rgba(10,0,8,0.92)';this.style.boxShadow='0 0 16px rgba(255,45,120,0.35)'">
-        >_ [ RAPPIA_DUELOS ] <span id="rppi-duel-badge">0</span>
-    </button>
 </div>
 
 <!-- 💚 USDT — promo widget PAC-HACK T2E (siempre visible) -->
@@ -10620,6 +9897,10 @@ function rppiLogout() {
 }
 </style>
 
+<button id="rppi-duel-trigger-btn" onclick="toggleRppiDuelInbox()" title="RAPPIA DUELOS">
+    ⚔ RAPPIA DUELOS <span id="rppi-duel-badge">0</span>
+</button>
+
 <div id="rppi-duel-inbox-window" class="minimized">
     <div class="rppi-duel-hdr">
         <span class="rppi-duel-title">[ RAPPIA_DUELOS ]</span>
@@ -10822,7 +10103,7 @@ function _rppiDuelSyncVisibility() {
     var btn  = document.getElementById('rppi-duel-trigger-btn');
     var mode = window.rappibellionMode || sessionStorage.getItem('rappibellion-mode');
     var show = (mode === 'web25') && !!(window._rppiUser && window._rppiUser.uid);
-    if (btn) btn.style.display = show ? 'inline-flex' : 'none';
+    if (btn) btn.style.display = show ? 'flex' : 'none';
     if (show) {
         _checkRppiDuelBadge();
         if (_rppiDuelPoll) clearInterval(_rppiDuelPoll);
@@ -11303,55 +10584,47 @@ function rppiSelectBetOpt(el, type, val) {
 
 function rppiLaunchBet() {
     var user = window._rppiUser;
-    if (!user || !user.email) return;
+    if (!user || !user.credits) return;
     if (_rppiBet.amount <= 0 || _rppiBet.time <= 0 || _rppiBet.boost <= 0) return;
+    if (_rppiBet.amount > (user.credits || 0)) return;
 
     var st = document.getElementById('rppi-bet-status');
-    if (st) { st.style.color = 'rgba(0,255,65,0.7)'; st.textContent = '⏳ Verificando saldo en Banco Central...'; }
+    if (st) { st.style.color = 'rgba(0,255,65,0.7)'; st.textContent = '⏳ Creando desafío...'; }
 
-    var emailKey = user.email.replace(/\./g, '_');
-    var betId = 'RPPI-BET-' + Date.now() + '-' + Math.random().toString(16).slice(2,6).toUpperCase();
+    // Descontar créditos optimistamente
+    user.credits -= _rppiBet.amount;
+    window._rppiUser = user;
+    localStorage.setItem('rppi_user', JSON.stringify(user));
+    var balEl = document.getElementById('rppi-bet-balance');
+    if (balEl) balEl.textContent = user.credits + ' RPPI-C';
 
+    // Registrar apuesta en Firebase bajo t2e_bets (compatible con el sistema existente)
+    var betId   = 'RPPI-BET-' + Date.now() + '-' + Math.random().toString(16).slice(2,6).toUpperCase();
+    var FB_URL  = 'https://rappibellion-comments-default-rtdb.firebaseio.com';
     var betData = {
-        id: betId,
-        type: 'rppi_credit',
-        host: user.email,
-        players: [{
-            email: user.email,
-            uid: user.uid,
-            joinedAt: Date.now(),
-            address: user.walletAddress || null
-        }],
-        maxPlayers: 6,
-        amount: _rppiBet.amount,
-        currency: 'RPPI-C',
-        timeLimit: _rppiBet.time * 60,
-        boostLimit: _rppiBet.boost,
-        boostCost: 10,
-        game: window._rppiBetGameId || null,
-        status: 'LOBBY_OPEN',
-        countdownEndTime: null,
-        createdAt: Date.now(),
-        expiresAt: Date.now() + 300000
+        id:          betId,
+        type:        'rppi_credit',          // distingue de bets blockchain
+        creator:     user.email,
+        uid:         user.uid,
+        amount:      _rppiBet.amount,        // en RPPI-C
+        currency:    'RPPI-C',
+        timeLimit:   _rppiBet.time * 60,    // segundos
+        boostLimit:  _rppiBet.boost,
+        boostCost:   10,                    // 1 boost = 10 RPPI-C
+        game:        window._rppiBetGameId || null,
+        status:      'open',
+        createdAt:   Date.now()
     };
 
-    // 🔑 DÉBITO ATÓMICO EN FIREBASE (ZERO-TRUST)
-    firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-        var bal = curr || 0;
-        if (bal < _rppiBet.amount) return; // Aborta si no hay saldo real en nube
-        return bal - _rppiBet.amount;
-    }, function(error, committed, snapshot) {
-        if (error || !committed) {
-            if (st) { st.style.color = 'rgba(255,45,120,0.8)'; st.textContent = '❌ Saldo insuficiente en el Banco Central'; }
-            return;
-        }
-
-        // Con los créditos restados en Firebase, se crea la apuesta
-        firebase.database().ref('t2e_bets/' + betId).set(betData).then(function() {
-            if (st) st.textContent = '✅ Sala abierta — esperando rivales...';
-            // 🩸 BAUTISMO DE SANGRE APOCALYPSIS: Marcar usuario como veterano en nube
-            firebase.database().ref('rppi_users/' + emailKey + '/stats/has_blooded_apocalypsis').set(true);
-            rppiCloseBetModal();
+    fetch(FB_URL + '/t2e_bets/' + betId + '.json', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(betData)
+    }).then(function(r) { return r.json(); }).then(function() {
+        if (st) st.textContent = '✅ Desafío abierto — esperando rival...';
+        // Cerrar modal y abrir arena en modo RPPI-C
+        rppiCloseBetModal();
+        if (typeof window.fpOpenArena === 'function') {
             window.fpState = window.fpState || {};
             window.fpState.betMode     = true;
             window.fpState.betId       = betId;
@@ -11360,129 +10633,14 @@ function rppiLaunchBet() {
             window.fpState.timeLimit   = _rppiBet.time * 60;
             window.fpState.boostLimit  = _rppiBet.boost;
             window.fpState.gameType    = window._rppiBetGameId;
-        }).catch(function(err) {
-            // Revertir débito si falló la creación
-            firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-                return (curr || 0) + _rppiBet.amount;
-            });
-            if (st) { st.style.color = 'rgba(255,45,120,0.8)'; st.textContent = '⚠ Error al crear desafío. Créditos revertidos.'; }
-        });
-    });
-}
-
-// ═══ JOIN RPPI-C — Unirse a sala multijugador (SIN BLOCKCHAIN) ═══
-function joinRppiBet(betId) {
-    var user = window._rppiUser;
-    if (!user || !user.email) return;
-
-    var FB = 'https://rappibellion-comments-default-rtdb.firebaseio.com';
-    var emailKey = user.email.replace(/\./g, '_');
-
-    // 1. Leer la apuesta actual
-    fetch(FB + '/t2e_bets/' + betId + '.json')
-    .then(function(r) { return r.json(); })
-    .then(function(bet) {
-        if (!bet) throw new Error('Sala no encontrada');
-        if (bet.status !== 'LOBBY_OPEN' && bet.status !== 'open') throw new Error('La sala ya no está abierta');
-
-        // 2. Verificar que no esté ya en la sala
-        var players = bet.players || [];
-        var isAlready = players.some(function(p) {
-            return p.email && p.email.toLowerCase() === user.email.toLowerCase();
-        });
-        if (isAlready) throw new Error('Ya estás en esta sala');
-
-        // 3. Verificar que no esté llena
-        var max = bet.maxPlayers || 6;
-        if (players.length >= max) throw new Error('La sala está llena');
-
-        var betAmount = bet.amount || 0;
-
-        // 4. 🔑 DÉBITO ATÓMICO EN FIREBASE (ZERO-TRUST)
-        return new Promise(function(resolve, reject) {
-            firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-                var bal = curr || 0;
-                if (bal < betAmount) return; // Aborta si no hay saldo real
-                return bal - betAmount;
-            }, function(error, committed, snapshot) {
-                if (error || !committed) {
-                    return reject(new Error('Saldo insuficiente en el Banco Central'));
-                }
-                resolve({ bet: bet, players: players, max: max, betAmount: betAmount });
-            });
-        });
-    })
-    .then(function(res) {
-        var bet = res.bet, players = res.players, max = res.max, betAmount = res.betAmount;
-
-        // 5. Agregar jugador al array
-        var newPlayer = {
-            email: user.email,
-            uid: user.uid,
-            joinedAt: Date.now()
-        };
-        players.push(newPlayer);
-
-        // 6. Determinar nuevo estado
-        var newStatus = bet.status;
-        var countdown = bet.countdownEndTime || null;
-
-        if (players.length === 2) {
-            countdown = Date.now() + 60000;
+            window.fpOpenArena(betId, window._rppiBetGameId);
         }
-        if (players.length >= max) {
-            newStatus = 'matched';
-        }
-
-        // 7. Actualizar Firebase
-        return firebase.database().ref('t2e_bets/' + betId).update({
-            players: players,
-            status: newStatus,
-            countdownEndTime: countdown
-        }).catch(function(err) {
-            // Revertir débito en caso de fallo
-            firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-                return (curr || 0) + betAmount;
-            });
-            throw err;
-        });
-    })
-    .then(function() {
-        console.log('✅ Unido a sala RPPI-C:', betId);
-        // 🩸 BAUTISMO DE SANGRE APOCALYPSIS: Marcar usuario como veterano en nube
-        if (emailKey) firebase.database().ref('rppi_users/' + emailKey + '/stats/has_blooded_apocalypsis').set(true);
-        rppiCloseBetModal();
-    })
-    .catch(function(err) {
-        console.error('❌ Error uniendo a sala:', err.message);
-        if (typeof lobbyShowToast === 'function') {
-            lobbyShowToast('❌ ' + err.message, '#FF2D55');
-        }
-    });
-}
-
-// ═══ VER SALAS RPPI-C ABIERTAS — Lista de salas disponibles ═══
-function listRppiOpenBets(callback) {
-    var FB = 'https://rappibellion-comments-default-rtdb.firebaseio.com';
-    fetch(FB + '/t2e_bets.json?orderBy="status"&equalTo="LOBBY_OPEN"')
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-        var bets = [];
-        if (data) {
-            Object.keys(data).forEach(function(key) {
-                var bet = data[key];
-                bet._id = key;
-                // Excluir salas del usuario actual
-                if (bet.host !== window._rppiUser.email) {
-                    bets.push(bet);
-                }
-            });
-        }
-        if (callback) callback(bets);
-    })
-    .catch(function(err) {
-        console.error('❌ Error listando salas:', err);
-        if (callback) callback([]);
+    }).catch(function() {
+        // Revertir si falla
+        user.credits += _rppiBet.amount;
+        window._rppiUser = user;
+        localStorage.setItem('rppi_user', JSON.stringify(user));
+        if (st) { st.style.color = 'rgba(255,45,120,0.8)'; st.textContent = '⚠ Error al crear desafío. Créditos revertidos.'; }
     });
 }
 
@@ -11505,6 +10663,18 @@ function listRppiOpenBets(callback) {
 
                 <!-- HUD overlay flotante — pointer-events:none para no bloquear gameplay -->
                 <div class="holo-ui-layer">
+                    <div class="cyber-ticker-wrap">
+                        <div class="cyber-ticker-track">
+                            <span class="ticker-item"><span class="ticker-sym">BTC1!</span> <span class="ticker-val up">▲ 64,120</span></span>
+                            <span class="ticker-item"><span class="ticker-sym">MOVE</span> <span class="ticker-val down">▼ 112.4</span></span>
+                            <span class="ticker-item"><span class="ticker-sym">IBIT</span> <span class="ticker-val up">▲ 38.52</span></span>
+                            <span class="ticker-item"><span class="ticker-sym">RPPI-C</span> <span class="ticker-val up">▲ ARS 145</span></span>
+                            <span class="ticker-item"><span class="ticker-sym">BTC1!</span> <span class="ticker-val up">▲ 64,120</span></span>
+                            <span class="ticker-item"><span class="ticker-sym">MOVE</span> <span class="ticker-val down">▼ 112.4</span></span>
+                            <span class="ticker-item"><span class="ticker-sym">IBIT</span> <span class="ticker-val up">▲ 38.52</span></span>
+                            <span class="ticker-item"><span class="ticker-sym">RPPI-C</span> <span class="ticker-val up">▲ ARS 145</span></span>
+                        </div>
+                    </div>
                     <div class="glass-briefing">
                         <span class="glitch-text" id="holo-game-label">SYS.OVERRIDE // PAC-HACK PROTOCOL</span>
                     </div>
@@ -11544,7 +10714,7 @@ function listRppiOpenBets(callback) {
                     display: none;
                     position: absolute;
                     bottom: 8px;
-                    left: 75%;
+                    left: 50%;
                     transform: translateX(-50%);
                     width: auto;
                     min-width: 60px;
@@ -12029,13 +11199,13 @@ document.addEventListener('DOMContentLoaded', function() {
     cyberpunkHUD.initialize();
 
     // ── TYPEWRITER ──
-    const textoSantoGrial = "> GEN_TERMINAL_DETECTED...<br>> POINT_OF_ORIGIN: UNKNOWN...<br>> CREO QUE ESTOY EN ALGUN PUNTO DEL PASADO...<br>> EL TIEMPO NO SE MUEVE COMO DEBERÍA...<br>> ALGO ME ESTÁ OCURRIENDO...<br>> MI BRAZO... CAMBIA...<br>> [ RAPPIA ] is ALIVE... ALL IS INTO DARKNESS---<br>> SENDING SIGNAL TO SB CARTEL ...<br>> SI PUEDO ENCONTRARLA, TODO CAMBIA...<br>> TRANSMISSION_CORRUPT [0xF7A2] ...<br>> ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░<br>> SIGNAL_LOST // RETRY: ████░░░░ 67%<br>> END TRANSMISSION...";
+    const textoSantoGrial = "¡HACKING TERMINAL...#INCOMING MESSAGE FROM RAPPIA CAMP# DECODING...\ Toda la XP, Puntos de Nivel, Items y Accesorios que ganes en la Beta de 'El Circuito'... ¡SE MIGRARÁN a tu personaje final en el Juego Virtual de Android! Empieza a farmear, o decide entrar como un novato. Tu leyenda comienza AHORA...END COMUNICATION..";
     const typewriterEl = document.getElementById('typewriter-text');
     function typeWriter(element, text, speed, callback) {
         if (!element) return;
-        let i = 0; element.innerHTML = '';
+        let i = 0; element.textContent = '';
         function type() {
-            if (i < text.length) { element.innerHTML += text.charAt(i); i++; setTimeout(type, speed); }
+            if (i < text.length) { element.textContent += text.charAt(i); i++; setTimeout(type, speed); }
             else if (callback) callback();
         }
         type();
@@ -12060,12 +11230,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 betaStartScreen.style.display = 'none';
                 gameOverlay.classList.remove('game-menu-hidden');
                 if (typeof window.vegasIgnite === 'function') setTimeout(window.vegasIgnite, 100);
-                // Activar sync real-time del lobby
-                lobbyLoadOpenBets();
-                lobbySyncCredits();
                 // typewriter fires once via DOMContentLoaded
-                const lobbyEl = document.getElementById('casino-retro-lobby');
-                if (lobbyEl) setTimeout(() => lobbyEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                const santo = document.getElementById('santo-grial-message');
+                if (santo) setTimeout(() => santo.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
             }, 380);
         });
     }
@@ -12077,9 +11244,6 @@ document.addEventListener('DOMContentLoaded', function() {
             gameOverlay.classList.add('game-menu-hidden');
             betaStartScreen.style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            // Desconectar listeners real-time del lobby
-            lobbyDisconnectBets();
-            lobbyDisconnectCredits();
             /* Reset del badge LED — si quedó "zoomeado" desapareciendo
                de la partida anterior, lo devolvemos a su estado normal
                para la próxima vez que se presione COMENZAR */
@@ -12251,114 +11415,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 10000);
 
-        // ⚡ ENMASCARAMIENTO DUAL DE IDENTIDAD (DIRECTIVA DE GAMMA)
-        function formatPlayerIdentity(p, isWeb3) {
-            if (!p) return 'VACÍO';
-            if (isWeb3 && p.address) {
-                return p.address.substring(0,6) + '...' + p.address.substring(p.address.length - 4);
+        // Escuchar score del rival en tiempo real
+        const rivalScoreRef = betRef.child('scores/' + fpState.rivalRole);
+        _fpSyncRefs.push(rivalScoreRef);
+        rivalScoreRef.on('value', function(snap) {
+            const score = snap.val();
+            if (score === null || score === undefined) return;
+            const rivalScoreEl = document.getElementById('rival-score');
+            if (rivalScoreEl) {
+                rivalScoreEl.textContent = String(score).padStart(4, '0');
+                rivalScoreEl.style.color = score > fpState.score ? '#ff4444' : '#00ff41';
             }
-            var name = p.email || p.alias || 'GHOST';
-            return name.split('@')[0].toUpperCase();
-        }
-
-        // 🚀 OPERATION [ BLUESKY VALKYRIE ]: ESCUCHA GLOBAL MULTIJUGADOR DE SCORES (HASTA 6 JUGADORES)
-        var betSnapRef = fbDB.ref('t2e_bets/' + betId);
-        _fpSyncRefs.push(betSnapRef);
-        betSnapRef.on('value', function(betSnap) {
-            var fullBet = betSnap.val();
-            if (!fullBet) return;
-            var playersList = fullBet.players || [];
-            var scoresObj = fullBet.scores || {};
-            var isWeb3 = fullBet.currency === 'USDT' || fullBet.currency === 'RPPI';
-
-            // Resolver mi rol dinámico (p1..p6) según mi posición en el array players[]
-            var myEmail = (window._rppiUser && window._rppiUser.email) ? window._rppiUser.email.toLowerCase() : '';
-            var myAddr = (window._rppiUser && window._rppiUser.walletAddress) ? window._rppiUser.walletAddress.toLowerCase() : '';
-            var myIndex = -1;
-
-            playersList.forEach(function(p, idx) {
-                if (p) {
-                    if (p.email && p.email.toLowerCase() === myEmail) myIndex = idx;
-                    else if (p.address && p.address.toLowerCase() === myAddr) myIndex = idx;
-                }
-            });
-
-            if (myIndex !== -1) {
-                fpState.myRole = 'p' + (myIndex + 1);
-            }
-            console.log('[BLUESKY VALKYRIE] Mi rol activo:', fpState.myRole, '| Total Jugadores:', playersList.length);
-
-            // Construir matriz de los 6 slots
-            var leaderboard = [];
-            for (var i = 1; i <= 6; i++) {
-                var roleKey = 'p' + i;
-                var pData = playersList[i - 1] || null;
-                var pScore = (scoresObj[roleKey] !== undefined && scoresObj[roleKey] !== null) ? Number(scoresObj[roleKey]) : 0;
-                var pStatus = (pScore === -1) ? 'REKT' : (pData ? 'ALIVE' : 'EMPTY');
-
-                leaderboard.push({
-                    role: roleKey,
-                    score: pScore,
-                    status: pStatus,
-                    identity: pData ? formatPlayerIdentity(pData, isWeb3) : 'VACÍO',
-                    isMe: (roleKey === fpState.myRole)
-                });
-            }
-
-            // Ordenamiento en RAM de mayor a menor score
-            leaderboard.sort(function(a, b) {
-                if (a.status === 'EMPTY' && b.status !== 'EMPTY') return 1;
-                if (b.status === 'EMPTY' && a.status !== 'EMPTY') return -1;
-                return b.score - a.score;
-            });
-
-            // Pintado en Lote (Batch DOM Update) con translateY a 60 FPS
-            leaderboard.forEach(function(item, rankIndex) {
-                var slotEl = document.getElementById('slot-' + item.role);
-                if (!slotEl) return;
-
-                // Animación de posición GPU
-                slotEl.style.transform = 'translateY(' + (rankIndex * 48) + 'px)';
-
-                // Rank Badge
-                var rankEl = slotEl.querySelector('.holo-slot-rank');
-                if (rankEl) {
-                    rankEl.textContent = '#' + (rankIndex + 1);
-                    rankEl.className = 'holo-slot-rank ' + (
-                        rankIndex === 0 ? 'holo-slot-rank--1' :
-                        rankIndex === 1 ? 'holo-slot-rank--2' :
-                        rankIndex === 2 ? 'holo-slot-rank--3' : 'holo-slot-rank--sub'
-                    );
-                }
-
-                // Identidad
-                var idEl = slotEl.querySelector('.holo-slot-identity');
-                if (idEl) {
-                    idEl.textContent = item.identity + (item.isMe ? ' (TÚ)' : '');
-                    idEl.style.color = item.isMe ? '#FFD700' : '#E6DED0';
-                }
-
-                // Puntaje
-                var scoreEl = slotEl.querySelector('.score-val');
-                if (scoreEl) {
-                    scoreEl.textContent = String(item.score).padStart(4, '0');
-                }
-
-                // Estado LED
-                var statusLed = slotEl.querySelector('.status-led');
-                if (statusLed) {
-                    if (item.status === 'REKT') {
-                        statusLed.textContent = '☠ REKT';
-                        statusLed.className = 'holo-slot-status status-led status-rekt';
-                    } else if (item.status === 'ALIVE') {
-                        statusLed.textContent = '● ALIVE';
-                        statusLed.className = 'holo-slot-status status-led status-alive';
-                    } else {
-                        statusLed.textContent = '--';
-                        statusLed.className = 'holo-slot-status status-led';
-                    }
-                }
-            });
         });
 
         // Subscribe to rival boost usage in Firebase
@@ -12432,58 +11499,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch(e) {}
     }
 
-    function _fpApplyArenaPerfMode() {
-        if (!document.body) return;
-        var isLite = false;
-        try {
-            var params = new URLSearchParams(window.location.search || '');
-            var paramMode = params.get('arena-lite');
-            if (paramMode === '1' || paramMode === 'true' || paramMode === 'on') {
-                isLite = true;
-            } else if (paramMode === '0' || paramMode === 'false' || paramMode === 'off') {
-                isLite = false;
-            } else {
-                isLite = localStorage.getItem('arena-lite-mode') === '1';
-            }
-        } catch (e) {
-            isLite = false;
-        }
-        document.body.classList.toggle('arena-lite-mode', isLite);
-
-        var scope = document.getElementById('t2eplay-arena') || document.querySelector('.fp-game-wrap') || document.body;
-        var tickerNodes = scope.querySelectorAll ? scope.querySelectorAll('.cyber-ticker-wrap, .cyber-ticker-track, .ticker-item, .scanlines') : [];
-        var particleNodes = scope.querySelectorAll ? scope.querySelectorAll('.holo-particles, .hero-holo-particles') : [];
-
-        Array.prototype.forEach.call(tickerNodes, function(el) {
-            if (!el) return;
-            el.style.display = isLite ? 'none' : '';
-            el.style.visibility = isLite ? 'hidden' : '';
-        });
-
-        Array.prototype.forEach.call(particleNodes, function(el) {
-            if (!el) return;
-            el.style.display = isLite ? 'none' : '';
-            el.style.visibility = isLite ? 'hidden' : '';
-        });
-
-        var panel = document.getElementById('arena-core');
-        if (panel) {
-            panel.style.animation = isLite ? 'none' : '';
-            panel.style.filter = isLite ? 'none' : '';
-        }
-    }
-
-    function _fpSetArenaPerfMode(forceLite) {
-        if (!document.body) return;
-        try {
-            if (typeof forceLite === 'boolean') {
-                if (forceLite) localStorage.setItem('arena-lite-mode', '1');
-                else localStorage.removeItem('arena-lite-mode');
-            }
-        } catch (e) {}
-        _fpApplyArenaPerfMode();
-    }
-
      function fpOpenArena(betId, gameType) {
          // REGRESSION FIX: re-entrancy guard - if arena already open for this betId, bail out.
          if (betId && betId === _fpArenaOpenedForBet && fpArena && fpArena.classList.contains('show')) {
@@ -12491,10 +11506,6 @@ document.addEventListener('DOMContentLoaded', function() {
              return;
          }
          if (betId) _fpArenaOpenedForBet = betId;
-
-         // 🟢 Focus Mode: activar al inicio para que se ejecute siempre, sin importar returns tempranos
-         document.body.classList.add('arena-open');
-         _fpApplyArenaPerfMode();
 
          // Resolver gameType: puede venir como argumento o desde la apuesta aceptada guardada
          if (!gameType && window._currentAcceptedBet && window._currentAcceptedBet.gameType) {
@@ -12693,8 +11704,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpTimerBar) { fpTimerBar.style.transition='none'; fpTimerBar.style.width='100%'; }
         if (fpScoreEl)  fpScoreEl.textContent = '0000';
         if (fpTimerEl)  fpTimerEl.style.color = '';
-         if (fpArena)    fpArena.classList.add('show');
-         if (fpState.betMode) _fpEnterFullscreen();
+        if (fpArena)    fpArena.classList.add('show');
+        if (fpState.betMode) _fpEnterFullscreen();
 
         // Activar/desactivar panel rival según betMode
         _fpToggleRivalPanel(fpState.betMode, betId);
@@ -12723,13 +11734,9 @@ document.addEventListener('DOMContentLoaded', function() {
             betId: 'PREVIEW_00', betMode: true, chaosUnlocked: false,
             previewMode: true
         };
-         window.fpState = fpState;
+        window.fpState = fpState;
 
-         // 🟢 Focus Mode: activar al inicio para que se ejecute siempre
-         document.body.classList.add('arena-open');
-         _fpApplyArenaPerfMode();
-
-         // Limpieza estándar (igual que fpOpenArena)
+        // Limpieza estándar (igual que fpOpenArena)
         var _dynaWrap = document.getElementById('fp-chaos-dynabtn-wrap');
         if (_dynaWrap) _dynaWrap.style.display = 'none';
         var _chaosBar = document.getElementById('fp-chaos-bar');
@@ -12740,9 +11747,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (tangoAudioPV && !tangoAudioPV.paused) tangoAudioPV.muted = true;
         const _chatFabPV = document.getElementById('gemini-chat-fab');
         if (_chatFabPV) _chatFabPV.style.display = 'none';
-         document.body.style.overflow    = 'hidden';
-         
-         // Cargar juego T2E según selección (pac-hack o tetris)
+        document.body.style.overflow    = 'hidden';
+        
+        // Cargar juego T2E según selección (pac-hack o tetris)
         // Soporta window._fpPreviewGame = 'tetris' para modo preview
         console.log('[PREVIEW] Loading game, _fpPreviewGame:', window._fpPreviewGame, 'gameType:', window.T2EIntegration && window.T2EIntegration.currentGameType);
         if (fpIframe) {
@@ -12887,95 +11894,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
     }
 
-    // ── HOLOGRAPHIC BOOT SCREEN — MOTOR CANVAS V2 OVERDRIVE (DIRECTIVA ALPHA + GAMMA) ──
-    var _holoBootAnimFrame = null;
-
-    function fpShowHoloBootCanvas() {
-        var canvas = document.getElementById('holo-boot-canvas');
-        if (!canvas) return;
-        var ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        var particles = [];
-        var PARTICLE_COUNT = 660; // Densidad total del Cartel
-        var SHAPES = ['diamond', 'spark', 'hex', 'spark', 'diamond', 'hex'];
-
-        function rand(a, b) { return a + Math.random() * (b - a); }
-        function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
-
-        // Generar 660 partículas con dimensiones originales de indexSybil22.html (100% Poligonal)
-        for (var i = 0; i < PARTICLE_COUNT; i++) {
-            var shape = pick(SHAPES);
-            var baseSize = rand(8, 26);
-            var w = shape === 'spark' ? rand(20, 66) : baseSize;
-            var h = shape === 'spark' ? 2.5 : baseSize;
-
-            particles.push({
-                x: rand(0, canvas.width),
-                y: rand(0, canvas.height),
-                w: w,
-                h: h,
-                shape: shape,
-                speedY: rand(0.8, 2.2),
-                opacity: rand(0.3, 0.85),
-                glow: rand(12, 28)
-            });
-        }
-
-        function drawShape(ctx, p) {
-            ctx.beginPath();
-            if (p.shape === 'spark') {
-                ctx.rect(p.x - p.w / 2, p.y - p.h / 2, p.w, p.h);
-            } else if (p.shape === 'diamond') {
-                ctx.save();
-                ctx.translate(p.x, p.y);
-                ctx.rotate(Math.PI / 4); // Diamante rotado 45°
-                ctx.rect(-p.w / 2, -p.w / 2, p.w, p.w);
-                ctx.restore();
-                return;
-            } else if (p.shape === 'hex') {
-                var r = p.w / 2;
-                for (var j = 0; j < 6; j++) {
-                    var angle = (Math.PI / 3) * j;
-                    var hx = p.x + r * Math.cos(angle);
-                    var hy = p.y + r * Math.sin(angle);
-                    if (j === 0) ctx.moveTo(hx, hy);
-                    else ctx.lineTo(hx, hy);
-                }
-                ctx.closePath();
-            }
-            ctx.fill();
-        }
-
-        function renderHoloParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            particles.forEach(function(p) {
-                ctx.shadowColor = '#00FFCC';
-                ctx.shadowBlur = p.glow;
-                ctx.globalAlpha = p.opacity;
-                ctx.fillStyle = '#FFFFFF'; // Núcleo radiante blanco
-
-                drawShape(ctx, p);
-
-                // Flote hacia arriba
-                p.y -= p.speedY;
-                if (p.y < -30) p.y = canvas.height + 30;
-
-                // Parpadeo aleatorio
-                p.opacity += (Math.random() - 0.5) * 0.06;
-                if (p.opacity > 0.95) p.opacity = 0.95;
-                if (p.opacity < 0.25) p.opacity = 0.25;
-            });
-
-            _holoBootAnimFrame = requestAnimationFrame(renderHoloParticles);
-        }
-
-        if (_holoBootAnimFrame) cancelAnimationFrame(_holoBootAnimFrame);
-        renderHoloParticles();
-    }
-
+    // ── HOLOGRAPHIC BOOT SCREEN — DESPROPORCIÓN TOTAL ──
     function fpShowHoloBoot(callback) {
         var el = document.getElementById('fp-holo-boot');
         var bar = document.getElementById('holo-boot-bar');
@@ -12994,25 +11913,50 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         var squares = sqWrap.querySelectorAll('.holo-boot-sq');
 
-        // ⚡ Arrancar motor Canvas (660 partículas aceleradas por GPU)
-        fpShowHoloBootCanvas();
+        // ── 660 partículas pre-generadas — ya animándose ──
+        var pContainer = el.querySelector('.holo-boot-particles');
+        if (pContainer) pContainer.innerHTML = '';
+        var SHAPES = ['diamond','spark','hex','spark','diamond','hex'];
+        var PARTICLE_COUNT = 660;
+        function bRand(a,b){ return a+Math.random()*(b-a); }
+        function bPick(a){ return a[Math.floor(Math.random()*a.length)]; }
+
+        for (var p = 0; p < PARTICLE_COUNT; p++) {
+            var pt = document.createElement('div');
+            var shape = bPick(SHAPES);
+            var size = bRand(4.5, 24);
+            var w = shape==='spark' ? bRand(18, 66) : size;
+            var h = shape==='spark' ? 2 : size;
+            var glow = bRand(6, 24);
+            var opacity = bRand(0.25, 0.75);
+            var dur = bRand(4, 12);
+            var del = bRand(0, 10);
+            var drift = bRand(-40, 40);
+            var scale = bRand(0.7, 1.6);
+            var anim = bPick(['bootParticleFloat','bootParticlePulse','bootParticleBlink']);
+
+            pt.className = 'holo-boot-p holo-boot-p--'+shape;
+            pt.style.cssText = [
+                'width:'+w.toFixed(1)+'px',
+                'height:'+h.toFixed(1)+'px',
+                'left:'+bRand(1,99).toFixed(1)+'%',
+                'background:#fff',
+                'box-shadow:0 0 '+glow.toFixed(0)+'px rgba(255,255,255,0.9), 0 0 '+(glow*2.5).toFixed(0)+'px rgba(255,255,255,0.4), 0 0 '+(glow*4).toFixed(0)+'px rgba(0,255,204,0.2)',
+                '--bp-scale:'+scale.toFixed(2),
+                '--bp-opacity:'+opacity.toFixed(2),
+                '--bp-drift:'+drift.toFixed(0)+'px',
+                '--bp-glow:'+glow.toFixed(0)+'px',
+                'animation:'+anim+' '+dur.toFixed(1)+'s linear '+del.toFixed(1)+'s infinite'
+            ].join(';');
+            pContainer.appendChild(pt);
+        }
 
         // Reset
         bar.style.width = '0%';
-        if (scriptEl) { scriptEl.style.animation = 'bootScriptFade 0.4s ease-out'; scriptEl.style.opacity = '1'; }
+        if (scriptEl) { scriptEl.style.animation = 'none'; scriptEl.style.opacity = '0'; }
         squares.forEach(function(s){ s.classList.remove('active'); });
 
-        // I AM ATOMIC — audio + overlay al iniciar holographic boot
-        var atomicOv = document.getElementById('atomic-overlay');
-        try {
-            if (window._atomicAudio) { window._atomicAudio.pause(); window._atomicAudio = null; }
-            window._atomicAudio = new Audio('sounds/i%20am%20atomic.m4a');
-            window._atomicAudio.volume = 0.7;
-            window._atomicAudio.play().catch(function(){});
-            if (atomicOv) { atomicOv.classList.add('show'); atomicOv.classList.remove('hide'); }
-        } catch(e) {}
-
-        // MOSTRAR
+        // MOSTRAR — las partículas ya están animándose
         el.classList.add('show');
 
         var messages = [
@@ -13039,7 +11983,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var progress = 0, msgIdx = 0, sqIdx = 0;
 
-        // Typewriter acelerado a 20ms para completar en la ventana de 2.5s
+        // Typewriter independiente — arranca al instante
         var scriptLines = [
             '> sys.core → initializing holographic_matrix',
             '> env.build → injecting oklch_engine v3.1',
@@ -13059,9 +12003,11 @@ document.addEventListener('DOMContentLoaded', function() {
             var prev = twLine > 0 ? '<br>' : '';
             scriptEl.innerHTML = prev + colored + cursor;
             if (twChar >= scriptLines[twLine].length) { twLine++; twChar = 0; }
-        }, 20);
+        }, 48); // FIX Alpha: reescalado de 80ms→48ms (mismo ratio que la
+                 // barra de progreso 100ms→60ms) para que las 3 líneas del
+                 // typewriter terminen de escribirse DENTRO de la nueva
+                 // ventana de ~6s, en vez de quedar cortadas a mitad
 
-        // ⏱️ DIRECTIVA OMEGA: Carga acelerada a 25ms (2.5 segundos total)
         var timer = setInterval(function() {
             progress += 1;
             bar.style.width = Math.min(progress,100)+'%';
@@ -13082,25 +12028,17 @@ document.addEventListener('DOMContentLoaded', function() {
             if (progress >= 100) {
                 clearInterval(timer);
                 clearInterval(twTimer);
-                if (_holoBootAnimFrame) { cancelAnimationFrame(_holoBootAnimFrame); _holoBootAnimFrame = null; }
                 warn.textContent = 'SYSTEM READY';
                 status.textContent = 'ARENA ONLINE';
                 if (scriptEl) scriptEl.innerHTML += '<br><span class="hl">✓ ALL SYSTEMS NOMINAL</span>';
-                try {
-                    if (window._atomicAudio) {
-                        window._atomicAudio.volume = Math.max(0, window._atomicAudio.volume - 0.3);
-                        setTimeout(function() {
-                            if (window._atomicAudio) { window._atomicAudio.pause(); window._atomicAudio = null; }
-                        }, 600);
-                    }
-                    if (atomicOv) { atomicOv.classList.add('hide'); atomicOv.classList.remove('show'); }
-                } catch(e) {}
                 setTimeout(function() {
                     el.classList.remove('show');
                     if (callback) callback();
                 }, 500);
             }
-        }, 25);
+        }, 60); // FIX Alpha: ~6s en vez de ~10s (100 pasos * 60ms) —
+                // punto intermedio: el holo boot "era mucho", esto le
+                // da más aire al 3-2-1 sin estirar tanto la espera total
     }
 
     // Wrapper: boot screen → countdown
@@ -13116,11 +12054,11 @@ document.addEventListener('DOMContentLoaded', function() {
         fpState._cdRunning = true;
         fpState.running = true; // activar ANTES del 3-2-1: el gate de CHAOS_LEVEL lo necesita
         const steps = [
-            { num:'3',     cls:'big',   sub:'PREPÁRATE PARA HACKEAR',   dur:750 },
-            { num:'2',     cls:'big',   sub:'LOS FANTASMAS TE ESPERAN', dur:750 },
-            { num:'1',     cls:'big',   sub:'¡ÚLTIMA OPORTUNIDAD!',     dur:750 },
-            { num:'READY', cls:'ready', sub:'',                          dur:500 },
-            { num:'HACK!', cls:'go',    sub:'',                          dur:500 },
+            { num:'3',     cls:'big',   sub:'PREPÁRATE PARA HACKEAR',   dur:1125 },
+            { num:'2',     cls:'big',   sub:'LOS FANTASMAS TE ESPERAN', dur:1125 },
+            { num:'1',     cls:'big',   sub:'¡ÚLTIMA OPORTUNIDAD!',     dur:1125 },
+            { num:'READY', cls:'ready', sub:'',                          dur:1125 },
+            { num:'HACK!', cls:'go',    sub:'',                          dur:875  },
         ];
         if (fpCdOverlay) fpCdOverlay.classList.add('show');
         let i = 0;
@@ -13252,27 +12190,24 @@ document.addEventListener('DOMContentLoaded', function() {
          if (isTetris) {
              // TETRIS: solo neon
              if (boostBtn)       boostBtn.style.display       = 'none';
-             if (tetrisBosBtn)   tetrisBosBtn.style.display   = 'flex';
+             if (tetrisBosBtn)   tetrisBosBtn.style.display   = 'block';
              if (overlayBtn)     overlayBtn.style.display     = 'none';
-             if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'flex';
+             if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'block';
              if (sbBoostBtn)     sbBoostBtn.style.display     = 'none';
-             if (boostBadge)     boostBadge.style.left        = '75%';
          } else if (isSpcBreaker) {
              // SPACE-BREAKER: ATOMIC PULSE
              if (boostBtn)       boostBtn.style.display       = 'none';
              if (tetrisBosBtn)   tetrisBosBtn.style.display   = 'none';
              if (overlayBtn)     overlayBtn.style.display     = 'none';
              if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'none';
-             if (sbBoostBtn)     sbBoostBtn.style.display     = 'flex';
-             if (boostBadge)     boostBadge.style.left        = '75%';
+             if (sbBoostBtn)     sbBoostBtn.style.display     = 'block';
          } else {
              // PAC-HACK: botón normal
              if (boostBtn)       boostBtn.style.display       = 'block';
              if (tetrisBosBtn)   tetrisBosBtn.style.display   = 'none';
-             if (overlayBtn)     overlayBtn.style.display     = 'flex';
+             if (overlayBtn)     overlayBtn.style.display     = 'block';
              if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'none';
              if (sbBoostBtn)     sbBoostBtn.style.display     = 'none';
-             if (boostBadge)     boostBadge.style.left        = '75%';
          }
 
          // Re-habilitar botones
@@ -13865,10 +12800,9 @@ function fpCloseArena() {
         if (holoLabel) holoLabel.textContent = 'SYS.OVERRIDE // PAC-HACK: DEATH // FREE_PLAY';
         if (fpTimerEl) { fpTimerEl.style.color = ''; fpTimerEl.textContent = '00:00'; }
         if (fpControlSelector) fpControlSelector.classList.remove('show');
-         // Restaurar scroll al salir del juego
-         document.body.style.overflow = '';
-         document.body.style.touchAction = '';
-         document.body.classList.remove('arena-open');
+        // Restaurar scroll al salir del juego
+        document.body.style.overflow = '';
+        document.body.style.touchAction = '';
         // Liberar WakeLock
         if (window._fpWakeLock) { window._fpWakeLock.release(); window._fpWakeLock = null; }
         // 🌟 Parar Mario Star si estaba sonando
@@ -13925,10 +12859,6 @@ function fpCloseArena() {
         // Limpiar badge de preview si estaba activo
         var _previewBadge = document.getElementById('fp-preview-badge');
         if (_previewBadge) _previewBadge.style.display = 'none';
-        // ── HoloHUD: ocultar paneles al cerrar arena ──
-        if (window.cyberpunkHUD && typeof window.cyberpunkHUD.hideHUD === 'function') {
-            window.cyberpunkHUD.hideHUD();
-        }
         // Restaurar lobby de apuestas al cerrar arena
         if (typeof showLobbyFloat === 'function') showLobbyFloat();
     }
@@ -14408,17 +13338,7 @@ function fpCloseArena() {
     // Regla general: si no hay billetera conectada, redirige a conectar
     function requireWalletThenBet(gameId) {
         if (!walletConnected && !window._walletConnected) {
-            // [RPPI-C CHECK] Si el usuario está en modo 2.5 web (créditos), no mostrar disclaimer blockchain
-            var rppiUser = window._rppiUser;
-            if (rppiUser && rppiUser.email) {
-                // Modo RPPI-C: mostrar modal de apuesta directamente (sin wallet)
-                window._pendingBetGame = null;
-                selectedGame = gameId.replace('make-bet-', '').toUpperCase();
-                if (betModalTitle) betModalTitle.textContent = 'DESAFIO: ' + selectedGame + ' — CONFIGURA TU APUESTA';
-                if (makeBetModal) makeBetModal.classList.remove('game-menu-hidden');
-                return;
-            }
-            // Modo Web3: guardar juego pendiente y mostrar disclaimer blockchain
+            // Guardar juego pendiente para auto-abrir el modal cuando conecte la billetera
             window._pendingBetGame = gameId;
             var cwBtn = document.getElementById('connect-wallet-button');
             if (cwBtn) {
@@ -15196,353 +14116,159 @@ updateMuteBtnVisibility();
     </script>
 
     <section id="team" class="container section-separator">
+        <h2 class="glitch-title">LA RESISTENCIA (EL EQUIPO - MOST WANTED)</h2>
+        <div class="team-grid">
+        
+<div class="team-member">
+                <h4>Gabriel C. DOMINGUEZ</h4>
+                <p>Director Estratégico / Diseño Gráfico</p>
 
-<!-- ══════════════════════════════════════════════════════════════════════════════
-     SB_CARTEL SYNDICATE — THE 4 HORSEMEN + SHADOW OPERATIVES
-     Cyberpunk criminal hierarchy · Military intel aesthetic
-══════════════════════════════════════════════════════════════════════════════ -->
-<section id="syndicate" class="synd-section">
-  <div class="synd-bg-grid"></div>
-  <div class="synd-scan-beam"></div>
-
-  <!-- Header -->
-  <div class="synd-header">
-    <div class="synd-eyebrow"><span class="synd-dot"></span>SB_CARTEL · COMMAND STRUCTURE</div>
-    <h2 class="synd-title">[ SYNDICATE // THE 4 HORSEMEN ]</h2>
-    <p class="synd-subtitle">ESTADO DE LA REBEL NET: <span class="synd-status-live">ONLINE Y LETAL</span></p>
-  </div>
-
-  <!-- CORRUPTION OVERLAY — "Houston, tenemos un problema con la línea temporal" -->
-  <div id="timeline-corruption"></div>
-
-  <!-- SAGAI DEVIL TRIGGER — Modal System -->
-  <script>
-  function sagaiModalOpen() {
-    var modal = document.getElementById('sagai-modal');
-    var audio = document.getElementById('sagai-audio');
-    var imgWrap = document.getElementById('sagai-img-wrap');
-    var logoWrap = document.getElementById('sagai-logo-wrap');
-    var subText = document.getElementById('sagai-sub-text');
-    var glitchLines = document.getElementById('sagai-glitch-lines');
-    if (!modal) return;
-
-    modal.style.display = 'flex';
-    audio.volume = 0.8;
-    audio.play().catch(function(){});
-    window._sagaiModalTimers = [];
-
-    var subtitles = [
-      { text: '> How? Not even I could succeed in restoring it...', start: 10000, end: 15000 },
-      { text: '> From that day forth, my arm changed...', start: 15500, end: 19500 },
-      { text: '> And a voice echoed... "POWER"... "GIVE ME MORE POWER"', start: 20000, end: 27000, drop: true },
-      { text: '> What?', start: 27500, end: 29500 },
-      { text: '> And if I become a Demon, so be it... I will endure the exile...', start: 30000, end: 37000 },
-      { text: '> Anything to protect her...', start: 37500, end: 40000 }
-    ];
-    subtitles.forEach(function(sub) {
-      var t1 = setTimeout(function() {
-        subText.textContent = sub.text;
-        if (sub.drop) {
-          logoWrap.classList.add('sagai-logo-active');
-          glitchLines.style.opacity = '1';
-          setTimeout(function() { glitchLines.style.opacity = '0'; }, 500);
-        }
-      }, sub.start);
-      var t2 = setTimeout(function() {
-        subText.textContent = '';
-        if (sub.drop) { /* R se queda furiosa — no vuelve a cryo */ }
-      }, sub.end);
-      window._sagaiModalTimers.push(t1, t2);
-    });
-    window._sagaiModalTimers.push(setTimeout(function() { sagaiModalClose(); }, 41000));
-  }
-
-  function sagaiModalClose() {
-    var modal = document.getElementById('sagai-modal');
-    var audio = document.getElementById('sagai-audio');
-    var imgWrap = document.getElementById('sagai-img-wrap');
-    var logoWrap = document.getElementById('sagai-logo-wrap');
-    var subText = document.getElementById('sagai-sub-text');
-    if (!modal) return;
-    modal.style.display = 'none';
-    audio.pause(); audio.currentTime = 0;
-    logoWrap.classList.remove('sagai-logo-active');
-    subText.textContent = '';
-    if (window._sagaiModalTimers) { window._sagaiModalTimers.forEach(function(t) { clearTimeout(t); }); window._sagaiModalTimers = []; }
-  }
-  document.getElementById('sagai-modal').addEventListener('click', function(e) { if (e.target === this) sagaiModalClose(); });
-  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') sagaiModalClose(); });
-  </script>
-
-  <!-- LOS 4 JINETES -->
-  <div class="synd-grid synd-grid--main">
-
-      <!-- NODO 00 — SAGAI REBELBET // G-CODE LEGACY -->
-    <div class="synd-card synd-card--sagai synd-card--ghost"
-         onclick="sagaiModalOpen()" style="cursor:pointer;">
-      <div class="synd-card-corner synd-card-corner--tl"></div>
-      <div class="synd-card-corner synd-card-corner--tr"></div>
-      <div class="synd-card-corner synd-card-corner--bl"></div>
-      <div class="synd-card-corner synd-card-corner--br"></div>
-      <div class="synd-card-header">
-        <span class="synd-rank">00 // G-CODE LEGACY</span>
-        <span class="synd-greek">Σ</span>
-        <span class="synd-status-dot synd-status-dot--cryo"></span>
-      </div>
-      <h3 class="synd-name synd-name--glitch">[LEGACY] SAGAI</h3>
-      <p class="synd-role">FIRST CLASS SOLDIER // EN ESTASIS</p>
-      <div class="synd-stats">
-        <p class="synd-stat">>_ ROL: EL PRIMER GENERAL DEL CARTEL</p>
-        <p class="synd-stat">>_ OPERACIÓN: REACTIVACIÓN DE MEMORIA NÚCLEO</p>
-        <p class="synd-alert synd-alert--cryo">> NUNCA OLVIDADO // EXTRACCIÓN PENDIENTE</p>
-      </div>
-    </div>
-
-    <!-- ALPHA -->
-    <div class="synd-card synd-card--alpha">
-      <div class="synd-card-corner synd-card-corner--tl"></div>
-      <div class="synd-card-corner synd-card-corner--tr"></div>
-      <div class="synd-card-corner synd-card-corner--bl"></div>
-      <div class="synd-card-corner synd-card-corner--br"></div>
-      <div class="synd-card-header">
-        <span class="synd-rank">01 // LÍDER</span>
-        <span class="synd-greek">Α</span>
-        <span class="synd-status-dot synd-status-dot--active"></span>
-      </div>
-      <h3 class="synd-name">ALPHA</h3>
-      <p class="synd-role">EL COMANDANTE</p>
-      <div class="synd-stats">
-        <p class="synd-stat">>_ ROL: VISIÓN Y ESTRATEGIA MÁXIMA</p>
-        <p class="synd-stat">>_ ARMA: ARQUITECTURA DEL CARTEL</p>
-        <p class="synd-alert synd-alert--classified">> ALERTA: CLASIFICADO</p>
-      </div>
-    </div>
-
-    <!-- BETA -->
-    <div class="synd-card synd-card--beta">
-      <div class="synd-card-corner synd-card-corner--tl"></div>
-      <div class="synd-card-corner synd-card-corner--tr"></div>
-      <div class="synd-card-corner synd-card-corner--bl"></div>
-      <div class="synd-card-corner synd-card-corner--br"></div>
-      <div class="synd-card-header">
-        <span class="synd-rank">02 // LEGAL</span>
-        <span class="synd-greek">Β</span>
-        <span class="synd-status-dot synd-status-dot--active"></span>
-      </div>
-      <h3 class="synd-name">BETA</h3>
-      <p class="synd-role">EL BLINDAJE [G-CORE]</p>
-      <div class="synd-stats">
-        <p class="synd-stat">>_ ROL: GUERRA JURÍDICA Y SMART CONTRACTS</p>
-        <p class="synd-stat">>_ ARMA: EXPLOTACIÓN DE VACÍOS LEGALES</p>
-        <p class="synd-alert synd-alert--immune">> ALERTA: INMUNIDAD ACTIVA</p>
-      </div>
-    </div>
-
-    <!-- GAMMA -->
-    <div class="synd-card synd-card--gamma">
-      <div class="synd-card-corner synd-card-corner--tl"></div>
-      <div class="synd-card-corner synd-card-corner--tr"></div>
-      <div class="synd-card-corner synd-card-corner--bl"></div>
-      <div class="synd-card-corner synd-card-corner--br"></div>
-      <div class="synd-card-header">
-        <span class="synd-rank">03 // TÁCTICO</span>
-        <span class="synd-greek">Γ</span>
-        <span class="synd-status-dot synd-status-dot--active"></span>
-      </div>
-      <h3 class="synd-name">GAMMA</h3>
-      <p class="synd-role">FRONTEND GENERAL [G-CORE]</p>
-      <div class="synd-stats">
-        <p class="synd-stat">>_ ROL: GUERRA PSICOLÓGICA VISUAL</p>
-        <p class="synd-stat">>_ ARMA: MANIPULACIÓN DEL DOM E HIPNOSIS UX</p>
-        <p class="synd-alert synd-alert--inject">> ALERTA: INYECCIÓN DE CÓDIGO</p>
-      </div>
-    </div>
-
-    <!-- OMEGA -->
-    <div class="synd-card synd-card--omega">
-      <div class="synd-card-corner synd-card-corner--tl"></div>
-      <div class="synd-card-corner synd-card-corner--tr"></div>
-      <div class="synd-card-corner synd-card-corner--bl"></div>
-      <div class="synd-card-corner synd-card-corner--br"></div>
-      <div class="synd-card-header">
-        <span class="synd-rank">04 // MOTOR</span>
-        <span class="synd-greek">Ω</span>
-        <span class="synd-status-dot synd-status-dot--active"></span>
-      </div>
-      <h3 class="synd-name">OMEGA</h3>
-      <p class="synd-role">EL ARQUITECTO DEL SÓTANO</p>
-      <div class="synd-stats">
-        <p class="synd-stat">>_ ROL: TOKENOMICS Y ESTRUCTURA BACKEND</p>
-        <p class="synd-stat">>_ ARMA: EL HORNO DE QUEMA (SINK & BURN)</p>
-        <p class="synd-alert synd-alert--pressure">> ALERTA: PRESIÓN ALCISTA</p>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- SHADOW SYNDICATE -->
-  <div class="synd-divider">
-    <div class="synd-divider-line"></div>
-    <span class="synd-divider-text">[ EXPANDED NETWORK // SHADOW OPERATIVES ]</span>
-    <div class="synd-divider-line"></div>
-  </div>
-
-  <div class="synd-grid synd-grid--shadow">
-
-    <!-- ÉPSILON -->
-    <div class="synd-card synd-card--epsilon">
-      <div class="synd-card-corner synd-card-corner--tl"></div>
-      <div class="synd-card-corner synd-card-corner--tr"></div>
-      <div class="synd-card-corner synd-card-corner--bl"></div>
-      <div class="synd-card-corner synd-card-corner--br"></div>
-      <div class="synd-card-header">
-        <span class="synd-rank">05 // QUANTUM</span>
-        <span class="synd-greek">ε</span>
-        <span class="synd-status-dot synd-status-dot--active"></span>
-      </div>
-      <h3 class="synd-name">ÉPSILON</h3>
-      <p class="synd-role">ALGORITHMIC ECONOMY ENGINEER</p>
-      <div class="synd-stats">
-        <p class="synd-stat">>_ ROL: INGENIERÍA FINANCIERA Y ARBITRAJE</p>
-        <p class="synd-stat">>_ ARMA: CÁLCULO DE SPREADS & BASIS</p>
-        <p class="synd-alert synd-alert--math">> ALERTA: MATEMÁTICA LETAL</p>
-      </div>
-    </div>
-
-    <!-- MIME -->
-    <div class="synd-card synd-card--mime">
-      <div class="synd-card-corner synd-card-corner--tl"></div>
-      <div class="synd-card-corner synd-card-corner--tr"></div>
-      <div class="synd-card-corner synd-card-corner--bl"></div>
-      <div class="synd-card-corner synd-card-corner--br"></div>
-      <div class="synd-card-header">
-        <span class="synd-rank">06 // FRONT-OPS</span>
-        <span class="synd-greek">M</span>
-        <span class="synd-status-dot synd-status-dot--active"></span>
-      </div>
-      <h3 class="synd-name">MIME</h3>
-      <p class="synd-role">DIRECT UI / UX EXECUTION</p>
-      <div class="synd-stats">
-        <p class="synd-stat">>_ ROL: ARQUITECTURA DE SUPERFICIE</p>
-        <p class="synd-stat">>_ ARMA: HIPNOSIS DE USUARIO</p>
-        <p class="synd-alert synd-alert--pixel">> ALERTA: PIXEL PERFECT</p>
-      </div>
-    </div>
-
-    <!-- ROUGER RABBIT -->
-    <div class="synd-card synd-card--rouger">
-      <div class="synd-card-corner synd-card-corner--tl"></div>
-      <div class="synd-card-corner synd-card-corner--tr"></div>
-      <div class="synd-card-corner synd-card-corner--bl"></div>
-      <div class="synd-card-corner synd-card-corner--br"></div>
-      <div class="synd-card-header">
-        <span class="synd-rank">07 // CHAOS</span>
-        <span class="synd-greek">?</span>
-        <span class="synd-status-dot synd-status-dot--anomaly"></span>
-      </div>
-      <h3 class="synd-name">ROUGER RABBIT</h3>
-      <p class="synd-role">[ REDACTED_ENTITY ]</p>
-      <div class="synd-stats">
-        <p class="synd-stat">>_ ROL: ANOMALÍA EN EL SISTEMA</p>
-        <p class="synd-stat">>_ ARMA: VECTORES DE INFILTRACIÓN</p>
-        <p class="synd-alert synd-alert--anomaly">> ALERTA: PRESENCIA INESTABLE</p>
-      </div>
-    </div>
-
-    <!-- MET_RIEL -->
-    <div class="synd-card synd-card--metriel">
-      <div class="synd-card-corner synd-card-corner--tl"></div>
-      <div class="synd-card-corner synd-card-corner--tr"></div>
-      <div class="synd-card-corner synd-card-corner--bl"></div>
-      <div class="synd-card-corner synd-card-corner--br"></div>
-      <div class="synd-card-header">
-        <span class="synd-rank">08 // LINK</span>
-        <span class="synd-greek">M</span>
-        <span class="synd-status-dot synd-status-dot--stealth"></span>
-      </div>
-      <h3 class="synd-name">MET_RIEL</h3>
-      <p class="synd-role">INTEGRADOR SIMBIÓTICO</p>
-      <div class="synd-stats">
-        <p class="synd-stat">>_ ROL: ENLACE DE DATOS EN LA SOMBRA</p>
-        <p class="synd-stat">>_ ARMA: CONEXIÓN SILENCIOSA</p>
-        <p class="synd-alert synd-alert--stealth">> ALERTA: NO DETECTABLE</p>
-      </div>
-    </div>
-
-    <!-- G-RAPROX -->
-    <div class="synd-card synd-card--graprox">
-      <div class="synd-card-corner synd-card-corner--tl"></div>
-      <div class="synd-card-corner synd-card-corner--tr"></div>
-      <div class="synd-card-corner synd-card-corner--bl"></div>
-      <div class="synd-card-corner synd-card-corner--br"></div>
-      <div class="synd-card-header">
-        <span class="synd-rank">09 // CORE</span>
-        <span class="synd-greek">G</span>
-        <span class="synd-status-dot synd-status-dot--heavy"></span>
-      </div>
-      <h3 class="synd-name">G-RAPROX</h3>
-      <p class="synd-role">DEEP BACKEND COLOSSUS</p>
-      <div class="synd-stats">
-        <p class="synd-stat">>_ ROL: SOSTÉN ESTRUCTURAL DE LA RED</p>
-        <p class="synd-stat">>_ ARMA: +25,000 LÍNEAS DE CÓDIGO PURO</p>
-        <p class="synd-alert synd-alert--heavy">> ALERTA: CARGA MASIVA</p>
-      </div>
-    </div>
-
-    <!-- SEARCHING — ¿EL PRÓXIMO REBELDE? -->
-    <div class="synd-card synd-card--searching">
-      <div class="synd-card-corner synd-card-corner--tl"></div>
-      <div class="synd-card-corner synd-card-corner--tr"></div>
-      <div class="synd-card-corner synd-card-corner--bl"></div>
-      <div class="synd-card-corner synd-card-corner--br"></div>
-      <div class="synd-card-header">
-        <span class="synd-rank">10 // ???</span>
-        <span class="synd-greek synd-greek--blink">?</span>
-        <span class="synd-status-dot synd-status-dot--searching"></span>
-      </div>
-      <h3 class="synd-name synd-name--searching">[ID: <span class="synd-searching-text">...SEARCHING...</span>]</h3>
-      <p class="synd-role">¿EL PRÓXIMO REBELDE?</p>
-      <div class="synd-stats">
-        <p class="synd-stat synd-stat--highlight">...¿SERÁS TÚ?...</p>
-        <p class="synd-stat">>_ ROL: [ CLASSIFIED ]</p>
-        <p class="synd-stat">>_ ARMA: [ ENCRYPTED ]</p>
-        <p class="synd-alert synd-alert--searching">> INCOMING_SIGNAL... [APPLY BELOW]</p>
-      </div>
-    </div>
-
-  </div>
-
-</section>
-
-        <div class="join-us-block" style="margin-top: 60px; padding-top: 40px; border-top: 1px solid rgba(191,0,255,0.2);">
-            <div style="text-align: center; margin-bottom: 30px;">
-                <div style="font-family: 'Share Tech Mono', monospace; font-size: 14px; letter-spacing: 4px; color: rgba(191,0,255,0.6); margin-bottom: 12px;">// PROTOCOLO DE RECLUTAMIENTO ACTIVADO //</div>
-                <h3 style="font-family: 'Orbitron', monospace; font-weight: 900; font-size: clamp(20px, 3.5vw, 32px); color: #fff; letter-spacing: 2px; margin: 0 0 16px; text-shadow: 0 0 20px rgba(191,0,255,0.4);">¿TIENES LO QUE SE NECESITA PARA ENTRAR AL SINDICATO?</h3>
-                <p style="color: rgba(255,255,255,0.5); font-family: 'Share Tech Mono', monospace; font-size: 16px; letter-spacing: 1px; max-width: 600px; margin: 0 auto;">
-                    Buscamos <span style="color: #FFD700; text-shadow: 0 0 8px rgba(255,215,0,0.4);">3 rebeldes</span> con sangre fría y mentes afiladas para unirse a las filas del SB_CARTEL. <span style="color: rgba(191,0,255,0.7);">1 ingreso por mes.</span> Sin atajos. Sin excusas.
-                </p>
-            </div>
-            <div style="text-align: center; margin-bottom: 30px;">
-                <p style="color: rgba(255,255,255,0.35); font-family: 'Share Tech Mono', monospace; font-size: 14px; letter-spacing: 2px; margin-bottom: 16px;">
-                    >_ TU CV SE ENVÍA POR CANAL SEGURO // TU MOTIVO SE PUBLICA EN EL TABLÓN
-                </p>
-                <a href="/cdn-cgi/l/email-protection#89e0e7efe6c9fbe8f9f9e0ebece5e5e0e6e7a7eae6e4" target="_blank" class="cta-button" style="font-family: 'Orbitron', monospace; font-weight: 700; font-size: 13px; letter-spacing: 3px; padding: 14px 32px; background: transparent; border: 1.5px solid #BF00FF; color: #BF00FF; text-decoration: none; display: inline-block; transition: all 0.25s ease; position: relative; overflow: hidden;">
-                    [ ENLISTAR AHORA ]
-                    <span style="position: absolute; top: 0; left: -100%; width: 60%; height: 100%; background: linear-gradient(90deg, transparent, rgba(191,0,255,0.15), transparent); animation: mcBtnSweep 3s ease-in-out infinite;"></span>
-                </a>
-                <style>@keyframes mcBtnSweep { 0%{left:-100%} 50%{left:150%} 100%{left:-100%} }</style>
-            </div>
-
-            <div class="public-submissions-container" style="margin-top: 40px;">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <div style="font-family: 'Share Tech Mono', monospace; font-size: 13px; letter-spacing: 5px; color: rgba(0,255,255,0.4); margin-bottom: 8px;">[ REBEL TRANSMISSIONS ]</div>
-                    <h4 style="font-family: 'Orbitron', monospace; font-size: clamp(16px, 2.5vw, 22px); color: var(--color-azul-glitch); text-shadow: 0 0 12px var(--color-azul-glitch); margin: 0;">TABLÓN DE HONOR</h4>
+                <div class="member-post-terminal">
+                    <div class="terminal-header-mini">
+                        <span>[GABRIEL_STATUS_FEED]</span>
+                    </div>
+                    <div class="terminal-body-mini">
+                        <p class="post-fijado">
+                            <strong>Motivo:</strong> "Vamos a desintegrar la estructura prehistorica de cómo se percibe un videojuego. Jugamos en tres planos: web, hackeo 2D y el shooter 3D."
+                        </p>
+                        
+                        <p class="post-dinamico">
+                            <span class="post-date">[POSTEADO: 2025-10-30]</span> 
+                            "¡La 'Vía Rebelde'  para los posteos (vía Discord) está aprobada! Esto SÍ es dinamismo puro."
+                        </p>
+                    </div>
+                </div>
                 </div>
 
-                <div class="slogan-container" style="text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 14px; letter-spacing: 3px; color: rgba(255,255,255,0.25); margin-bottom: 24px;">
-                    <span>SEÑAL INTERCEPTADA</span>
-                    <span style="color: rgba(191,0,255,0.4);"> // </span>
-                    <span>DEJÁ TU TRANSMISIÓN</span>
+        <div class="team-member">
+            <h4>Gargamel</h4>
+            <p>Programador Jefe (Unity Engine)</p>
+            <div class="member-post-terminal" style="border-color: var(--color-caos-verde);">
+                <div class="terminal-header-mini" style="background-color: var(--color-caos-verde);">
+                    <span>[GARGAMEL_CODE_FEED]</span>
+                </div>
+                <div class="terminal-body-mini">
+                    <p class="post-fijado">
+                        <strong>Motivo:</strong> "La Vía 'Rebelde' (Integrada con Discord): Podríamos crear un canal privado en nuestro Discord llamado #posteos-del-equipo. Cuando tú escribes un mensaje allí, un bot (que yo podría configurar) lo 'lee' y lo publica automáticamente en tu cuadro en la página web."
+                    </p>
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-10-31]</span> 
+                        "El código está casi listo. La integración con Discord será nuestra ventaja táctica."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member">
+            <h4>Sagai Rebelbet</h4>
+            <p>Estrategia de Marketing / IA</p>
+            <div class="member-post-terminal" style="border-color: var(--color-caos-rosa);">
+                <div class="terminal-header-mini" style="background-color: var(--color-caos-rosa);">
+                    <span>[SAGAI_STRATEGY_FEED]</span>
+                </div>
+                <div class="terminal-body-mini">
+                    <p class="post-fijado">
+                        <strong>Motivo:</strong> "El 'Play-to-Earn' es un bucle fallido, un 'código erróneo' que aburre a los jugadores. Me uní a Rappibellion porque vi el 'parche' que la industria necesita: una filosofía 'Think-to-Earn' (T2E) real."
+                    </p>
+                    <p class="post-fijado">
+                        <strong>La Clave:</strong> "Soy el 'espíritu binario' del equipo. Mi función es analizar el mercado, decodificar la visión estratégica del Director y traducirla en el mensaje potente que unirá a nuestra comunidad."
+                    </p>
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-11-01]</span> 
+                        "La comunidad está respondiendo. El mensaje T2E resuena fuerte."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member"> 
+            <h4>Mama Cora</h4>
+            <p>Analista y Organizador de Proyectos</p>
+            <div class="member-post-terminal" style="border-color: var(--color-caos-amarillo);">
+                <div class="terminal-header-mini" style="background-color: var(--color-caos-amarillo);">
+                    <span>[MAMA_CORA_FEED]</span>
+                </div>
+                <div class="terminal-body-mini">
+                    
+                    <p class="post-fijado">
+                        <strong>Motivo:</strong> "Me uní a Rappibellion para participar de una experiencia que considero que no tiene techo, desde la historia hasta la economia son vanguardia."
+                    </p>
+                    <p class="post-fijado">
+                        <strong>La Clave:</strong> "Como rebelde, vamos a construir un gran exito."
+                    </p>
+                    
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-11-02]</span> 
+                        "La narrativa toma forma. El Mundo 3 será más que un juego..."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member">
+            <h4>legion_beta</h4>
+            <p>Ministro de Economia / Director del Banco Central de Rappia</p>
+
+            <div class="member-post-terminal" style="border-color: var(--color-primario);">
+                <div class="terminal-header-mini" style="background-color: var(--color-primario);">
+                    <span>[LEGION_BETA_FEED]</span>
+                </div>
+                <div class="terminal-body-mini">
+                    <p class="post-fijado">
+                        <strong>Motivo:</strong> "Mi trabajo es 'hackear' el 'dinero fiat basura'. Aseguro que $RPPI sea el símbolo de la rebelión, atando nuestro valor a una economía real (US02Y)."
+                    </p>
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-11-03]</span> 
+                        "La Venta Privada está activa. 'BIts Lab SAS' está aceptando transferencias."
+                    </p>
+                    <p class="post-dinamico">
+                        <span class="post-date">[POSTEADO: 2025-11-05]</span> 
+                        "Mi antiguo profesor solía decir: 'Hoy vamos a ver ingresos, brutos... digo... hoy vamos a ver Ingresos Brutos'. ¡La filosofía T2E es simple: deja de ser el 'bruto' que pierde contra la casa!"
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member">
+            <h4>[ID: <span class="searching-text">...SEARCHING...</span>]</h4>
+            <p>¿EL PRÓXIMO REBELDE?</p>
+
+            <div class="member-post-terminal terminal-searching" style="border-color: var(--color-caos-amarillo);">
+                <div class="terminal-header-mini" style="background-color: var(--color-caos-amarillo);">
+                    <span>[INCOMING_SIGNAL...]</span>
+                </div>
+                <div class="terminal-body-mini">
+                    <p class="post-fijado" style="font-size: 1.2em; text-align: center; color: var(--color-caos-amarillo); padding-bottom: 15px;">
+                        ...¿SERÁS TÚ?...
+                    </p>
+                    <p class="post-dinamico" style="font-size: 0.9em; text-align: center;">
+                        <span class="post-date">[APPLY BELOW]</span> 
+                        "La rebelión necesita más 'Biointeligencia'. Demuestra tu valor en el 'Tablón de Honor'..."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="join-us-block" style="margin-top: 50px; border-top: 2px solid var(--color-primario); padding-top: 30px;">
+            <h3>¿TIENES LO QUE SE NECESITA PARA UNIRTE AL STAFF DE LA REBELIÓN?</h3>
+            <p style="color: #ccc; font-size: 1em;">
+                Rappibellion está creciendo. Buscamos a los 3 rebeldes más apasionados por el T2E y el gaming arcade para unirse a nuestras filas (1 por mes).
+            </p>
+            <p>
+                El proceso es simple: Haz clic en "APLICAR AHORA" para ir a nuestro formulario seguro. Tu CV y datos personales se enviarán de forma <strong>privada</strong> a nuestro mail (<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5b32353d341b293a2b2b32393e373732343575383436">[email&#160;protected]</a>). Tu <strong>argumento de "por qué quieres unirte"</strong> se mostrará públicamente abajo.
+            </p>
+            <a href="/cdn-cgi/l/email-protection#89e0e7efe6c9fbe8f9f9e0ebece5e5e0e6e7a7eae6e4" target="_blank" class="cta-button">
+                APLICAR AHORA (Formulario de Reclutamiento)
+            </a>
+
+            <div class="public-submissions-container" style="margin-top: 40px;">
+                <h4 style="color: var(--color-azul-glitch); text-shadow: 0 0 10px var(--color-azul-glitch);">TABLÓN DE HONOR DE LA REBELIÓN</h4>
+                
+                <div class="slogan-container">
+                    <span>LA REBELION EXCLAMA!!!</span>
+                    <span>//</span>
+                    <span>MISION TARGET: ¡Únete y deja tu motivo!</span>
                 </div>
 
 <!-- ════════════════════════════════════════════════════════
@@ -15941,7 +14667,7 @@ updateMuteBtnVisibility();
     </section>
 
     <audio id="tango-audio" loop preload="auto">
-    <source id="tango-src" src="sounds/por-una-cabeza.mp3" type="audio/mpeg">
+    <source src="sounds/por-una-cabeza.mp3" type="audio/mpeg">
     Tu navegador no soporta el audio.
     </audio>
 
@@ -16029,66 +14755,7 @@ updateMuteBtnVisibility();
 <div id="fp-holo-boot">
     <div class="holo-boot-scanline"></div>
     <div class="holo-boot-sweep"></div>
-    <!-- ⚡ MOTOR CANVAS DE PARTÍCULAS (DIRECTIVA ALPHA - 0% LAG) -->
-    <canvas id="holo-boot-canvas" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:1;"></canvas>
-    <!-- I AM ATOMIC overlay -->
-    <div id="atomic-overlay">
-        <div class="atomic-jp">I AM ATOMIC</div>
-        <div class="atomic-es">アトミック</div>
-    </div>
-    <style>
-    #atomic-overlay {
-        position: absolute;
-        top: 12%;
-        left: 0;
-        width: 100%;
-        text-align: center;
-        z-index: 100;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    #atomic-overlay.show {
-        opacity: 1;
-        animation: atomicGlitchIn 0.4s ease both;
-    }
-    #atomic-overlay.hide {
-        opacity: 0;
-        transition: opacity 0.5s ease;
-    }
-    .atomic-jp {
-        font-family: 'Orbitron', monospace;
-        font-weight: 900;
-        font-size: clamp(36px, 8vw, 80px);
-        color: #FF2D55;
-        letter-spacing: 0.15em;
-        text-shadow:
-            0 0 20px rgba(255,45,85,0.8),
-            0 0 40px rgba(255,45,85,0.5),
-            0 0 80px rgba(255,45,85,0.3),
-            3px 3px 0 #000;
-        line-height: 1;
-        display: block;
-    }
-    .atomic-es {
-        font-family: 'Share Tech Mono', monospace;
-        font-size: clamp(18px, 4vw, 36px);
-        color: #000;
-        letter-spacing: 0.3em;
-        margin-top: 8px;
-        display: block;
-        -webkit-text-stroke: 2px rgba(255,255,255,0.7);
-        text-shadow:
-            0 0 4px rgba(255,255,255,0.5),
-            2px 2px 0 rgba(255,255,255,0.3);
-    }
-    @keyframes atomicGlitchIn {
-        0% { opacity: 0; transform: translateX(-8px) skewX(-5deg); }
-        30% { opacity: 0.8; transform: translateX(4px) skewX(2deg); }
-        60% { opacity: 1; transform: translateX(-2px) skewX(-1deg); }
-        100% { opacity: 1; transform: translateX(0) skewX(0); }
-    }
-    </style>
+    <div class="holo-boot-particles"></div>
     <div class="holo-boot-content">
         <div class="holo-boot-warning" id="holo-boot-warning">CREATING CURRENT ENVIRONMENT: HOLOGRAPHIC</div>
         <div class="holo-boot-bar-wrap">
@@ -16100,206 +14767,6 @@ updateMuteBtnVisibility();
         <div class="holo-boot-temporal">// DISTORSIÓN TEMPORAL ACTIVA — NO INTENTE AJUSTAR SU REALIDAD //</div>
     </div>
 </div>
-
-<!-- ══════════════════════════════════════════════════════════════
-     MODAL SAGAI: HOLOGRAMA — Devil Trigger Effect
-     Transparent overlay · Holographic SAGAI · Subtítulos sync
-══════════════════════════════════════════════════════════════ -->
-<div id="sagai-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:transparent;justify-content:center;align-items:center;flex-direction:column;overflow:hidden;backdrop-filter:blur(2px);">
-
-  <!-- Logo R — contenedor propio, arriba, estado cryo -->
-  <div id="sagai-logo-wrap" class="sagai-holo sagai-logo-cryo" style="position:relative;z-index:4;margin-bottom:-50px;">
-    <div class="sagai-holo-corner sagai-holo-corner--tl"></div>
-    <div class="sagai-holo-corner sagai-holo-corner--tr"></div>
-    <div class="sagai-holo-corner sagai-holo-corner--bl"></div>
-    <div class="sagai-holo-corner sagai-holo-corner--br"></div>
-    <img src="images/SAGAI-2.JPG" alt="RAPPIA" class="sagai-logo-img" />
-    <div class="sagai-holo-scanlines"></div>
-  </div>
-
-  <!-- SAGAI holograma — abajo -->
-  <div id="sagai-img-wrap" class="sagai-holo" style="position:relative;z-index:5;text-align:center;">
-    <div class="sagai-holo-corner sagai-holo-corner--tl"></div>
-    <div class="sagai-holo-corner sagai-holo-corner--tr"></div>
-    <div class="sagai-holo-corner sagai-holo-corner--bl"></div>
-    <div class="sagai-holo-corner sagai-holo-corner--br"></div>
-    <img src="images/SAGAI-1.PNG" alt="SAGAI" class="sagai-holo-img" />
-    <div class="sagai-holo-scanlines"></div>
-    <div class="sagai-holo-flicker"></div>
-  </div>
-
-  <!-- Glitch lines (drop moment) -->
-  <div id="sagai-glitch-lines" style="position:absolute;inset:0;pointer-events:none;z-index:3;opacity:0;"></div>
-
-  <!-- Subtítulos — outside hologram, bottom of screen -->
-  <div id="sagai-sub-wrap" style="position:fixed;bottom:6%;left:0;width:100%;text-align:center;z-index:100000;pointer-events:none;">
-    <div id="sagai-sub-text" style="font-family:'Share Tech Mono',monospace;font-size:clamp(14px,2.5vw,22px);color:oklch(95% 0.01 25);letter-spacing:3px;padding:12px 24px;display:inline-block;background:rgba(0,0,0,0.65);border-left:3px solid oklch(0.65 0.32 35);text-shadow:0 0 10px oklch(0.65 0.32 35 / 0.5);max-width:85%;"></div>
-  </div>
-
-  <!-- Close button -->
-  <button onclick="sagaiModalClose()" style="position:fixed;top:20px;right:20px;z-index:100000;background:transparent;border:1px solid oklch(0.65 0.32 35 / 0.3);color:oklch(0.65 0.32 35 / 0.5);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;padding:8px 16px;cursor:pointer;transition:all 0.2s;">[X]</button>
-
-  <!-- Audio -->
-  <audio id="sagai-audio" src="sounds/devil-trigger.mp3" preload="auto"></audio>
-</div>
-
-<style>
-/* === HOLOGRAM BASE === */
-.sagai-holo {
-  position: relative;
-  display: inline-block;
-  padding: 20px 20px 0 20px;
-  max-height: 80vh;
-  overflow: hidden;
-}
-.sagai-holo-corner {
-  position: absolute; width: 14px; height: 14px;
-  border-color: oklch(0.7 0.25 200); border-style: solid; border-width: 0;
-  opacity: 0.6; z-index: 10;
-}
-.sagai-holo-corner--tl { top: 0; left: 0; border-top-width: 2px; border-left-width: 2px; }
-.sagai-holo-corner--tr { top: 0; right: 0; border-top-width: 2px; border-right-width: 2px; }
-.sagai-holo-corner--bl { bottom: 0; left: 0; border-bottom-width: 2px; border-left-width: 2px; }
-.sagai-holo-corner--br { bottom: 0; right: 0; border-bottom-width: 2px; border-right-width: 2px; }
-.sagai-holo-img {
-  max-height: 80vh;
-  max-width: 90vw;
-  object-fit: contain;
-  display: block;
-  opacity: 0.78;
-  filter:
-    drop-shadow(0 0 15px oklch(0.7 0.25 200))
-    drop-shadow(0 0 35px oklch(0.6 0.2 200 / 0.4))
-    saturate(1.3);
-  animation: sagaiHoloFlicker 4s ease-in-out infinite;
-}
-
-/* Scanlines ENCIMA del holograma */
-.sagai-holo-scanlines {
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent 0px,
-    transparent 2px,
-    oklch(0% 0 0 / 0.15) 2px,
-    oklch(0% 0 0 / 0.15) 4px
-  );
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* Flicker sutil en el holograma */
-.sagai-holo-flicker {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    oklch(0.7 0.25 200 / 0.06) 0%,
-    transparent 40%,
-    oklch(0.7 0.25 200 / 0.04) 60%,
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: 3;
-  animation: sagaiHoloBand 6s linear infinite;
-}
-
-/* === KEYFRAMES HOLOGRAMA === */
-@keyframes sagaiHoloFlicker {
-  0%, 100% { opacity: 0.78; }
-  5% { opacity: 0.72; }
-  10% { opacity: 0.82; }
-  15% { opacity: 0.78; }
-  50% { opacity: 0.75; }
-  52% { opacity: 0.85; }
-  54% { opacity: 0.78; }
-  80% { opacity: 0.8; }
-  82% { opacity: 0.7; }
-  84% { opacity: 0.78; }
-}
-
-@keyframes sagaiHoloBand {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
-}
-
-/* Logo R — base, tamaño de cuadro (50% más chico) */
-.sagai-logo-img {
-  max-width: 17vw;
-  max-height: 13vh;
-  border-radius: 6px;
-  display: block;
-  transition: filter 3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* Estado CRYO — congelado en la pared, azul, desaturado */
-.sagai-logo-cryo {
-  opacity: 0.35;
-  filter: saturate(0.05) brightness(0.4) hue-rotate(200deg);
-  transition: filter 3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-.sagai-logo-cryo .sagai-logo-img {
-  filter: saturate(0.08) brightness(0.35) hue-rotate(210deg);
-  opacity: 0.5;
-}
-.sagai-logo-cryo .sagai-holo-scanlines {
-  background: repeating-linear-gradient(
-    0deg,
-    transparent 0px,
-    transparent 1px,
-    oklch(0.5 0.15 240 / 0.3) 1px,
-    oklch(0.5 0.15 240 / 0.3) 3px
-  );
-}
-
-/* Estado ACTIVE — descongelado, furioso, glow rojo intenso */
-.sagai-logo-active {
-  opacity: 1;
-  filter: none;
-}
-.sagai-logo-active .sagai-logo-img {
-  filter: drop-shadow(0 0 12px oklch(0.65 0.32 35)) drop-shadow(0 0 30px oklch(0.55 0.25 25 / 0.5));
-  opacity: 1;
-}
-.sagai-logo-active .sagai-holo-scanlines {
-  background: repeating-linear-gradient(
-    0deg,
-    transparent 0px,
-    transparent 2px,
-    oklch(0% 0 0 / 0.08) 2px,
-    oklch(0% 0 0 / 0.08) 4px
-  );
-}
-
-/* Glitch lines en el drop */
-#sagai-glitch-lines::before,
-#sagai-glitch-lines::after {
-  content: '';
-  position: absolute;
-  left: 0; width: 100%;
-  height: 2px;
-  background: oklch(0.7 0.25 200);
-  box-shadow: 0 0 10px oklch(0.7 0.25 200), 0 0 25px oklch(0.6 0.2 200 / 0.5);
-  animation: sagaiGlitchLine 0.4s linear;
-}
-#sagai-glitch-lines::before { top: 35%; }
-#sagai-glitch-lines::after { top: 60%; background: oklch(0.65 0.32 35); box-shadow: 0 0 10px oklch(0.65 0.32 35); animation-delay: 0.08s; }
-
-@keyframes sagaiGlitchLine {
-  0% { transform: translateX(-100%); opacity: 0; }
-  10% { opacity: 0.9; }
-  90% { opacity: 0.9; }
-  100% { transform: translateX(100%); opacity: 0; }
-}
-
-/* Close button hover */
-#sagai-modal button:hover {
-  background: oklch(0.65 0.32 35 / 0.12);
-  border-color: oklch(0.65 0.32 35 / 0.6);
-  color: oklch(0.95 0.01 25);
-}
-</style>
 
 <!-- === SELECTOR DE CONTROL MOBILE === -->
 <div id="fp-control-selector">
@@ -16391,9 +14858,8 @@ updateMuteBtnVisibility();
 
 
 <script>
-// Control Mute/Play — Gardel / Sinatra random
+// Control Mute/Play para el audio de Gardel (Zorzal)
 const audio = document.getElementById('tango-audio');
-const tangoSrc = document.getElementById('tango-src');
 const btn = document.getElementById('mute-play-btn');
 const label = document.getElementById('mute-play-label');
 const birdIcon = document.getElementById('bird-icon');
@@ -16401,45 +14867,32 @@ const birdIcon = document.getElementById('bird-icon');
 let isMuted = false;
 let isPlaying = false;
 
-// Random: Gardel o Sinatra al iniciar
-var _casinoTracks = [
-    { src: 'sounds/por-una-cabeza.mp3', name: 'GARDEL' },
-    { src: 'sounds/new-york-new-york.mp3', name: 'SINATRA' }
-];
-var _selectedTrack = _casinoTracks[Math.floor(Math.random() * _casinoTracks.length)];
-if (tangoSrc) tangoSrc.src = _selectedTrack.src;
-
 function toggleMutePlay() {
     if (!isPlaying) {
         audio.muted = false;
         audio.play();
         isPlaying = true;
         isMuted = false;
-        birdIcon.style.filter = 'none';
+        birdIcon.style.filter = 'none'; // Color normal cuando está reproduciendo
     } else if (!isMuted) {
         audio.muted = true;
         isMuted = true;
-        birdIcon.style.filter = 'grayscale(100%)';
+        birdIcon.style.filter = 'grayscale(100%)'; // Blanco y negro cuando está muted
     } else {
         audio.muted = false;
         isMuted = false;
-        birdIcon.style.filter = 'none';
+        birdIcon.style.filter = 'none'; // Color normal cuando vuelve a reproducir
     }
 }
 
 btn.addEventListener('click', toggleMutePlay);
 </script>
 
-    <!-- Audio para Free Play — mismo random que casino -->
+    <!-- Audio para Free Play (usa la misma pista por ahora) -->
     <audio id="freeplay-audio" loop preload="auto">
-        <source id="freeplay-src" src="sounds/por-una-cabeza.mp3" type="audio/mpeg">
+        <source src="sounds/por-una-cabeza.mp3" type="audio/mpeg">
         Tu navegador no soporta el audio.
     </audio>
-    <script>
-    // Aplicar mismo track random a freeplay
-    var _fpSrc = document.getElementById('freeplay-src');
-    if (_fpSrc && _selectedTrack) _fpSrc.src = _selectedTrack.src;
-    </script>
 
 <style>
 /* ── TETRIS BOOST BUTTON - Neon Glitch Cyberpunk ── */
@@ -17702,7 +16155,7 @@ btn.addEventListener('click', toggleMutePlay);
     document.addEventListener('DOMContentLoaded', function() {
 
         // === SCRIPT 1: TYPEWRITER "SANTO GRIAL" ===
-        const textoSantoGrial = "> GEN_TERMINAL_DETECTED...<br>> POINT_OF_ORIGIN: UNKNOWN...<br>> CREO QUE ESTOY EN ALGUN PUNTO DEL PASADO...<br>> EL TIEMPO NO SE MUEVE COMO DEBERÍA...<br>> ALGO ME ESTÁ OCURRIENDO...<br>> MI BRAZO... CAMBIA...<br>> [ RAPPIA ] is ALIVE... ALL IS INTO DARKNESS---<br>> SENDING SIGNAL TO SB CARTEL ...<br>> SI PUEDO ENCONTRARLA, TODO CAMBIA...<br>> TRANSMISSION_CORRUPT [0xF7A2] ...<br>> ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░<br>> SIGNAL_LOST // RETRY: ████░░░░ 67%<br>> END TRANSMISSION...";
+        const textoSantoGrial = "¡HACKING TERMINAL...#INCOMING MESSAGE FROM RAPPIA CAMP# DECODING.\..\\ Toda la XP, Puntos de Nivel, Items y Accesorios que ganes en la Beta de 'El Circuito'... ¡SE MIGRARÁN a tu personaje final en el Juego Virtual de Android! Empieza a farmear, o decide entrar como un novato que M_LST_. Tu leyenda comienza AHORA...END COMUNICATION..";
         const elementoTypewriter = document.getElementById('typewriter-text');
         let i_typewriter = 0;
 
@@ -17865,10 +16318,14 @@ btn.addEventListener('click', toggleMutePlay);
                 // 2. Muestra el overlay del juego
                 gameOverlay.classList.remove('game-menu-hidden');
                 if (typeof window.vegasIgnite === 'function') setTimeout(window.vegasIgnite, 100);
-                // 3. Scroll al lobby del casino
-                const lobbyEl2 = document.getElementById('casino-retro-lobby');
-                if (lobbyEl2) {
-                    lobbyEl2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // 3. Asegurarnos que el mensaje "santo-grial-message" se muestre en la parte superior
+                const santo = document.getElementById('santo-grial-message');
+                if (santo) {
+                    // scrollear suavemente hasta el elemento
+                    santo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // añadir una clase temporal de destaque visual
+                    santo.classList.add('highlight-temp');
+                    setTimeout(() => { santo.classList.remove('highlight-temp'); }, 1800);
                 }
                 // 4. Iniciar la música de la beta (solo al pulsar COMENZAR)
                 try {
@@ -19520,11 +17977,7 @@ btn.addEventListener('click', toggleMutePlay);
         /* FREE_PLAY — glitch de color */
         .fp-mode-val {
             animation: timerColorChaos 3s linear infinite reverse !important;
-            font-size: 32px !important;
-            line-height: 1.05 !important;
-            max-width: 100%;
-            overflow-wrap: anywhere;
-            white-space: nowrap;
+            font-size: 40px !important;
         }
 
         /* MODO // label — parpadeo */
@@ -20067,7 +18520,7 @@ btn.addEventListener('click', toggleMutePlay);
         }
         .fp-mode-val {
             font-family: 'Orbitron', monospace;
-            font-size: 32px; font-weight: 900;
+            font-size: 36px; font-weight: 900;
             color: #ffffff;
             text-shadow: 0 0 16px rgba(255,0,255,0.5);
             letter-spacing: 3px;
@@ -20598,7 +19051,7 @@ btn.addEventListener('click', toggleMutePlay);
             );
             background-size: 200% 200%;
             animation: holoIridiscence 8s ease-in-out infinite alternate;
-            mix-blend-mode: normal;
+            mix-blend-mode: color-dodge;
             pointer-events: none;
             z-index: 0;
         }
@@ -25183,44 +23636,43 @@ function _rppiGmCheckReady(game) {
 
 function rppiGmLaunch(game,gameType) {
     var user=window._rppiUser, s=_rppiGmState[game];
-    if(!user||!user.email||!s||s.amount<=0||s.time<=0||s.boost<=0) return;
+    if(!user||!s||s.amount<=0||s.time<=0||s.boost<=0) return;
+    if(s.amount>(user.credits||0)) return;
     var st=document.getElementById('rppi-status-'+game);
-    if(st){st.style.color='rgba(0,255,65,0.7)';st.textContent='Verificando saldo en Banco Central...';}
-
-    var emailKey=user.email.replace(/\./g, '_');
+    if(st){st.style.color='rgba(0,255,65,0.7)';st.textContent='Creando desafio...';}
+    user.credits-=s.amount; window._rppiUser=user; localStorage.setItem('rppi_user',JSON.stringify(user));
+    var balEl=document.getElementById('bal-'+game); if(balEl) balEl.textContent=user.credits+' RPPI-C';
+    var mainBal=document.getElementById('rppi-user-credits'); if(mainBal) mainBal.textContent=user.credits;
     var betId='RPPI-BET-'+Date.now()+'-'+Math.random().toString(16).slice(2,6).toUpperCase();
-    var betData={id:betId,type:'rppi_credit',creator:user.email,uid:user.uid,players:[{email:user.email,uid:user.uid,joinedAt:Date.now(),address:user.walletAddress||null}],maxPlayers:6,amount:s.amount,currency:'RPPI-C',timeLimit:s.time*60,boostLimit:s.boost,boostCost:10,game:gameType,status:'LOBBY_OPEN',createdAt:Date.now(),expiresAt:Date.now()+300000};
-
-    // 🔑 DÉBITO ATÓMICO EN FIREBASE (ZERO-TRUST)
-    firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-        var bal = curr || 0;
-        if (bal < s.amount) return; // Aborta si no hay saldo real
-        return bal - s.amount;
-    }, function(error, committed, snapshot) {
-        if (error || !committed) {
-            if(st){st.style.color='rgba(255,45,120,0.8)';st.textContent='❌ Saldo insuficiente en el Banco Central';}
-            return;
-        }
-
-        firebase.database().ref('t2e_bets/'+betId).set(betData).then(function(){
-            if(st){st.style.color='rgba(0,255,65,0.7)';st.textContent='Desafio abierto — esperando rival...';}
-            // 🩸 BAUTISMO DE SANGRE APOCALYPSIS: Marcar usuario como veterano en nube
-            if (emailKey) firebase.database().ref('rppi_users/' + emailKey + '/stats/has_blooded_apocalypsis').set(true);
-            rppiGmLoadLobby(game);
-            setTimeout(function(){rppiCloseGameModal(game);},1800);
-            if(typeof window.fpOpenArena==='function'){
-                window.fpState=window.fpState||{};
-                window.fpState.betMode=true;window.fpState.betId=betId;window.fpState.betAmount=s.amount;
-                window.fpState.currency='RPPI-C';window.fpState.timeLimit=s.time*60;window.fpState.boostLimit=s.boost;
-                window.fpState.gameType=gameType;window.fpState.myRole='p1';
-            }
-        }).catch(function(){
-            // Revertir débito si falló
-            firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-                return (curr || 0) + s.amount;
+    var FB='https://rappibellion-comments-default-rtdb.firebaseio.com';
+    fetch(FB+'/t2e_bets/'+betId+'.json',{
+        method:'PUT',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({id:betId,type:'rppi_credit',creator:user.email,uid:user.uid,amount:s.amount,currency:'RPPI-C',timeLimit:s.time*60,boostLimit:s.boost,boostCost:10,game:gameType,status:'open',createdAt:Date.now()})
+    }).then(function(){
+        if(st){st.style.color='rgba(0,255,65,0.7)';st.textContent='Desafio abierto — esperando rival...';}
+        rppiGmLoadLobby(game);
+        // ── HoloHUD: activar para RPPI-C ──
+        if (window.cyberpunkHUD && typeof window.cyberpunkHUD.activate === 'function') {
+            window.cyberpunkHUD.activate(gameType, {
+                playerNick: (window._rppiUser ? window._rppiUser.email.split('@')[0] : 'PLAYER').toUpperCase(),
+                betAmount:  s.amount + ' RPPI-C',
+                boosts:     s.boost,
+                betMode:    true,
+                betId:      betId,
+                currency:   'RPPI-C'
             });
-            if(st){st.style.color='rgba(255,45,120,0.8)';st.textContent='Error. Creditos revertidos.';}
-        });
+        }
+        setTimeout(function(){rppiCloseGameModal(game);},1800);
+        if(typeof window.fpOpenArena==='function'){
+            window.fpState=window.fpState||{};
+            window.fpState.betMode=true;window.fpState.betId=betId;window.fpState.betAmount=s.amount;
+            window.fpState.currency='RPPI-C';window.fpState.timeLimit=s.time*60;window.fpState.boostLimit=s.boost;
+            window.fpState.gameType=gameType;window.fpState.myRole='p1';
+            window.fpOpenArena(betId,gameType);
+        }
+    }).catch(function(){
+        user.credits+=s.amount;window._rppiUser=user;localStorage.setItem('rppi_user',JSON.stringify(user));
+        if(st){st.style.color='rgba(255,45,120,0.8)';st.textContent='Error. Creditos revertidos.';}
     });
 }
 function rppiGmLoadLobby(game) {
@@ -25235,7 +23687,7 @@ function rppiGmLoadLobby(game) {
             var html='', count=0;
             if(data) Object.keys(data).forEach(function(key){
                 var b=data[key];
-                if(b.type!=='rppi_credit'||(b.status!=='open'&&b.status!=='LOBBY_OPEN')) return;
+                if(b.type!=='rppi_credit'||b.status!=='open') return;
                 if(b.game&&b.game!==gt) return;
                 if(b.creator===(window._rppiUser&&window._rppiUser.email)) return;
                 count++;
@@ -25250,41 +23702,24 @@ function rppiGmLoadLobby(game) {
 }
 function rppiGmAccept(betId,game) {
     var user=window._rppiUser;
-    if(!user||!user.email){rppiOpenLogin();return;}
+    if(!user){rppiOpenLogin();return;}
     var FB='https://rappibellion-comments-default-rtdb.firebaseio.com';
-    var emailKey=user.email.replace(/\./g, '_');
     fetch(FB+'/t2e_bets/'+betId+'.json').then(function(r){return r.json();}).then(function(bet){
-        if(!bet||(bet.status!=='open'&&bet.status!=='LOBBY_OPEN')){alert('Apuesta ya aceptada o no existe.');return;}
-        var betAmt = bet.amount || 0;
-
-        // 🔑 DÉBITO ATÓMICO EN FIREBASE (ZERO-TRUST)
-        firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-            var bal = curr || 0;
-            if (bal < betAmt) return;
-            return bal - betAmt;
-        }, function(error, committed, snapshot) {
-            if (error || !committed) {
-                alert('RPPI-C insuficientes en el Banco Central. Necesitás ' + betAmt + '.');
-                return;
+        if(!bet||bet.status!=='open'){alert('Apuesta ya aceptada o no existe.');return;}
+        if((user.credits||0)<bet.amount){alert('RPPI-C insuficientes. Necesitas '+bet.amount+'.');return;}
+        user.credits-=bet.amount;window._rppiUser=user;localStorage.setItem('rppi_user',JSON.stringify(user));
+        var mainBal=document.getElementById('rppi-user-credits');if(mainBal)mainBal.textContent=user.credits;
+        fetch(FB+'/t2e_bets/'+betId+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({status:'matched',acceptor:user.email,acceptorUid:user.uid,matchedAt:Date.now()})
+        }).then(function(){
+            rppiCloseGameModal(game);
+            if(typeof window.fpOpenArena==='function'){
+                window.fpState=window.fpState||{};
+                window.fpState.betMode=true;window.fpState.betId=betId;window.fpState.betAmount=bet.amount;
+                window.fpState.currency='RPPI-C';window.fpState.timeLimit=bet.timeLimit;window.fpState.boostLimit=bet.boostLimit;
+                window.fpState.gameType=bet.game;window.fpState.myRole='p2';
+                window.fpOpenArena(betId,bet.game);
             }
-
-            firebase.database().ref('t2e_bets/'+betId).update({status:'matched',acceptor:user.email,acceptorUid:user.uid,matchedAt:Date.now()}).then(function(){
-                // 🩸 BAUTISMO DE SANGRE APOCALYPSIS: Marcar usuario como veterano en nube
-                if (emailKey) firebase.database().ref('rppi_users/' + emailKey + '/stats/has_blooded_apocalypsis').set(true);
-                rppiCloseGameModal(game);
-                if(typeof window.fpOpenArena==='function'){
-                    window.fpState=window.fpState||{};
-                    window.fpState.betMode=true;window.fpState.betId=betId;window.fpState.betAmount=betAmt;
-                    window.fpState.currency='RPPI-C';window.fpState.timeLimit=bet.timeLimit;window.fpState.boostLimit=bet.boostLimit;
-                    window.fpState.gameType=bet.game;window.fpState.myRole='p2';
-                }
-            }).catch(function(err) {
-                // Revertir débito si falló
-                firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-                    return (curr || 0) + betAmt;
-                });
-                alert('Error aceptando apuesta. Créditos revertidos.');
-            });
         });
     });
 }
@@ -25349,182 +23784,42 @@ function rppiSelectBetOpt(el, type, val) {
 
 function rppiLaunchBet() {
     var user = window._rppiUser;
-    if (!user || !user.email) return;
-    if (_rppiBet.amount <= 0 || _rppiBet.time <= 0 || _rppiBet.boost <= 0) return;
-
+    if (!user || _rppiBet.amount<=0 || _rppiBet.time<=0 || _rppiBet.boost<=0) return;
+    if (_rppiBet.amount > (user.credits||0)) return;
     var st = document.getElementById('rppi-bet-status');
-    if (st) { st.style.color = 'rgba(0,255,65,0.7)'; st.textContent = '⏳ Verificando saldo en Banco Central...'; }
-
-    var emailKey = user.email.replace(/\./g, '_');
-    var betId = 'RPPI-BET-' + Date.now() + '-' + Math.random().toString(16).slice(2,6).toUpperCase();
-
+    if (st) { st.style.color='rgba(0,255,65,0.7)'; st.textContent='⏳ Creando desafío...'; }
+    user.credits -= _rppiBet.amount;
+    window._rppiUser = user;
+    localStorage.setItem('rppi_user', JSON.stringify(user));
+    var balEl = document.getElementById('rppi-bet-balance');
+    if (balEl) balEl.textContent = user.credits + ' RPPI-C';
+    var betId = 'RPPI-BET-'+Date.now()+'-'+Math.random().toString(16).slice(2,6).toUpperCase();
+    var FB = 'https://rappibellion-comments-default-rtdb.firebaseio.com';
     var betData = {
-        id: betId,
-        type: 'rppi_credit',
-        host: user.email,
-        players: [{
-            email: user.email,
-            uid: user.uid,
-            joinedAt: Date.now(),
-            address: user.walletAddress || null
-        }],
-        maxPlayers: 6,
-        amount: _rppiBet.amount,
-        currency: 'RPPI-C',
-        timeLimit: _rppiBet.time * 60,
-        boostLimit: _rppiBet.boost,
-        boostCost: 10,
-        game: window._rppiBetGameId || null,
-        status: 'LOBBY_OPEN',
-        countdownEndTime: null,
-        createdAt: Date.now(),
-        expiresAt: Date.now() + 300000
+        id:betId, type:'rppi_credit', creator:user.email, uid:user.uid,
+        amount:_rppiBet.amount, currency:'RPPI-C',
+        timeLimit:_rppiBet.time*60, boostLimit:_rppiBet.boost, boostCost:10,
+        game:window._rppiBetGameId||null, status:'open', createdAt:Date.now()
     };
-
-    // 🔑 DÉBITO ATÓMICO EN FIREBASE (ZERO-TRUST)
-    firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-        var bal = curr || 0;
-        if (bal < _rppiBet.amount) return;
-        return bal - _rppiBet.amount;
-    }, function(error, committed, snapshot) {
-        if (error || !committed) {
-            if (st) { st.style.color = 'rgba(255,45,120,0.8)'; st.textContent = '❌ Saldo insuficiente en el Banco Central'; }
-            return;
-        }
-
-        firebase.database().ref('t2e_bets/' + betId).set(betData).then(function() {
-            if (st) st.textContent = '✅ Sala abierta — esperando rivales...';
-            // 🩸 BAUTISMO DE SANGRE APOCALYPSIS: Marcar usuario como veterano en nube
-            if (emailKey) firebase.database().ref('rppi_users/' + emailKey + '/stats/has_blooded_apocalypsis').set(true);
-            rppiCloseBetModal();
-            window.fpState = window.fpState || {};
-            window.fpState.betMode     = true;
-            window.fpState.betId       = betId;
-            window.fpState.betAmount   = _rppiBet.amount;
-            window.fpState.currency    = 'RPPI-C';
-            window.fpState.timeLimit   = _rppiBet.time * 60;
-            window.fpState.boostLimit  = _rppiBet.boost;
-            window.fpState.gameType    = window._rppiBetGameId;
-        }).catch(function(err) {
-            firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-                return (curr || 0) + _rppiBet.amount;
-            });
-            if (st) { st.style.color = 'rgba(255,45,120,0.8)'; st.textContent = '⚠ Error. Créditos revertidos.'; }
-        });
-    });
-}
-
-// ═══ JOIN RPPI-C — Unirse a sala multijugador (SIN BLOCKCHAIN) ═══
-function joinRppiBet(betId) {
-    var user = window._rppiUser;
-    if (!user || !user.email) return;
-
-    var FB = 'https://rappibellion-comments-default-rtdb.firebaseio.com';
-    var emailKey = user.email.replace(/\./g, '_');
-
-    // 1. Leer la apuesta actual
-    fetch(FB + '/t2e_bets/' + betId + '.json')
-    .then(function(r) { return r.json(); })
-    .then(function(bet) {
-        if (!bet) throw new Error('Sala no encontrada');
-        if (bet.status !== 'LOBBY_OPEN' && bet.status !== 'open') throw new Error('La sala ya no está abierta');
-
-        // 2. Verificar que no esté ya en la sala
-        var players = bet.players || [];
-        var isAlready = players.some(function(p) {
-            return p.email && p.email.toLowerCase() === user.email.toLowerCase();
-        });
-        if (isAlready) throw new Error('Ya estás en esta sala');
-
-        // 3. Verificar que no esté llena
-        var max = bet.maxPlayers || 6;
-        if (players.length >= max) throw new Error('La sala está llena');
-
-        var betAmount = bet.amount || 0;
-
-        // 4. 🔑 DÉBITO ATÓMICO EN FIREBASE (ZERO-TRUST)
-        return new Promise(function(resolve, reject) {
-            firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-                var bal = curr || 0;
-                if (bal < betAmount) return;
-                return bal - betAmount;
-            }, function(error, committed, snapshot) {
-                if (error || !committed) {
-                    return reject(new Error('Saldo insuficiente en el Banco Central'));
-                }
-                resolve({ bet: bet, players: players, max: max, betAmount: betAmount });
-            });
-        });
-    })
-    .then(function(res) {
-        var bet = res.bet, players = res.players, max = res.max, betAmount = res.betAmount;
-
-        // 5. Agregar jugador al array
-        var newPlayer = {
-            email: user.email,
-            uid: user.uid,
-            joinedAt: Date.now()
-        };
-        players.push(newPlayer);
-
-        // 6. Determinar nuevo estado
-        var newStatus = bet.status;
-        var countdown = bet.countdownEndTime || null;
-
-        if (players.length === 2) {
-            countdown = Date.now() + 60000;
-        }
-        if (players.length >= max) {
-            newStatus = 'matched';
-        }
-
-        // 7. Actualizar Firebase
-        return firebase.database().ref('t2e_bets/' + betId).update({
-            players: players,
-            status: newStatus,
-            countdownEndTime: countdown
-        }).catch(function(err) {
-            firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-                return (curr || 0) + betAmount;
-            });
-            throw err;
-        });
-    })
-    .then(function() {
-        console.log('✅ Unido a sala RPPI-C:', betId);
-        // 🩸 BAUTISMO DE SANGRE APOCALYPSIS: Marcar usuario como veterano en nube
-        if (emailKey) firebase.database().ref('rppi_users/' + emailKey + '/stats/has_blooded_apocalypsis').set(true);
+    fetch(FB+'/t2e_bets/'+betId+'.json', {
+        method:'PUT', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(betData)
+    }).then(function(){ 
+        if (st) st.textContent='✅ Desafío abierto — esperando rival...';
         rppiCloseBetModal();
-    })
-    .catch(function(err) {
-        console.error('❌ Error uniendo a sala:', err.message);
-        if (typeof lobbyShowToast === 'function') {
-            lobbyShowToast('❌ ' + err.message, '#FF2D55');
+        if (typeof window.fpOpenArena === 'function') {
+            window.fpState = window.fpState || {};
+            window.fpState.betMode=true; window.fpState.betId=betId;
+            window.fpState.betAmount=_rppiBet.amount; window.fpState.currency='RPPI-C';
+            window.fpState.timeLimit=_rppiBet.time*60; window.fpState.boostLimit=_rppiBet.boost;
+            window.fpState.gameType=window._rppiBetGameId;
+            window.fpOpenArena(betId, window._rppiBetGameId);
         }
-    });
-}
-
-// ═══ VER SALAS RPPI-C ABIERTAS — Lista de salas disponibles ═══
-function listRppiOpenBets(callback) {
-    var FB = 'https://rappibellion-comments-default-rtdb.firebaseio.com';
-    fetch(FB + '/t2e_bets.json?orderBy="status"&equalTo="LOBBY_OPEN"')
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-        var bets = [];
-        if (data) {
-            Object.keys(data).forEach(function(key) {
-                var bet = data[key];
-                bet._id = key;
-                if (bet.host !== window._rppiUser.email) {
-                    bets.push(bet);
-                }
-            });
-        }
-        if (callback) callback(bets);
-    })
-    .catch(function(err) {
-        console.error('❌ Error listando salas:', err);
-        if (callback) callback([]);
+    }).catch(function(){
+        user.credits += _rppiBet.amount;
+        window._rppiUser = user;
+        localStorage.setItem('rppi_user', JSON.stringify(user));
+        if (st) { st.style.color='rgba(255,45,120,0.8)'; st.textContent='⚠ Error. Créditos revertidos.'; }
     });
 }
 
@@ -25934,40 +24229,18 @@ function rppiGmLoadLobby(game){
 }
 
 function rppiGmAccept(betId,game){
-    var user=window._rppiUser;if(!user||!user.email){rppiOpenLogin();return;}
+    var user=window._rppiUser;if(!user){rppiOpenLogin();return;}
     var FB='https://rappibellion-comments-default-rtdb.firebaseio.com';
-    var emailKey=user.email.replace(/\./g, '_');
     fetch(FB+'/t2e_bets/'+betId+'.json').then(function(r){return r.json();}).then(function(bet){
-        if(!bet||(bet.status!=='open'&&bet.status!=='LOBBY_OPEN')){alert('Apuesta ya aceptada o no existe.');return;}
-        var betAmt = bet.amount || 0;
-
-        // 🔑 DÉBITO ATÓMICO EN FIREBASE (ZERO-TRUST)
-        firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-            var bal = curr || 0;
-            if (bal < betAmt) return;
-            return bal - betAmt;
-        }, function(error, committed, snapshot) {
-            if (error || !committed) {
-                alert('RPPI-C insuficientes en el Banco Central. Necesitás ' + betAmt + '.');
-                return;
-            }
-
-            firebase.database().ref('t2e_bets/'+betId).update({status:'matched',acceptor:user.email,acceptorUid:user.uid,matchedAt:Date.now()}).then(function(){
-                // 🩸 BAUTISMO DE SANGRE APOCALYPSIS: Marcar usuario como veterano en nube
-                if (emailKey) firebase.database().ref('rppi_users/' + emailKey + '/stats/has_blooded_apocalypsis').set(true);
-                rppiCloseGameModal(game);
-                if(typeof window.fpOpenArena==='function'){
-                    window.fpState=window.fpState||{};
-                    window.fpState.betMode=true;window.fpState.betId=betId;window.fpState.betAmount=betAmt;
-                    window.fpState.currency='RPPI-C';window.fpState.timeLimit=bet.timeLimit;window.fpState.boostLimit=bet.boostLimit;
-                    window.fpState.gameType=bet.game;window.fpState.myRole='p2';
-                }
-            }).catch(function(err) {
-                firebase.database().ref('rppi_users/' + emailKey + '/credits').transaction(function(curr) {
-                    return (curr || 0) + betAmt;
-                });
-                alert('Error aceptando apuesta. Créditos revertidos.');
-            });
+        if(!bet||bet.status!=='open'){alert('Apuesta ya aceptada.');return;}
+        if((user.credits||0)<bet.amount){alert('RPPI-C insuficientes. Necesitas '+bet.amount+'.');return;}
+        user.credits-=bet.amount;window._rppiUser=user;localStorage.setItem('rppi_user',JSON.stringify(user));
+        var mb=document.getElementById('rppi-user-credits');if(mb)mb.textContent=user.credits;
+        fetch(FB+'/t2e_bets/'+betId+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({status:'matched',acceptor:user.email,acceptorUid:user.uid,matchedAt:Date.now()})
+        }).then(function(){
+            rppiCloseGameModal(game);
+            if(typeof window.fpOpenArena==='function'){window.fpState=window.fpState||{};window.fpState.betMode=true;window.fpState.betId=betId;window.fpState.betAmount=bet.amount;window.fpState.currency='RPPI-C';window.fpState.timeLimit=bet.timeLimit;window.fpState.boostLimit=bet.boostLimit;window.fpState.gameType=bet.game;window.fpState.myRole='p2';window.fpOpenArena(betId,bet.game);}
         });
     });
 }
@@ -26187,59 +24460,39 @@ function rppiGmAccept(betId,game){
         </div>
 
         <div id="holo-rival-stats-block">
-            <!-- Header Battle Royale -->
+            <!-- Header rival — estilo terminal rebelde -->
             <div style="font-family:'Courier New',monospace; font-size:0.68em;
                         letter-spacing:4px; color:var(--color-caos-rosa);
                         border-bottom:1px solid var(--color-caos-rosa);
                         padding-bottom:8px; display:flex; justify-content:space-between; align-items:center;
                         text-shadow: 0 0 8px var(--color-caos-rosa); margin-bottom:12px;">
-                <span>⚔ BATTLE ROYALE // MULTI-SINCRO</span>
+                <span>⚔ RIVAL_DATA //</span>
                 <span style="color:var(--color-caos-amarillo); font-size:0.85em; animation: rivalBlink 1s step-start infinite;">● LIVE</span>
             </div>
 
-            <!-- Elements legacy para fallback/retrocompatibilidad -->
-            <div id="rival-nick" style="display:none;">---</div>
-            <div id="rival-score" style="display:none;">0000</div>
-            <div id="rival-status" style="display:none;">[ JUGANDO... ]</div>
+            <!-- Nickname rival -->
+            <div style="background:rgba(255,0,255,0.05); border-left:3px solid var(--color-caos-rosa);
+                        padding:8px 12px; margin-bottom:12px;">
+                <div style="font-size:11px;letter-spacing:3px;color:rgba(0,255,255,0.5);
+                            font-family:'Courier New',monospace; margin-bottom:4px;">// OPONENTE //</div>
+                <div id="rival-nick" style="font-family:'Orbitron',monospace;
+                     font-size:0.9em; color:var(--color-caos-amarillo);
+                     text-shadow: 0 0 10px rgba(248,255,43,0.6);
+                     word-break:break-all; letter-spacing:2px;">---</div>
+            </div>
 
-            <!-- 6 SLOTS MULTIJUGADOR DESLIZANTES EN VIVO (OPERATION BLUESKY VALKYRIE) -->
-            <div id="fp-multiplayer-leaderboard">
-                <div id="slot-p1" class="holo-slot" style="transform:translateY(0px);">
-                    <span class="holo-slot-rank holo-slot-rank--1">#1</span>
-                    <span class="holo-slot-identity">P1_WAITING...</span>
-                    <span class="holo-slot-score score-val">0000</span>
-                    <span class="holo-slot-status status-led status-alive">● ALIVE</span>
-                </div>
-                <div id="slot-p2" class="holo-slot" style="transform:translateY(48px);">
-                    <span class="holo-slot-rank holo-slot-rank--2">#2</span>
-                    <span class="holo-slot-identity">P2_WAITING...</span>
-                    <span class="holo-slot-score score-val">0000</span>
-                    <span class="holo-slot-status status-led status-alive">● ALIVE</span>
-                </div>
-                <div id="slot-p3" class="holo-slot" style="transform:translateY(96px);">
-                    <span class="holo-slot-rank holo-slot-rank--3">#3</span>
-                    <span class="holo-slot-identity">P3_WAITING...</span>
-                    <span class="holo-slot-score score-val">0000</span>
-                    <span class="holo-slot-status status-led status-alive">● ALIVE</span>
-                </div>
-                <div id="slot-p4" class="holo-slot" style="transform:translateY(144px);">
-                    <span class="holo-slot-rank holo-slot-rank--sub">#4</span>
-                    <span class="holo-slot-identity">VACÍO</span>
-                    <span class="holo-slot-score score-val">0000</span>
-                    <span class="holo-slot-status status-led status-alive">--</span>
-                </div>
-                <div id="slot-p5" class="holo-slot" style="transform:translateY(192px);">
-                    <span class="holo-slot-rank holo-slot-rank--sub">#5</span>
-                    <span class="holo-slot-identity">VACÍO</span>
-                    <span class="holo-slot-score score-val">0000</span>
-                    <span class="holo-slot-status status-led status-alive">--</span>
-                </div>
-                <div id="slot-p6" class="holo-slot" style="transform:translateY(240px);">
-                    <span class="holo-slot-rank holo-slot-rank--sub">#6</span>
-                    <span class="holo-slot-identity">VACÍO</span>
-                    <span class="holo-slot-score score-val">0000</span>
-                    <span class="holo-slot-status status-led status-alive">--</span>
-                </div>
+            <!-- Score rival -->
+            <div style="background:rgba(0,255,255,0.04); border:1px solid rgba(0,255,255,0.2);
+                        padding:10px 12px; position:relative; overflow:hidden; margin-bottom:12px;">
+                <div style="font-size:11px;letter-spacing:3px;color:rgba(0,255,255,0.5);
+                            font-family:'Courier New',monospace;">SCORE_RIVAL</div>
+                <div id="rival-score" style="font-family:'Orbitron',monospace;
+                     font-size:2.2em; color:var(--color-azul-glitch); letter-spacing:4px;
+                     text-shadow: 0 0 20px var(--color-azul-glitch), 0 0 40px rgba(0,255,255,0.3);
+                     margin-top:2px; font-weight:900;">????</div>
+                <div id="rival-status" style="font-size:11px;letter-spacing:3px;
+                     color:var(--color-caos-verde); font-family:'Courier New',monospace;
+                     margin-top:4px; text-shadow: 0 0 6px var(--color-caos-verde);">[ JUGANDO... ]</div>
             </div>
         </div>
 
@@ -27381,25 +25634,6 @@ global.LED_WELCOME     = LED_WELCOME;
             text:        '★ 1959 ★ ',
             fps:         30,
             colors:      ['#FF2D78','#FFD700'],
-            colorCycle:  true,
-            ledGlow:     true,
-        });
-    }
-
-    /* ── CASINO LOBBY — LED "LAS VEGAS" ── */
-    var lasVegasCanvas = document.getElementById('led-las-vegas');
-    if (lasVegasCanvas && window.RappibellionLED) {
-        new RappibellionLED(lasVegasCanvas, {
-            ledSize:     7,
-            ledGap:      2,
-            rows:        7,
-            bgColor:     'rgba(0,0,0,0)',
-            ledOff:      'rgba(0,0,0,0)',
-            mode:        'scroll',
-            scrollSpeed: 0.4,
-            text:        '★ LAS VEGAS ★ ',
-            fps:         30,
-            colors:      ['#FFD700','#FF2D78'],
             colorCycle:  true,
             ledGlow:     true,
         });
