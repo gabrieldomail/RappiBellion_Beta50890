@@ -5181,6 +5181,77 @@ function loadLeaderboard(){
   box-shadow:0 0 28px oklch(62%0.23 25/0.45);
   transform:scale(1.03);
 }
+
+/* ========================================================================== */
+/* 🩸 SB_CARTEL: WALL STREET CASINO UPGRADE - CSS INJECTION                  */
+/* ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
+
+@font-face {
+  font-family: 'VitruvianMan';
+  src: url('fonts/graffiti/VitruvianMan-eW73.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.ws-title-container {
+  position: relative;
+  margin: 30px 0 45px 0;
+  padding: 15px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.wsj-classic {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 5vw, 46px);
+  font-weight: 900;
+  color: oklch(90% 0 0);
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  border-bottom: 2px solid oklch(82% 0.22 145 / 0.5);
+  border-top: 2px solid oklch(82% 0.22 145 / 0.5);
+  padding: 8px 15px;
+  margin: 0;
+  line-height: 1;
+  text-shadow: 0 5px 15px rgba(0,0,0,0.8);
+}
+
+.graffiti-blood {
+  position: absolute;
+  top: calc(50% + 20px);
+  left: 50%;
+  transform: translate(-50%, -30%) rotate(-6deg);
+  width: 120%;
+  font-family: 'VitruvianMan', sans-serif;
+  font-size: clamp(45px, 6vw, 68px);
+  color: #ff003c;
+  text-shadow:
+    2px 2px 0px #4a0000,
+    0 0 15px #ff003c,
+    0 0 30px #ff003c,
+    0 0 60px rgba(255, 0, 60, 0.6);
+  pointer-events: none;
+  z-index: 10;
+  white-space: nowrap;
+  animation: cartelGlitch 4s infinite alternate;
+}
+
+@keyframes cartelGlitch {
+  0%, 100% { opacity: 1; transform: translate(-50%, -30%) rotate(-6deg) scale(1); }
+  92% { opacity: 1; transform: translate(-50%, -30%) rotate(-6deg) scale(1); }
+  94% { opacity: 0.8; transform: translate(-52%, -28%) rotate(-8deg) scale(1.05); filter: hue-rotate(-10deg); }
+  96% { opacity: 1; transform: translate(-48%, -32%) rotate(-4deg) scale(0.95); }
+  98% { opacity: 0.9; transform: translate(-50%, -30%) rotate(-6deg) scale(1.1); filter: brightness(1.5); }
+}
+
+@keyframes terminalBloodAlert {
+  0% { box-shadow: 0 0 50px oklch(82% 0.22 145/0.15), inset 0 0 40px oklch(5%0.01 160/0.8); border-color: oklch(82% 0.22 145/0.4); }
+  100% { box-shadow: 0 0 80px #ff003c, inset 0 0 60px rgba(255, 0, 60, 0.3); border-color: #ff003c; background: oklch(15% 0.05 20/0.95); }
+}
 </style>
 
 <div class="bt-bg-grid"></div>
@@ -5211,20 +5282,28 @@ function loadLeaderboard(){
     </div>
   </div>
 
-  <div class="bt-gate-box bt-clip-war">
+  <div class="bt-gate-box bt-clip-war" id="bt-gate-box-target">
     <div class="bt-gate-cartel-tag">SB CYBERCARTEL · OFICINA CLANDESTINA DE INTELIGENCIA</div>
     <div class="bt-gate-currency-line">⟁ POWERED BY RAPPIA-C · OPTIMISM L2 ⟁</div>
     <div class="bt-gate-warning">⚠ ACCESO RESTRINGIDO — ZONA DE DATOS CRÍTICOS ⚠</div>
-    <h2 class="bt-gate-title">BLACK TERMINAL V2</h2>
+
+    <!-- 🩸 EL ARMA VISUAL 🩸 -->
+    <div class="ws-title-container">
+      <h2 class="wsj-classic">WALL STREET</h2>
+      <div class="graffiti-blood">THE CASINO GAME</div>
+    </div>
+
     <div class="bt-gate-subtitle">// INTELIGENCIA FINANCIERA SOBERANA · OKLCH ENGINE //</div>
     <p class="bt-gate-desc">
       Procesamiento activo de 67 activos en tiempo real.<br>
       Web Worker dedicado · Algoritmo térmico OKLCH · 6 nodos de vigilancia.<br>
       <em>Iniciar este nodo destina alto poder de procesamiento al análisis de mercado.</em>
     </p>
+
     <button id="bt-enter-btn" class="bt-gate-btn" onclick="btBootGate()">
       ⬡ DESENCRIPTAR Y ACCEDER AL NODO
     </button>
+
     <div class="bt-gate-trial-badge">FREE TRIAL · 7 DÍAS · SIN CBU · SIN TARJETA</div>
     <div class="bt-gate-foot">SISTEMA EN ESPERA... EL MOTOR ARRANCA AL INGRESAR.</div>
   </div>
@@ -28373,33 +28452,59 @@ if (document.readyState === 'loading') {
 </script>
 
 <script>
-/* ── BLACK TERMINAL GATE BOOT — lazy reveals #bt-core on click ── */
+/* ═══════════════════════════════════════════════════════════════
+   BLACK TERMINAL GATE BOOT — GAMMA UPGRADE
+   ═══════════════════════════════════════════════════════════════ */
 window.btBootGate = function() {
     var btn  = document.getElementById('bt-enter-btn');
     var gate = document.getElementById('bt-gate');
     var core = document.getElementById('bt-core');
+    var box  = document.getElementById('bt-gate-box-target');
+
     if (!btn || !gate || !core) return;
 
-    btn.textContent = '[ ESTABLECIENDO CONEXIÓN CIFRADA... ]';
-    btn.style.background = 'oklch(82% 0.22 145 / 0.25)';
+    // 1. MUTACIÓN DEL BOTÓN (Estado de Terror)
+    btn.textContent = '[ ⚠ ESCANEO BIOMÉTRICO LETAL INICIADO ⚠ ]';
+    btn.style.color = '#ff003c';
+    btn.style.borderColor = '#ff003c';
+    btn.style.backgroundImage = 'none';
+    btn.style.backgroundColor = 'rgba(255, 0, 60, 0.1)';
+    btn.style.boxShadow = '0 0 30px rgba(255, 0, 60, 0.6)';
+    btn.style.textShadow = '0 0 10px #ff003c';
     btn.disabled = true;
 
-    if (typeof playTerminalBeep === 'function') playTerminalBeep();
+    // 2. ACTIVAR ALERTA ROJA EN LA CAJA COMPLETA
+    if (box) {
+        box.style.animation = 'terminalBloodAlert 0.3s infinite alternate';
+    }
 
+    // 3. DISPARAR EL JUEGO DEL CALAMAR
+    var squidAudio = new Audio('sounds/start-botton-WST .mp3');
+
+    squidAudio.play().catch(function(e) {
+        console.warn('El Cartel informa: Autoplay bloqueado por el navegador.', e);
+        if (typeof playTerminalBeep === 'function') playTerminalBeep();
+    });
+
+    // 4. EL TIRO DE GRACIA (Redirección sincronizada)
     setTimeout(function() {
+
+        // Apagamos la alerta roja para la transición suave
+        if (box) box.style.animation = 'none';
+
+        // Transición de Gate a Core (Código Original Intacto)
         gate.style.transition = 'opacity 0.5s ease';
         gate.style.opacity = '0';
+
         setTimeout(function() {
             gate.style.display = 'none';
             core.style.display = 'block';
             void core.offsetWidth;
             core.style.opacity = '1';
-            /* PUNTO 2 — misma mecánica que #game-overlay: contención total,
-               fullscreen fixed, scroll interno propio, sin acceso a otras
-               secciones hasta presionar EXIT */
             core.classList.add('bt-fullscreen-active');
             document.body.style.overflow = 'hidden';
             core.scrollTop = 0;
+
             if (typeof window.btBriefInit === 'function') {
                 setTimeout(window.btBriefInit, 800);
             }
@@ -28413,7 +28518,8 @@ window.btBootGate = function() {
             }
             console.log('BLACK TERMINAL V2 · OKLCH ENGINE · SB CARTEL · ONLINE');
         }, 500);
-    }, 700);
+
+    }, 5500);
 };
 
 /* PUNTO 2 — EXIT: cierra el overlay fullscreen, vuelve al gate y restaura
