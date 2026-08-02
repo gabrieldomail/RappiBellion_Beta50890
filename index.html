@@ -218,7 +218,7 @@
     position: absolute;
     left: 0;
     width: 100%;
-    height: 2px;
+height: 8px;
     background: linear-gradient(90deg, transparent, var(--color-azul-glitch), transparent);
     opacity: 0.4;
     animation: superHudLaserScan 5s linear infinite;
@@ -5940,6 +5940,7 @@ body.bt-node-focus { overflow: hidden; }
 /* ── Holo-Briefing Widget ── */
 #bt-holo-briefing {
   position:absolute; top:50%; right:20px; transform:translateY(-50%);
+  margin-top: 30px;
   width:clamp(340px,26vw,420px); z-index:900;
   background:oklch(10% 0.015 160/0.92);
   backdrop-filter:blur(14px) saturate(1.4);
@@ -6237,6 +6238,218 @@ body.bt-node-focus { overflow: hidden; }
 }
 
 @media (max-width:700px) { .bt-rekt-card{width:160px;height:110px;} .bt-rekt-headline{font-size:11px;} }
+
+/* ═══════════════════════════════════════════════════════
+   🩸 GAMMA UPGRADE: BT-HEADER V2 (SB CARTEL C2)
+   ═══════════════════════════════════════════════════════ */
+
+@keyframes btHeaderScan {
+  0% { top: -10%; opacity: 0; }
+  50% { opacity: 0.8; }
+  100% { top: 110%; opacity: 0; }
+}
+@keyframes btGlitchAnim {
+  0%, 100% { transform: translate(0); text-shadow: 0 0 8px oklch(82% 0.22 145); }
+  20% { transform: translate(-2px, 2px); text-shadow: -2px 0 #ff003c, 2px 0 #00ffff; }
+  40% { transform: translate(-2px, -2px); text-shadow: 2px 0 #ff003c, -2px 0 #00ffff; }
+  60% { transform: translate(2px, 2px); text-shadow: 0 0 12px oklch(82% 0.22 145); }
+  80% { transform: translate(2px, -2px); text-shadow: -2px 0 #ff003c, 2px 0 #00ffff; }
+}
+@keyframes btBlinkLED {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px currentColor; }
+  50% { opacity: 0.4; box-shadow: 0 0 2px currentColor; }
+}
+
+.bt-header-v2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background: linear-gradient(180deg, oklch(12% 0.02 160) 0%, oklch(8% 0.012 160) 100%);
+  border-bottom: 1px solid oklch(82% 0.22 145 / 0.3);
+  position: relative;
+  z-index: 10;
+  flex-wrap: wrap;
+  gap: 15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.8), inset 0 -1px 0 oklch(82% 0.22 145 / 0.1);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+  overflow: hidden;
+}
+.bt-header-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(oklch(82% 0.22 145 / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(82% 0.22 145 / 0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+  z-index: 0;
+}
+.bt-header-scanline {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, oklch(82% 0.22 145 / 0.5), transparent);
+  z-index: 1;
+  pointer-events: none;
+  animation: btHeaderScan 6s linear infinite;
+}
+.bt-header-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  position: relative;
+  z-index: 2;
+}
+.bt-header-logo-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.bt-glitch-text {
+  font-family: 'VitruvianMan', sans-serif;
+  font-size: 132px;
+  color: oklch(82% 0.22 145);
+  animation: btGlitchAnim 3s infinite steps(1);
+  letter-spacing: 2px;
+}
+.bt-header-logo-line {
+  width: 100%;
+  height: 8px;
+  margin-top: -32px;
+  background: oklch(62% 0.23 25);
+  box-shadow: 0 0 6px oklch(62% 0.23 25);
+}
+.bt-header-meta {
+  font-family: 'Share Tech Mono', monospace;
+font-size: 15px;
+  color: oklch(60% 0.05 150);
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+.bt-header-title {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  font-size: clamp(27px, 3vw, 37px);
+  color: oklch(90% 0.02 145);
+  letter-spacing: 0.1em;
+  margin: 0;
+  line-height: 1;
+  text-shadow: 0 0 10px oklch(82% 0.22 145 / 0.6);
+}
+.bt-header-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: oklch(70% 0.02 150);
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+.bt-header-right-v2 {
+  display: flex;
+  align-items: stretch;
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+  background: oklch(5% 0.01 160 / 0.6);
+  padding: 8px 16px;
+  border: 1px solid oklch(82% 0.22 145 / 0.2);
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+.bt-stat-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  border-right: 1px solid oklch(82% 0.22 145 / 0.15);
+  padding-right: 24px;
+}
+.bt-stat-block:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+.bt-stat-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 14px;
+  color: oklch(60% 0.05 150);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.bt-rth-badge {
+  font-family: 'Orbitron', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: oklch(82% 0.22 145);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bt-rth-badge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: oklch(82% 0.22 145);
+  box-shadow: 0 0 8px oklch(82% 0.22 145);
+  animation: btBlinkLED 1.5s infinite;
+}
+.bt-rth-badge.freeze {
+  color: oklch(70% 0.15 220);
+}
+.bt-rth-badge.freeze::before {
+  background: oklch(70% 0.15 220);
+  box-shadow: 0 0 8px oklch(70% 0.15 220);
+}
+.bt-clock-block .bt-clock-display {
+  font-family: 'Orbitron', monospace;
+  font-size: 25px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 2px;
+  text-shadow: 0 0 6px oklch(82% 0.22 145 / 0.4);
+  background: oklch(0% 0 0 / 0.5);
+  padding: 2px 8px;
+  border-radius: 2px;
+  border: 1px solid oklch(82% 0.22 145 / 0.1);
+}
+.bt-cartel-mark {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.bt-cartel-symbol {
+font-size: 27px;
+  color: oklch(62% 0.23 25);
+  text-shadow: 0 0 10px oklch(62% 0.23 25 / 0.6);
+}
+.bt-cartel-text {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Share Tech Mono', monospace;
+  line-height: 1.1;
+}
+.bt-cartel-text strong {
+  color: oklch(85% 0.02 150);
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+.bt-cartel-text span {
+  color: oklch(60% 0.05 150);
+  font-size: 14px;
+  letter-spacing: 1.5px;
+}
+@media (max-width: 768px) {
+  .bt-header-v2 { padding: 10px 15px; }
+  .bt-header-right-v2 {
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px;
+  }
+  .bt-stat-block { padding-right: 10px; }
+}
 </style>
 
 <div class="bt-rekt-wall">
@@ -6246,31 +6459,31 @@ body.bt-node-focus { overflow: hidden; }
     <span class="bt-rekt-sub">// LOS MÁS VIVOS YA LOS TENÉS — ACÁ ESTÁN LOS MÁS REKT //</span>
   </div>
   <div class="bt-rekt-track" id="bt-rekt-track">
-    <div class="bt-rekt-card bt-rekt-card-2000" data-era="2000" data-desc="La pantalla publicitaria de NASDAQ en Times Square brillando en el pico de la burbuja tecnológica, seguida por los gráficos de Bloomberg mostrando la agresiva forma de burbuja y su prolongado desplome del 78%." data-url="https://internationalbanker.com/history-of-financial-crises/the-dotcom-bubble-burst-2000/" data-img="images/THE-BLACK-TERMINAL/The-NASDAQ-Composite-Index-COMP.png">
+    <div class="bt-rekt-card bt-rekt-card-2000" data-era="2000" data-desc="La pantalla publicitaria de NASDAQ en Times Square brillando en el pico de la euforia irrazonable, seguida por la carnicería tecnológica. Servidores apagados, sillas de oficina rematadas y billones evaporados mientras el índice caía un brutal 78%. El primer gran 'Rekt' de la era digital que nos enseñó que no todo lo que tiene un '.com' vale oro." data-url="https://internationalbanker.com/history-of-financial-crises/the-dotcom-bubble-burst-2000/" data-img="images/THE-BLACK-TERMINAL/The-NASDAQ-Composite-Index-COMP.png">
       <div class="bt-rekt-year-tag">2000</div>
       <div class="bt-rekt-masthead">THE WALL STREET TIMES</div>
       <div class="bt-rekt-headline">DOT-COM BUBBLE BURSTS:<br>NASDAQ EN CAÍDA LIBRE</div>
       <div class="bt-rekt-date">10 MARZO 2000</div>
     </div>
-    <div class="bt-rekt-card bt-rekt-card-2008" data-era="2008" data-desc="Los empleados saliendo de la sede corporativa cargando cajas de cartón con sus pertenencias, y las portadas de los periódicos anunciando el histórico pánico bancario global." data-url="https://www.britannica.com/event/bankruptcy-of-Lehman-Brothers" data-img="images/THE-BLACK-TERMINAL/Two-employees-of-Christies-auction-house-maneuver-the-collapsed-investment-bank-Lehman-Brothers.webp">
+    <div class="bt-rekt-card bt-rekt-card-2008" data-era="2008" data-desc="El día que el casino tradicional se quedó sin fichas. Empleados de traje saliendo de la sede corporativa de Lehman Brothers cargando cajas de cartón con sus pertenencias. Las CDO subprime estallaron, los rescates gubernamentales inundaron las calles con fiat impreso de la nada y, entre las cenizas de este colapso, se forjó el primer bloque de Bitcoin." data-url="https://www.britannica.com/event/bankruptcy-of-Lehman-Brothers" data-img="images/THE-BLACK-TERMINAL/Two-employees-of-Christies-auction-house-maneuver-the-collapsed-investment-bank-Lehman-Brothers.webp">
       <div class="bt-rekt-year-tag">2008</div>
       <div class="bt-rekt-masthead">FINANCIAL CHRONICLE</div>
       <div class="bt-rekt-headline">LEHMAN BROTHERS COLAPSA:<br>CRISIS DE LAS CDO SUBPRIME</div>
       <div class="bt-rekt-date">15 SEPTIEMBRE 2008</div>
     </div>
-    <div class="bt-rekt-card bt-rekt-card-2020" data-era="2020" data-desc="Los terminales de trading registraron la caída de casi 3,000 puntos en un solo día en el Dow Jones — gráficos mostrando la caída vertical de los tres principales índices de EE.UU." data-url="https://www.statista.com/chart/20939/year-to-date-performance-of-major-us-stock-market-indices/" data-img="images/THE-BLACK-TERMINAL/20939.jpeg">
+    <div class="bt-rekt-card bt-rekt-card-2020" data-era="2020" data-desc="Un pánico biológico que mutó en un infarto financiero global en cuestión de horas. Los terminales registraron un abismo: casi 3,000 puntos evaporados en un solo día en el Dow Jones. Circuit breakers saltando en bucle, algoritmos vendiendo al vacío y la Reserva Federal preparándose para la inyección de liquidez más grotesca de la historia moderna." data-url="https://www.statista.com/chart/20939/year-to-date-performance-of-major-us-stock-market-indices/" data-img="images/THE-BLACK-TERMINAL/20939.jpeg">
       <div class="bt-rekt-year-tag">2020</div>
       <div class="bt-rekt-masthead">GLOBAL MARKET DAILY</div>
       <div class="bt-rekt-headline">COVID-19 SHOCK:<br>EL CRASH MÁS RÁPIDO DE LA HISTORIA</div>
       <div class="bt-rekt-date">16 MARZO 2020</div>
     </div>
-    <div class="bt-rekt-card bt-rekt-card-2022" data-era="2022" data-desc="La evaporación de $32,000 millones documentada por CoinDesk, y las conferencias de prensa de Sam Bankman-Fried cuyo rostro pasó a ser el símbolo internacional de este masivo fraude financiero." data-url="https://www.coindesk.com/markets/2022/11/12/the-epic-collapse-of-sam-bankman-frieds-ftx-exchange-a-crypto-markets-timeline" data-img="images/THE-BLACK-TERMINAL/1254c54e16fba782adf16468ea1f666cfda0a4ac-1440x1080.avif">
+    <div class="bt-rekt-card bt-rekt-card-2022" data-era="2022" data-desc="El falso mesías de las criptomonedas expuesto. Sam Bankman-Fried y su pandilla utilizaron depósitos de usuarios como un cajero automático personal, evaporando $32,000 millones en cuestión de días. Una lección de sangre grabada en la blockchain: 'Not your keys, not your coins'. El evento de extinción que limpió el ecosistema de turistas financieros." data-url="https://www.coindesk.com/markets/2022/11/12/the-epic-collapse-of-sam-bankman-frieds-ftx-exchange-a-crypto-markets-timeline" data-img="images/THE-BLACK-TERMINAL/1254c54e16fba782adf16468ea1f666cfda0a4ac-1440x1080.avif">
       <div class="bt-rekt-year-tag">2022</div>
       <div class="bt-rekt-masthead">CRYPTO LEDGER POST</div>
       <div class="bt-rekt-headline">FTX IMPLOSIONA:<br>EVAPORAN $32B EN HORAS</div>
       <div class="bt-rekt-date">11 NOVIEMBRE 2022</div>
     </div>
-    <div class="bt-rekt-card bt-rekt-card-1987" data-era="1987" data-desc="El desplome del Dow Jones dejó inmortalizado el caos absoluto en los pisos de remates financieros — corredores exhaustos con las manos en la cabeza rodeados de miles de papeles de órdenes de venta." data-url="https://www.houstonpublicmedia.org/articles/news/2017/10/19/243672/the-30th-anniversary-of-black-monday-a-day-that-made-wall-street-quake/" data-img="images/THE-BLACK-TERMINAL/gettyimages-827576994-0a423edc0bf5bfafaa3104ae0368ac9d9fc8f114-1376x1032.jpg.webp">
+    <div class="bt-rekt-card bt-rekt-card-1987" data-era="1987" data-desc="El 'Black Monday' original. Sin internet, sin apps, solo pánico puro y teléfonos sonando sin respuesta. El Dow Jones perdió un masivo 22.6% en una sola sesión. Pisos de remates inundados de papeletas de órdenes de venta y corredores exhaustos mirando pantallas en rojo. El día que Wall Street descubrió que los modelos matemáticos también pueden sangrar." data-url="https://www.houstonpublicmedia.org/articles/news/2017/10/19/243672/the-30th-anniversary-of-black-monday-a-day-that-made-wall-street-quake/" data-img="images/THE-BLACK-TERMINAL/gettyimages-827576994-0a423edc0bf5bfafaa3104ae0368ac9d9fc8f114-1376x1032.jpg.webp">
       <div class="bt-rekt-year-tag">1987</div>
       <div class="bt-rekt-masthead">THE TRADING POST</div>
       <div class="bt-rekt-headline">BLACK MONDAY:<br>DOW PIERDE 22.6% EN UN DÍA</div>
@@ -6280,31 +6493,31 @@ body.bt-node-focus { overflow: hidden; }
          placeholders sin imagen) — loop de -50% ahora es matemáticamente
          perfecto: 2 sets idénticos de 5, sin salto visual. aria-hidden
          porque es puramente decorativo para el scroll continuo. ═ -->
-    <div class="bt-rekt-card bt-rekt-card-2000" data-era="2000" data-desc="La pantalla publicitaria de NASDAQ en Times Square brillando en el pico de la burbuja tecnológica, seguida por los gráficos de Bloomberg mostrando la agresiva forma de burbuja y su prolongado desplome del 78%." data-url="https://internationalbanker.com/history-of-financial-crises/the-dotcom-bubble-burst-2000/" data-img="images/THE-BLACK-TERMINAL/The-NASDAQ-Composite-Index-COMP.png" aria-hidden="true">
+    <div class="bt-rekt-card bt-rekt-card-2000" data-era="2000" data-desc="La pantalla publicitaria de NASDAQ en Times Square brillando en el pico de la euforia irrazonable, seguida por la carnicería tecnológica. Servidores apagados, sillas de oficina rematadas y billones evaporados mientras el índice caía un brutal 78%. El primer gran 'Rekt' de la era digital que nos enseñó que no todo lo que tiene un '.com' vale oro." data-url="https://internationalbanker.com/history-of-financial-crises/the-dotcom-bubble-burst-2000/" data-img="images/THE-BLACK-TERMINAL/The-NASDAQ-Composite-Index-COMP.png" aria-hidden="true">
       <div class="bt-rekt-year-tag">2000</div>
       <div class="bt-rekt-masthead">THE WALL STREET TIMES</div>
       <div class="bt-rekt-headline">DOT-COM BUBBLE BURSTS:<br>NASDAQ EN CAÍDA LIBRE</div>
       <div class="bt-rekt-date">10 MARZO 2000</div>
     </div>
-    <div class="bt-rekt-card bt-rekt-card-2008" data-era="2008" data-desc="Los empleados saliendo de la sede corporativa cargando cajas de cartón con sus pertenencias, y las portadas de los periódicos anunciando el histórico pánico bancario global." data-url="https://www.britannica.com/event/bankruptcy-of-Lehman-Brothers" data-img="images/THE-BLACK-TERMINAL/Two-employees-of-Christies-auction-house-maneuver-the-collapsed-investment-bank-Lehman-Brothers.webp" aria-hidden="true">
+    <div class="bt-rekt-card bt-rekt-card-2008" data-era="2008" data-desc="El día que el casino tradicional se quedó sin fichas. Empleados de traje saliendo de la sede corporativa de Lehman Brothers cargando cajas de cartón con sus pertenencias. Las CDO subprime estallaron, los rescates gubernamentales inundaron las calles con fiat impreso de la nada y, entre las cenizas de este colapso, se forjó el primer bloque de Bitcoin." data-url="https://www.britannica.com/event/bankruptcy-of-Lehman-Brothers" data-img="images/THE-BLACK-TERMINAL/Two-employees-of-Christies-auction-house-maneuver-the-collapsed-investment-bank-Lehman-Brothers.webp" aria-hidden="true">
       <div class="bt-rekt-year-tag">2008</div>
       <div class="bt-rekt-masthead">FINANCIAL CHRONICLE</div>
       <div class="bt-rekt-headline">LEHMAN BROTHERS COLAPSA:<br>CRISIS DE LAS CDO SUBPRIME</div>
       <div class="bt-rekt-date">15 SEPTIEMBRE 2008</div>
     </div>
-    <div class="bt-rekt-card bt-rekt-card-2020" data-era="2020" data-desc="Los terminales de trading registraron la caída de casi 3,000 puntos en un solo día en el Dow Jones — gráficos mostrando la caída vertical de los tres principales índices de EE.UU." data-url="https://www.statista.com/chart/20939/year-to-date-performance-of-major-us-stock-market-indices/" data-img="images/THE-BLACK-TERMINAL/20939.jpeg" aria-hidden="true">
+    <div class="bt-rekt-card bt-rekt-card-2020" data-era="2020" data-desc="Un pánico biológico que mutó en un infarto financiero global en cuestión de horas. Los terminales registraron un abismo: casi 3,000 puntos evaporados en un solo día en el Dow Jones. Circuit breakers saltando en bucle, algoritmos vendiendo al vacío y la Reserva Federal preparándose para la inyección de liquidez más grotesca de la historia moderna." data-url="https://www.statista.com/chart/20939/year-to-date-performance-of-major-us-stock-market-indices/" data-img="images/THE-BLACK-TERMINAL/20939.jpeg" aria-hidden="true">
       <div class="bt-rekt-year-tag">2020</div>
       <div class="bt-rekt-masthead">GLOBAL MARKET DAILY</div>
       <div class="bt-rekt-headline">COVID-19 SHOCK:<br>EL CRASH MÁS RÁPIDO DE LA HISTORIA</div>
       <div class="bt-rekt-date">16 MARZO 2020</div>
     </div>
-    <div class="bt-rekt-card bt-rekt-card-2022" data-era="2022" data-desc="La evaporación de $32,000 millones documentada por CoinDesk, y las conferencias de prensa de Sam Bankman-Fried cuyo rostro pasó a ser el símbolo internacional de este masivo fraude financiero." data-url="https://www.coindesk.com/markets/2022/11/12/the-epic-collapse-of-sam-bankman-frieds-ftx-exchange-a-crypto-markets-timeline" data-img="images/THE-BLACK-TERMINAL/1254c54e16fba782adf16468ea1f666cfda0a4ac-1440x1080.avif" aria-hidden="true">
+    <div class="bt-rekt-card bt-rekt-card-2022" data-era="2022" data-desc="El falso mesías de las criptomonedas expuesto. Sam Bankman-Fried y su pandilla utilizaron depósitos de usuarios como un cajero automático personal, evaporando $32,000 millones en cuestión de días. Una lección de sangre grabada en la blockchain: 'Not your keys, not your coins'. El evento de extinción que limpió el ecosistema de turistas financieros." data-url="https://www.coindesk.com/markets/2022/11/12/the-epic-collapse-of-sam-bankman-frieds-ftx-exchange-a-crypto-markets-timeline" data-img="images/THE-BLACK-TERMINAL/1254c54e16fba782adf16468ea1f666cfda0a4ac-1440x1080.avif" aria-hidden="true">
       <div class="bt-rekt-year-tag">2022</div>
       <div class="bt-rekt-masthead">CRYPTO LEDGER POST</div>
       <div class="bt-rekt-headline">FTX IMPLOSIONA:<br>EVAPORAN $32B EN HORAS</div>
       <div class="bt-rekt-date">11 NOVIEMBRE 2022</div>
     </div>
-    <div class="bt-rekt-card bt-rekt-card-1987" data-era="1987" data-desc="El desplome del Dow Jones dejó inmortalizado el caos absoluto en los pisos de remates financieros — corredores exhaustos con las manos en la cabeza rodeados de miles de papeles de órdenes de venta." data-url="https://www.houstonpublicmedia.org/articles/news/2017/10/19/243672/the-30th-anniversary-of-black-monday-a-day-that-made-wall-street-quake/" data-img="images/THE-BLACK-TERMINAL/gettyimages-827576994-0a423edc0bf5bfafaa3104ae0368ac9d9fc8f114-1376x1032.jpg.webp" aria-hidden="true">
+    <div class="bt-rekt-card bt-rekt-card-1987" data-era="1987" data-desc="El 'Black Monday' original. Sin internet, sin apps, solo pánico puro y teléfonos sonando sin respuesta. El Dow Jones perdió un masivo 22.6% en una sola sesión. Pisos de remates inundados de papeletas de órdenes de venta y corredores exhaustos mirando pantallas en rojo. El día que Wall Street descubrió que los modelos matemáticos también pueden sangrar." data-url="https://www.houstonpublicmedia.org/articles/news/2017/10/19/243672/the-30th-anniversary-of-black-monday-a-day-that-made-wall-street-quake/" data-img="images/THE-BLACK-TERMINAL/gettyimages-827576994-0a423edc0bf5bfafaa3104ae0368ac9d9fc8f114-1376x1032.jpg.webp" aria-hidden="true">
       <div class="bt-rekt-year-tag">1987</div>
       <div class="bt-rekt-masthead">THE TRADING POST</div>
       <div class="bt-rekt-headline">BLACK MONDAY:<br>DOW PIERDE 22.6% EN UN DÍA</div>
@@ -6371,18 +6584,44 @@ body.bt-node-focus { overflow: hidden; }
     });
   });
 
-  window.closeRektModal = function(){
-    modal.style.display = 'none';
+// ═══════════════════════════════════════════════════════
+// SUNSET RIDERS — Balacera al abrir/cerrar expediente
+// ═══════════════════════════════════════════════════════
+const sunsetAudio = new Audio('sounds/sunset-riders-intro.mp3');
+sunsetAudio.volume = 0.8;
+
+document.querySelectorAll('.bt-rekt-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+        sunsetAudio.currentTime = 0;
+        sunsetAudio.play().catch(function(e) {
+            console.warn('El Cartel informa: Navegador bloqueó el autoplay de Sunset Riders.', e);
+        });
+    });
+});
+
+window.closeRektModal = function(){
+    var modal = document.getElementById('bt-rekt-modal');
+    var track = document.getElementById('bt-rekt-track');
+
+    if(modal) modal.style.display = 'none';
     if(track) track.style.animationPlayState = 'running';
-  };
 
-  modal.addEventListener('click', function(e){
-    if(e.target === modal) closeRektModal();
-  });
+    sunsetAudio.pause();
+    sunsetAudio.currentTime = 0;
+};
 
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape') closeRektModal();
-  });
+var modalElement = document.getElementById('bt-rekt-modal');
+if(modalElement) {
+    modalElement.addEventListener('click', function(e){
+        if(e.target === modalElement) closeRektModal();
+    });
+}
+
+document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && document.getElementById('bt-rekt-modal').style.display !== 'none') {
+        closeRektModal();
+    }
+});
 })();
 </script>
 
@@ -6408,13 +6647,41 @@ body.bt-node-focus { overflow: hidden; }
   </div>
 </div>
 
-<!-- Master header -->
-<div class="bt-header">
-  <div class="bt-title">▓ BLACK TERMINAL V2 — FINANCIAL INTELLIGENCE SOVEREIGN</div>
-  <div class="bt-header-right">
-    <div class="bt-rth-badge" id="bt-rth-badge">● RTH ACTIVE</div>
-    <div class="bt-clock-display" id="bt-clock">--:--:-- EST</div>
-    <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(0,255,65,0.4);letter-spacing:1.5px;">SB CARTEL · OCI</div>
+<!-- Master header V2 - GAMMA Design System -->
+<div class="bt-header-v2">
+  <div class="bt-header-grid-bg"></div>
+  <div class="bt-header-scanline"></div>
+
+  <div class="bt-header-left">
+    <div class="bt-header-logo-block">
+      <div class="bt-glitch-text" data-text="SB">SB</div>
+      <div class="bt-header-logo-line"></div>
+    </div>
+    <div class="bt-header-title-wrap">
+      <div class="bt-header-meta">CASE_FILE: 0xBT-V2 // CLEARANCE: GAMMA</div>
+      <h2 class="bt-header-title">BLACK TERMINAL</h2>
+      <div class="bt-header-sub">// SOVEREIGN FINANCIAL INTELLIGENCE · OKLCH ENGINE //</div>
+    </div>
+  </div>
+
+  <div class="bt-header-right-v2">
+    <div class="bt-stat-block">
+      <span class="bt-stat-label">MARKET</span>
+      <div class="bt-rth-badge" id="bt-rth-badge">RTH ACTIVE</div>
+    </div>
+
+    <div class="bt-stat-block bt-clock-block">
+      <span class="bt-stat-label">EST TIME</span>
+      <div class="bt-clock-display" id="bt-clock">--:--:--</div>
+    </div>
+
+    <div class="bt-stat-block bt-cartel-mark">
+      <span class="bt-cartel-symbol">⟁</span>
+      <div class="bt-cartel-text">
+        <strong>SB CARTEL</strong>
+        <span>OCI DIVISION</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -11629,7 +11896,7 @@ function listRppiOpenBets(callback) {
                     min-width: 60px;
                     text-align: center;
                     font-family: 'Orbitron', monospace;
-                    font-size: 11px;
+font-size: 16px;
                     font-weight: 700;
                     color: #FF2D78;
                     letter-spacing: 2px;
@@ -11656,7 +11923,7 @@ function listRppiOpenBets(callback) {
                         background: rgba(0,188,255,0.15);
                         border: 2px solid rgba(0,188,255,0.8);
                         color: #00BCFF;
-                        font-size: 28px;
+font-size: 132px;
                         box-shadow: 0 0 16px rgba(0,188,255,0.5);
                         cursor: pointer;
                         pointer-events: auto;
@@ -11784,7 +12051,7 @@ function listRppiOpenBets(callback) {
                                 border: 1px solid rgba(0,255,65,0.4);
                                 color: #fff;
                                 font-family: 'Courier New', monospace;
-                                font-size: 13px;
+font-size: 18px;
                                 padding: 5px 7px;
                                 outline: none;
                                 letter-spacing: 1px;
