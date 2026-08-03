@@ -2225,7 +2225,8 @@ footer::before {
 .econ-mc-btn .arr { animation: mcBtnPulse 1.4s ease-in-out infinite; }
 @keyframes mcBtnPulse { 0%,100%{transform:translateX(0)} 50%{transform:translateX(4px)} }
 
-/* Node header */
+.econ-mc-btn::before {
+  content: '';
   position: absolute; inset: 0;
   pointer-events: none; overflow: hidden; z-index: 1;
 }
