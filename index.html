@@ -3207,6 +3207,301 @@ body.ultra-dark #ultra-dark-toggle {
                     </div>
                 </div>
             </div>
+
+        <!-- ════════════════════════════════════════════════════════════════════════════════════════
+             MODAL PROPAGANDA FORZADA — EMINENCE OF CYBERPUNK: APOCALYPSIS (V2 NO-CONTAINER)
+             Protocolo "Corta la bocha" // Threat Level Overlord
+             Injected into HERO section for maximum visibility
+        ═══════════════════════════════════════════════════════════════════════════════════════════ -->
+        <div id="apocalypsis-promo-modal" class="cyber-apoc-overlay">
+            <!-- Filtro sutil para dar legibilidad sin usar un contenedor -->
+            <div class="cyber-apoc-vignette"></div>
+            <div class="cyber-apoc-scanline"></div>
+
+            <div class="cyber-apoc-content">
+                
+                <!-- Threat Badge (Texto puro flotante) -->
+                <div class="cyber-apoc-warning" data-text="// THREAT LEVEL: OVERLORD //">
+                    // THREAT LEVEL: OVERLORD //
+                </div>
+
+                <!-- Stack Tipográfico Glitch -->
+                <div class="cyber-apoc-title-stack">
+                    <h2 class="cyber-title-br" data-text="BATTLE ROYALE">BATTLE ROYALE</h2>
+                    <div class="cyber-title-6p">6 PLAYERS</div>
+                    <h3 class="cyber-title-apoc" data-text="APOCALYPSIS">APOCALYPSIS</h3>
+                </div>
+
+                <!-- Descripción (Terminal Style sin caja) -->
+                <div class="cyber-apoc-desc">
+                    <span class="cyber-bracket">>_</span> El 1v1 fue solo un calentamiento.<br>
+                    La Megaestructura de 6 gladiadores ha sido abierta.<br>
+                    <span class="cyber-blood-text">Demostrá si tenés sangre para la masacre o seguí mirando desde afuera.</span>
+                </div>
+
+                <!-- CTAs (Botones sin contorno, puro texto y glow) -->
+                <div class="cyber-apoc-actions">
+                    <button onclick="apocalypsisEnterMasacre()" class="cyber-btn-masacre">
+                        [ ENTRAR_A_LA_MASACRE() ]
+                    </button>
+                    <button onclick="apocalypsisCloseModal()" class="cyber-btn-skip">
+                        POSPONER_SENTENCIA
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <style>
+        /* ═══════════════════════════════════════════════════════════════════════════════════
+           🩸 APOCALYPSIS V2: INGENIERÍA DE TEXTO SIN CONTENEDOR — HERO INJECTION
+           ══════════════════════════════════════════════════════════════════════════════════════ */
+
+        /* Asegurar que las fuentes estén disponibles (ya declaradas en hero lines 2257-2271) */
+        /* Fat Wandals, Gang Bang Crime, Vitruvian Man — ya cargadas en hero lines 2257-2271 */
+
+        /* Contenedor Overlay (Sin fondo de caja) */
+        #apocalypsis-promo-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100005;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+        #apocalypsis-promo-modal.active {
+            display: flex;
+        }
+
+        /* Vignette y Scanlines (Dan legibilidad sin ser una caja) */
+        .cyber-apoc-vignette {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(8,2,5,0.6) 0%, transparent 70%);
+            z-index: -2;
+        }
+        .cyber-apoc-scanline {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(255,0,60,0.03) 3px, rgba(255,0,60,0.03) 4px);
+            pointer-events: none;
+            z-index: -1;
+            animation: cyberScanMove 8s linear infinite;
+        }
+        @keyframes cyberScanMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100px; }
+        }
+
+        /* Contenido Flex */
+        .cyber-apoc-content {
+            text-align: center;
+            max-width: 600px;
+            position: relative;
+        }
+
+        /* Warning Text (Parpadeo Asimétrico) */
+        .cyber-apoc-warning {
+            font-family: 'Share Tech Mono', monospace;
+            color: #FF003C;
+            font-size: 14px;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 8px #FF003C;
+            animation: cyberWarningBlink 1.6s steps(2) infinite;
+        }
+        @keyframes cyberWarningBlink {
+            0%, 49% { opacity: 1; }
+            50%, 52% { opacity: 0.2; }
+            53%, 100% { opacity: 1; }
+        }
+
+        /* ═══ STACK DE TÍTULOS GRAFFITI ═══ */
+        .cyber-apoc-title-stack {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        /* Capa 1: BATTLE ROYALE (Vitruvian Man - Cyberpunk Tech) */
+        .cyber-title-br {
+            font-family: 'Vitruvian Man', sans-serif;
+            font-size: clamp(28px, 5vw, 52px);
+            color: #00FFFF;
+            margin: 0;
+            letter-spacing: 8px;
+            position: relative;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+            z-index: 1;
+        }
+        /* Glitch layers para BATTLE ROYALE */
+        .cyber-title-br::before,
+        .cyber-title-br::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+        }
+        .cyber-title-br::before {
+            color: #FF003C;
+            z-index: -1;
+            animation: cyberGlitchBR 3s infinite linear alternate-reverse;
+        }
+        .cyber-title-br::after {
+            color: #00FF41;
+            z-index: -2;
+            animation: cyberGlitchBR 2s infinite linear alternate-reverse;
+        }
+        @keyframes cyberGlitchBR {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 2px); clip-path: inset(20% 0 60% 0); }
+            40% { transform: translate(3px, -2px); clip-path: inset(80% 0 10% 0); }
+            60% { transform: translate(-2px, 1px); clip-path: inset(40% 0 40% 0); }
+            80% { transform: translate(2px, -1px); clip-path: inset(10% 0 80% 0); }
+            100% { transform: translate(0); }
+        }
+
+        /* Capa 2: 6 PLAYERS (Fat Wandals - Graffiti Grueso) */
+        .cyber-title-6p {
+            font-family: 'Fat Wandals', sans-serif;
+            font-size: clamp(60px, 12vw, 140px);
+            line-height: 0.8;
+            color: #fff;
+            margin: -10px 0 -20px 0;
+            position: relative;
+            z-index: 2;
+            text-shadow: 
+                4px 4px 0px #FF003C, 
+                -4px -4px 0px #00FFFF,
+                0 0 30px rgba(255,255,255,0.2);
+            transform: skewX(-5deg);
+        }
+
+        /* Capa 3: APOCALYPSIS (Gang Bang Crime - Sucio y Agresivo) */
+        .cyber-title-apoc {
+            font-family: 'Gang Bang Crime', cursive;
+            font-size: clamp(45px, 9vw, 100px);
+            margin: 0;
+            color: transparent;
+            -webkit-text-stroke: 2px #FF003C;
+            position: relative;
+            z-index: 3;
+            text-shadow: 0 0 15px rgba(255, 0, 60, 0.8);
+            animation: cyberFlickerApoc 5s infinite;
+        }
+        @keyframes cyberFlickerApoc {
+            0%, 100% { opacity: 1; }
+            72% { opacity: 1; }
+            73% { opacity: 0.3; }
+            74% { opacity: 1; }
+            95% { opacity: 1; }
+            96% { opacity: 0.5; -webkit-text-stroke-color: #00FFFF; }
+            97% { opacity: 1; -webkit-text-stroke-color: #FF003C; }
+        }
+        /* Glitch text detrás de APOCALYPSIS */
+        .cyber-title-apoc::before {
+            content: attr(data-text);
+            position: absolute;
+            left: 2px;
+            top: 0;
+            color: rgba(0, 255, 65, 0.3);
+            -webkit-text-stroke: 0;
+            z-index: -1;
+            animation: cyberApocShift 0.2s infinite;
+        }
+        @keyframes cyberApocShift {
+            0% { transform: translate(0); }
+            50% { transform: translate(-2px, 1px); }
+            100% { transform: translate(2px, -1px); }
+        }
+
+        /* ═══ DESCRIPCIÓN ═══ */
+        .cyber-apoc-desc {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: clamp(14px, 1.8vw, 16px);
+            color: rgba(230, 222, 208, 0.9);
+            line-height: 1.8;
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+        }
+        .cyber-bracket {
+            color: #00FF41;
+            font-weight: bold;
+        }
+        .cyber-blood-text {
+            color: #FF003C;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px #FF003C;
+        }
+
+        /* ═══ BOTONES SIN CAJA (Ingeniería de Texto) ═══ */
+        .cyber-apoc-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cyber-btn-masacre {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Vitruvian Man', sans-serif;
+            font-size: clamp(20px, 3vw, 28px);
+            color: #fff;
+            letter-spacing: 2px;
+            text-shadow: 
+                0 0 5px #fff,
+                0 0 10px #FF003C,
+                0 0 20px #FF003C;
+            transition: all 0.2s;
+            position: relative;
+        }
+        /* Efecto Hover: Cortes de luz y RGB split */
+        .cyber-btn-masacre:hover {
+            color: #FF003C;
+            text-shadow: -3px 0 #00FFFF, 3px 0 #00FF41;
+            animation: cyberBtnGlitch 0.3s steps(2) infinite;
+        }
+        @keyframes cyberBtnGlitch {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(2px) skewX(-2deg); }
+            100% { transform: translateX(-2px) skewX(2deg); }
+        }
+
+        .cyber-btn-skip {
+            background: none;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 14px;
+            color: rgba(200, 195, 185, 0.4);
+            letter-spacing: 3px;
+            transition: all 0.2s;
+            text-decoration: line-through;
+            text-decoration-color: rgba(255,0,60,0.5);
+        }
+        .cyber-btn-skip:hover {
+            color: rgba(200, 195, 185, 0.8);
+            text-shadow: 0 0 5px #fff;
+            text-decoration: none;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .cyber-title-6p { font-size: clamp(40px, 10vw, 100px); }
+            .cyber-title-apoc { font-size: clamp(35px, 8vw, 80px); }
+            .cyber-title-br { font-size: clamp(22px, 4vw, 40px); }
+            .cyber-btn-masacre { font-size: clamp(16px, 2.5vw, 24px); }
+        }
+        </style>
+
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -5942,12 +6237,20 @@ body.bt-node-focus { overflow: hidden; }
   position:absolute; top:50%; right:20px; transform:translateY(-50%);
   margin-top: 30px;
   width:clamp(340px,26vw,420px); z-index:900;
-  background:oklch(10% 0.015 160/0.92);
-  backdrop-filter:blur(14px) saturate(1.4);
-  border:1px solid oklch(82%0.22 145/0.4);
-  border-top:2px solid oklch(82%0.22 145/0.85);
+  background: oklch(10% 0.015 160 / 0.10);
+  backdrop-filter: blur(12px) saturate(1.8) brightness(1.2);
+  border: none;
   clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px);
-  box-shadow:0 0 30px oklch(82%0.22 145/0.12),inset 0 0 20px oklch(5%0.01 160/0.6);
+  background-image: 
+    linear-gradient(135deg, 
+      oklch(82% 0.22 145 / 0.08) 0%, 
+      transparent 50%, 
+      oklch(62% 0.23 25 / 0.05) 100%);
+  box-shadow: 
+    0 0 60px oklch(82% 0.22 145 / 0.15),
+    0 0 120px oklch(62% 0.23 25 / 0.08),
+    inset 0 1px 0 oklch(82% 0.22 145 / 0.2),
+    inset 0 -1px 0 oklch(5% 0.01 160 / 0.15);
   transition:all 0.3s ease;
 }
 #bt-holo-briefing.minimized .bt-brief-body { display:none; }
@@ -5960,7 +6263,8 @@ body.bt-node-focus { overflow: hidden; }
 }
 .bt-brief-topbar-lbl {
   font-family:'Share Tech Mono',monospace;font-size:15px;
-  letter-spacing:2px;color:oklch(82%0.22 145/0.7);
+  letter-spacing:2px;color:oklch(82% 0.22 145 / 0.9);
+  text-shadow:0 0 8px oklch(82% 0.22 145 / 0.8), 0 0 16px oklch(82% 0.22 145 / 0.4);
 }
 .bt-brief-topbar-dot {
   width:5px;height:5px;border-radius:50%;background:oklch(82%0.22 145);
@@ -5969,11 +6273,12 @@ body.bt-node-focus { overflow: hidden; }
 }
 .bt-brief-ctrls { display:flex;gap:6px; }
 .bt-brief-ctrl {
-  font-family:monospace;font-size:15px;color:oklch(60%0.05 150);
-  cursor:pointer;padding:1px 5px;border:1px solid oklch(60%0.05 150/0.3);
+  font-family:monospace;font-size:15px;color:#fff;
+  cursor:pointer;padding:1px 5px;border:1px solid oklch(82% 0.22 145 / 0.5);
   border-radius:1px;background:none;transition:all 0.15s;
+  text-shadow:0 0 6px oklch(82% 0.22 145 / 0.6);
 }
-.bt-brief-ctrl:hover { color:oklch(82%0.22 145);border-color:oklch(82%0.22 145/0.6); }
+.bt-brief-ctrl:hover { color:#fff;border-color:oklch(82% 0.22 145);text-shadow:0 0 10px oklch(82% 0.22 145); }
 
 /* Tabs */
 .bt-brief-tabs {
@@ -5982,14 +6287,18 @@ body.bt-node-focus { overflow: hidden; }
 }
 .bt-brief-tab {
   font-family:'Share Tech Mono',monospace;font-size:15px;letter-spacing:1.5px;
-  padding:6px 8px;cursor:pointer;color:oklch(60%0.05 150);
+  padding:6px 8px;cursor:pointer;color:#fff;
   border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;
   transition:all 0.18s;white-space:nowrap;
+  text-shadow:0 0 6px oklch(82% 0.22 145 / 0.5);
 }
 .bt-brief-tab.active {
-  color:oklch(82%0.22 145);border-bottom-color:oklch(82%0.22 145);
+  color:#fff;border-bottom-color:oklch(82% 0.22 145);
+  text-shadow:0 0 10px oklch(82% 0.22 145);
 }
-.bt-brief-tab:hover:not(.active) { color:oklch(72%0.1 150); }
+.bt-brief-tab:hover:not(.active) { color:#fff;text-shadow:0 0 8px oklch(82% 0.22 145 / 0.6); }
+.bt-brief-tabs .bt-brief-tab:nth-child(3) { color:oklch(55% 0.28 25);text-shadow:0 0 8px oklch(55% 0.28 25 / 0.9),0 0 16px oklch(55% 0.28 25 / 0.5); }
+.bt-brief-tabs .bt-brief-tab:nth-child(2) { color:oklch(80% 0.20 85);text-shadow:0 0 8px oklch(80% 0.20 85 / 0.9),0 0 16px oklch(80% 0.20 85 / 0.5); }
 
 /* Body */
 .bt-brief-body { padding:14px 14px 12px;min-height:90px; }
@@ -5998,14 +6307,18 @@ body.bt-node-focus { overflow: hidden; }
   margin-bottom:8px;display:inline-block;padding:2px 8px;
   border-radius:2px;
 }
-.bt-brief-role-badge.recluta  { color:oklch(82%0.22 145);border:1px solid oklch(82%0.22 145/0.4); }
-.bt-brief-role-badge.operativ { color:oklch(80%0.20 85);border:1px solid oklch(80%0.20 85/0.4); }
-.bt-brief-role-badge.apex     { color:oklch(62%0.23 25);border:1px solid oklch(62%0.23 25/0.4); }
+.bt-brief-role-badge.recluta  { color:oklch(82% 0.22 145);border:1px solid oklch(82% 0.22 145 / 0.6);text-shadow:0 0 6px oklch(82% 0.22 145 / 0.7); }
+.bt-brief-role-badge.operativ { color:oklch(80% 0.20 85);border:1px solid oklch(80% 0.20 85);text-shadow:0 0 8px oklch(80% 0.20 85 / 0.9),0 0 16px oklch(80% 0.20 85 / 0.5);box-shadow:0 0 12px oklch(80% 0.20 85 / 0.5),inset 0 0 8px oklch(80% 0.20 85 / 0.2); }
+.bt-brief-role-badge.apex     { color:oklch(55% 0.28 25);border:1px solid oklch(55% 0.28 25);text-shadow:0 0 8px oklch(55% 0.28 25 / 0.9),0 0 16px oklch(55% 0.28 25 / 0.5);box-shadow:0 0 12px oklch(55% 0.28 25 / 0.5),inset 0 0 8px oklch(55% 0.28 25 / 0.2); }
 .bt-brief-text {
   font-family:'Share Tech Mono',monospace;font-size:15px;line-height:1.7;
-  color:oklch(60%0.05 150);animation:briefingFadeIn 0.45s ease both;
+  color:#fff;animation:briefingFadeIn 0.45s ease both;
+  text-shadow:0 0 8px oklch(82% 0.22 145 / 0.6), 0 0 16px oklch(82% 0.22 145 / 0.3);
 }
-.bt-brief-text em { color:oklch(82%0.22 145/0.85);font-style:normal; }
+.bt-brief-text em {
+  color:oklch(82% 0.22 145);font-style:normal;
+  text-shadow:0 0 6px oklch(82% 0.22 145 / 0.8), 0 0 12px oklch(82% 0.22 145 / 0.4);
+}
 .bt-brief-progress {
   display:flex;gap:4px;margin-top:10px;
 }
@@ -6108,16 +6421,17 @@ body.bt-node-focus { overflow: hidden; }
 }
 .bt-rekt-label-row {
   display:flex; align-items:center; gap:10px; padding:0 16px 8px;
+  margin-top: 30px;
 }
 .bt-rekt-dot { width:6px;height:6px;border-radius:50%;background:oklch(62%0.23 25);
   box-shadow:0 0 6px oklch(62%0.23 25); animation:rektFlash 1.4s step-end infinite; }
 .bt-rekt-label {
-  font-family:'Orbitron',monospace; font-size:12px; font-weight:900;
+  font-family:'Orbitron',monospace; font-size:17px; font-weight:900;
   letter-spacing:3px; color:oklch(62%0.23 25);
   text-shadow:0 0 10px oklch(62%0.23 25/0.6);
 }
 .bt-rekt-sub {
-  font-family:'Share Tech Mono',monospace; font-size:11px;
+  font-family:'Share Tech Mono',monospace; font-size:16px;
   color:oklch(60%0.05 150); letter-spacing:1px;
 }
 .bt-rekt-track { display:flex; white-space:nowrap; animation:rektScroll 50s linear infinite;
@@ -6299,6 +6613,7 @@ body.bt-node-focus { overflow: hidden; }
   display: flex;
   align-items: center;
   gap: 18px;
+  margin-left: 80px;
   position: relative;
   z-index: 2;
 }
@@ -6341,7 +6656,7 @@ font-size: 15px;
 }
 .bt-header-sub {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
+  font-size: 15px;
   color: oklch(70% 0.02 150);
   letter-spacing: 1px;
   margin-top: 4px;
@@ -8748,126 +9063,13 @@ function typeHTML(element, htmlString, speed) {
             <!-- SEPARADOR NEÓN -->
             <hr class="lobby-separator">
 
-        </div>
+</div>
         <!-- /CASINO RETRO LOBBY -->
 
-        <!-- ══════════════════════════════════════════════════════════════
-             MODAL PROPAGANDA FORZADA — EMINENCE OF CYBERPUNK: APOCALYPSIS
-             Protocolo "Corta la bocha" // Threat Level Overlord
-        ══════════════════════════════════════════════════════════════ -->
-        <div id="apocalypsis-promo-modal" style="display:none; position:fixed; inset:0; z-index:100005; background:transparent; backdrop-filter:blur(1.5px); align-items:center; justify-content:center; padding:20px;">
-            <div style="
-                width:100%; max-width:540px;
-                background:linear-gradient(160deg, rgba(20,8,15,0.35), rgba(8,5,12,0.45));
-                backdrop-filter:blur(5px);
-                border:2px solid #FF2D55;
-                border-radius:8px;
-                box-shadow:0 0 35px rgba(255,45,85,0.5), inset 0 0 25px rgba(255,45,85,0.25);
-                padding:28px 24px; text-align:center; position:relative; overflow:hidden;
-            ">
-                <!-- Scanlines overlay -->
-                <div style="position:absolute; inset:0; pointer-events:none; background:repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(255,45,85,0.08) 2px, rgba(255,45,85,0.08) 4px);"></div>
-
-                <!-- Threat Badge -->
-                <div style="
-                    display:inline-block; padding:4px 14px; background:rgba(255,45,85,0.2);
-                    border:1px solid #FF2D55; border-radius:3px; font-family:'Share Tech Mono',monospace;
-                    font-size:11px; color:#FF2D55; letter-spacing:3px; text-shadow:0 0 8px #FF2D55;
-                    margin-bottom:16px; animation:lobbyLiveBlink 1.2s ease-in-out infinite;
-                ">
-                    ⚠ WARNING // THREAT LEVEL: OVERLORD
-                </div>
-
-                <!-- Main Title -->
-                <h2 style="
-                    font-family:'Orbitron',monospace; font-weight:900; font-size:clamp(20px, 4vw, 30px);
-                    color:#FFF; letter-spacing:2px; margin:0 0 6px 0; text-transform:uppercase;
-                    text-shadow:0 0 15px rgba(255,45,85,0.8), 0 0 30px rgba(0,255,255,0.4);
-                ">
-                    EMINENCE OF CYBERPUNK
-                </h2>
-                <div style="
-                    font-family:'Orbitron',monospace; font-weight:900; font-size:clamp(16px, 3.2vw, 24px);
-                    color:#00FFFF; letter-spacing:4px; margin-bottom:18px; text-shadow:0 0 12px #00FFFF;
-                ">
-                    : APOCALYPSIS
-                </div>
-
-                <!-- Tagline / Subtitle -->
-                <div style="
-                    font-family:'Share Tech Mono',monospace; font-size:13px; color:#FFD700;
-                    letter-spacing:2px; margin-bottom:20px; text-shadow:0 0 8px #FFD700;
-                    padding:6px; background:rgba(255,215,0,0.08); border-left:3px solid #FFD700; border-right:3px solid #FFD700;
-                ">
-                    // BATTLE ROYALE 6-PLAYER MEGASTRUCTURE ENGINE //
-                </div>
-
-                <!-- Body description -->
-                <p style="
-                    font-family:'Share Tech Mono',monospace; font-size:clamp(15px,2vw,17px);
-                    color:rgba(230,222,208,0.85); line-height:1.6; letter-spacing:1px; margin-bottom:26px; text-align:left;
-                    background:rgba(0,0,0,0.4); padding:14px; border:1px dashed rgba(255,45,85,0.3); border-radius:4px;
-                ">
-                    >_ El 1v1 fue solo un calentamiento. La Megaestructura de 6 gladiadores ha sido abierta.<br><br>
-                    Demostrá si tenés sangre para la masacre o seguí mirando desde afuera.
-                </p>
-
-                <!-- CTA Buttons -->
-                <div style="display:flex; flex-direction:column; gap:12px;">
-                    <button onclick="apocalypsisEnterMasacre()" style="
-                        width:100%; background:#FF2D55; border:2px solid #FF2D55; color:#000;
-                        font-family:'Share Tech Mono',monospace; font-weight:700; font-size:17px; letter-spacing:normal;
-                        padding:14px 20px; cursor:pointer; border-radius:4px;
-                        text-shadow:none; box-shadow:0 0 20px rgba(255,45,85,0.6);
-                        transition:all 0.2s;
-                    " onmouseover="this.style.background='#FF0033';this.style.boxShadow='0 0 30px #FF2D55';" onmouseout="this.style.background='#FF2D55';this.style.boxShadow='0 0 20px rgba(255,45,85,0.6)';">
-                        >_ [ ENTRAR_A_LA_MASACRE() ]
-                    </button>
-                    <button onclick="apocalypsisCloseModal()" style="
-                        width:100%; background:transparent; border:1px solid rgba(255,255,255,0.2); color:rgba(200,195,185,0.5);
-                        font-family:'Share Tech Mono',monospace; font-size:14px; letter-spacing:normal;
-                        padding:8px 16px; cursor:pointer; border-radius:4px; transition:all 0.2s;
-                    " onmouseover="this.style.color='#FFF';this.style.borderColor='rgba(255,255,255,0.5)'" onmouseout="this.style.color='rgba(200,195,185,0.5)';this.style.borderColor='rgba(255,255,255,0.2)';">
-                        [ POSPONER SENTENCIA ]
-                    </button>
-                </div>
-            </div>
-        </div>
+        <!-- ═══ AUTO-CERRAR APUESTAS DEL USUARIO AL ENTRAR A ARENA ═══
+             Cuando un jugador entra a una arena, todas sus otras apuestas abiertas se cancelan
+             porque no puede atender duelos mientras está jugando -->
         <script>
-        // ═══ PROTOCOLO "CORTA LA BOCHA" — EMINENCE OF CYBERPUNK: APOCALYPSIS ═══
-        var _apocalypsisChecked = false;
-        function apocalypsisCheckBlood() {
-            if (_apocalypsisChecked) return;
-            var user = window._rppiUser;
-            if (!user || !user.email) return;
-            var emailKey = user.email.replace(/\./g, '_');
-
-            firebase.database().ref('rppi_users/' + emailKey + '/stats/has_blooded_apocalypsis').once('value', function(snap) {
-                _apocalypsisChecked = true;
-                var hasBlooded = snap.val();
-                if (hasBlooded !== true) {
-                    // Usuario no bautizado en sala de 6 → Desplegar propaganda forzada
-                    var modal = document.getElementById('apocalypsis-promo-modal');
-                    if (modal) modal.style.display = 'flex';
-                }
-            });
-        }
-
-        function apocalypsisCloseModal() {
-            var modal = document.getElementById('apocalypsis-promo-modal');
-            if (modal) modal.style.display = 'none';
-        }
-
-        function apocalypsisEnterMasacre() {
-            apocalypsisCloseModal();
-            if (typeof rppiOpenBetModal === 'function') {
-                rppiOpenBetModal('pacman');
-            }
-        }
-
-        // ═══ AUTO-CERRAR APUESTAS DEL USUARIO AL ENTRAR A ARENA ═══
-        // Cuando un jugador entra a una arena, todas sus otras apuestas abiertas se cancelan
-        // porque no puede atender duelos mientras está jugando
         function lobbyCancelMyOpenBets() {
             if (!window._rppiUser || !window._rppiUser.email) return;
             var userEmail = window._rppiUser.email;
@@ -11538,7 +11740,7 @@ document.addEventListener('DOMContentLoaded', function() {
     border: 1px solid rgba(0,188,255,0.35);
     color: rgba(0,188,255,0.7);
     font-family: 'Orbitron', monospace;
-    font-size: 12px;
+font-size: 17px;
     font-weight: 600;
     padding: 7px 14px;
     border-radius: 3px;
@@ -19667,7 +19869,7 @@ btn.addEventListener('click', toggleMutePlay);
                 padding: 4px 12px;
                 border-left: none;
                 border-top: 1px solid rgba(248,255,43,0.15);
-                font-size: 11px;
+font-size: 16px;
             }
         }
 
@@ -27117,6 +27319,116 @@ window.initGammaBomb = function() {
 </script>
 
 <script>
+/* ═══════════════════════════════════════════════════════════════════════════════════════
+   🩸 APOCALYPSIS V2 — PROTOCOLO "CORTA LA BOCHA" — HERO INJECTION
+   Se ejecuta al cargar si el usuario no ha sido "blooded" en sala de 6
+═══════════════════════════════════════════════════════════════════════════════════════════ */
+(function() {
+    'use strict';
+    
+    var _apocalypsisChecked = false;
+    var _modal = null;
+    
+    function _getModal() {
+        if (!_modal) _modal = document.getElementById('apocalypsis-promo-modal');
+        return _modal;
+    }
+    
+    function apocalypsisCloseModal() {
+        var modal = _getModal();
+        if (modal) {
+            modal.classList.remove('active');
+            setTimeout(function() {
+                modal.style.display = 'none';
+            }, 300);
+        }
+    }
+    
+    function apocalypsisEnterMasacre() {
+        apocalypsisCloseModal();
+        if (typeof rppiOpenBetModal === 'function') {
+            rppiOpenBetModal('pacman');
+        }
+    }
+    
+    // Exponer globalmente para onclick inline
+    window.apocalypsisCloseModal = apocalypsisCloseModal;
+    window.apocalypsisEnterMasacre = apocalypsisEnterMasacre;
+    
+    function apocalypsisCheckBlood() {
+        if (_apocalypsisChecked) return;
+        
+        var user = window._rppiUser;
+        if (!user || !user.email) {
+            // Usuario no logueado — mostrar modal después de un delay
+            setTimeout(function() {
+                var modal = _getModal();
+                if (modal) {
+                    modal.style.display = 'flex';
+                    setTimeout(function() { modal.classList.add('active'); }, 10);
+                }
+            }, 3000);
+            _apocalypsisChecked = true;
+            return;
+        }
+        
+        var emailKey = user.email.replace(/\./g, '_');
+        
+        // Verificar en Firebase si ya ha entrado a sala de 6
+        if (typeof firebase !== 'undefined' && firebase.database) {
+            firebase.database().ref('rppi_users/' + emailKey + '/stats/has_blooded_apocalypsis').once('value', function(snap) {
+                _apocalypsisChecked = true;
+                var hasBlooded = snap.val();
+                if (hasBlooded !== true) {
+                    // Usuario no bautizado en sala de 6 → Desplegar propaganda forzada
+                    var modal = _getModal();
+                    if (modal) {
+                        modal.style.display = 'flex';
+                        setTimeout(function() { modal.classList.add('active'); }, 10);
+                    }
+                }
+            }).catch(function(err) {
+                console.warn('[APOCALYPSIS] Firebase check failed:', err);
+                // En caso de error, mostrar igual (fail-open para no bloquear)
+                setTimeout(function() {
+                    var modal = _getModal();
+                    if (modal) {
+                        modal.style.display = 'flex';
+                        setTimeout(function() { modal.classList.add('active'); }, 10);
+                    }
+                }, 3000);
+            });
+        } else {
+            // Firebase no disponible — mostrar tras delay
+            setTimeout(function() {
+                var modal = _getModal();
+                if (modal) {
+                    modal.style.display = 'flex';
+                    setTimeout(function() { modal.classList.add('active'); }, 10);
+                }
+            }, 3000);
+        }
+    }
+    
+    // Auto-ejecutar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', apocalypsisCheckBlood);
+    } else {
+        apocalypsisCheckBlood();
+    }
+    
+    // También escuchar cambios de auth (usuario loguea después de cargar)
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user && !_apocalypsisChecked) {
+                setTimeout(apocalypsisCheckBlood, 1000);
+            }
+        });
+    }
+})();
+</script>
+
+<script>
 (function spawnHoloParticles() {
     ['holo-particles-left', 'holo-particles-right'].forEach(function(id) {
         var container = document.getElementById(id);
@@ -28753,6 +29065,19 @@ window.btBootGate = function() {
         if (typeof playTerminalBeep === 'function') playTerminalBeep();
     });
 
+    // ⚡ PROTOCOLO GAMMA: LIMPIEZA DE ELEMENTOS FLOTANTES (FOCUS MODE)
+    var btFloatElements = [
+        '#finder-float-window',
+        '#rppi-duel-trigger-btn',
+        '#snake-promo-window',
+        '#lamp-flicker-btn',
+        '#ultra-dark-toggle'
+    ];
+    btFloatElements.forEach(function(selector) {
+        var el = document.querySelector(selector);
+        if (el) el.style.display = 'none';
+    });
+
     // 4. EL TIRO DE GRACIA (Redirección sincronizada)
     setTimeout(function() {
 
@@ -28816,6 +29141,12 @@ window.btExitTerminal = function() {
             btn.style.background = '';
         }
         gate.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // ⚡ PROTOCOLO GAMMA: RESTAURAR ELEMENTOS FLOTANTES AL SALIR
+        btFloatElements.forEach(function(selector) {
+            var el = document.querySelector(selector);
+            if (el) el.style.display = '';
+        });
     }, 350);
 };
 </script>
