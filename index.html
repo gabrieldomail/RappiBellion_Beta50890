@@ -1583,7 +1583,7 @@ height: 8px;
 </style>
 
 </head>
-<body>
+<body class="intro-active">
 
 <!-- ═══════════════════════════════════════════════════
      LIVE-SYNC — Badge satelital con créditos en tiempo real
@@ -2048,6 +2048,7 @@ height: 8px;
                 });
                 document.body.classList.add('mode-web25');
                 document.body.classList.remove('mode-web30');
+                document.body.classList.remove('intro-active');
             } else {
                 // WEB3.0: blockchain habitual, sin modales RPPI-C
                 document.querySelectorAll('.only-web30').forEach(function(e){ e.style.display = ''; });
@@ -2058,6 +2059,7 @@ height: 8px;
                 });
                 document.body.classList.add('mode-web30');
                 document.body.classList.remove('mode-web25');
+                document.body.classList.remove('intro-active');
             }
             if (typeof _rppiDuelSyncVisibility === 'function') _rppiDuelSyncVisibility();
         }
@@ -6414,6 +6416,10 @@ body.bt-node-focus { overflow: hidden; }
 <style>
 @keyframes rektScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 @keyframes rektFlash  { 0%,100%{opacity:1} 50%{opacity:0.3} }
+@keyframes rektAutoFocus {
+  0%, 45%, 55%, 100% { filter: grayscale(1); transform: scale(1); z-index: 1; box-shadow: 0 4px 16px oklch(0% 0 0/0.5); }
+  48%, 52% { filter: grayscale(0); transform: scale(1.18); z-index: 10; box-shadow: 0 0 40px oklch(62% 0.23 25 / 0.7), 0 8px 32px oklch(0% 0 0/0.6); }
+}
 .bt-rekt-wall {
   width:100%; background:oklch(5% 0.01 160);
   border-bottom:1px solid oklch(62%0.23 25/0.4);
@@ -6439,7 +6445,7 @@ body.bt-node-focus { overflow: hidden; }
 .bt-rekt-track:hover { animation-play-state:paused; }
 .bt-rekt-card {
   flex-shrink:0; width:200px; height:130px; margin:0 8px;
-  background:oklch(98% 0.01 95); /* papel envejecido */
+  background:oklch(98% 0.01 95);
   border:1px solid oklch(20% 0.01 60);
   clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
   position:relative; overflow:hidden;
@@ -6447,7 +6453,18 @@ body.bt-node-focus { overflow: hidden; }
   display:flex; flex-direction:column; justify-content:space-between;
   padding:8px 10px; box-sizing:border-box;
   filter:grayscale(1); transition:filter 0.4s ease, transform 0.4s ease; cursor:pointer;
+  animation: rektAutoFocus 50s linear infinite;
 }
+.bt-rekt-card:nth-child(1)  { animation-delay: 0s; }
+.bt-rekt-card:nth-child(2)  { animation-delay: 10s; }
+.bt-rekt-card:nth-child(3)  { animation-delay: 20s; }
+.bt-rekt-card:nth-child(4)  { animation-delay: 30s; }
+.bt-rekt-card:nth-child(5)  { animation-delay: 40s; }
+.bt-rekt-card:nth-child(6)  { animation-delay: 0s; }
+.bt-rekt-card:nth-child(7)  { animation-delay: 10s; }
+.bt-rekt-card:nth-child(8)  { animation-delay: 20s; }
+.bt-rekt-card:nth-child(9)  { animation-delay: 30s; }
+.bt-rekt-card:nth-child(10) { animation-delay: 40s; }
 .bt-rekt-card:hover { filter:grayscale(0); transform:scale(1.15); z-index:5; }
 .bt-rekt-masthead {
   font-family:'Georgia','Times New Roman',serif; font-weight:900;
@@ -9738,6 +9755,22 @@ function typeHTML(element, htmlString, speed) {
     transition: opacity 0.45s ease, transform 0.45s ease;
 }
 #float-btn-group.hero-out {
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+}
+
+/* Gamma Protocol: ocultar #login-float-btn durante intro-screen */
+body.intro-active #login-float-btn {
+    display: none !important;
+}
+
+body.intro-active #lamp-flicker-btn,
+body.intro-active #lamp-flicker-overlay {
+    display: none !important;
+}
+
+body.intro-active #float-btn-group {
     opacity: 0;
     transform: translateY(12px);
     pointer-events: none;
