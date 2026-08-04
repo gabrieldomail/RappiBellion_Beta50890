@@ -16988,11 +16988,29 @@ if (btn) btn.style.display = 'block';
 let isMuted = false;
 let isPlaying = false;
 
+// Web Audio API context para gain > 1.0
+var _audioCtx = null;
+var _gainNode = null;
+var _sourceNode = null;
+var _webAudioInitialized = false;
+
+function initAudioContext() {
+    if (!_audioCtx) {
+        _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        _gainNode = _audioCtx.createGain();
+        _gainNode.connect(_audioCtx.destination);
+        // Crear source node UNA SOLA VEZ y reutilizarlo
+        _sourceNode = _audioCtx.createMediaElementSource(_audio);
+        _sourceNode.connect(_gainNode);
+        _webAudioInitialized = true;
+    }
+}
+
 // Random: Shuffle playlist (Gardel, Sinatra, SHE)
 var _casinoTracks = [
-    { src: 'sounds/por-una-cabeza.mp3', name: 'GARDEL', volume: 1.0 },
-    { src: 'sounds/new-york-new-york.mp3', name: 'SINATRA', volume: 1.0 },
-    { src: 'sounds/she.mp3', name: 'SHE', volume: 1.35 }
+    { src: 'sounds/por-una-cabeza.mp3', name: 'GARDEL', gain: 1.0 },
+    { src: 'sounds/new-york-new-york.mp3', name: 'SINATRA', gain: 1.0 },
+    { src: 'sounds/she.mp3', name: 'SHE', gain: 1.35 }
 ];
 
 // Fisher-Yates shuffle para orden aleatorio
@@ -17010,6 +17028,16 @@ function shuffleArray(array) {
 var _playlist = shuffleArray(_casinoTracks);
 var _playlistIndex = 0;
 
+function applyTrackGain(track) {
+    if (_webAudioInitialized && _gainNode) {
+        // Actualizar gain del node existente (no recrear source)
+        _gainNode.gain.value = track.gain;
+    } else if (_audio) {
+        // Fallback: usar volume nativo (max 1.0)
+        _audio.volume = track.gain || 1.0;
+    }
+}
+
 function playNextTrack() {
     if (_playlistIndex >= _playlist.length) {
         _playlist = shuffleArray(_casinoTracks); // Re-shuffle al terminar la lista
@@ -17018,7 +17046,8 @@ function playNextTrack() {
     var track = _playlist[_playlistIndex];
     if (_tangoSrc) _tangoSrc.src = track.src;
     if (_audio) {
-        _audio.volume = track.volume || 1.0; // Ajustar volumen según track
+        // Aplicar gain antes de cargar/reproducir
+        applyTrackGain(track);
         _audio.load();
         _audio.play().catch(function(e) {
             console.warn('Audio play failed:', e);
@@ -17030,7 +17059,10 @@ function playNextTrack() {
 // Inicializar primer track aleatorio
 var _selectedTrack = _playlist[_playlistIndex];
 if (_tangoSrc) _tangoSrc.src = _selectedTrack.src;
-if (_audio) _audio.volume = _selectedTrack.volume || 1.0;
+if (_audio) {
+    initAudioContext();
+    applyTrackGain(_selectedTrack);
+}
 _playlistIndex++;
 
 // Cuando termine el track, pasa al siguiente
@@ -17068,11 +17100,39 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
     // Aplicar playlist aleatoria a freeplay (misma lógica que casino)
     var _fpSrc = document.getElementById('freeplay-src');
     var _fpAudio = document.getElementById('freeplay-audio');
+    var _fpAudioCtx = null;
+    var _fpGainNode = null;
+    var _fpSourceNode = null;
+    var _fpWebAudioInitialized = false;
+
+    function initFreeplayAudioContext() {
+        if (!_fpAudioCtx) {
+            _fpAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            _fpGainNode = _fpAudioCtx.createGain();
+            _fpGainNode.connect(_fpAudioCtx.destination);
+            // Crear source node UNA SOLA VEZ
+            _fpSourceNode = _fpAudioCtx.createMediaElementSource(_fpAudio);
+            _fpSourceNode.connect(_fpGainNode);
+            _fpWebAudioInitialized = true;
+        }
+    }
+
+    function applyFreeplayGain(track) {
+        if (_fpWebAudioInitialized && _fpGainNode) {
+            _fpGainNode.gain.value = track.gain;
+        } else if (_fpAudio) {
+            _fpAudio.volume = track.gain || 1.0;
+        }
+    }
+
     // Usar el primer track de la playlist compartida
     if (_fpSrc && _playlist && _playlist.length > 0) {
         _fpSrc.src = _playlist[0].src;
     }
-    if (_fpAudio) _fpAudio.volume = (_playlist[0] && _playlist[0].volume) || 1.0;
+    if (_fpAudio) {
+        initFreeplayAudioContext();
+        applyFreeplayGain(_playlist[0]);
+    }
 
     function playNextFreeplayTrack() {
         if (_playlistIndex >= _playlist.length) {
@@ -17082,7 +17142,7 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
         var track = _playlist[_playlistIndex];
         if (_fpSrc) _fpSrc.src = track.src;
         if (_fpAudio) {
-            _fpAudio.volume = track.volume || 1.0;
+            applyFreeplayGain(track);
             _fpAudio.load();
             _fpAudio.play().catch(function(e) {
                 console.warn('Freeplay audio play failed:', e);
