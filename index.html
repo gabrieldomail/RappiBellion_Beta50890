@@ -16990,9 +16990,9 @@ let isPlaying = false;
 
 // Random: Shuffle playlist (Gardel, Sinatra, SHE)
 var _casinoTracks = [
-    { src: 'sounds/por-una-cabeza.mp3', name: 'GARDEL' },
-    { src: 'sounds/new-york-new-york.mp3', name: 'SINATRA' },
-    { src: 'sounds/she.mp3', name: 'SHE' }
+    { src: 'sounds/por-una-cabeza.mp3', name: 'GARDEL', volume: 1.0 },
+    { src: 'sounds/new-york-new-york.mp3', name: 'SINATRA', volume: 1.0 },
+    { src: 'sounds/she.mp3', name: 'SHE', volume: 1.35 }
 ];
 
 // Fisher-Yates shuffle para orden aleatorio
@@ -17018,6 +17018,7 @@ function playNextTrack() {
     var track = _playlist[_playlistIndex];
     if (_tangoSrc) _tangoSrc.src = track.src;
     if (_audio) {
+        _audio.volume = track.volume || 1.0; // Ajustar volumen según track
         _audio.load();
         _audio.play().catch(function(e) {
             console.warn('Audio play failed:', e);
@@ -17029,6 +17030,7 @@ function playNextTrack() {
 // Inicializar primer track aleatorio
 var _selectedTrack = _playlist[_playlistIndex];
 if (_tangoSrc) _tangoSrc.src = _selectedTrack.src;
+if (_audio) _audio.volume = _selectedTrack.volume || 1.0;
 _playlistIndex++;
 
 // Cuando termine el track, pasa al siguiente
@@ -17070,6 +17072,7 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
     if (_fpSrc && _playlist && _playlist.length > 0) {
         _fpSrc.src = _playlist[0].src;
     }
+    if (_fpAudio) _fpAudio.volume = (_playlist[0] && _playlist[0].volume) || 1.0;
 
     function playNextFreeplayTrack() {
         if (_playlistIndex >= _playlist.length) {
@@ -17079,6 +17082,7 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
         var track = _playlist[_playlistIndex];
         if (_fpSrc) _fpSrc.src = track.src;
         if (_fpAudio) {
+            _fpAudio.volume = track.volume || 1.0;
             _fpAudio.load();
             _fpAudio.play().catch(function(e) {
                 console.warn('Freeplay audio play failed:', e);
