@@ -8786,6 +8786,71 @@ document.addEventListener('keydown', function(e){
 
     /* LED YEAR CANVAS */
     #led-year-1959 { width: 220px !important; height: 55px !important; }
+
+    /* #casino-retro-lobby responsive (≤768px) */
+    #casino-retro-lobby {
+        padding: clamp(12px, 2vw, 16px) !important;
+    }
+    .lobby-body {
+        padding: clamp(10px, 2vw, 16px) !important;
+        gap: 12px !important;
+    }
+    .lobby-header-bar {
+        padding: clamp(10px, 2vw, 14px) clamp(12px, 3vw, 20px) !important;
+    }
+    .lobby-title {
+        font-size: clamp(16px, 4vw, 24px) !important;
+    }
+    .lobby-stat {
+        font-size: clamp(11px, 1.8vw, 14px) !important;
+        padding: clamp(3px, 1vw, 5px) clamp(6px, 2vw, 12px) !important;
+    }
+    .lobby-activity-feed {
+        max-height: 160px !important;
+        padding: 8px !important;
+    }
+    .lobby-feed-entry {
+        font-size: 13px !important;
+    }
+    .lobby-leaderboard-title,
+    .lobby-open-bets-title {
+        font-size: clamp(13px, 2.5vw, 16px) !important;
+    }
+    .lobby-lb-entry {
+        font-size: clamp(12px, 2vw, 15px) !important;
+        padding: 6px 8px !important;
+    }
+    .lobby-lb-rank {
+        font-size: 1.1em !important;
+    }
+    .lobby-lb-score {
+        font-size: 1em !important;
+    }
+    .lobby-open-bets {
+        max-height: 150px !important;
+    }
+    #lobby-bet-detail {
+        padding: 10px !important;
+        font-size: 14px !important;
+    }
+    .lobby-separator { margin: 10px 0 6px !important; }
+}
+
+/* #beta-start-screen responsive (≤768px) */
+#beta-start-screen {
+    padding: clamp(24px, 5vw, 36px) clamp(20px, 4vw, 30px) clamp(32px, 5vw, 48px) clamp(20px, 4vw, 30px) !important;
+    min-height: clamp(400px, 60vh, 500px) !important;
+}
+#beta-start-screen > div[style*="display:flex"] {
+    gap: clamp(12px, 3vw, 22px) !important;
+}
+#led-logo-badge {
+    bottom: 12px !important; left: 12px !important;
+}
+#led-logo {
+    width: clamp(50px, 8vw, 56px) !important;
+    height: clamp(50px, 8vw, 56px) !important;
+}
 }
 
 @media (max-width: 480px) {
@@ -8852,6 +8917,71 @@ document.addEventListener('keydown', function(e){
 
     .invoke-panel > div:first-child { font-size: 10px !important; }
     .invoke-panel canvas { width: 160px !important; height: 40px !important; }
+
+    /* #casino-retro-lobby responsive (≤480px) */
+    #casino-retro-lobby {
+        padding: 10px !important;
+    }
+    .lobby-body {
+        padding: 8px !important;
+        gap: 8px !important;
+    }
+    .lobby-header-bar {
+        padding: 8px 12px !important;
+    }
+    .lobby-title {
+        font-size: clamp(14px, 4vw, 20px) !important;
+    }
+    .lobby-stat {
+        font-size: 11px !important;
+        padding: 3px 8px !important;
+    }
+    .lobby-activity-feed {
+        max-height: 120px !important;
+        padding: 6px !important;
+    }
+    .lobby-feed-entry {
+        font-size: 12px !important;
+    }
+    .lobby-leaderboard-title,
+    .lobby-open-bets-title {
+        font-size: 12px !important;
+    }
+    .lobby-lb-entry {
+        font-size: 11px !important;
+        padding: 4px 6px !important;
+    }
+    .lobby-lb-rank {
+        font-size: 1em !important;
+    }
+    .lobby-lb-score {
+        font-size: 0.9em !important;
+    }
+    .lobby-open-bets {
+        max-height: 100px !important;
+    }
+    #lobby-bet-detail {
+        padding: 8px !important;
+        font-size: 13px !important;
+    }
+    .lobby-separator { margin: 6px 0 4px !important; }
+}
+
+/* #beta-start-screen responsive (≤480px) */
+#beta-start-screen {
+    padding: clamp(16px, 4vw, 28px) clamp(16px, 3vw, 24px) clamp(24px, 4vw, 36px) clamp(16px, 3vw, 24px) !important;
+    min-height: clamp(300px, 50vh, 400px) !important;
+}
+#beta-start-screen > div[style*="display:flex"] {
+    gap: clamp(10px, 2vw, 16px) !important;
+}
+#led-logo-badge {
+    bottom: 10px !important; left: 10px !important;
+}
+#led-logo {
+    width: clamp(40px, 6vw, 48px) !important;
+    height: clamp(40px, 6vw, 48px) !important;
+}
 }
 
 /* Desktop (>1024px) — sin cambios, media queries no aplican */
