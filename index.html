@@ -8711,6 +8711,150 @@ document.addEventListener('keydown', function(e){
 @media (prefers-reduced-motion: reduce) {
     #start-beta-button::before { animation:none !important; }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   RESPONSIVE CIRCUIT-BETA — TABLET (≤768px) & MOBILE (≤480px)
+   Quirúrgico: solo toca #circuit-beta y descendientes
+   No toca desktop (>1024px) — media queries solo activan en breakpoints
+═════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+    /* ── #circuit-beta container ── */
+    #circuit-beta {
+        padding: clamp(40px, 8vw, 75px) clamp(20px, 5vw, 38px) !important;
+    }
+
+    /* ── .vegas-root ── */
+    .vegas-root {
+        padding: 0 clamp(12px, 3vw, 20px) !important;
+    }
+
+    /* ── LED columnas laterales ── */
+    .vegas-led-col { width: 12px !important; }
+
+    /* ── VEGAS SIGN LED PANEL ── */
+    .vegas-sign-led-panel {
+        padding: clamp(32px, 6vw, 54px) clamp(36px, 7vw, 63px) !important;
+    }
+    .vegas-sign-led-panel .vegas-strip-top,
+    .vegas-sign-led-panel .vegas-strip-bottom { height: 8px !important; }
+    .vegas-sign-led-panel .vegas-strip-left,
+    .vegas-sign-led-panel .vegas-strip-right { width: 8px !important; }
+    .vegas-sign-led-panel .vegas-strip-inner-top,
+    .vegas-sign-led-panel .vegas-strip-inner-bottom { height: 4px !important; }
+    .vegas-sign-led-panel .vegas-strip-inner-left,
+    .vegas-sign-led-panel .vegas-strip-inner-right { width: 4px !important; }
+
+    /* Canvas LED Conflict */
+    .led-conflict-canvas {
+        width: 90% !important; left: 5% !important; height: 20px !important;
+    }
+    .led-conflict-top { top: 12px !important; }
+    .led-conflict-bottom { bottom: 12px !important; }
+
+    /* VEGAS SIGN TITLES */
+    .vegas-sign-title { font-size: clamp(24px, 6vw, 40px) !important; }
+    .vegas-sign-casino { font-size: clamp(32px, 8vw, 60px) !important; }
+    .vegas-sign-fabulous { font-size: clamp(18px, 4vw, 32px) !important; }
+
+    /* VEGAS MARQUEE */
+    .vegas-marquee-track { height: 18px !important; }
+    .vegas-marquee-item { font-size: 10px !important; padding: 0 18px !important; }
+
+    /* WELCOME LED ROW */
+    .welcome-led-row { gap: clamp(3px, 1vw, 8px) !important; }
+    .welcome-led-circle {
+        width: clamp(70px, 10vw, 85px) !important;
+        height: clamp(70px, 10vw, 85px) !important;
+    }
+    .welcome-led-circle::before { inset: -6px !important; border-width: 2px !important; }
+    .welcome-led-circle::after { inset: -9px !important; border-width: 2px !important; }
+
+    /* TERMINAL + OLD CARTEL */
+    .terminal-overflow { font-size: clamp(9px, 1.2vw, 12px) !important; }
+    .the-old-cartel { font-size: clamp(20px, 4vw, 36px) !important; }
+
+    /* INVOKE PANEL */
+    .invoke-panel { margin: 12px 16px 0 !important; }
+    #led-year-1959 { width: 220px !important; height: 55px !important; }
+
+    /* START BUTTON */
+    #start-beta-button { font-size: clamp(16px, 2.2vw, 22px) !important; padding: 10px 32px !important; }
+
+    /* VEGAS PARTICLES */
+    .vegas-particle { display: none !important; } /* rendimiento mobile */
+
+    /* LED YEAR CANVAS */
+    #led-year-1959 { width: 220px !important; height: 55px !important; }
+}
+
+@media (max-width: 480px) {
+    /* ── #circuit-beta container ── */
+    #circuit-beta {
+        padding: clamp(28px, 6vw, 50px) clamp(16px, 4vw, 28px) !important;
+    }
+
+    .vegas-root { padding: 0 clamp(8px, 2vw, 14px) !important; }
+
+    /* LED columnas */
+    .vegas-led-col { width: 8px !important; }
+
+    .vegas-sign-led-panel {
+        padding: clamp(24px, 5vw, 40px) clamp(24px, 5vw, 40px) !important;
+    }
+    .vegas-sign-led-panel .vegas-strip-top,
+    .vegas-sign-led-panel .vegas-strip-bottom { height: 6px !important; }
+    .vegas-sign-led-panel .vegas-strip-left,
+    .vegas-sign-led-panel .vegas-strip-right { width: 6px !important; }
+    .vegas-sign-led-panel .vegas-strip-inner-top,
+    .vegas-sign-led-panel .vegas-strip-inner-bottom { height: 3px !important; }
+    .vegas-sign-led-panel .vegas-strip-inner-left,
+    .vegas-sign-led-panel .vegas-strip-inner-right { width: 3px !important; }
+
+    .led-conflict-canvas { height: 16px !important; }
+    .led-conflict-top { top: 8px !important; }
+    .led-conflict-bottom { bottom: 8px !important; }
+
+    .vegas-sign-title { font-size: clamp(20px, 5.5vw, 32px) !important; }
+    .vegas-sign-casino { font-size: clamp(26px, 7vw, 48px) !important; }
+    .vegas-sign-fabulous { font-size: clamp(16px, 3.5vw, 26px) !important; }
+
+    .vegas-marquee-track { height: 16px !important; }
+    .vegas-marquee-item { font-size: 9px !important; padding: 0 14px !important; }
+
+    .vegas-marquee-track { display: none !important; } /* ocultar en mobile extremo */
+
+    .welcome-led-row { gap: clamp(2px, 0.8vw, 6px) !important; }
+    .welcome-led-circle {
+        width: clamp(55px, 8vw, 70px) !important;
+        height: clamp(55px, 8vw, 70px) !important;
+    }
+    .welcome-led-circle::before { inset: -5px !important; }
+    .welcome-led-circle::after { inset: -8px !important; }
+    .welcome-led-circle::after { background-size: 12px 12px, 12px 12px !important; }
+
+    .terminal-overflow { font-size: clamp(8px, 1vw, 11px) !important; line-height: 1.5 !important; }
+    .the-old-cartel { font-size: clamp(18px, 3.5vw, 28px) !important; }
+
+    .invoke-panel { margin: 10px 12px 0 !important; padding: 8px !important; }
+    #led-year-1959 { width: 180px !important; height: 45px !important; }
+
+    #start-beta-button {
+        font-size: clamp(14px, 2vw, 20px) !important;
+        padding: 10px 24px !important;
+        border-radius: 4px !important;
+    }
+
+    #start-beta-button::before { inset: -5px !important; border-radius: 7px !important; background-size: 16px 16px !important; }
+
+    .terminal-overflow { font-size: 9px !important; }
+    .the-old-cartel { font-size: 20px !important; }
+
+    .invoke-panel > div:first-child { font-size: 10px !important; }
+    .invoke-panel canvas { width: 160px !important; height: 40px !important; }
+}
+
+/* Desktop (>1024px) — sin cambios, media queries no aplican */
 </style>
 
 <!-- Columnas LED laterales -->
