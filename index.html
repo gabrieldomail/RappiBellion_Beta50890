@@ -15838,7 +15838,7 @@ updateMuteBtnVisibility();
     window._sagaiModalTimers.push(setTimeout(function() { sagaiModalClose(); }, 41000));
   }
 
-  function sagaiModalClose() {
+function sagaiModalClose() {
     var modal = document.getElementById('sagai-modal');
     var audio = document.getElementById('sagai-audio');
     var imgWrap = document.getElementById('sagai-img-wrap');
@@ -15851,9 +15851,12 @@ updateMuteBtnVisibility();
     subText.textContent = '';
     if (window._sagaiModalTimers) { window._sagaiModalTimers.forEach(function(t) { clearTimeout(t); }); window._sagaiModalTimers = []; }
   }
-  document.getElementById('sagai-modal').addEventListener('click', function(e) { if (e.target === this) sagaiModalClose(); });
-  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') sagaiModalClose(); });
-  </script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('sagai-modal').addEventListener('click', function(e) { if (e.target === this) sagaiModalClose(); });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') sagaiModalClose(); });
+  });
+</script>
 
   <!-- LOS 4 JINETES -->
   <div class="synd-grid synd-grid--main">
@@ -16521,7 +16524,7 @@ updateMuteBtnVisibility();
         <p class="small-text">Los primeros miembros recibirán el Wallpaper Interactivo "Sala de Interrogación Nº4".</p>
     </section>
 
-    <audio id="tango-audio" loop preload="auto">
+    <audio id="tango-audio" preload="auto">
     <source id="tango-src" src="sounds/por-una-cabeza.mp3" type="audio/mpeg">
     Tu navegador no soporta el audio.
     </audio>
@@ -16972,54 +16975,122 @@ updateMuteBtnVisibility();
 
 
 <script>
-// Control Mute/Play — Gardel / Sinatra random
-const audio = document.getElementById('tango-audio');
-const tangoSrc = document.getElementById('tango-src');
+// Control Mute/Play — Gardel / Sinatra / SHE random
+const _audio = document.getElementById('tango-audio');
+const _tangoSrc = document.getElementById('tango-src');
 const btn = document.getElementById('mute-play-btn');
 const label = document.getElementById('mute-play-label');
 const birdIcon = document.getElementById('bird-icon');
 
+// Hacer visible el botón
+if (btn) btn.style.display = 'block';
+
 let isMuted = false;
 let isPlaying = false;
 
-// Random: Gardel o Sinatra al iniciar
+// Random: Shuffle playlist (Gardel, Sinatra, SHE)
 var _casinoTracks = [
     { src: 'sounds/por-una-cabeza.mp3', name: 'GARDEL' },
-    { src: 'sounds/new-york-new-york.mp3', name: 'SINATRA' }
+    { src: 'sounds/new-york-new-york.mp3', name: 'SINATRA' },
+    { src: 'sounds/she.mp3', name: 'SHE' }
 ];
-var _selectedTrack = _casinoTracks[Math.floor(Math.random() * _casinoTracks.length)];
-if (tangoSrc) tangoSrc.src = _selectedTrack.src;
+
+// Fisher-Yates shuffle para orden aleatorio
+function shuffleArray(array) {
+    var shuffled = array.slice();
+    for (var i = shuffled.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = shuffled[i];
+        shuffled[i] = shuffled[j];
+        shuffled[j] = temp;
+    }
+    return shuffled;
+}
+
+var _playlist = shuffleArray(_casinoTracks);
+var _playlistIndex = 0;
+
+function playNextTrack() {
+    if (_playlistIndex >= _playlist.length) {
+        _playlist = shuffleArray(_casinoTracks); // Re-shuffle al terminar la lista
+        _playlistIndex = 0;
+    }
+    var track = _playlist[_playlistIndex];
+    if (_tangoSrc) _tangoSrc.src = track.src;
+    if (_audio) {
+        _audio.load();
+        _audio.play().catch(function(e) {
+            console.warn('Audio play failed:', e);
+        });
+    }
+    _playlistIndex++;
+}
+
+// Inicializar primer track aleatorio
+var _selectedTrack = _playlist[_playlistIndex];
+if (_tangoSrc) _tangoSrc.src = _selectedTrack.src;
+_playlistIndex++;
+
+// Cuando termine el track, pasa al siguiente
+_audio.addEventListener('ended', playNextTrack);
 
 function toggleMutePlay() {
     if (!isPlaying) {
-        audio.muted = false;
-        audio.play();
+        _audio.muted = false;
+        _audio.play().catch(function(e) {
+            console.warn('Audio play failed:', e);
+        });
         isPlaying = true;
         isMuted = false;
-        birdIcon.style.filter = 'none';
+        if (birdIcon) birdIcon.style.filter = 'none';
     } else if (!isMuted) {
-        audio.muted = true;
+        _audio.muted = true;
         isMuted = true;
-        birdIcon.style.filter = 'grayscale(100%)';
+        if (birdIcon) birdIcon.style.filter = 'grayscale(100%)';
     } else {
-        audio.muted = false;
+        _audio.muted = false;
         isMuted = false;
-        birdIcon.style.filter = 'none';
+        if (birdIcon) birdIcon.style.filter = 'none';
     }
 }
 
-btn.addEventListener('click', toggleMutePlay);
+if (btn) btn.addEventListener('click', toggleMutePlay);
 </script>
 
-    <!-- Audio para Free Play — mismo random que casino -->
-    <audio id="freeplay-audio" loop preload="auto">
+    <!-- Audio para Free Play — playlist aleatoria compartida -->
+    <audio id="freeplay-audio" preload="auto">
         <source id="freeplay-src" src="sounds/por-una-cabeza.mp3" type="audio/mpeg">
         Tu navegador no soporta el audio.
     </audio>
     <script>
-    // Aplicar mismo track random a freeplay
+    // Aplicar playlist aleatoria a freeplay (misma lógica que casino)
     var _fpSrc = document.getElementById('freeplay-src');
-    if (_fpSrc && _selectedTrack) _fpSrc.src = _selectedTrack.src;
+    var _fpAudio = document.getElementById('freeplay-audio');
+    // Usar el primer track de la playlist compartida
+    if (_fpSrc && _playlist && _playlist.length > 0) {
+        _fpSrc.src = _playlist[0].src;
+    }
+
+    function playNextFreeplayTrack() {
+        if (_playlistIndex >= _playlist.length) {
+            _playlist = shuffleArray(_casinoTracks);
+            _playlistIndex = 0;
+        }
+        var track = _playlist[_playlistIndex];
+        if (_fpSrc) _fpSrc.src = track.src;
+        if (_fpAudio) {
+            _fpAudio.load();
+            _fpAudio.play().catch(function(e) {
+                console.warn('Freeplay audio play failed:', e);
+            });
+        }
+        _playlistIndex++;
+    }
+
+    // Sincronizar con el casino: usar el mismo índice y playlist
+    if (_fpAudio) {
+        _fpAudio.addEventListener('ended', playNextFreeplayTrack);
+    }
     </script>
 
 <style>
