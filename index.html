@@ -8840,6 +8840,23 @@ document.addEventListener('keydown', function(e){
         font-size: 14px !important;
     }
     .lobby-separator { margin: 10px 0 6px !important; }
+
+    /* #santo-grial-message responsive */
+    .lobby-left .caos-terminal {
+        max-width: 100% !important;
+        padding: clamp(10px, 2vw, 15px) !important;
+        font-size: clamp(13px, 2.5vw, 15px) !important;
+        line-height: 1.5 !important;
+    }
+    .lobby-left .terminal-header-caos {
+        font-size: clamp(11px, 2vw, 13px) !important;
+        padding: 2px 6px !important;
+    }
+    .lobby-left .terminal-body-caos {
+        padding: clamp(10px, 2vw, 12px) !important;
+        font-size: clamp(13px, 2.5vw, 15px) !important;
+        line-height: 1.5 !important;
+    }
 }
 
 /* #beta-start-screen responsive (≤768px) */
@@ -8972,15 +8989,68 @@ document.addEventListener('keydown', function(e){
     }
     .lobby-separator { margin: 6px 0 4px !important; }
 
-    /* Force lobby columns to stack on mobile */
-    .lobby-body {
-        display: grid !important;
-        grid-template-columns: 1fr !important;
-        gap: 8px !important;
+    /* #lobby-right responsive fixes (≤480px) */
+    #lobby-open-bets-list {
+        max-height: 80px !important;
+        font-size: 11px !important;
     }
-    .lobby-left,
-    .lobby-right {
+    .lobby-bet-entry {
+        font-size: 11px !important;
+        padding: 6px 8px !important;
+    }
+    .lobby-bet-info {
+        font-size: 12px !important;
+        line-height: 1.3 !important;
+    }
+    .lobby-bet-amount {
+        font-size: 1em !important;
+    }
+    .lobby-bet-accept {
+        font-size: 11px !important;
+        padding: 4px 8px !important;
+    }
+    #lobby-bet-detail {
         width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 10px !important;
+        font-size: 12px !important;
+    }
+    .lobby-bet-detail-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 10px !important;
+        margin: 6px 0 !important;
+    }
+    #lobby-bet-detail-content {
+        font-size: 12px !important;
+        line-height: 1.4 !important;
+    }
+    .lobby-open-bets {
+        max-height: 80px !important;
+    }
+    .lobby-open-bets-title {
+        font-size: 11px !important;
+    }
+    .lobby-separator { margin: 6px 0 4px !important; }
+}
+    .lobby-left .caos-terminal {
+        padding: 8px !important;
+        font-size: 12px !important;
+        line-height: 1.4 !important;
+    }
+    .lobby-left .terminal-header-caos {
+        font-size: 11px !important;
+        padding: 2px 4px !important;
+    }
+    .lobby-left .terminal-body-caos {
+        padding: 8px !important;
+        font-size: 12px !important;
+        line-height: 1.4 !important;
+    }
+    .lobby-left .terminal-body-caos::after {
+        display: none !important; /* ocultar ghost image en mobile */
     }
 }
 
