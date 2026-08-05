@@ -8792,8 +8792,14 @@ document.addEventListener('keydown', function(e){
         padding: clamp(12px, 2vw, 16px) !important;
     }
     .lobby-body {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
         padding: clamp(10px, 2vw, 16px) !important;
         gap: 12px !important;
+    }
+    .lobby-left,
+    .lobby-right {
+        width: 100% !important;
     }
     .lobby-header-bar {
         padding: clamp(10px, 2vw, 14px) clamp(12px, 3vw, 20px) !important;
@@ -8965,6 +8971,17 @@ document.addEventListener('keydown', function(e){
         font-size: 13px !important;
     }
     .lobby-separator { margin: 6px 0 4px !important; }
+
+    /* Force lobby columns to stack on mobile */
+    .lobby-body {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+    }
+    .lobby-left,
+    .lobby-right {
+        width: 100% !important;
+    }
 }
 
 /* #beta-start-screen responsive (≤480px) */
