@@ -9033,6 +9033,14 @@ document.addEventListener('keydown', function(e){
     .lobby-open-bets-title {
         font-size: 11px !important;
     }
+
+    /* Force .lobby-right children to fit container width */
+    .lobby-right > *,
+    .lobby-right * {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+    }
     .lobby-separator { margin: 6px 0 4px !important; }
 }
     .lobby-left .caos-terminal {
