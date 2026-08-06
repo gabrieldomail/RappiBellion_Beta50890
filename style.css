@@ -3116,6 +3116,8 @@ footer::before {
     border-top: 1px solid #333;
     border-bottom: 1px solid #333;
     padding-bottom: 0; /* El #beta-start-screen ya tiene su propio padding interno */
+    /* GAMMA Fix: padding responsive en lugar de 75px 38px fijo */
+    padding: clamp(20px, 5vw, 75px) clamp(16px, 4vw, 38px) !important;
 }
 
 .beta-container {
@@ -3164,6 +3166,22 @@ footer::before {
     .game-placeholder p {
         font-size: 0.75em;
     }
+}
+
+/* GAMMA Fix: Vegas children responsive scaling */
+#led-las-vegas {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100%;
+    aspect-ratio: 8 / 1;
+}
+
+.vegas-led-col {
+    width: clamp(12px, 3vw, 18px) !important;
+}
+
+.vegas-sign-led-panel {
+    padding: clamp(20px, 5vw, 54px) clamp(24px, 5vw, 63px) !important;
 }
 
 
@@ -10026,10 +10044,79 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
     .lobby-leaderboard .lobby-lb-entry:nth-child(n+4) { display: none; }
     .lobby-open-bets { max-height: 180px; overflow-y: auto; }
     .lobby-separator { margin: 12px 0 8px; }
-    .t2e-tagline { font-family: 'Yellowtail', 'Yellowtail Local', 'Casino Retro', cursive; font-size: clamp(16px, 5vw, 24px); }
+.t2e-tagline { font-family: 'Yellowtail', 'Yellowtail Local', 'Casino Retro', cursive; font-size: clamp(16px, 5vw, 24px); }
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* --- NUEVOS BREAKPOINTS para CASINO RETRO LOBBY (GAMMA Fix) --- */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+    .lobby-body {
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); /* Balancear columnas */
+    }
+}
+
+/* Móvil (hasta 767px) */
+@media (max-width: 767px) {
+    .lobby-header-bar,
+    .lobby-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .lobby-body {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    /* free-play-column & t2e-column content margins — evitar overlap con LED strips laterales */
+    #free-play-column > h3,
+    #t2e-column > h3 {
+        margin-left: clamp(16px, 4vw, 24px);
+        margin-right: clamp(16px, 4vw, 24px);
+    }
+    #free-play-column > p,
+    #t2e-column > p {
+        margin-left: clamp(16px, 4vw, 24px);
+        margin-right: clamp(16px, 4vw, 24px);
+    }
+
+    /* Fix .lobby-lb-entry responsive at 767px */
+    .lobby-lb-entry {
+        min-width: 0; /* permite que flex items se encojan */
+    }
+    .lobby-lb-name {
+        min-width: 0; /* permite que flex:1 se encoja */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+/* Móvil Pequeño (< 480px) */
+@media (max-width: 480px) {
+    .lobby-lb-entry {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        padding: 8px 10px;
+    }
+
+    /* free-play-column & t2e-column content margins (≤480px) — menor espacio */
+    #free-play-column > h3,
+    #t2e-column > h3 {
+        margin-left: clamp(12px, 3vw, 18px);
+        margin-right: clamp(12px, 3vw, 18px);
+    }
+    #free-play-column > p,
+    #t2e-column > p {
+        margin-left: clamp(12px, 3vw, 18px);
+        margin-right: clamp(12px, 3vw, 18px);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
    CASINO RETRO LOBBY
    "Café de San Telmo que se mudó a Las Vegas"
 ══════════════════════════════════════════════════════════════ */
@@ -10067,7 +10154,7 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
 
 .lobby-title {
   font-family: 'Yellowtail', 'Yellowtail Local', 'Casino Retro', cursive;
-  font-size: clamp(20px, 4vw, 34px);
+  font-size: clamp(18px, 5vw, 30px);
   font-weight: 400;
   color: #FFD700;
   letter-spacing: 0.05em;
@@ -10077,7 +10164,7 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
     0 0 16px rgba(255,215,0,0.9),
     0 0 32px rgba(255,215,0,0.7),
     0 0 64px rgba(255,215,0,0.5);
-  white-space: nowrap;
+  white-space: normal;
   line-height: 1.2;
   margin: 0;
   animation: yellowNeonFlicker 6s ease-in-out infinite alternate;
@@ -10089,17 +10176,17 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
 
 .lobby-stats-row {
   display: flex;
-  gap: 12px;
+  gap: clamp(6px, 2vw, 12px);
   flex-wrap: wrap;
 }
 
 .lobby-stat {
   font-family: 'Yellowtail', 'Yellowtail Local', cursive;
-  font-size: clamp(14px, 1.5vw, 18px);
+  font-size: clamp(12px, 2vw, 16px);
   letter-spacing: 1px;
   color: rgba(255, 255, 255, 0.6);
   text-transform: lowercase;
-  padding: 6px 14px;
+  padding: clamp(4px, 1vw, 6px) clamp(8px, 2vw, 14px);
   background:
     linear-gradient(160deg, oklch(20% 0.03 50) 0%, oklch(12% 0.025 40) 100%);
   border: 1px solid oklch(50% 0.006 260);
@@ -10123,9 +10210,10 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
 /* === LOBBY BODY (2 columns) === */
 .lobby-body {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
+  /* minmax(0, ...) evita el overflow oculto de flex/grid children */
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   gap: 16px;
-  padding: 16px 20px;
+  padding: clamp(12px, 3vw, 20px);
 }
 
 .lobby-left,
@@ -10388,6 +10476,31 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
   background: var(--color-azul-glitch, #00FFFF);
   color: #000;
   box-shadow: 0 0 10px var(--color-azul-glitch, #00FFFF);
+}
+
+/* GAMMA Fix: Lobby bet detail card responsive */
+.lobby-bet-detail-card {
+    background: 
+        repeating-linear-gradient(90deg, oklch(0% 0 0/0.04) 0px, transparent 2px, transparent 6px),
+        linear-gradient(160deg, oklch(20% 0.04 50) 0%, oklch(12% 0.03 40) 100%);
+    border: 2px solid oklch(58% 0.008 260);
+    border-radius: clamp(4px, 1vw, 8px);
+    padding: clamp(10px, 3vw, 14px);
+    margin: clamp(8px, 2vw, 12px) 0;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow:
+        0 1px 1px oklch(0% 0 0/0.3),
+        0 4px 10px oklch(0% 0 0/0.3),
+        inset 0 1px 0 oklch(75% 0.01 260/0.4),
+        inset 0 -2px 4px oklch(0% 0 0/0.4);
+}
+
+.lobby-bet-accept {
+    width: 100%;
+    padding: clamp(8px, 2vw, 12px);
+    font-size: clamp(14px, 3vw, 16px);
+    text-align: center;
 }
 
 @keyframes lobbyLiveBlink {
