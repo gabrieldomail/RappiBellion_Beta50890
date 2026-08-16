@@ -6,7 +6,89 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-   <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline'; img-src * data: blob:; font-src * data:; connect-src *;">  <title>Rappibellion - El Próximo T2E (Think-to-Earn)</title>
+   <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline'; img-src * data: blob:; font-src * data:; connect-src *;">  <style>
+      /* 🚀 MOBILE HUD OVERRIDE - android Standalone Optimization */
+      @media (max-width: 480px) {
+          .rppi-hud-holo-wrapper {
+              padding: 0 !important;
+              justify-content: center !important;
+          }
+
+          .hud-holo-panel {
+              width: 100% !important;
+              height: auto !important;
+              position: fixed !important;
+              left: 0 !important;
+              right: 0 !important;
+              background: transparent !important;
+              backdrop-filter: none !important;
+              -webkit-backdrop-filter: none !important;
+              box-shadow: none !important;
+              padding: 8px 12px !important;
+              transform: none !important;
+              z-index: 10000 !important;
+              border: none !important;
+              display: flex !important;
+              flex-direction: row !important;
+              justify-content: space-around !important;
+              align-items: center !important;
+          }
+
+          .hud-holo-panel.left {
+              top: 0 !important;
+              bottom: auto !important;
+              border-bottom: 2px solid var(--color-azul-glitch) !important;
+              background: linear-gradient(to bottom, rgba(0, 255, 255, 0.1), transparent) !important;
+          }
+
+          .hud-holo-panel.right {
+              bottom: 0 !important;
+              top: auto !important;
+              border-top: 2px solid var(--color-caos-rosa) !important;
+              background: linear-gradient(to top, rgba(255, 45, 120, 0.1), transparent) !important;
+          }
+
+          /* Horizontal Compact Data Flow */
+          .hud-holo-panel > *:not(.holo-scanline):not(.holo-particles) {
+              display: flex !important;
+              flex-direction: row !important;
+              justify-content: center !important;
+              align-items: center !important;
+              gap: 12px !important;
+              margin: 0 !important;
+              padding: 0 !important;
+          }
+
+          .hud-holo-panel .fp-logo-glitch {
+              display: none !important; 
+          }
+
+          .hud-holo-panel .stat-block,
+          .hud-holo-panel .hud-data-card {
+              background: transparent !important;
+              border: none !important;
+              padding: 0 !important;
+              text-align: center !important;
+              flex: 1 !important;
+          }
+
+          .hud-holo-panel .stat-label {
+              font-size: 8px !important;
+              display: block !important;
+              text-align: center !important;
+              margin: 0 !important;
+              text-transform: uppercase;
+          }
+
+          .hud-holo-panel .stat-value {
+              font-size: 14px !important;
+              display: block !important;
+              text-align: center !important;
+              line-height: 1 !important;
+          }
+      }
+  </style>
+  <title>Rappibellion - El Próximo T2E (Think-to-Earn)</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:,">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@400;700&family=Share+Tech+Mono&family=Audiowide&family=Rajdhani:wght@400;600;700&family=Yellowtail&display=swap" rel="stylesheet">
@@ -1582,6 +1664,101 @@ height: 8px;
 
 </style>
 
+    <style>
+        /* 🚀 MOBILE HUD OVERRIDE - android Standalone Optimization (TOTAL PURGE) */
+        @media (max-width: 480px) {
+            .rppi-hud-holo-wrapper {
+                padding: 0 !important;
+                justify-content: center !important;
+                perspective: none !important;
+            }
+
+            .hud-holo-panel {
+                width: 100% !important;
+                height: auto !important;
+                position: fixed !important;
+                left: 0 !important;
+                right: 0 !important;
+                background: transparent !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                box-shadow: none !important;
+                padding: 5px 10px !important;
+                transform: none !important; /* Elimina la rotación 3D */
+                z-index: 10000 !important;
+                border: none !important;
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: space-around !important;
+                align-items: center !important;
+                transition: none !important;
+                animation: none !important;
+            }
+
+            .hud-holo-panel.left {
+                top: 0 !important;
+                bottom: auto !important;
+                border-bottom: 1px solid var(--color-azul-glitch) !important;
+                background: linear-gradient(to bottom, rgba(0, 255, 255, 0.05), transparent) !important;
+            }
+
+            .hud-holo-panel.right {
+                bottom: 0 !important;
+                top: auto !important;
+                border-top: 1px solid var(--color-caos-rosa) !important;
+                background: linear-gradient(to top, rgba(255, 45, 120, 0.05), transparent) !important;
+            }
+
+            /* PURGA DE TEXTOS Y ELEMENTOS OBSTRUCTIVOS (EL CIRCUITO / SYS.OVERRIDE / LOGOS) */
+            .hud-holo-panel .holo-section-header,
+            .hud-holo-panel .fp-logo-glitch,
+            .hud-holo-panel .hud-notification-text,
+            .hud-holo-panel .omega-intel-header,
+            .hud-holo-panel .holo-sibyl-hdr,
+            .hud-holo-panel .fp-mode-label,
+            .hud-holo-panel .fp-mode-val,
+            .hud-holo-panel .fp-mode-sub {
+                display: none !important; 
+            }
+
+            /* Horizontal Compact Data Flow */
+            .hud-holo-panel > *:not(.holo-scanline):not(.holo-particles) {
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: center !important;
+                align-items: center !important;
+                gap: 10px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .hud-holo-panel .stat-block,
+            .hud-holo-panel .hud-data-card {
+                background: transparent !important;
+                border: none !important;
+                padding: 0 !important;
+                text-align: center !important;
+                flex: 1 !important;
+                box-shadow: none !important;
+            }
+
+            .hud-holo-panel .stat-label {
+                font-size: 7px !important;
+                display: block !important;
+                text-align: center !important;
+                margin: 0 !important;
+                text-transform: uppercase;
+                opacity: 0.6;
+            }
+
+            .hud-holo-panel .stat-value {
+                font-size: 13px !important;
+                display: block !important;
+                text-align: center !important;
+                line-height: 1 !important;
+            }
+        }
+    </style>
 </head>
 <body class="intro-active">
 
@@ -2258,17 +2435,17 @@ height: 8px;
             <style>
                 @font-face {
                     font-family: 'Fat Wandals';
-                    src: url('fonts/FatWandals_PERSONAL.ttf') format('truetype');
+                    src: url('fonts/graffiti/FatWandals_PERSONAL.ttf') format('truetype');
                     font-weight: normal; font-style: normal;
                 }
                 @font-face {
                     font-family: 'Gang Bang Crime';
-                    src: url('fonts/GANG BANG CRIME.ttf') format('truetype');
+                    src: url('fonts/graffiti/GANG BANG CRIME.ttf') format('truetype');
                     font-weight: normal; font-style: normal;
                 }
                 @font-face {
                     font-family: 'Vitruvian Man';
-                    src: url('fonts/VitruvianMan-eW73.ttf') format('truetype');
+                    src: url('fonts/graffiti/VitruvianMan-eW73.ttf') format('truetype');
                     font-weight: normal; font-style: normal;
                 }
                 .rebel-mural-zone {
@@ -29861,5 +30038,103 @@ window.btExitTerminal = function() {
 })();
 </script>
 
+    <style>
+        /* 🚀 FINAL OVERRIDE - android Standalone Pure HUD (ULTIMATE PURGE) */
+        @media (max-width: 480px) {
+            .rppi-hud-holo-wrapper {
+                padding: 0 !important;
+                justify-content: center !important;
+                perspective: none !important;
+            }
+
+            .hud-holo-panel {
+                width: 100% !important;
+                height: auto !important;
+                position: fixed !important;
+                left: 0 !important;
+                right: 0 !important;
+                background: transparent !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                box-shadow: none !important;
+                padding: 5px 10px !important;
+                transform: none !important;
+                z-index: 10000 !important;
+                border: none !important;
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: space-around !important;
+                align-items: center !important;
+                transition: none !important;
+                animation: none !important;
+                border-radius: 0 !important;
+            }
+
+            .hud-holo-panel.left {
+                top: 0 !important;
+                bottom: auto !important;
+                border-bottom: 1px solid var(--color-azul-glitch) !important;
+                background: linear-gradient(to bottom, rgba(0, 255, 255, 0.05), transparent) !important;
+            }
+
+            .hud-holo-panel.right {
+                bottom: 0 !important;
+                top: auto !important;
+                border-top: 1px solid var(--color-caos-rosa) !important;
+                background: linear-gradient(to top, rgba(255, 45, 120, 0.05), transparent) !important;
+            }
+
+            /* PURGA TOTAL DE TEXTOS OBSTRUCTIVOS (EL CIRCUITO / SYS.OVERRIDE / LOGOS) */
+            .hud-holo-panel .holo-section-header,
+            .hud-holo-panel .fp-logo-glitch,
+            .hud-holo-panel .hud-notification-text,
+            .hud-holo-panel .omega-intel-header,
+            .hud-holo-panel .holo-sibyl-hdr,
+            .hud-holo-panel .fp-mode-label,
+            .hud-holo-//panel .fp-mode-val,
+            .hud-holo-panel .fp-mode-sub,
+            .hud-holo-panel .holo-scanline,
+            .hud-holo-panel .holo-particles {
+                display: none !important; 
+            }
+
+            /* Horizontal Compact Data Flow */
+            .hud-holo-panel > *:not(.holo-scanline):not(.holo-particles) {
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: center !important;
+                align-items: center !important;
+                gap: 10px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .hud-holo-panel .stat-block,
+            .hud-holo-panel .hud-data-card {
+                background: transparent !important;
+                border: none !important;
+                padding: 0 !important;
+                text-align: center !important;
+                flex: 1 !important;
+                box-shadow: none !important;
+            }
+
+            .hud-holo-panel .stat-label {
+                font-size: 7px !important;
+                display: block !important;
+                text-align: center !important;
+                margin: 0 !important;
+                text-transform: uppercase;
+                opacity: 0.6;
+            }
+
+            .hud-holo-panel .stat-value {
+                font-size: 13px !important;
+                display: block !important;
+                text-align: center !important;
+                line-height: 1 !important;
+            }
+        }
+    </style>
 </body>
 </html>

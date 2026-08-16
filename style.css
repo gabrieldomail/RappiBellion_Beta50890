@@ -10650,3 +10650,54 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
 
 .status-alive { color: #00FF41; text-shadow: 0 0 6px #00FF41; }
 .status-rekt  { color: #FF2D55; text-shadow: 0 0 6px #FF2D55; }
+
+/* 🕹️ VIRTUAL CONTROLS BLINDAGE */
+#dpad, 
+#dpad-container, 
+.fp-ctrl-btn, 
+.dpad-btn {
+    z-index: 25000 !important;
+    position: relative !important;
+    pointer-events: auto !important;
+}
+
+/* 🛰️ HUD RIGHT PANEL OPTIMIZATION */
+.hud-holo-panel.right {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    pointer-events: none !important; /* Deja pasar los clicks al D-PAD */
+}
+
+.hud-holo-panel.right > * {
+    pointer-events: auto !important; /* Recupera clicks para los botones del HUD */
+}
+
+#fp-controls-freeplay, #fp-rival-panel {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px !important;
+    padding: 4px !important;
+}
+
+.holo-section-header {
+    grid-column: span 2 !important;
+    text-align: center !important;
+    font-size: 10px !important;
+    margin-bottom: 4px !important;
+}
+
+/* Ajuste de módulos internos para que no se amontonen */
+.holo-sibyl-block, .holo-rival-radar, .caos-terminal {
+    grid-column: span 2 !important;
+}
+
+.fp-mode-label, .fp-mode-val, .fp-mode-sub {
+    grid-column: span 2 !important;
+    text-align: center !important;
+}
+
+.fp-btn, #fp-duration-select {
+    width: 100% !important;
+    font-size: 10px !important;
+}
