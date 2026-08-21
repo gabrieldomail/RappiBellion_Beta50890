@@ -8399,6 +8399,22 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
         touch-action: none;
     }
 
+    /* PWA HUD SURGERY 008: keep the canonical HUD layers above the opaque arena.
+       The wrapper stays click-through; only existing panels/controls receive input. */
+    body.arena-open .rppi-hud-holo-wrapper {
+        z-index: 100000 !important;
+        pointer-events: none !important;
+    }
+    body.arena-open .hud-toggle-handle,
+    body.arena-open .hud-intel-stream {
+        z-index: 100000 !important;
+    }
+
+    /* Existing transient arena overlays must remain above the HUD. */
+    #fp-holo-boot.show {
+        z-index: 100001 !important;
+    }
+
     /* Cuando la arena esta abierta: bloquear scroll del body */
     /* Excepcion: fp-verdict debe seguir siendo interactivo */
     body:has(#t2eplay-arena.show) #fp-verdict.show {
