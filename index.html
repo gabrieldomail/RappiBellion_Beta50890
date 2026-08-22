@@ -14314,13 +14314,15 @@ document.addEventListener('DOMContentLoaded', function() {
              if (sbBoostBtn)     sbBoostBtn.style.display     = 'flex';
              if (boostBadge)     boostBadge.style.left        = '75%';
          } else {
-             // PAC-HACK: botón normal
-             if (boostBtn)       boostBtn.style.display       = 'block';
-             if (tetrisBosBtn)   tetrisBosBtn.style.display   = 'none';
-             if (overlayBtn)     overlayBtn.style.display     = 'flex';
-             if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'none';
-             if (sbBoostBtn)     sbBoostBtn.style.display     = 'none';
-             if (boostBadge)     boostBadge.style.left        = '75%';
+            // PAC-HACK: botón normal
+            if (boostBtn)       boostBtn.style.display       = 'block';
+            if (tetrisBosBtn)   tetrisBosBtn.style.display   = 'none';
+            // SURGERY 008: the legacy floating overlay covers D-PAD DOWN on mobile.
+            // On mobile the compact HUD [HACK_IT] is the canonical boost trigger.
+            if (overlayBtn)     overlayBtn.style.display     = (window.innerWidth <= 768) ? 'none' : 'flex';
+            if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'none';
+            if (sbBoostBtn)     sbBoostBtn.style.display     = 'none';
+            if (boostBadge)     boostBadge.style.left        = '75%';
          }
 
          // Re-habilitar botones
@@ -27526,6 +27528,7 @@ function rppiGmAccept(betId,game){
   function setCompact(on) {
     if (!isMobile()) return;
     wrapper.classList.toggle('hud-mobile-compact', on);
+    document.body.classList.toggle('hud-mobile-match-compact', on);
     handle.textContent = on ? 'CYBER PANEL  v' : 'CYBER PANEL  ^';
     handle.setAttribute('aria-expanded', on ? 'false' : 'true');
     // Hide floating page chrome during compact gameplay
@@ -27536,12 +27539,29 @@ function rppiGmAccept(betId,game){
     });
     const satBadge = document.querySelector('.rppi-sync-satellite-badge');
     if (satBadge) satBadge.style.display = on ? 'none' : '';
+    // SURGERY 008 REOPEN: compact HUD owns mobile boost during MATCH.
+    // Preserve the overlay's previous inline display for expanded/pre-game restore.
+    const floatingBoost = document.getElementById('fp-boost-overlay-btn');
+    if (floatingBoost) {
+      if (on) {
+        if (!Object.prototype.hasOwnProperty.call(floatingBoost.dataset, 'hudCompactPrevDisplay')) {
+          floatingBoost.dataset.hudCompactPrevDisplay = floatingBoost.style.display || '';
+        }
+        floatingBoost.style.display = 'none';
+        floatingBoost.style.pointerEvents = 'none';
+      } else if (Object.prototype.hasOwnProperty.call(floatingBoost.dataset, 'hudCompactPrevDisplay')) {
+        floatingBoost.style.display = floatingBoost.dataset.hudCompactPrevDisplay;
+        floatingBoost.style.pointerEvents = '';
+        delete floatingBoost.dataset.hudCompactPrevDisplay;
+      }
+    }
     if (intelStream) intelStream.classList.toggle('active', on);
   }
 
   function setExpanded() {
     if (!isMobile()) return;
     wrapper.classList.remove('hud-mobile-compact');
+    document.body.classList.remove('hud-mobile-match-compact');
     handle.textContent = 'CYBER PANEL  ^';
     handle.setAttribute('aria-expanded', 'true');
     const chromeIds = ['login-float-btn', 'mute-play-btn', 'live-satellite-credits', 'btn-ocultar-live'];

@@ -8399,20 +8399,10 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
         touch-action: none;
     }
 
-    /* PWA HUD SURGERY 008: keep the canonical HUD layers above the opaque arena.
-       The wrapper stays click-through; only existing panels/controls receive input. */
-    body.arena-open .rppi-hud-holo-wrapper {
-        z-index: 100000 !important;
-        pointer-events: none !important;
-    }
-    body.arena-open .hud-toggle-handle,
-    body.arena-open .hud-intel-stream {
-        z-index: 100000 !important;
-    }
-
-    /* Existing transient arena overlays must remain above the HUD. */
+    /* SURGERY 008: boot must be visible above the opaque arena.
+       Intended hierarchy: arena 99999, HUD 100000, overlays 100001, boot 100002 */
     #fp-holo-boot.show {
-        z-index: 100001 !important;
+        z-index: 100002 !important;
     }
 
     /* Cuando la arena esta abierta: bloquear scroll del body */
@@ -10673,6 +10663,13 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
 ════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 768px) {
+
+  /* SURGERY 008 REOPEN: the compact HUD owns the mobile boost action.
+     Keep the legacy arena overlay out of gameplay only in compact MATCH. */
+  body.hud-mobile-match-compact #fp-boost-overlay-btn {
+    display: none !important;
+    pointer-events: none !important;
+  }
 
   /* ── COMPACT STATE: Active gameplay — holographic telemetry strip ── */
   .rppi-hud-holo-wrapper.hud-mobile-compact #holo-panel-left {
