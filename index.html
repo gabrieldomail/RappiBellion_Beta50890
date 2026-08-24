@@ -6878,6 +6878,68 @@ font-size: 27px;
   }
   .bt-stat-block { padding-right: 10px; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   WALL STREET CANDLESTICK RUNNER — Inline Widget Styles
+   OMEGA GENERAL · SB CARTEL · BUILD_V2_FINAL
+═════════════════════════════════════════════════════════════════════ */
+@keyframes wstLiqFlash { 0%,100%{opacity:1} 50%{opacity:0.3} }
+@keyframes wstCandleGlitch { 0%,88%,100%{transform:translateX(0)} 90%{transform:translateX(-3px)} 92%{transform:translateX(3px)} 94%{transform:translateX(-2px)} 96%{transform:translateX(0)} }
+#wst-inline-runner-container {
+    width:100%; height:300px; margin:16px 0 4px;
+    border:1px solid oklch(82% 0.22 145/0.28);
+    border-top:2px solid oklch(0.65 0.32 35/0.5);
+    background:oklch(9% 0.014 160/0.85);
+    backdrop-filter:blur(4px);
+    position:relative; overflow:hidden;
+    clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
+    display:flex;
+}
+.wst-runner-main { flex:1; position:relative; height:100%; }
+#wst-runner-canvas { width:100%; height:100%; display:block; cursor:pointer; touch-action:none; }
+.wst-runner-telemetry {
+    position:absolute; top:6px; left:12px; z-index:5; pointer-events:none;
+    font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1px;
+    color:oklch(82% 0.22 145); text-shadow:0 0 6px oklch(82% 0.22 145/0.5);
+}
+.wst-runner-telemetry b { color:#00FF88; }
+.wst-runner-timeaxis {
+    position:absolute; bottom:0; left:0; right:0; height:18px; z-index:4;
+    background:rgba(2,6,10,0.88); border-top:1px solid oklch(82% 0.22 145/0.15);
+    display:flex; justify-content:space-between; align-items:center; padding:0 10px;
+    font-family:'Share Tech Mono',monospace; font-size:9px; color:oklch(82% 0.22 145/0.6);
+    pointer-events:none;
+}
+.wst-runner-timeaxis .wst-next-candle { color:oklch(0.65 0.32 35); font-weight:700; }
+.wst-price-axis {
+    width:74px; height:100%; flex-shrink:0;
+    background:rgba(3,8,14,0.95); border-left:1px solid oklch(82% 0.22 145/0.2);
+    display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end;
+    padding:6px 6px 22px 0; font-family:'Share Tech Mono',monospace; font-size:9px;
+    color:rgba(255,255,255,0.35); pointer-events:none;
+}
+#wst-price-badge {
+    background:#00FF88; color:#000; padding:2px 5px; font-weight:700; border-radius:2px;
+    box-shadow:0 0 8px #00FF88; font-size:10px; transition:background 0.2s, box-shadow 0.2s;
+}
+#wst-price-badge.down { background:#FF0055; box-shadow:0 0 8px #FF0055; }
+.wst-liquidated-banner {
+    position:absolute; inset:0; z-index:10; display:none;
+    align-items:center; justify-content:center; text-align:center;
+    background:rgba(20,0,5,0.75); backdrop-filter:blur(2px);
+    font-family:'Orbitron',monospace; font-weight:900; font-size:12px; letter-spacing:2px;
+    color:#FF0055; text-shadow:0 0 12px #FF0055;
+    animation:wstLiqFlash 0.5s step-end infinite;
+}
+.wst-liquidated-banner.show { display:flex; }
+.wst-candle-glitch { animation:wstCandleGlitch 0.4s ease-in-out; }
+@media (max-width:700px) {
+    #wst-inline-runner-container { height:250px; }
+    .wst-price-axis { width:58px; font-size:8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .wst-liquidated-banner { animation:none !important; }
+}
 </style>
 
 <div class="bt-rekt-wall">
@@ -7373,6 +7435,30 @@ document.addEventListener('keydown', function(e){
   </div>
 
 </div><!-- /bt-hero-row -->
+
+<!-- Wall Street Candlestick Runner — Inline Widget -->
+<div id="wst-inline-runner-container">
+    <div class="wst-runner-main">
+        <div class="wst-runner-telemetry">
+            [ T2E_LIVE_TICKER // CANDLE_RUNNER ] · $RPPI BOOST: <b id="wst-runner-score">0000</b>
+        </div>
+        <canvas id="wst-runner-canvas" width="600" height="150"></canvas>
+        <div class="wst-liquidated-banner" id="wst-liquidated-banner">[ POSITION LIQUIDATED // TAP TO RE-ENTER ]</div>
+        <div class="wst-runner-timeaxis" id="wst-runner-timeaxis">
+            <span id="wst-time-0">--:--:--</span>
+            <span id="wst-time-1">--:--:--</span>
+            <span id="wst-time-2">--:--:--</span>
+            <span>NEXT CANDLE: <span class="wst-next-candle" id="wst-next-candle-val">--s</span></span>
+        </div>
+    </div>
+    <div class="wst-price-axis" id="wst-price-axis">
+        <div id="wst-pa-1">$5,290.00</div>
+        <div id="wst-pa-2">$5,275.00</div>
+        <div id="wst-price-badge">$5,200.00</div>
+        <div id="wst-pa-3">$5,225.00</div>
+        <div id="wst-pa-4">$5,210.00</div>
+    </div>
+</div>
 
 <!-- Footer strip -->
 <div class="bt-footer-strip">
@@ -29798,6 +29884,499 @@ if (document.readyState === 'loading') {
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
+   WALL STREET CANDLESTICK RUNNER — Engine & Wiring
+   Candlestick · CyberBull · CandlestickRunnerGame
+   Inline widget + auto-start on core activation
+   OMEGA GENERAL · SB CARTEL · BUILD_V2_FINAL
+═════════════════════════════════════════════════════════════════════ */
+(function() {
+'use strict';
+
+/* ── VELA — SIEMPRE es plataforma pisable (alta si es alcista,
+   baja/riesgosa si es bajista). El peligro real es la mecha. ── */
+class Candlestick {
+    constructor(x, speed, canvasHeight) {
+        this.x = x;
+        this.width = 38 + Math.random() * 18;
+        this.speed = speed;
+        this.isBullish = Math.random() > 0.35;
+        this.color = this.isBullish ? '#00FF88' : '#FF0055';
+        this.bodyHeight = this.isBullish
+            ? 55 + Math.random() * 45
+            : 14 + Math.random() * 16;
+        this.groundLine = canvasHeight - 20;
+        this.y = this.groundLine - this.bodyHeight;
+        this.wickTop = this.isBullish
+            ? 4 + Math.random() * 10
+            : 30 + Math.random() * 34;
+        this.wickBottom = 3 + Math.random() * 8;
+    }
+    draw(ctx) {
+        var grad = ctx.createLinearGradient(0, this.y - this.wickTop, 0, this.y + this.bodyHeight + this.wickBottom);
+        grad.addColorStop(0, this.color);
+        grad.addColorStop(1, this.color + '88');
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(this.x + this.width / 2, this.y - this.wickTop);
+        ctx.lineTo(this.x + this.width / 2, this.y + this.bodyHeight + this.wickBottom);
+        ctx.stroke();
+
+        var bodyGrad = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.bodyHeight);
+        bodyGrad.addColorStop(0, this.color);
+        bodyGrad.addColorStop(1, this.isBullish ? '#009955' : '#990033');
+        ctx.fillStyle = bodyGrad;
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.bodyHeight);
+        ctx.shadowBlur = 0;
+    }
+    update() { this.x -= this.speed; }
+}
+
+/* ── CYBERBULL DORADO — vectorizado, gradiente bronce/oro, cuernos curvos reales,
+   estela de partículas, squash & stretch. ── */
+
+// SVG del toro (inline, vectorial, 60x50 viewBox) — origen en centro-inferior para squash/stretch
+// TORO MIRANDO HACIA ADELANTE (derecha = dirección de carrera) — CHARGING BULL STYLE
+var BULL_SVG_NS = 'http://www.w3.org/2000/svg';
+var bullSvgMarkup = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 50" preserveAspectRatio="none">' +
+  '<defs>' +
+    '<linearGradient id="bullBodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">' +
+      '<stop offset="0%" stop-color="#FFD700"/>' +
+      '<stop offset="30%" stop-color="#F5C400"/>' +
+      '<stop offset="70%" stop-color="#DAA520"/>' +
+      '<stop offset="100%" stop-color="#B8860B"/>' +
+    '</linearGradient>' +
+    '<linearGradient id="bullDarkGrad" x1="0%" y1="0%" x2="0%" y2="100%">' +
+      '<stop offset="0%" stop-color="#FF3366"/>' +
+      '<stop offset="100%" stop-color="#990022"/>' +
+    '</linearGradient>' +
+    '<linearGradient id="bullHornGrad" x1="0%" y1="100%" x2="100%" y2="0%">' +
+      '<stop offset="0%" stop-color="#FFF8DC"/>' +
+      '<stop offset="50%" stop-color="#FFD700"/>' +
+      '<stop offset="100%" stop-color="#B8860B"/>' +
+    '</linearGradient>' +
+    '<filter id="bullGlow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
+  '</defs>' +
+  // Sombra proyectada (ancha, poderosa)
+  '<ellipse cx="30" cy="48.5" rx="26" ry="4.5" fill="rgba(0,0,0,0.35)"/>' +
+  // Cola corta con mechón (izquierda)
+  '<path d="M8 34 Q4 30 6 24 Q8 20 12 18" fill="none" stroke="url(#bullBodyGrad)" stroke-width="4" stroke-linecap="round"/>' +
+  '<ellipse cx="4" cy="22" rx="3" ry="2" fill="url(#bullBodyGrad)"/>' +
+  // PATA TRASERA IZQ (gruesa, musculosa)
+  '<path d="M34 34 L33 48" stroke="url(#bullBodyGrad)" stroke-width="9" stroke-linecap="round"/>' +
+  '<ellipse cx="33" cy="50" rx="5" ry="3" fill="url(#bullBodyGrad)"/>' +
+  '<ellipse cx="31" cy="44" rx="6" ry="3" fill="url(#bullBodyGrad)" opacity="0.8"/>' +
+  // PATA TRASERA DER (ligeramente adelantada)
+  '<path d="M27 35 L26 48" stroke="url(#bullBodyGrad)" stroke-width="9" stroke-linecap="round"/>' +
+  '<ellipse cx="26" cy="50" rx="5" ry="3" fill="url(#bullBodyGrad)"/>' +
+  '<ellipse cx="28" cy="43" rx="5" ry="3" fill="url(#bullBodyGrad)" opacity="0.7"/>' +
+  // CUERPO PRINCIPAL - HOMBROS MASIVOS, PECHO ANCHO (estilo Charging Bull)
+  '<path d="M52 32 Q54 22 46 14 Q38 6 28 12 Q20 18 14 28 Q10 36 10 40 Q10 46 16 48 Q22 50 28 48 Q36 48 44 44 Q50 40 52 32 Z" fill="url(#bullBodyGrad)" stroke="#FFECA8" stroke-width="1.5"/>' +
+  // MUSLO TRASERO PODEROSO (volumen)
+  '<ellipse cx="26" cy="36" rx="14" ry="10" fill="url(#bullBodyGrad)"/>' +
+  '<ellipse cx="22" cy="38" rx="10" ry="7" fill="url(#bullBodyGrad)" opacity="0.6"/>' +
+  // PATA DELANTERA IZQ (gruesa, huesuda)
+  '<path d="M44 30 L43 46" stroke="url(#bullBodyGrad)" stroke-width="10" stroke-linecap="round"/>' +
+  '<ellipse cx="43" cy="48" rx="5.5" ry="3.5" fill="url(#bullBodyGrad)"/>' +
+  '<ellipse cx="45" cy="38" rx="6" ry="4" fill="url(#bullBodyGrad)" opacity="0.5"/>' +
+  // PATA DELANTERA DER (ligeramente retrasada)
+  '<path d="M38 31 L37 46" stroke="url(#bullBodyGrad)" stroke-width="10" stroke-linecap="round"/>' +
+  '<ellipse cx="37" cy="48" rx="5.5" ry="3.5" fill="url(#bullBodyGrad)"/>' +
+  '<ellipse cx="39" cy="37" rx="5" ry="3" fill="url(#bullBodyGrad)" opacity="0.5"/>' +
+  // CUELLO GRUESO Y MUSCULOSO (con papada/dewlap)
+  '<path d="M42 26 Q46 18 50 14 Q54 10 56 16 Q58 22 54 30 Q50 34 42 26 Z" fill="url(#bullBodyGrad)" stroke="#FFECA8" stroke-width="1.2"/>' +
+  // PAPADA (dewlap - piel suelta bajo el cuello, característica del toro bravo)
+  '<path d="M44 28 Q48 32 50 34 Q52 38 48 38 Q44 36 44 28 Z" fill="url(#bullBodyGrad)" opacity="0.85"/>' +
+  // CABEZA GRANDE - FRENTE ANCHA, HOCICO CUADRADO
+  '<path d="M50 16 Q56 10 58 18 Q60 26 56 30 Q52 34 48 28 Q46 24 50 16 Z" fill="url(#bullBodyGrad)" stroke="#FFECA8" stroke-width="1"/>' +
+  // HOCICO ANCHO Y CUADRADO (nariz de toro)
+  '<ellipse cx="56" cy="24" rx="7" ry="4.5" fill="url(#bullBodyGrad)"/>' +
+  '<ellipse cx="57" cy="23" rx="2.5" ry="1.5" fill="#1a1a1a"/>' +
+  '<ellipse cx="59" cy="23" rx="2.5" ry="1.5" fill="#1a1a1a"/>' +
+  // OJO PEQUEÑO Y FIERO (lateral)
+  '<ellipse cx="50" cy="18" rx="2" ry="1.2" fill="#fff"/>' +
+  '<ellipse cx="50.5" cy="18" rx="0.8" ry="0.8" fill="#000"/>' +
+  '<ellipse cx="50.2" cy="17.7" rx="0.3" ry="0.3" fill="#fff"/>' +
+  // CUERNO SUPERIOR (grueso, curvo HACIA ADELANTE - dirección del hocico)
+  '<path d="M48 16 Q52 10 56 12 Q58 14 56 18" fill="url(#bullHornGrad)" stroke="#FFECA8" stroke-width="2"/>' +
+  // CUERNO INFERIOR (más largo, curvo HACIA ADELANTE y ligeramente arriba)
+  '<path d="M46 20 Q50 12 54 14 Q56 16 53 22" fill="url(#bullHornGrad)" stroke="#FFECA8" stroke-width="2"/>' +
+  // BRONCEADO EN EL LOMO (reflejo metálico)
+  '<path d="M42 18 Q38 12 30 14 Q24 16 20 20" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round"/>' +
+  // DETALLE: ARRUGAS EN EL HOCICO
+  '<path d="M54 22 Q55 24 54 26" fill="none" stroke="#B8860B" stroke-width="0.8" stroke-linecap="round"/>' +
+  '<path d="M57 21 Q58 23 57 25" fill="none" stroke="#B8860B" stroke-width="0.8" stroke-linecap="round"/>' +
+'</svg>';
+
+var bullSvgImg = null;
+var bullSvgReady = false;
+(function() {
+  var blob = new Blob([bullSvgMarkup], {type: 'image/svg+xml'});
+  var url = URL.createObjectURL(blob);
+  bullSvgImg = new Image();
+  bullSvgImg.onload = function() { bullSvgReady = true; };
+  bullSvgImg.onerror = function() { console.warn('[BULL] SVG load failed'); bullSvgReady = false; };
+  bullSvgImg.src = url;
+})();
+
+class CyberBull {
+    constructor(groundY) {
+        this.x = 50; this.w = 30; this.h = 26;
+        this.groundY = groundY;
+        this.y = groundY - this.h;
+        this.vy = 0;
+        this.jumping = false;
+        this.onPlatform = true;
+        this.particles = [];
+        this.liquidated = false;
+        this.squash = 1;
+    }
+    jump() {
+        if (!this.jumping && !this.liquidated) {
+            this.vy = -11.6;
+            this.jumping = true;
+            this.squash = 1.35;
+        }
+    }
+    spawnTrail() {
+        if (this.onPlatform && Math.random() < 0.5) {
+            this.particles.push({ x: this.x, y: this.y + this.h, life: 1, vx: -1.3 - Math.random()*0.7 });
+        }
+    }
+    updateParticles() {
+        for (var i = this.particles.length - 1; i >= 0; i--) {
+            var p = this.particles[i];
+            p.x += p.vx; p.life -= 0.045;
+            if (p.life <= 0) this.particles.splice(i, 1);
+        }
+        this.squash += (1 - this.squash) * 0.18;
+    }
+    drawParticles(ctx) {
+        this.particles.forEach(function(p) {
+            ctx.fillStyle = 'rgba(0,255,255,' + p.life + ')';
+            ctx.shadowBlur = 6; ctx.shadowColor = '#00FFFF';
+            ctx.fillRect(p.x, p.y - 2, 3, 3);
+            ctx.shadowBlur = 0;
+        });
+    }
+    draw(ctx) {
+        this.drawParticles(ctx);
+        var flashRed = this.liquidated;
+
+        ctx.save();
+        var cx = this.x + this.w / 2, cy = this.y + this.h;
+        ctx.translate(cx, cy);
+        ctx.scale(1 / Math.sqrt(this.squash), this.squash);
+        ctx.translate(-cx, -cy);
+
+        // Dibujar SVG del toro centrado en (cx, cy - h/2) escalado a w x h
+        if (bullSvgReady && bullSvgImg) {
+            var drawW = this.w * 2.2;  // SVG es más ancho que alto, ajustar
+            var drawH = this.h * 2.2;
+            ctx.drawImage(bullSvgImg, cx - drawW/2, cy - drawH, drawW, drawH);
+        } else {
+            // Fallback: rectángulo dorado mientras carga el SVG
+            var bodyGrad = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.h);
+            if (flashRed) {
+                bodyGrad.addColorStop(0, '#FF3366'); bodyGrad.addColorStop(1, '#990022');
+            } else {
+                bodyGrad.addColorStop(0, '#FFD700'); bodyGrad.addColorStop(1, '#B8860B');
+            }
+            ctx.fillStyle = bodyGrad;
+            ctx.strokeStyle = flashRed ? '#FF0055' : '#FFECA8';
+            ctx.lineWidth = 2;
+            ctx.shadowColor = flashRed ? '#FF0055' : '#FFD700';
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.rect(this.x, this.y, this.w, this.h);
+            ctx.fill(); ctx.stroke();
+        }
+
+        ctx.shadowBlur = 0;
+        ctx.restore();
+    }
+}
+
+/* ── MOTOR PRINCIPAL — spawn continuo SIN huecos, colisión de aterrizaje universal,
+   mechas como único peligro real. ── */
+class CandlestickRunnerGame {
+    constructor(canvasId, opts) {
+        opts = opts || {};
+        this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
+        this.ctx = this.canvas.getContext('2d');
+        this.W = this.canvas.width;
+        this.H = this.canvas.height;
+        this.groundY = this.H - 20;
+
+        this.onScore      = opts.onScore || function(){};
+        this.onLiquidate  = opts.onLiquidate || function(){};
+        this.onCandleTick = opts.onCandleTick || function(){};
+
+        this.bull = new CyberBull(this.groundY);
+        this.candles = [];
+        this.speed = 3.2;
+        this.score = 0;
+        this.frame = 0;
+        this.running = false;
+        this.raf = null;
+        this.shake = 0;
+
+        this._pendingSpawnX = 0;
+        this.CANDLE_INTERVAL_FRAMES = 90;
+        this._nextCandleFrames = this.CANDLE_INTERVAL_FRAMES;
+
+        this._onKey = this._onKey.bind(this);
+        this._onPointer = this._onPointer.bind(this);
+    }
+
+    start() {
+        this.running = true;
+        document.addEventListener('keydown', this._onKey);
+        this.canvas.addEventListener('pointerdown', this._onPointer);
+        if (this.raf) cancelAnimationFrame(this.raf);
+        this._loop();
+    }
+
+    stop() {
+        this.running = false;
+        if (this.raf) cancelAnimationFrame(this.raf);
+        document.removeEventListener('keydown', this._onKey);
+        if (this.canvas) this.canvas.removeEventListener('pointerdown', this._onPointer);
+    }
+
+    _onKey(e) {
+        if (e.code === 'Space' || e.key === ' ') { e.preventDefault(); this.bull.jump(); }
+    }
+    _onPointer() { this.bull.jump(); }
+
+    _spawnCandle() {
+        var c = new Candlestick(this._pendingSpawnX, this.speed, this.H);
+        this.candles.push(c);
+        this._pendingSpawnX += c.width;
+    }
+
+    _reset() {
+        this.bull = new CyberBull(this.groundY);
+        this.candles = [];
+        this.speed = 3.2;
+        this.score = 0;
+        this.frame = 0;
+        this.shake = 0;
+        this._nextCandleFrames = this.CANDLE_INTERVAL_FRAMES;
+
+        this._pendingSpawnX = -20;
+        var startPlatform = new Candlestick(this._pendingSpawnX, this.speed, this.H);
+        startPlatform.isBullish = true;
+        startPlatform.width = 160;
+        startPlatform.bodyHeight = 65;
+        startPlatform.y = this.groundY - 65;
+        startPlatform.wickTop = 6; startPlatform.wickBottom = 4;
+        this.candles.push(startPlatform);
+        this._pendingSpawnX += startPlatform.width;
+        this.bull.y = startPlatform.y - this.bull.h;
+
+        while (this._pendingSpawnX < this.W + 40) this._spawnCandle();
+    }
+
+    _liquidate() {
+        this.bull.liquidated = true;
+        this.shake = 10;
+        this.onLiquidate();
+        var self = this;
+        setTimeout(function() {
+            if (!self.running) return;
+            self.bull.liquidated = false;
+            self._reset();
+        }, 1800);
+    }
+
+    _update() {
+        this.frame++;
+        if (this.shake > 0) this.shake *= 0.85;
+
+        this._pendingSpawnX -= this.speed;
+        if (this._pendingSpawnX <= this.W + 20) this._spawnCandle();
+
+        this._nextCandleFrames--;
+        if (this._nextCandleFrames <= 0) this._nextCandleFrames = this.CANDLE_INTERVAL_FRAMES;
+        this.onCandleTick(Math.ceil(this._nextCandleFrames / 60));
+
+        var b = this.bull;
+        if (!b.liquidated) {
+            b.vy += 0.56;
+            b.y += b.vy;
+
+            var bestPlatformY = null;
+            for (var i = 0; i < this.candles.length; i++) {
+                var c = this.candles[i];
+                if (b.x + b.w > c.x && b.x < c.x + c.width) {
+                    var platformY = c.y - b.h;
+                    if (b.vy >= 0 && b.y >= platformY - 2) {
+                        if (bestPlatformY === null || platformY > bestPlatformY) bestPlatformY = platformY;
+                    }
+                    var wickTopY = c.y - c.wickTop;
+                    if (b.vy < 0 && b.y <= wickTopY + 5 && b.y >= wickTopY - 12 &&
+                        b.x + b.w > c.x + 6 && b.x < c.x + c.width - 6) {
+                        this._liquidate(); return;
+                    }
+                }
+            }
+            var supported = bestPlatformY !== null;
+            if (supported) {
+                if (b.jumping) b.squash = 0.72;
+                b.y = bestPlatformY; b.vy = 0; b.jumping = false;
+            }
+            b.onPlatform = supported;
+
+            if (!supported && b.y + b.h >= this.groundY + 30) {
+                this._liquidate(); return;
+            }
+
+            b.spawnTrail();
+            b.updateParticles();
+        }
+
+        for (var j = this.candles.length - 1; j >= 0; j--) {
+            this.candles[j].update();
+            if (this.candles[j].x + this.candles[j].width < -60) this.candles.splice(j, 1);
+        }
+
+        if (this.frame % 4 === 0 && !b.liquidated) this.score++;
+        this.speed = Math.min(6.4, 3.2 + this.score * 0.005);
+        this.onScore(this.score);
+    }
+
+    _draw() {
+        var ctx = this.ctx, W = this.W, H = this.H;
+        ctx.save();
+        if (this.shake > 0.3) {
+            ctx.translate((Math.random()-0.5) * this.shake, (Math.random()-0.5) * this.shake);
+        }
+        ctx.clearRect(-20, -20, W + 40, H + 40);
+
+        var parallaxOffset = (this.frame * this.speed * 0.3) % 28;
+        ctx.strokeStyle = 'rgba(0,255,204,0.04)';
+        ctx.lineWidth = 1;
+        for (var gx = -parallaxOffset; gx < W; gx += 28) { ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,H); ctx.stroke(); }
+
+        this.candles.forEach(function(c) { c.draw(ctx); });
+        this.bull.draw(ctx);
+
+        if (this.bull.liquidated) {
+            ctx.fillStyle = 'rgba(255,0,85,0.14)';
+            ctx.fillRect(0, 0, W, H);
+        }
+        ctx.restore();
+    }
+
+    _loop() {
+        if (!this.running) return;
+        this._update();
+        this._draw();
+        this.raf = requestAnimationFrame(this._loop.bind(this));
+    }
+}
+
+window.CandlestickRunnerGame = CandlestickRunnerGame;
+})();
+
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   WALL STREET CANDLESTICK RUNNER — Wiring
+   Conecta el motor al widget inline (#wst-runner-*)
+   OMEGA GENERAL · Blueprint: General Gamma
+════════════════════════════════════════════════════════════════ */
+(function() {
+'use strict';
+
+var WST_BASE_PRICE = 5200.00;
+function wstUpdatePriceAxis(score, prevPrice) {
+    var price = (WST_BASE_PRICE + score * 1.25);
+    var badge = document.getElementById('wst-price-badge');
+    if (badge) {
+        badge.textContent = '$' + price.toFixed(2);
+        badge.classList.toggle('down', price < (prevPrice || price));
+    }
+    return price;
+}
+
+function wstFormatTime(d) {
+    return String(d.getHours()).padStart(2,'0') + ':' +
+           String(d.getMinutes()).padStart(2,'0') + ':' +
+           String(d.getSeconds()).padStart(2,'0');
+}
+function wstUpdateTimeAxis() {
+    var now = new Date();
+    var t0 = document.getElementById('wst-time-0');
+    var t1 = document.getElementById('wst-time-1');
+    var t2 = document.getElementById('wst-time-2');
+    if (t0) t0.textContent = wstFormatTime(new Date(now - 30000));
+    if (t1) t1.textContent = wstFormatTime(new Date(now - 15000));
+    if (t2) t2.textContent = wstFormatTime(now);
+}
+
+var _wstLastCandleSec = null;
+function wstOnCandleTick(secondsLeft) {
+    var el = document.getElementById('wst-next-candle-val');
+    if (el) el.textContent = secondsLeft + 's';
+    if (_wstLastCandleSec !== null && secondsLeft > _wstLastCandleSec) {
+        var container = document.getElementById('wst-inline-runner-container');
+        if (container) {
+            container.classList.remove('wst-candle-glitch');
+            void container.offsetWidth;
+            container.classList.add('wst-candle-glitch');
+        }
+    }
+    _wstLastCandleSec = secondsLeft;
+}
+
+var wstInlineGame = null;
+var _wstPrevPrice = WST_BASE_PRICE;
+
+window.wstStartInlineRunner = function() {
+    if (!window.CandlestickRunnerGame) return;
+    var canvas = document.getElementById('wst-runner-canvas');
+    if (!canvas) return;
+    var rect = canvas.getBoundingClientRect();
+    if (rect.width > 0) { canvas.width = Math.round(rect.width); canvas.height = Math.round(rect.height); }
+
+    if (wstInlineGame) wstInlineGame.stop();
+    wstInlineGame = new window.CandlestickRunnerGame('wst-runner-canvas', {
+        onScore: function(score) {
+            var scoreEl = document.getElementById('wst-runner-score');
+            if (scoreEl) scoreEl.textContent = String(score).padStart(4, '0');
+            _wstPrevPrice = wstUpdatePriceAxis(score, _wstPrevPrice);
+        },
+        onLiquidate: function() {
+            var banner = document.getElementById('wst-liquidated-banner');
+            if (banner) {
+                banner.classList.add('show');
+                setTimeout(function() { banner.classList.remove('show'); }, 1900);
+            }
+        },
+        onCandleTick: wstOnCandleTick
+    });
+    wstInlineGame._reset();
+    wstInlineGame.start();
+    wstUpdateTimeAxis();
+    if (window._wstTimeAxisInterval) clearInterval(window._wstTimeAxisInterval);
+    window._wstTimeAxisInterval = setInterval(wstUpdateTimeAxis, 1000);
+};
+
+window.wstStopInlineRunner = function() {
+    if (wstInlineGame) { wstInlineGame.stop(); wstInlineGame = null; }
+    if (window._wstTimeAxisInterval) { clearInterval(window._wstTimeAxisInterval); window._wstTimeAxisInterval = null; }
+};
+})();
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
    BLACK TERMINAL GATE BOOT — GAMMA UPGRADE
    ═══════════════════════════════════════════════════════════════ */
 window.btBootGate = function() {
@@ -29866,6 +30445,9 @@ window.btBootGate = function() {
             if (typeof window.btBriefInit === 'function') {
                 setTimeout(window.btBriefInit, 800);
             }
+            if (typeof window.wstStartInlineRunner === 'function') {
+                setTimeout(window.wstStartInlineRunner, 900);
+            }
             if (typeof btPopulate === 'function') {
                 btPopulate();
                 if (typeof btUpdateGauge === 'function') btUpdateGauge(17.34);
@@ -29890,6 +30472,9 @@ window.btExitTerminal = function() {
 
     core.style.transition = 'opacity 0.35s ease';
     core.style.opacity = '0';
+    /* Detiene el motor del widget inline — no queda corriendo en
+       background consumiendo requestAnimationFrame fuera de vista */
+    if (typeof window.wstStopInlineRunner === 'function') window.wstStopInlineRunner();
     setTimeout(function() {
         core.classList.remove('bt-fullscreen-active');
         core.style.display = 'none';
