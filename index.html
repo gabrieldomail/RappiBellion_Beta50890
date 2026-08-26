@@ -10116,6 +10116,10 @@ function typeHTML(element, htmlString, speed) {
                 <div class="game-placeholder">
                     <img src="juegos beta/snake.PNG" alt="SNAKE-PROTOCOL" style="width: 100%; height: auto; display: block;">
                     <p style="margin-top: 10px;"><strong style="color: var(--color-caos-amarillo); text-shadow: 0 0 8px var(--color-caos-amarillo);">SLOT 4: SNAKE-PROTOCOL</strong><br>(Snake - Conecta los circuitos)</p>
+                    <button class="cta-button" id="play-snake-demo"
+                            style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-color: var(--color-caos-amarillo); color: var(--color-caos-amarillo);">
+                        > INICIAR_SNAKE_PROTOCOL.exe
+                    </button>
                 </div>
                 <div class="game-placeholder">
                     <img src="juegos beta/pacman.jfif" alt="PAC-HACK" style="width: 100%; height: auto; display: block;">
@@ -12664,6 +12668,13 @@ function listRppiOpenBets(callback) {
                     style="display:none;"
                     title="CHAOS_BOMB">💣<span class="holo-boost-label">CHAOS</span></button>
 
+                <!-- WHACKING DAY — Snake-Protocol boost (Barry White Mode) -->
+                <button id="fp-snake-botton-neon"
+                    onclick="fpFireBoost()"
+                    class="holo-boost-btn holo-boost--gold"
+                    style="display:none;"
+                    title="WHACKING DAY">🐍<span class="holo-boost-label">WHACK</span></button>
+
                 <!-- ATOMIC PULSE — Space-Breaker boost -->
                 <button id="fp-spacebreaker-boost-btn"
                     onclick="fpFireBoost()"
@@ -14381,9 +14392,20 @@ document.addEventListener('DOMContentLoaded', function() {
          // Para Tetris: mostrar SOLO el neon, ocultar todo lo demás
          var isTetris       = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher')  !== -1;
          var isSpcBreaker   = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker')  !== -1;
+         var isSnake        = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('snake')           !== -1;
          var sbBoostBtn     = document.getElementById('fp-spacebreaker-boost-btn');
+         var snakeBoostBtn  = document.getElementById('fp-snake-botton-neon');
 
-         if (isTetris) {
+         if (isSnake) {
+             // SNAKE-PROTOCOL: botón WHACKING DAY dorado
+             if (boostBtn)       boostBtn.style.display       = 'none';
+             if (tetrisBosBtn)   tetrisBosBtn.style.display   = 'none';
+             if (overlayBtn)     overlayBtn.style.display     = 'none';
+             if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'none';
+             if (sbBoostBtn)     sbBoostBtn.style.display     = 'none';
+             if (snakeBoostBtn)  snakeBoostBtn.style.display  = 'flex';
+             if (boostBadge)     boostBadge.style.left        = '75%';
+         } else if (isTetris) {
              // TETRIS: solo neon
              if (boostBtn)       boostBtn.style.display       = 'none';
              if (tetrisBosBtn)   tetrisBosBtn.style.display   = 'flex';
@@ -14408,6 +14430,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (overlayBtn)     overlayBtn.style.display     = (window.innerWidth <= 768) ? 'none' : 'flex';
             if (tetrisOverlayBtn) tetrisOverlayBtn.style.display = 'none';
             if (sbBoostBtn)     sbBoostBtn.style.display     = 'none';
+            if (snakeBoostBtn)  snakeBoostBtn.style.display  = 'none';
             if (boostBadge)     boostBadge.style.left        = '75%';
          }
 
@@ -14416,6 +14439,7 @@ document.addEventListener('DOMContentLoaded', function() {
          if (tetrisBosBtn) tetrisBosBtn.disabled = false;
          if (overlayBtn) overlayBtn.disabled = false;
          if (tetrisOverlayBtn) tetrisOverlayBtn.disabled = false;
+         if (snakeBoostBtn) snakeBoostBtn.disabled = false;
 
          if (boostWrapEl) boostWrapEl.style.display = 'block';
          if (boostBadge)  { boostBadge.textContent = 'x' + limit; boostBadge.style.display = 'block'; }
@@ -14906,12 +14930,15 @@ function fpEndPractice() {
     if (tetrisOverlayBtn) tetrisOverlayBtn.disabled = true;
     var sbBoostBtn = document.getElementById('fp-spacebreaker-boost-btn');
     if (sbBoostBtn) sbBoostBtn.disabled = true;
+    var snakeBoostBtnFire = document.getElementById('fp-snake-botton-neon');
+    if (snakeBoostBtnFire) snakeBoostBtnFire.disabled = true;
 
     // 2. DETECCIÓN DEL JUEGO ACTIVO
     var isTetris      = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
     var isSpaceBreak  = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker') !== -1;
+    var isSnake       = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('snake')           !== -1;
 
-    console.log('[HUD] Boost → ' + (isTetris ? 'TETRIS' : (isSpaceBreak ? 'SPACE-BREAKER' : 'PAC-HACK')));
+    console.log('[HUD] Boost → ' + (isSnake ? 'SNAKE' : (isTetris ? 'TETRIS' : (isSpaceBreak ? 'SPACE-BREAKER' : 'PAC-HACK'))));
 
     // 3. DISPARO DE EFECTOS VISUALES EN EL PADRE (WEB)
     if (isTetris) {
@@ -14935,7 +14962,8 @@ function fpEndPractice() {
 
     // 4. COMUNICACIÓN CON EL IFRAME (SISTEMA DE MENSAJES)
     if (fpIframe && fpIframe.contentWindow) {
-        var messageType = isTetris     ? 'CHAOS_BOMB'    :
+        var messageType = isSnake      ? 'WHACKING_DAY'  :
+                          isTetris     ? 'CHAOS_BOMB'    :
                           isSpaceBreak ? 'ATOMIC_PULSE'  : 'TRIGGER_BOOST';
         fpIframe.contentWindow.postMessage({ type: messageType }, '*');
     }
@@ -15255,6 +15283,19 @@ function fpCloseArena() {
                 window.fpOpenFreeGame('Tetris-Cipher/index.html');
             });
         }
+        // ── SNAKE-PROTOCOL freeplay ─────────────────────────────────────────
+        var snakeBtn = document.getElementById('play-snake-demo');
+        if (snakeBtn) {
+            snakeBtn.addEventListener('click', function() {
+                window.fpOpenFreeGame('snake-protocol-freeplay/snake-protocol-v2.html');
+            });
+        }
+        var snakeLobbyBtn = document.getElementById('play-snake-demo-lobby');
+        if (snakeLobbyBtn) {
+            snakeLobbyBtn.addEventListener('click', function() {
+                window.fpOpenFreeGame('snake-protocol-freeplay/snake-protocol-v2.html');
+            });
+        }
         var pacLobbyBtn = document.getElementById('play-pacman-demo-lobby');
         if (pacLobbyBtn) {
             pacLobbyBtn.addEventListener('click', function() {
@@ -15429,9 +15470,32 @@ function fpCloseArena() {
             // 🎵 Audio boost según juego — Minmay/Robotech para Space-Breaker (duración completa)
             var isTetrisGame_a       = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
             var isSpaceBreakerGame_a = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker') !== -1;
-            var boostAudioFile = isTetrisGame_a       ? 'sounds/bomba-chaos.mp3'
-                               : isSpaceBreakerGame_a ? 'sounds/atomic-robotech.mp3'
-                               :                       'sounds/mario-star.mp3';
+            var isSnakeGame_a        = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('snake')           !== -1;
+            // Fallback chain: si el audio específico del juego falta en
+            // /sounds/, cae al genérico de Pac-Hack (mario-star) para que
+            // el boost nunca quede mudo. Se rastrea por archivo (Set),
+            // no global — así un mp3 faltante de Snake no contamina
+            // los audios válidos de Tetris/Space-Breaker.
+            window._fpBoostAudioMissing = window._fpBoostAudioMissing || {};
+            function _fpBoostAudioWithFallback(file) {
+                if (window._fpBoostAudioMissing[file] && file !== 'sounds/mario-star.mp3') {
+                    console.warn('[HUD] Boost audio faltante (cache):', file, '→ fallback mario-star');
+                    return 'sounds/mario-star.mp3';
+                }
+                var probe = new Audio();
+                probe.addEventListener('error', function() {
+                    console.warn('[HUD] Boost audio faltante:', file, '→ próximo boost usará mario-star');
+                    window._fpBoostAudioMissing[file] = true;
+                }, { once: true });
+                probe.src = file;
+                return file;
+            }
+            var boostAudioFile = _fpBoostAudioWithFallback(
+                isSnakeGame_a        ? 'sounds/simpson-boost.mp3'
+              : isTetrisGame_a       ? 'sounds/bomba-chaos.mp3'
+              : isSpaceBreakerGame_a ? 'sounds/atomic-robotech.mp3'
+              :                        'sounds/mario-star.mp3'
+            );
             if (!window._fpBoostAudio) {
                 window._fpBoostAudio = new Audio(boostAudioFile);
                 window._fpBoostAudio.loop   = false;
@@ -15442,7 +15506,7 @@ function fpCloseArena() {
             window._fpBoostAudio.currentTime = 0;
             window._fpBoostAudio.play().catch(function(){});
             // Solo cortar Pac-Hack a los 9.5s — Space-Breaker suena completa (15s)
-            if (!isSpaceBreakerGame_a) {
+            if (!isSpaceBreakerGame_a && !isSnakeGame_a) {
                 window._fpBoostAudioTimer = setTimeout(function() {
                     if (window._fpBoostAudio && !window._fpBoostAudio.paused) {
                         window._fpBoostAudio.pause();
@@ -18421,6 +18485,10 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
                     <div class="game-placeholder">
                         <img src="juegos beta/snake.PNG" alt="SNAKE-PROTOCOL" style="width: 100%; height: auto; display: block;">
                         <p style="margin-top: 10px;"><strong style="color: var(--color-caos-amarillo); text-shadow: 0 0 8px var(--color-caos-amarillo);">SLOT 4: SNAKE-PROTOCOL</strong><br>(Snake - Conecta los circuitos)</p>
+                        <button class="cta-button" id="play-snake-demo-lobby"
+                                style="margin-top: 8px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-color: var(--color-caos-amarillo); color: var(--color-caos-amarillo);">
+                            > INICIAR_SNAKE_PROTOCOL.exe
+                        </button>
                     </div>
                     <div class="game-placeholder">
                         <img src="juegos beta/pacman.jfif" alt="PAC-HACK" style="width: 100%; height: auto; display: block;">
@@ -29682,45 +29750,23 @@ function btPopulate() {
     c6.innerHTML = ch;
   }
 }
-
-/* ── Simulation engine (Web Worker Blob) ── */
-var _btWorkerBlob = new Blob([
-'var BT_PRICES = ' + JSON.stringify(
-  Object.keys(BT_ASSETS).reduce(function(acc,k){ acc[k]=BT_ASSETS[k].p; return acc; }, {})
-) + ';' +
-'var BT_TYPES = ' + JSON.stringify(
-  Object.keys(BT_ASSETS).reduce(function(acc,k){ acc[k]=BT_ASSETS[k].type; return acc; }, {})
-) + ';' +
-'function rw(p, type) {' +
-'  var vol = type==="crypto" ? 0.004 : type==="energy" ? 0.003 : type==="pist" ? 0.005 : 0.0015;' +
-'  return p * (1 + (Math.random() - 0.5) * 2 * vol);' +
-'}' +
-'setInterval(function(){' +
-'  var upd = {};' +
-'  Object.keys(BT_PRICES).forEach(function(k){' +
-'    BT_PRICES[k] = Math.max(0.0001, rw(BT_PRICES[k], BT_TYPES[k]));' +
-'    upd[k] = BT_PRICES[k];' +
-'  });' +
-'  postMessage(upd);' +
-'}, 3000);'
-], {type:'application/javascript'});
-
-var _btWorker = null;
-try {
-  _btWorker = new Worker(URL.createObjectURL(_btWorkerBlob));
-  _btWorker.onmessage = function(e) { btApplyUpdate(e.data); };
-} catch(ex) {
-  setInterval(function(){
-    var upd = {};
-    Object.keys(BT_ASSETS).forEach(function(k){
-      var vol = BT_ASSETS[k].type==='crypto'?0.004:BT_ASSETS[k].type==='pist'?0.005:0.0015;
-      BT_ASSETS[k].p = Math.max(0.0001, BT_ASSETS[k].p*(1+(Math.random()-0.5)*2*vol));
-      upd[k] = BT_ASSETS[k].p;
-    });
-    btApplyUpdate(upd);
-  }, 3000);
+ 
+/* ── UNIFIED MARKET FEED (GAMMA ENGINE) — 2000ms poll ── */
+async function conectarMarketFeed() {
+    try {
+        const response = await fetch('http://127.0.0.1:8787/api/market/tickers');
+        const json = await response.json();
+        if (json && json.data && typeof btApplyUpdate === 'function') {
+            btApplyUpdate(json.data);
+        }
+    } catch (err) {
+        console.warn('⚠️ [MARKET FEED] Error, reintentando...', err.message);
+    }
 }
 
+setInterval(conectarMarketFeed, 2000);
+conectarMarketFeed();
+ 
 /* ── Apply price update to DOM ── */
 function btApplyUpdate(prices) {
   Object.keys(prices).forEach(function(sym) {
@@ -29855,6 +29901,40 @@ function btAnimateFlows() {
   });
 }
 
+/* ── Sector Radar animation ── */
+function btAnimateRadar() {
+  // Radar vertices (center 70,70): XLK(top), XLE(right), XLF(bottom-right), XLV(bottom-left), XLU(left)
+  // Base radius: 48. Scale factor based on chgPct: 1 + chgPct/100 * 0.5
+  var sectors = [
+    {sym: 'XLK', baseR: 48, angle: -90},   // top
+    {sym: 'XLE', baseR: 48, angle: 18},    // right
+    {sym: 'XLF', baseR: 48, angle: 90},    // bottom-right
+    {sym: 'XLV', baseR: 48, angle: 162},   // bottom-left
+    {sym: 'XLU', baseR: 48, angle: -54}    // left
+  ];
+  
+  var poly = document.getElementById('bt-radar-poly');
+  if (!poly) return;
+  
+  var cx = 70, cy = 70;
+  var points = [];
+  
+  sectors.forEach(function(s) {
+    var a = BT_ASSETS[s.sym];
+    if (!a) return;
+    var base = _btBase[s.sym];
+    var chgPct = (a.p - base) / base * 100;
+    var scale = 1 + Math.max(-0.5, Math.min(0.5, chgPct * 0.015)); // cap ±50%
+    var r = s.baseR * scale;
+    var rad = s.angle * Math.PI / 180;
+    points.push((cx + r * Math.cos(rad)).toFixed(1) + ',' + (cy + r * Math.sin(rad)).toFixed(1));
+  });
+  
+  if (points.length === 5) {
+    poly.setAttribute('points', points.join(' '));
+  }
+}
+
 /* ── INIT ── */
 function _btInit() {
   var section = document.getElementById('black-terminal');
@@ -29867,7 +29947,9 @@ function _btInit() {
   setInterval(btTick, 1000);
   setInterval(btCheckRTH, 30000);
   setInterval(btAnimateFlows, 5200);
+  setInterval(btAnimateRadar, 3000);
   btAnimateFlows();
+  btAnimateRadar();
 }
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', _btInit);
@@ -30454,6 +30536,7 @@ window.btBootGate = function() {
                 if (typeof btCheckRTH === 'function') btCheckRTH();
                 if (typeof btTick === 'function') { btTick(); setInterval(btTick, 1000); }
                 if (typeof btAnimateFlows === 'function') { btAnimateFlows(); setInterval(btAnimateFlows, 5200); }
+                if (typeof btAnimateRadar === 'function') { btAnimateRadar(); setInterval(btAnimateRadar, 3000); }
                 setInterval(btCheckRTH, 30000);
             }
             console.log('BLACK TERMINAL V2 · OKLCH ENGINE · SB CARTEL · ONLINE');
