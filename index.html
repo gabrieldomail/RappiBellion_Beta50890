@@ -2146,7 +2146,7 @@ height: 8px;
         positionMarquees();
         window.addEventListener('resize',positionMarquees);
 
-        /* ══ LED PIXEL GRID ENGINE v3 — downscaled text approach ══ */
+        /* ══ LED PIXEL GRID ENGINE v3-AA — misma matemática visual, transporte barato ══ */
         (function(){
           var configs=[
             {id:'led-canvas-top',txt:'WEB 2.5 RAPPIA CREDITOS SIN BLOCKCHAIN + MODO DOMINATOR DECOMPOSER ENHANCED + ',speed:0.16,dir:1,hue:195},
@@ -2158,11 +2158,42 @@ height: 8px;
             var cvs=document.getElementById(cfg.id);
             if(!cvs)return;
             var ctx=cvs.getContext('2d');
-            /* small canvas for pixelated text */
+            /* small canvas for pixelated text — AA v7 FASE1: CPU-resident,
+               la lectura getImageData sale barata y muere el warning GPU→CPU */
             var pix=document.createElement('canvas');
             var pctx=pix.getContext('2d');
+            var pixTmp=document.createElement('canvas');
+            var pctxTmp=pixTmp.getContext('2d',{willReadFrequently:true});
             var sPos=0;
             var lastT=0;
+
+            /* ── AA v7 FASE2: LUT de color CALIBRADA POR PINTURA.
+               Los valores se obtienen pintando cada nivel en ESTE motor
+               (mismo rasterizador/compositor que el pipeline viejo) y leyendo
+               los bytes una única vez → igualdad bit-exata garantizada por
+               construcción, independiente de endianess/formateo del browser. */
+            var LUT_ON=null,_COL_OFF=0,_COL_BG=0,_legacy=false,imgBuf=null,buf32=null;
+            (function calibrate(){
+              try{
+                var c=document.createElement('canvas');c.width=259;c.height=1;
+                var x=c.getContext('2d',{willReadFrequently:true});
+                for(var k=0;k<256;k++){
+                  x.fillStyle='#000';x.fillRect(k,0,1,1);
+                  var l=45+(k/255)*20;
+                  x.fillStyle='hsl('+cfg.hue+',100%,'+l+'%)';x.fillRect(k,0,1,1);
+                }
+                x.fillStyle='#111118';x.fillRect(256,0,1,1);
+                x.fillStyle='#0a0a0f';x.fillRect(257,0,1,1);
+                x.fillStyle='hsl(330,100%,50%)';x.fillRect(258,0,1,1);
+                var d=x.getImageData(0,0,259,1).data,u32=new Uint32Array(d.buffer);
+                var px=258*4;
+                /* sanity: muestra de referencia legible (255,0,128) consistente */
+                if(!(d[px]===255&&d[px+1]===0&&d[px+2]===128&&d[px+3]===255)){_legacy=true;return;}
+                LUT_ON=new Int32Array(u32.subarray(0,256));
+                _COL_OFF=u32[256]|0;_COL_BG=u32[257]|0;
+              }catch(e){_legacy=true;}
+            })();
+            window.__ledLegacy = _legacy;
 
             function resize(){
               var r=cvs.parentElement.getBoundingClientRect();
@@ -2177,6 +2208,13 @@ height: 8px;
               cvs.height=h;
               pix.width=Math.ceil(w/LED_H);
               pix.height=Math.ceil(h/LED_H);
+              pixTmp.width=pix.width;
+              pixTmp.height=pix.height;
+              /* AA v7 FASE3: buffer destino pre-alienado al tamaño del canvas */
+              if(!_legacy&&w>0&&h>0&&typeof ImageData==='function'){
+                imgBuf=new ImageData(w,h);
+                buf32=new Uint32Array(imgBuf.data.buffer);
+              }else{imgBuf=null;buf32=null;}
             }
 
             function render(t){
@@ -2202,37 +2240,64 @@ height: 8px;
                 pctx.fillText(cfg.txt,offset+r*tw,PH*0.55);
               }
 
-              /* 2) read tiny pixels */
-              var imgD=pctx.getImageData(0,0,PW,PH).data;
+              /* 2) read tiny pixels — copy to temp canvas (willReadFrequently) evita
+                 warning sin alterar raster de texto de pctx → bit-exact vs baseline */
+              pctxTmp.clearRect(0,0,PW,PH);
+              pctxTmp.drawImage(pix,0,0);
+              var imgD=pctxTmp.getImageData(0,0,PW,PH).data;
 
-              /* 3) draw LED grid on main canvas — scaled up with no smoothing */
-              ctx.fillStyle='#0a0a0f';
-              ctx.fillRect(0,0,W,H);
+              if(_legacy||!buf32||buf32.length!==W*H){
+                /* ── fallback v3 original, sin cambios visuales ── */
+                ctx.fillStyle='#0a0a0f';
+                ctx.fillRect(0,0,W,H);
 
-              for(var i=0;i<PW;i++){
-                for(var j=0;j<PH;j++){
-                  var idx=(j*PW+i)*4;
-                  var brightness=imgD[idx];
-                  var on=brightness>160;
-                  var x=i*LED_H;
-                  var y=j*LED_H;
+                for(var i0=0;i0<PW;i0++){
+                  for(var j0=0;j0<PH;j0++){
+                    var idx0=(j0*PW+i0)*4;
+                    var brightness0=imgD[idx0];
+                    var on0=brightness0>160;
+                    var x0=i0*LED_H;
+                    var y0=j0*LED_H;
 
-                  if(on){
-                    /* ON — bright LED with intensity based on font alpha */
-                    var intensity=brightness/255;
-                    var l=45+intensity*20;
-                    ctx.fillStyle='hsl('+cfg.hue+',100%,'+l+'%)';
-                    ctx.fillRect(x,y,LED_H-1,LED_H-1);
-                    /* bright core */
-                    ctx.fillStyle='hsl('+cfg.hue+',80%,'+(75+intensity*15)+'%)';
-                    ctx.fillRect(x+1,y+1,LED_H-3,LED_H-3);
-                  }else{
-                    /* OFF — dark cell with faint grid */
-                    ctx.fillStyle='#111118';
-                    ctx.fillRect(x,y,LED_H-1,LED_H-1);
+                    if(on0){
+                      var intensity0=brightness0/255;
+                      var l0=45+intensity0*20;
+                      ctx.fillStyle='hsl('+cfg.hue+',100%,'+l0+'%)';
+                      ctx.fillRect(x0,y0,LED_H-1,LED_H-1);
+                      ctx.fillStyle='hsl('+cfg.hue+',80%,'+(75+intensity0*15)+'%)';
+                      ctx.fillRect(x0+1,y0+1,LED_H-3,LED_H-3);
+                    }else{
+                      ctx.fillStyle='#111118';
+                      ctx.fillRect(x0,y0,LED_H-1,LED_H-1);
+                    }
+                  }
+                }
+
+                requestAnimationFrame(render);
+                return;
+              }
+
+              /* ── AA v7 FASE3: grilla escrita directo al buffer (1 putImageData).
+                 Réplica bit-exacta del pipeline v3: fondo #0a0a0f completo,
+                 celdas (LED_H-1)² con LUT calibrada, gaps de 1px hacia bg.
+                 El "core" original era rect de LED_H-3=0 px (zero-area, sin
+                 efecto visual desde siempre) → omitirlo no altera ni 1 bit. */
+              buf32.fill(_COL_BG);
+              var cw=LED_H-1,ch=LED_H-1;
+              for(var j=0,yj=0;j<PH;j++,yj+=LED_H){
+                var rows=H-yj;if(rows>ch)rows=ch;if(rows<=0)break;
+                var rowA=yj*W;
+                for(var i=0,xi=0;i<PW;i++,xi+=LED_H){
+                  var brightness=imgD[(j*PW+i)*4];
+                  var val=(brightness>160)?LUT_ON[brightness]:_COL_OFF;
+                  var cols=W-xi;if(cols>cw)cols=cw;
+                  for(var oy=0;oy<rows;oy++){
+                    var base=rowA+oy*W+xi;
+                    for(var ox=0;ox<cols;ox++)buf32[base+ox]=val;
                   }
                 }
               }
+              ctx.putImageData(imgBuf,0,0);
 
               requestAnimationFrame(render);
             }
@@ -8034,6 +8099,29 @@ document.addEventListener('keydown', function(e){
                 </div>
             </div>
 
+            <!-- CARD 6: SNAKE-PROTOCOL -->
+            <div class="pinboard-card hidden-right" data-idx="6" style="--tack-color:#F8FF2B;--card-glow:248,255,43;" onclick="_pbCardClick(6)">
+                <div class="pinboard-tape" ></div>
+                <div class="pb-card-header">
+                    <span style="color:#F8FF2B;">ARCADE</span>
+                    <span>SNAKE-PROTOCOL</span>
+                </div>
+                <div class="pb-card-logo">
+                    <img src="juegos beta/snake.PNG" alt="SNAKE-PROTOCOL"
+                        style="width:100%;height:120px;object-fit:cover;border-radius:2px;opacity:0.85;"
+                        onerror="this.style.display='none'">
+                </div>
+                <div class="pb-card-title" style="color:#F8FF2B;text-shadow:0 0 8px #F8FF2B;">SNAKE-PROTOCOL</div>
+                <div class="pb-card-sub">Conecta los circuitos, esquiva la sobrecarga<br>antes de que el firewall te intercepte.</div>
+                <button class="pb-card-btn"
+                    style="background:rgba(248,255,43,0.08);border-color:rgba(248,255,43,0.5);color:#F8FF2B;text-shadow:0 0 8px #F8FF2B;"
+                    onclick="event.stopPropagation();(window.rappibellionMode==='web25'||sessionStorage.getItem('rappibellion-mode')==='web25') ? rppiOpenGameModal('make-bet-snake') : requireWalletThenBet('make-bet-snake');"
+                    onmouseover="this.style.background='rgba(248,255,43,0.16)'"
+                    onmouseout="this.style.background='rgba(248,255,43,0.08)'">
+                    ¡MAKE YOUR BET!
+                </button>
+            </div>
+
         </div><!-- /pb-track -->
 
         <!-- Navegación -->
@@ -8046,6 +8134,7 @@ document.addEventListener('keydown', function(e){
                 <div class="pb-dot" onclick="_pbCardClick(3)"></div>
                 <div class="pb-dot" onclick="_pbCardClick(4)"></div>
                 <div class="pb-dot" onclick="_pbCardClick(5)"></div>
+                <div class="pb-dot" onclick="_pbCardClick(6)"></div>
             </div>
             <button class="pb-arrow" onclick="_pbNav(1)">►</button>
         </div>
@@ -8054,7 +8143,7 @@ document.addEventListener('keydown', function(e){
     <script>
     /* ── Rebel Pinboard — lógica carrusel ── */
     var _pbIdx   = 0;
-    var _pbTotal = 6;
+    var _pbTotal = 7;
     var _pbClasses = ['active','right-1','right-2','hidden-right','left-1','left-2','hidden-left'];
 
     function _pbCardClick(idx) {
@@ -11576,17 +11665,34 @@ function rppiLogout() {
             </div>
             <p class="snake-promo-tagline">Conecta los circuitos, esquiva la sobrecarga<br>antes de que el firewall te intercepte.</p>
             <div class="snake-promo-date-box" style="background:none;border:none;padding:0;margin:10px 0;">
-                <button id="make-bet-snake-promo"
-                    disabled
-                    style="background:#000;border:1.5px solid rgba(248, 255, 43, 0.75);
-                           color:var(--color-caos-amarillo);font-family:var(--fuente-titulos,Orbitron,monospace);
-                           font-size:0.85em;font-weight:700;letter-spacing:0.2em;
-                           text-transform:uppercase;text-shadow:0 0 10px rgba(248, 255, 43, 0.9),0 0 22px rgba(248, 255, 43, 0.4);
-                           box-shadow:0 0 14px rgba(248, 255, 43, 0.22),inset 0 0 8px rgba(248, 255, 43, 0.05);
-                           padding:10px 22px;border-radius:4px;cursor:not-allowed;width:100%;
-                           transition:all 0.18s ease; opacity: 0.8;">
-                    Err_AVAILABLE SOON 
-                </button>
+                <div style="display:flex;gap:6px;">
+                    <button id="snake-promo-play"
+                        onclick="document.getElementById('snake-promo-window').style.display='none'; if(typeof window.fpOpenFreeGame==='function'){ window.fpOpenFreeGame('snake-protocol-freeplay/snake-protocol-v2.html'); }"
+                        onmouseover="this.style.background='rgba(248,255,43,0.20)'"
+                        onmouseout="this.style.background='rgba(248,255,43,0.08)'"
+                        style="flex:1;background:rgba(248,255,43,0.08);border:1.5px solid rgba(248,255,43,0.55);
+                               color:#F8FF2B;font-family:var(--fuente-titulos,Orbitron,monospace);
+                               font-size:0.74em;font-weight:700;letter-spacing:0.1em;
+                               text-transform:uppercase;text-shadow:0 0 10px rgba(248,255,43,0.9),0 0 22px rgba(248,255,43,0.4);
+                               box-shadow:0 0 14px rgba(248,255,43,0.25),inset 0 0 8px rgba(248,255,43,0.06);
+                               padding:10px 6px;border-radius:4px;cursor:pointer;
+                               transition:all 0.18s ease;">
+                        [ PLAY_NOW AVAILABLE ]
+                    </button>
+                    <button id="make-bet-snake-promo"
+                        onclick="event.stopPropagation();document.getElementById('snake-promo-window').style.display='none'; (window.rappibellionMode==='web25'||sessionStorage.getItem('rappibellion-mode')==='web25') ? rppiOpenGameModal('make-bet-snake') : requireWalletThenBet('make-bet-snake');"
+                        onmouseover="this.style.background='rgba(255,255,255,0.20)'"
+                        onmouseout="this.style.background='rgba(255,255,255,0.08)'"
+                        style="flex:1;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.75);
+                               color:#fff;font-family:var(--fuente-titulos,Orbitron,monospace);
+                               font-size:0.72em;font-weight:700;letter-spacing:0.14em;
+                               text-transform:uppercase;text-shadow:0 0 10px rgba(255,255,255,0.9),0 0 22px rgba(255,255,255,0.4);
+                               box-shadow:0 0 14px rgba(255,255,255,0.22),inset 0 0 8px rgba(255,255,255,0.05);
+                               padding:10px 6px;border-radius:4px;cursor:pointer;
+                               transition:all 0.18s ease;">
+                        ¡MAKE YOUR BET!
+                    </button>
+                </div>
             </div>
             <p class="snake-promo-sub">// THINK TO EARN — circuito T2E expandiéndose</p>
         </div>
@@ -15736,7 +15842,8 @@ function fpCloseArena() {
                 'make-bet-pachack':      'pac-hack',
                 'make-bet-spacebreaker': 'space-breaker',
                 'make-bet-memorybreach': 'memory-breach',
-                'make-bet-tetriscipher': 'tetris-cipher'
+                'make-bet-tetriscipher': 'tetris-cipher',
+                'make-bet-snake':        'snake-protocol'
             };
             window.T2EIntegration.currentGameType = _gameTypeMap[gameId] || gameId.replace('make-bet-', '');
             // Reset opciones para que el preview parta limpio
@@ -27259,6 +27366,96 @@ function listRppiOpenBets(callback) {
 
    <button id="rppi-launch-tetriscipher" onclick="rppiGmLaunch('tetriscipher','tetris-cipher')" disabled style="width:100%;background:transparent;border:2px solid rgba(0,255,65,0.22);color:rgba(0,255,65,0.28);font-family:'Orbitron',monospace;font-weight:700;font-size:13px;letter-spacing:0.28em;padding:14px;cursor:not-allowed;border-radius:3px;transition:all 0.2s;text-transform:uppercase;">SELECCIONA OPCIONES</button>
    <div id="rppi-status-tetriscipher" style="margin-top:8px;font-size:10px;text-align:center;color:rgba(0,255,65,0.4);letter-spacing:0.1em;min-height:16px;"></div>
+  </div>
+ </div>
+</div>
+
+<div id="rppi-modal-snake" class="rppi-game-modal">
+ <div class="rppi-gm-wrap" style="background:rgba(12,12,2,0.05);border:2px solid #F8FF2B;box-shadow:0 0 35px rgba(248,255,43,0.28),inset 0 0 20px rgba(248,255,43,0.05);">
+  <div class="rppi-gm-scan"></div>
+  <div style="position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#F8FF2B,transparent);opacity:0.6;animation:rppiScan 3.5s linear infinite;animation-delay:1.8s;pointer-events:none;z-index:2;"></div>
+
+<div style="border-bottom:1px solid rgba(248,255,43,0.25);padding:14px 18px;position:relative;z-index:3;background:rgba(248,255,43,0.18);">
+    <div style="font-family:'Orbitron',monospace;font-weight:900;font-size:15px;color:#FFFFFF;letter-spacing:0.3em;text-shadow:0 0 12px #F8FF2B;">SNAKE-PROTOCOL_ARENA</div>
+    <div style="font-size:11px;color:rgba(248,255,43,0.5);letter-spacing:0.4em;margin-top:2px;">RPPI-C // LA INTRANET // WEB2.5</div>
+    <button onclick="rppiCloseGameModal('snake')" style="position:absolute;top:12px;right:14px;background:transparent;border:1px solid rgba(248,255,43,0.35);color:#F8FF2B;width:28px;height:28px;border-radius:3px;cursor:pointer;font-size:14px;">✕</button>
+</div>
+
+  <div class="rppi-gm-body">
+   <div style="font-size:10px;color:rgba(248,255,43,0.45);letter-spacing:0.2em;margin-bottom:6px;">TELEMETRÍA DE ARENA</div>
+
+   <div class="super-hud-container" style="margin-bottom:14px; min-height:100px; padding:15px; background:transparent;">
+    <div class="super-hud-corner-bl"></div>
+    <div class="super-hud-corner-br"></div>
+    <div class="hud-laser-line"></div>
+    <div class="hud-header-wrapper" style="margin-bottom: 10px;">
+     <h5 class="hud-title-tech">// HOLOGRAPHIC_HUD_v5.0 //</h5>
+     <span class="hud-status-blink" style="color: var(--color-caos-amarillo); background: transparent; border-color: rgba(248,255,43,0.3);">SCANNING_NET</span>
+    </div>
+    <div class="hud-data-grid">
+     <div class="hud-data-card" style="border-left-color: var(--color-caos-verde); padding: 6px 10px; background:transparent;">
+      <div class="hud-data-label">LOBBY_STATUS</div>
+      <div class="hud-data-value" style="font-size:0.9em; color: var(--color-caos-verde);">IDLE</div>
+     </div>
+     <div class="hud-data-card" style="border-left-color: var(--color-azul-glitch); padding: 6px 10px; background:transparent;">
+      <div class="hud-data-label">SECTOR</div>
+      <div class="hud-data-value" style="font-size:0.9em; color: var(--color-azul-glitch);">INT-77</div>
+     </div>
+     <div class="hud-data-card" style="border-left-color: var(--color-caos-rosa); padding: 6px 10px; background:transparent;">
+      <div class="hud-data-label">ROOM_FPS</div>
+      <div class="hud-data-value" style="font-size:0.9em; color: var(--color-caos-rosa);">60.00</div>
+     </div>
+    </div>
+    <div id="rppi-lobby-snake" style="font-size:11px;color:rgba(248,255,43,0.4);text-align:center;margin-top:12px;"></div>
+   </div>
+
+   <div style="border-top:1px dashed rgba(248,255,43,0.2);padding-top:14px;margin-bottom:14px;font-family:'Orbitron',monospace;font-size:11px;color:#F8FF2B;letter-spacing:0.2em;text-shadow:0 0 8px #F8FF2B;">CREAR DESAFIO</div>
+   <div style="display:flex;justify-content:space-between;align-items:center;background:transparent;border:1px solid rgba(248,255,43,0.25);border-radius:3px;padding:10px 14px;margin-bottom:14px;">
+    <span style="font-size:10px;color:rgba(248,255,43,0.5);letter-spacing:0.2em;">RPPI-C</span>
+    <span id="bal-snake" style="font-family:'Orbitron',monospace;font-size:20px;color:#F8FF2B;font-weight:900;text-shadow:0 0 10px #F8FF2B;">—</span>
+   </div>
+
+   <div style="margin-bottom:13px;">
+    <div style="font-size:10px;color:rgba(248,255,43,0.45);letter-spacing:0.2em;margin-bottom:7px;">MONTO</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+     <button class="rppi-gm-chip" data-game="snake" data-type="amount" data-val="10"  onclick="rppiGmSelect(this,'snake','amount',10)"  style="border:1px solid rgba(248,255,43,0.3);color:rgba(248,255,43,0.75);">10</button>
+     <button class="rppi-gm-chip" data-game="snake" data-type="amount" data-val="25"  onclick="rppiGmSelect(this,'snake','amount',25)"  style="border:1px solid rgba(248,255,43,0.3);color:rgba(248,255,43,0.75);">25</button>
+     <button class="rppi-gm-chip" data-game="snake" data-type="amount" data-val="50"  onclick="rppiGmSelect(this,'snake','amount',50)"  style="border:1px solid rgba(248,255,43,0.3);color:rgba(248,255,43,0.75);">50</button>
+     <button class="rppi-gm-chip" data-game="snake" data-type="amount" data-val="100" onclick="rppiGmSelect(this,'snake','amount',100)" style="border:1px solid rgba(248,255,43,0.3);color:rgba(248,255,43,0.75);">100</button>
+    </div>
+    <div style="margin-top:8px;">
+     <input id="rppi-input-snake" type="number" min="1" placeholder="ej: 25"
+      oninput="rppiGmInputAmount('snake')" onchange="rppiGmInputAmount('snake')"
+      style="width:100%;background:#000;border:1px solid rgba(248,255,43,0.4);color:#F8FF2B;
+             font-family:'Share Tech Mono',monospace;font-size:18px;font-weight:700;
+             padding:10px 14px;border-radius:3px;outline:none;box-sizing:border-box;
+             transition:all 0.2s;text-shadow:0 0 8px #F8FF2B;"
+      onfocus="this.style.borderColor='#F8FF2B';this.style.boxShadow='0 0 14px rgba(248,255,43,0.3)'"
+      onblur="rppiGmInputAmount('snake')">
+     <div id="rppi-input-preview-snake" style="margin-top:6px;font-size:11px;color:rgba(248,255,43,0.6);letter-spacing:0.1em;min-height:16px;transition:color 0.2s;"></div>
+    </div>
+   </div>
+
+   <div style="margin-bottom:13px;">
+    <div style="font-size:10px;color:rgba(248,255,43,0.45);letter-spacing:0.2em;margin-bottom:7px;">TIEMPO</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+     <button class="rppi-gm-chip" data-game="snake" data-type="time" data-val="5"  onclick="rppiGmSelect(this,'snake','time',5)"  style="border:1px solid rgba(248,255,43,0.3);color:rgba(248,255,43,0.75);">5 MIN</button>
+     <button class="rppi-gm-chip" data-game="snake" data-type="time" data-val="10" onclick="rppiGmSelect(this,'snake','time',10)" style="border:1px solid rgba(248,255,43,0.3);color:rgba(248,255,43,0.75);">10 MIN</button>
+     <button class="rppi-gm-chip" data-game="snake" data-type="time" data-val="15" onclick="rppiGmSelect(this,'snake','time',15)" style="border:1px solid rgba(248,255,43,0.3);color:rgba(248,255,43,0.75);">15 MIN</button>
+    </div>
+   </div>
+
+   <div style="margin-bottom:18px;">
+    <div style="font-size:10px;color:rgba(248,255,43,0.45);letter-spacing:0.2em;margin-bottom:7px;">BOOSTS — 1 BOOST = 10 RPPI-C</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+     <button class="rppi-gm-chip" data-game="snake" data-type="boost" data-val="1" onclick="rppiGmSelect(this,'snake','boost',1)" style="border:1px solid rgba(248,255,43,0.3);color:rgba(248,255,43,0.75);">1</button>
+     <button class="rppi-gm-chip" data-game="snake" data-type="boost" data-val="3" onclick="rppiGmSelect(this,'snake','boost',3)" style="border:1px solid rgba(248,255,43,0.3);color:rgba(248,255,43,0.75);">3</button>
+     <button class="rppi-gm-chip" data-game="snake" data-type="boost" data-val="5" onclick="rppiGmSelect(this,'snake','boost',5)" style="border:1px solid rgba(248,255,43,0.3);color:rgba(248,255,43,0.75);">5 MAX</button>
+    </div>
+   </div>
+
+   <button id="rppi-launch-snake" onclick="rppiGmLaunch('snake','snake-protocol')" disabled style="width:100%;background:transparent;border:2px solid rgba(248,255,43,0.22);color:rgba(248,255,43,0.28);font-family:'Orbitron',monospace;font-weight:700;font-size:13px;letter-spacing:0.28em;padding:14px;cursor:not-allowed;border-radius:3px;transition:all 0.2s;text-transform:uppercase;">SELECCIONA OPCIONES</button>
+   <div id="rppi-status-snake" style="margin-top:8px;font-size:10px;text-align:center;color:rgba(248,255,43,0.4);letter-spacing:0.1em;min-height:16px;"></div>
   </div>
  </div>
 </div>
