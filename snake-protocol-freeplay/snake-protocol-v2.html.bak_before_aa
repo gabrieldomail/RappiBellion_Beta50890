@@ -144,43 +144,6 @@ canvas{width:100%;height:auto;display:block;background:#020604;}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
 }
-
-/* ── AA v3: SCORE POP — el puntaje respira cuando sube ── */
-#hScore.pop{animation:scorePop .5s cubic-bezier(.18,1.6,.4,1);}
-#hScore.pop.big{animation:scorePopBig .65s cubic-bezier(.18,1.6,.4,1);}
-@keyframes scorePop{
-  0%{transform:scale(1);}
-  30%{transform:scale(1.5);color:#ffffff;text-shadow:0 0 18px var(--neon-green),0 0 38px rgba(0,255,65,.65);}
-  100%{transform:scale(1);}
-}
-@keyframes scorePopBig{
-  0%{transform:scale(1);}
-  22%{transform:scale(1.95);color:#FFD700;text-shadow:0 0 24px var(--neon-gold),0 0 52px rgba(255,215,0,.75);}
-  100%{transform:scale(1);}
-}
-
-/* ── AA v4/v6: VIDAS (servidores) — serpientes esquina inferior-izquierda ── */
-#livesCorner{position:absolute;left:10px;bottom:10px;z-index:4;pointer-events:none;
-  display:flex;gap:7px;padding:6px 11px;border-radius:20px;
-  border:1px solid rgba(0,255,65,.35);background:rgba(2,6,4,.58);
-  box-shadow:0 0 12px rgba(0,255,65,.16), inset 0 0 8px rgba(0,255,65,.06);}
-#livesCorner .lv{font-size:17px;line-height:1;
-  transition:opacity .25s, filter .25s, transform .25s;}
-#livesCorner .lv.on{filter:drop-shadow(0 0 6px rgba(0,255,65,.95));}
-#livesCorner .lv.off{opacity:.22;filter:grayscale(1);}
-#livesCorner.hit{animation:lifeLostPop .55s cubic-bezier(.18,1.6,.4,1);}
-@keyframes lifeLostPop{
-  0%{transform:scale(1);}
-  30%{transform:scale(1.14);border-color:#FF2D78;box-shadow:0 0 22px rgba(255,45,120,.75), inset 0 0 12px rgba(255,45,120,.35);}
-  100%{transform:scale(1);}
-}
-#spawnToast{position:absolute;left:50%;top:16%;transform:translateX(-50%);z-index:4;pointer-events:none;
-  font-family:'Orbitron','Courier New',monospace;font-weight:900;letter-spacing:.22em;text-transform:uppercase;
-  font-size:clamp(11px,2vw,15px);color:#00BCFF;
-  text-shadow:0 0 14px rgba(0,188,255,.85),0 0 34px rgba(0,188,255,.4);
-  opacity:0;transition:opacity .25s;}
-#spawnToast.on{opacity:1;}
-
 </style>
 </head>
 <body>
@@ -196,7 +159,6 @@ canvas{width:100%;height:auto;display:block;background:#020604;}
   <div id="arenaWrap">
     <canvas id="cv" width="840" height="600"></canvas>
     <div id="fxOverlay"></div>
-    <div id="livesCorner" aria-hidden="true"></div>
 
     <!-- WHACKING DAY BOOST — splash de portada + countdown -->
     <div id="boostBanner" class="hidden">
@@ -216,7 +178,6 @@ canvas{width:100%;height:auto;display:block;background:#020604;}
         <span class="lg-gold">&#9670; FIREWALL</span>
         <span class="lg-violet">&#9670; SLOW-MO</span>
         <span class="lg-red">&#9632; SECURITY NODES</span>
-        <span class="lg-gold">&#9733; CHERRY BONUS +1000</span>
       </div>
       <button class="btn" id="btnStart">INICIAR INFILTRACI&Oacute;N</button>
       <div class="blink" id="introBlink">PRESS ENTER // TAP TO START</div>
@@ -240,7 +201,6 @@ canvas{width:100%;height:auto;display:block;background:#020604;}
         <span>MAX COMBO</span><b id="goCombo">x1</b>
         <span>LONGITUD</span><b id="goLen">4</b>
         <span>TIEMPO</span><b id="goTime">0s</b>
-        <span>SERVIDORES</span><b id="goLives">0 / 3</b>
       </div>
       <button class="btn" id="btnRetry">REINTENTAR [ENTER]</button>
       <div class="smallprint">El protocolo nunca muere. Solo se reconecta.</div>
@@ -259,35 +219,11 @@ canvas{width:100%;height:auto;display:block;background:#020604;}
 const COLS=28, ROWS=20, CELL=30;
 const W=COLS*CELL, H=ROWS*CELL;
 const STEP_BASE=150, STEP_MIN=76, STEP_DECAY=1.6;   // ms por celda
-const LIVES_MAX=3;                                  // AA v4: servidores antes del Game Over final
 const COMBO_WINDOW=4000, COMBO_MAX=5;
 const PU_DURATION=5200;
 const BOOST_DURATION=30000;                         // WHACKING DAY: 30s sincronizados con simpson-boost.mp3
 const OBSTACLE_MAX=12, OBSTACLE_EVERY=60;           // 1 nodo cada N puntos
 const LS_KEY='snakeProtocolHighScore_v2';
-
-// ═══════════════ AA v3 — CHERRY BONUS + SPRITE BANK ═══════════════
-const CHERRY_PTS=1000, CHERRY_EVERY_MIN=38000, CHERRY_EVERY_RAND=22000, CHERRY_LIFE=6000;
-
-const ASSET_DIR='assets/';
-const SPRITES={};
-const SPRITE_LIST=['apple','cherry',
-  'snake_head','snake_body','snake_tail',
-  'snake_speed_head','snake_speed_body','snake_speed_tail',
-  'snake_invincible_head','snake_invincible_body','snake_invincible_tail',
-  'snake_slow_head','snake_slow_body','snake_slow_tail','snake_dead'];
-(function preloadSprites(){
-  for(const nm of SPRITE_LIST){
-    const img=new Image();
-    img.onload=()=>{ SPRITES[nm].ok=true; };
-    img.onerror=()=>{};               // sprite ausente → fallback vectorial silencioso
-    img.src=ASSET_DIR+nm+'.png';
-    SPRITES[nm]={img,ok:false};
-  }
-})();
-// API pública de integración/depuración: constante `const` no cuelga de window,
-// pero probes (Playwright) y futuros módulos pueden necesitar leerlas.
-Object.assign(window,{SPRITES,CHERRY_PTS,CHERRY_LIFE,CHERRY_EVERY_MIN,CHERRY_EVERY_RAND,LIVES_MAX});
 
 // ── Canvas ────────────────────────────────────────────────
 const cv=document.getElementById('cv');
@@ -307,14 +243,7 @@ const S={
   deathAt:0, newRecord:false,
   timeScale:1,
   aiSnakes:[],             // serpientes IA decorativas del boost
-  _boostWasActive:false,
-  _lastVariant:'',         // AA: variante sprite activa ('','_speed','_invincible','_slow')
-  _variantFlash:0,         // AA: timestamp del último cambio de variante (flash transición)
-  nextCherryAt:0,          // AA: próximo spawn de CHERRY BONUS (performance.now)
-  rings:[],                // AA: shockwaves anulares al comer
-  lives:LIVES_MAX,         // AA v4: servidores restantes
-  spawnShieldAt:0,         // AA v4: escudo post-respawn (no colisión hasta expirar)
-  _resolveTimer:null       // AA v4: timeout pendiente de resolución de muerte
+  _boostWasActive:false
 };
 
 // ── DOM refs ──────────────────────────────────────────────
@@ -408,10 +337,6 @@ function resetGame(){
   S.pu={overclock:0,firewall:0,slowmo:0,boost:0};
   S.shakeT=0; S.newRecord=false; S.timeScale=1;
   S.aiSnakes=[]; S._boostWasActive=false;
-  S._lastVariant=''; S._variantFlash=0;
-  S.nextCherryAt=0; S.rings=[];
-  S.lives=LIVES_MAX; S.spawnShieldAt=0;
-  clearTimeout(S._resolveTimer); S._resolveTimer=null;
   hideBoostBanner();
   spawnFood(); spawnFood();
   updateHUD();
@@ -428,57 +353,15 @@ function togglePause(){
   else if(S.mode==='paused'){ S.mode='playing'; scPause.classList.add('hidden'); postParent({type:'FP_GAME_STATE',state:'resume'}); }
 }
 
-function deathHit(){                     // impacto: animación de muerte (la vida se consume al resolver)
-  if(S.mode!=='playing')return;
+function gameOver(){
   S.mode='dying'; S.deathAt=performance.now();
   sfx.die();
   burst(S.snake[0].x,S.snake[0].y,'#FF2D78',46);
   S.shakeT=650; S.shakeMag=9;
-  if(navigator.vibrate){ try{navigator.vibrate(80);}catch(e){} }
-  clearTimeout(S._resolveTimer);
-  S._resolveTimer=setTimeout(deathResolve,950);
-}
-function deathResolve(){                 // aquí se descuenta la vida
-  S._resolveTimer=null;
-  S.lives=Math.max(0,S.lives-1);
-  updateHUD();
-  const lc=$('livesCorner');             // AA v6: pulso rojo en las serpientes
-  if(lc){ lc.classList.remove('hit'); void lc.offsetWidth; lc.classList.add('hit'); }
-  if(S.lives>0){ respawnRun(); return; }
-  commitGameOver();                      // vidas agotadas → sí Game Over real
-}
-function respawnRun(){                   // reconstruye la serpiente conservando score/racha/base
-  const cy=(ROWS/2)|0;
-  S.snake=[{x:8,y:cy},{x:7,y:cy},{x:6,y:cy},{x:5,y:cy}];
-  S.prevSnake=S.snake.map(s=>({...s}));
-  S.dir={x:1,y:0}; S.queue=[];
-  // despeja el corredor de reaparición para que la nueva vida arranque justa
-  S.obstacles=S.obstacles.filter(o=>!(o.y>=cy-1&&o.y<=cy+1&&o.x<=12));
-  S.rings=[]; S.mode='playing';
-  S.spawnShieldAt=performance.now()+1900;         // gracia anti-muerte instantánea
-  S.comboChain=0; S.comboMult=1;                  // el golpe rompe la cadena de combo
-  burst(8,cy,'#00BCFF',20);
-  S.rings.push({x:8*CELL+CELL/2,y:cy*CELL+CELL/2,r:8,spd:3.6,life:1,color:'0,188,255',lw:3});
-  const st=$('spawnToast');
-  if(st){
-    st.textContent='▲ SERVIDOR RECONECTADO // '+S.lives+' VIDAS';
-    st.classList.add('on');
-    clearTimeout(st._t); st._t=setTimeout(()=>st.classList.remove('on'),1500);
-  }
-  tone(320,.12,'square',.07,720); setTimeout(()=>tone(700,.16,'square',.06),110);
-  updateHUD();
-}
-function commitGameOver(){               // cierre contable del run (récord + avisos al padre)
   if(S.score>S.hi){ S.hi=S.score; S.newRecord=true; localStorage.setItem(LS_KEY,String(S.hi)); }
   postParent({type:'FP_GAME_STATE',state:'gameover'});
   postParent({type:'GAME_OVER'});
-  S.mode='dying';
-  setTimeout(showGameOver,350);
-}
-function matchEndForce(){                // corte externo (MATCH_ENDED): termina aunque queden vidas
-  clearTimeout(S._resolveTimer); S._resolveTimer=null;
-  if(S.mode==='over')return;
-  commitGameOver();
+  setTimeout(showGameOver,950);
 }
 function showGameOver(){
   S.mode='over';
@@ -487,7 +370,6 @@ function showGameOver(){
   $('goCombo').textContent='x'+S.maxCombo;
   $('goLen').textContent=S.snake.length;
   $('goTime').textContent=(S.elapsedMs/1000).toFixed(1)+'s';
-  $('goLives').textContent=S.lives+' / '+LIVES_MAX;
   $('goNew').classList.toggle('hidden',!S.newRecord);
   scOver.classList.remove('hidden');
   updateHUD();
@@ -506,19 +388,15 @@ function step(){
   const now=performance.now();
   const firewall=S.pu.firewall>now;
   const boostOn=S.pu.boost>now;          // WHACKING DAY: inmunidad total
-  const shieldOn=now<S.spawnShieldAt;    // AA v4: gracia tras respawn
   let nx=S.snake[0].x+S.dir.x, ny=S.snake[0].y+S.dir.y;
 
-  if(firewall||boostOn||shieldOn){ nx=(nx+COLS)%COLS; ny=(ny+ROWS)%ROWS; }
-  else if(nx<0||nx>=COLS||ny<0||ny>=ROWS){ deathHit(); return; }
+  if(firewall||boostOn){ nx=(nx+COLS)%COLS; ny=(ny+ROWS)%ROWS; }
+  else if(nx<0||nx>=COLS||ny<0||ny>=ROWS){ gameOver(); return; }
 
-  const hitSelf=!boostOn&&!shieldOn&&S.snake.some((s,i)=>i<S.snake.length-1&&s.x===nx&&s.y===ny);
-  let hitObs=false;
-  if(!shieldOn){
-    hitObs=S.obstacles.some(o=>o.x===nx&&o.y===ny);
-    if(boostOn&&hitObs){ whackObstacle(nx,ny); hitObs=false; }  // Barry White aplasta el nodo
-  }
-  if(hitSelf||hitObs){ deathHit(); return; }
+  const hitSelf=!boostOn&&S.snake.some((s,i)=>i<S.snake.length-1&&s.x===nx&&s.y===ny);
+  let hitObs=S.obstacles.some(o=>o.x===nx&&o.y===ny);
+  if(boostOn&&hitObs){ whackObstacle(nx,ny); hitObs=false; }  // Barry White aplasta el nodo
+  if(hitSelf||hitObs){ gameOver(); return; }
 
   S.snake.unshift({x:nx,y:ny});
 
@@ -533,56 +411,26 @@ function step(){
 }
 
 function eatFood(f,now){
-  const isCherry=f.kind==='cherry';
-
-  // combo (la cherry paga fijo y NO manipula la cadena de combo)
-  if(!isCherry){
-    if(now-S.lastEatAt<COMBO_WINDOW)S.comboChain++; else S.comboChain=1;
-    S.comboMult=Math.min(COMBO_MAX,S.comboChain);
-    S.maxCombo=Math.max(S.maxCombo,S.comboMult);
-  }else{
-    if(now-S.lastEatAt>=COMBO_WINDOW){S.comboChain=1;S.comboMult=1;}
-  }
+  // combo
+  if(now-S.lastEatAt<COMBO_WINDOW)S.comboChain++; else S.comboChain=1;
   S.lastEatAt=now;
+  S.comboMult=Math.min(COMBO_MAX,S.comboChain);
+  S.maxCombo=Math.max(S.maxCombo,S.comboMult);
 
-  // AA v6 ESCALA x10 GENERALIZADA: un cero a TODOS los puntos (motor intacto).
-  // CHERRY_PTS ya nace escalado (1000) → NO se vuelve a multiplicar.
-  // base = puntuación histórica v3 → regula los tiers visuales tal cual fueron diseñados
-  const base=isCherry?(CHERRY_PTS/10):f.pts*S.comboMult;
-  const gained=isCherry?CHERRY_PTS:base*10;
-  S.score+=gained; if(!isCherry)S.packets++;
-
-  // ═══ AA v3 — FEEDBACK ESCALONADO POR MAGNITUD (umbrales sobre base histórica) ═══
-  const isBig=base>=50||isCherry;
-  const fxCol=isCherry?'#FFD700':(base>=50?'#FFD700':base>=30?'#b26bff':f.color);
-  popText(isCherry?('\u2605 +'+gained+' \u2605'):('+'+gained+(S.comboMult>1?' x'+S.comboMult:'')),
-          f.x,f.y,fxCol,{big:isBig});
-  burst(f.x,f.y,isCherry?'#FF2D78':f.color,isCherry?30:14);
-  // shockwave anular jugosa
-  S.rings.push({x:f.x*CELL+CELL/2,y:f.y*CELL+CELL/2,r:6,
-                spd:isBig?4.6:2.8,life:1,
-                color:isCherry?'255,215,0':'0,255,65',
-                lw:isBig?3.5:2});
-  // micro-shake proporcional + vibración táctil
-  if(base>10||isCherry){
-    S.shakeT=Math.max(S.shakeT,isCherry?330:200);
-    S.shakeMag=Math.max(S.shakeMag,isCherry?7:(base>=40?4:2));
-  }
-  if(navigator.vibrate&&(isCherry||base>=40)){ try{navigator.vibrate(isCherry?45:15);}catch(e){} }
-  hudScorePop(gained);                                   // SCORE en HUD pulsa (CSS keyframes)
-  if(isCherry)sfx.power(); else sfx.eat(S.comboMult);
+  const gained=f.pts*S.comboMult;
+  S.score+=gained; S.packets++;
+  popText('+'+gained+(S.comboMult>1?' x'+S.comboMult:''),f.x,f.y,f.color);
+  burst(f.x,f.y,f.color,14);
+  if(f.kind==='packet')sfx.eat(S.comboMult); else sfx.power();
 
   if(f.kind==='overclock')S.pu.overclock=now+PU_DURATION;
   if(f.kind==='firewall') S.pu.firewall =now+PU_DURATION;
   if(f.kind==='slowmo')   S.pu.slowmo   =now+PU_DURATION;
 
-  // dificultad (la cherry no endurece el juego ni cuenta como packet)
-  if(!isCherry)S.stepMs=Math.max(STEP_MIN,STEP_BASE-S.packets*STEP_DECAY);
-  if(isCherry)spawnFood();                               // repone la apple tragada
-  else{
-    spawnFood();
-    if(Math.random()<.35)spawnFood();
-  }
+  // dificultad
+  S.stepMs=Math.max(STEP_MIN,STEP_BASE-S.packets*STEP_DECAY);
+  spawnFood();
+  if(Math.random()<.35)spawnFood();
   maybeSpawnObstacle();
   updateHUD();
   // Arena sync: SCORE_UPDATE es el formato que consume index.html;
@@ -597,9 +445,7 @@ function eatFood(f,now){
 // ═══════════════ BOOST — WHACKING DAY MODE ═════════════════
 const AI_COLORS=['#FF2D78','#00BCFF','#BF00FF','#FF6B00','#7CFFE8'];
 function activateSnakeBoost(){
-  const now=performance.now();
-  if(S.pu.boost>now)return;              // AA v6: ya activo → NO consume otra carga
-  S.pu.boost=now+BOOST_DURATION;
+  S.pu.boost=performance.now()+BOOST_DURATION;
   spawnAiSnakes();
   showBoostSplash();
   sfxWhack();
@@ -659,9 +505,9 @@ function whackObstacle(gx,gy){
   const oi=S.obstacles.findIndex(o=>o.x===gx&&o.y===gy);
   if(oi<0)return;
   S.obstacles.splice(oi,1);
-  S.score+=250;   // AA v6 escala x10 (antes 25)
+  S.score+=25;
   burst(gx,gy,'#FFD700',26);
-  popText('+250 WHACKED!',gx,gy,'#FFD700');   // AA v6: monto visible sincronizado con la escala x10
+  popText('+WHACKED!',gx,gy,'#FFD700');
   sfxWhack();
   updateHUD();
   postParent({type:'SCORE',score:S.score});
@@ -693,23 +539,15 @@ function burst(gx,gy,color,n){
     S.particles.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1,decay:.016+Math.random()*.02,color,size:2+Math.random()*3});
   }
 }
-function popText(text,gx,gy,color,opts){
-  opts=opts||{};
-  S.popups.push({text,x:gx*CELL+CELL/2,y:gy*CELL+CELL/2,life:1,color,
-                 big:!!opts.big,wob:Math.random()*Math.PI*2});
+function popText(text,gx,gy,color){
+  S.popups.push({text,x:gx*CELL+CELL/2,y:gy*CELL,life:1,color});
 }
 function updateFx(dt){
   const k=dt/16.67;
   for(const p of S.particles){ p.x+=p.vx*k; p.y+=p.vy*k; p.vy+=.04*k; p.life-=p.decay*k; }
   S.particles=S.particles.filter(p=>p.life>0);
-  for(const p of S.popups){
-    p.y-=(p.big?.85:.55)*k;
-    p.wob=(p.wob||0)+.06*k;
-    p.life-=(p.big?.011:.017)*k;   // los BIG flotan más tiempo
-  }
+  for(const p of S.popups){ p.y-=.55*k; p.life-=.017*k; }
   S.popups=S.popups.filter(p=>p.life>0);
-  for(const r of S.rings){ r.r+=r.spd*k; r.life-=.055*k; }
-  S.rings=S.rings.filter(r=>r.life>0);
   if(S.shakeT>0)S.shakeT-=dt;
 }
 
@@ -767,53 +605,10 @@ function render(t){
     ctx.restore();
   }
 
-  // ── foods AA: FRUTAS GRANDES (apple base / cherry bonus) + diamantes power-up ──
+  // ── foods: data packets ──
   for(const f of S.foods){
-    const cx=f.x*CELL+CELL/2, cy=f.y*CELL+CELL/2;
-    const fruit=f.kind==='packet'?'apple':(f.kind==='cherry'?'cherry':null);
-    if(fruit){
-      const sp=SPRITES[fruit];
-      const bobA=Math.sin(now/300+f.born/131);
-      const grow=.75+.25*Math.min(1,(now-f.born)/180);        // pop-in al aparecer
-      const size=CELL*(fruit==='cherry'?1.62:1.46)*(1+bobA*.05)*grow;
-      if(sp.ok){
-        // halo neón expandido detrás de la fruta (doble draw barato)
-        ctx.save();
-        ctx.shadowColor=fruit==='cherry'?'#FF2D78':'#00FF41';
-        ctx.shadowBlur=20;
-        ctx.globalAlpha=.35;
-        ctx.drawImage(sp.img,cx-size*.62,cy+bobA*2.5-size*.62,size*1.24,size*1.24);
-        ctx.globalAlpha=1;
-        ctx.drawImage(sp.img,cx-size/2,cy+bobA*2.5-size/2,size,size);
-        ctx.restore();
-      }else{
-        /* FALLBACK vectorial si los assets no cargaron */
-        const r=CELL*.32*(1+Math.sin(now/180+f.born/99)*.12);
-        ctx.save();
-        ctx.translate(cx,cy);ctx.rotate(now/900);
-        ctx.shadowColor=f.color;ctx.shadowBlur=14;
-        ctx.fillStyle=fruit==='cherry'?'#FF2D78':f.color;
-        ctx.beginPath();
-        ctx.moveTo(0,-r);ctx.lineTo(r,0);ctx.lineTo(0,r);ctx.lineTo(-r,0);
-        ctx.closePath();ctx.fill();
-        ctx.restore();
-      }
-      // anillo countdown dorado EXCLUSIVO de la cherry (tiempo restante)
-      if(fruit==='cherry'&&f.diesAt){
-        const fr=Math.max(0,(f.diesAt-now)/CHERRY_LIFE);
-        ctx.save();
-        ctx.strokeStyle='rgba(255,215,0,'+(.55+.35*Math.sin(now/110)).toFixed(2)+')';
-        ctx.lineWidth=2.5;
-        ctx.beginPath();
-        ctx.arc(cx,cy,CELL*.95+5,-Math.PI/2,-Math.PI/2+fr*Math.PI*2);
-        ctx.stroke();
-        ctx.restore();
-      }
-      continue;
-    }
-    // power-ups originales como diamantes neón (sin sprite equivalente en el pack)
     const pulse=1+Math.sin(now/180+f.born/99)*.12;
-    const r=CELL*.32*pulse;
+    const cx=f.x*CELL+CELL/2, cy=f.y*CELL+CELL/2, r=CELL*.32*pulse;
     ctx.save();
     ctx.translate(cx,cy); ctx.rotate(now/900);
     ctx.shadowColor=f.color; ctx.shadowBlur=14;
@@ -830,36 +625,15 @@ function render(t){
   // ── serpientes IA del boost (detrás del jugador) ──
   if(S.pu.boost>now)drawAiSnakes();
 
-  // ── snake AA: sprites por variante de estado (+ fallback vectorial) ──
+  // ── snake ──
   const n=S.snake.length;
   const firewall=S.pu.firewall>now;
   const boostOn=S.pu.boost>now;
-  let variant='';
-  if(boostOn||firewall)variant='_invincible';
-  else if(S.pu.overclock>now)variant='_speed';
-  else if(S.pu.slowmo>now)variant='_slow';
-  if(variant!==S._lastVariant){ S._lastVariant=variant; S._variantFlash=now; }
-  const variantHot=(now-(S._variantFlash||0))<170;   // flash blanco al cambiar de estado
-
   for(let i=n-1;i>=0;i--){
     const p=segRenderPos(i,t);
     const px=p.x*CELL, py=p.y*CELL;
     const head=i===0;
     const frac=i/Math.max(n-1,1);
-    const dyingHead=head&&S.mode==='dying';
-    const sprName=dyingHead?'snake_dead'
-                  :head?('snake'+variant+'_head')
-                  :(i===n-1?('snake'+variant+'_tail')
-                           :('snake'+variant+'_body'));
-    const img=(SPRITES[sprName]&&SPRITES[sprName].ok)?SPRITES[sprName].img:null;
-    if(img){
-      const size=CELL*(head?(S.mode==='dying'?1.58:1.52)
-                       :(i===n-1?lerp(1.34,.96,frac)
-                                :lerp(1.36,.98,frac)));
-      drawSpriteSeg(img,px,py,size,segAngle(i,t),VARIANT_GLOW[variant],variantHot&&head);
-      continue;
-    }
-    /* ── FALLBACK VECTORIAL ORIGINAL (se conserva íntegro) ── */
     // gradiente verde→cyan a lo largo del cuerpo
     const gr=Math.round(lerp(0,0,frac)), gc=Math.round(lerp(255,188,frac)), gb=Math.round(lerp(65,255,frac));
     let col=`rgb(${gr},${gc},${gb})`;
@@ -888,42 +662,16 @@ function render(t){
   }
   ctx.globalAlpha=1;
 
-  // ── shockwaves anulares AA (comidas jugosas / cherry bonus) ──
-  for(const r of S.rings){
-    ctx.save();
-    ctx.globalAlpha=Math.max(0,r.life)*.9;
-    ctx.strokeStyle='rgba('+r.color+',1)';
-    ctx.lineWidth=r.lw*Math.max(.4,r.life);
-    ctx.shadowColor='rgba('+r.color+',.9)';
-    ctx.shadowBlur=12;
-    ctx.beginPath(); ctx.arc(r.x,r.y,r.r,0,Math.PI*2); ctx.stroke();
-    ctx.restore();
-  }
-
-  // ── popups de puntos AA (pop-in overshoot + outline + sway + glow) ──
-  ctx.textAlign='center'; ctx.textBaseline='middle';
+  // ── popups de puntos ──
+  ctx.font='bold 15px "Courier New",monospace';
+  ctx.textAlign='center';
   for(const p of S.popups){
-    const age=1-Math.max(0,p.life);
-    const eIn=Math.min(1,age/.22);
-    const scale=p.big?(eIn<.62?lerp(.45,1.42,eIn/.62):lerp(1.42,1.12,(eIn-.62)/.38))
-                     :(eIn<.75?lerp(.6,1.08,eIn/.75):1.05);
-    const alpha=Math.min(1,p.life*1.7);
-    const sx=p.x+Math.sin(p.wob||0)*4;
-    ctx.save();
-    ctx.translate(sx,p.y);
-    ctx.scale(scale,scale);
-    ctx.globalAlpha=alpha;
-    ctx.font='bold '+(p.big?68:38)+'px Orbitron,"Courier New",monospace';
-    ctx.lineJoin='round';
-    ctx.lineWidth=p.big?11:6;
-    ctx.strokeStyle='rgba(0,0,0,.9)';
-    ctx.shadowColor=p.color; ctx.shadowBlur=p.big?32:18;
-    ctx.strokeText(p.text,0,0);
-    ctx.fillStyle=p.big?'#FFF3B0':p.color;
-    ctx.fillText(p.text,0,0);
-    ctx.restore();
+    ctx.globalAlpha=Math.max(0,p.life);
+    ctx.fillStyle=p.color;
+    ctx.shadowColor='#000'; ctx.shadowBlur=4;
+    ctx.fillText(p.text,p.x,p.y);
   }
-  ctx.globalAlpha=1; ctx.shadowBlur=0; ctx.textBaseline='alphabetic';
+  ctx.globalAlpha=1; ctx.shadowBlur=0;
 
   // ── borde de alerta firewall ──
   if(firewall){
@@ -967,51 +715,6 @@ function roundRect(x,y,w,h,r){
   ctx.arcTo(x,y,x+w,y,r);
   ctx.closePath();
 }
-
-// ═══════════════ AA v3 — HELPERS SPRITE / HUD / CHERRY ═══════════════
-// Ángulo del segmento i según la espina interpolada de la serpiente
-// (los assets miran a la DERECHA por defecto → atan2 mapea directo).
-function segAngle(i,t){
-  const n=S.snake.length;
-  let a,b;
-  if(i===0){ a=segRenderPos(0,t); b=segRenderPos(Math.min(1,n-1),t); }
-  else     { a=segRenderPos(Math.max(0,i-1),t); b=segRenderPos(Math.min(n-1,i+1),t); }
-  return Math.atan2(a.y-b.y,a.x-b.x);
-}
-const VARIANT_GLOW={'':'00FF41','_speed':'00BCFF','_invincible':'FFD700','_slow':'b26bff'};
-function drawSpriteSeg(img,px,py,size,ang,glowHex,hotFlash){
-  ctx.save();
-  ctx.translate(px+CELL/2,py+CELL/2);
-  ctx.rotate(ang);
-  ctx.shadowColor='#'+(hotFlash?'ffffff':(glowHex||'00FF41'));
-  ctx.shadowBlur=hotFlash?28:(size>CELL*1.45?17:10);
-  ctx.drawImage(img,-size/2,-size/2,size,size);
-  ctx.restore();
-}
-let _hpTimer=null;
-function hudScorePop(gained){
-  hScore.classList.remove('pop','big');
-  void hScore.offsetWidth;                       // reflow para reiniciar la animación CSS
-  hScore.classList.add('pop');
-  if(gained>=50)hScore.classList.add('big');
-  clearTimeout(_hpTimer);
-  _hpTimer=setTimeout(()=>hScore.classList.remove('pop','big'),720);
-}
-// CHERRY BONUS: spawn programado cada 38–60s de partida + barrido de vencidas
-function maybeSpawnCherry(now){
-  if(S.mode!=='playing'||S.score<=0)return;
-  if(!S.nextCherryAt){ S.nextCherryAt=now+CHERRY_EVERY_MIN+Math.random()*CHERRY_EVERY_RAND; return; }
-  if(now>=S.nextCherryAt){
-    S.nextCherryAt=now+CHERRY_EVERY_MIN+Math.random()*CHERRY_EVERY_RAND;
-    const c=freeCell(5);
-    if(c){ S.foods.push({...c,kind:'cherry',pts:CHERRY_PTS,color:'#FFD700',born:now,diesAt:now+CHERRY_LIFE}); sfx.power(); }
-  }
-  for(let i=S.foods.length-1;i>=0;i--){
-    const f=S.foods[i];
-    if(f.kind==='cherry'&&f.diesAt&&now>f.diesAt)S.foods.splice(i,1);
-  }
-}
-
 function drawAiSnakes(){
   for(const a of S.aiSnakes){
     for(let i=a.segs.length-1;i>=0;i--){
@@ -1058,7 +761,6 @@ function frame(now){
     while(S.acc>=effStep&&guard++<4){ S.acc-=effStep; step(); if(S.mode!=='playing')break; }
     updateFx(dt);
     updateBoost(now,dt);
-    maybeSpawnCherry(now);
     render(Math.min(1,S.acc/effStep));
     updatePowerupBar(now);
   }else if(S.mode==='dying'){
@@ -1077,25 +779,6 @@ function updateHUD(){
   hLen.textContent=S.snake.length||4;
   hudCombo.textContent='x'+S.comboMult;
   hudCombo.classList.toggle('hot',S.comboMult>1);
-  const hl=$('hLives');                                  // AA v4: corazones de vidas
-  if(hl){
-    hl.textContent='\u2665'.repeat(S.lives)+'\u2661'.repeat(Math.max(0,LIVES_MAX-S.lives));
-    hl.style.color=S.lives===1?'var(--neon-pink)':'';
-  }
-  const lc=$('livesCorner');                             // AA v6: serpientitas esquina inferior-izquierda
-  if(lc){                                                // (mismo arte 🐍 que el botón de boost de la arena)
-    if(!lc.childElementCount){
-      for(let i=0;i<LIVES_MAX;i++){
-        const sp=document.createElement('span');
-        sp.className='lv';
-        sp.textContent='\uD83D\uDC0D';                   // 🐍
-        lc.appendChild(sp);
-      }
-    }
-    for(let i=0;i<lc.childElementCount;i++){
-      lc.children[i].className='lv'+(i<S.lives?' on':' off');
-    }
-  }
 }
 function updatePowerupBar(now){
   const active=['overclock','firewall','slowmo'].find(k=>S.pu[k]>now);
@@ -1176,7 +859,7 @@ window.addEventListener('message',ev=>{
     else if(S.mode==='paused')togglePause();
   }
   // MATCH_ENDED: la arena corta la partida (timer agotado)
-  if(d.type==='MATCH_ENDED')matchEndForce();
+  if(d.type==='MATCH_ENDED'&&S.mode==='playing')gameOver();
   // SET_CONTROL: swipe es táctil nativo; dpad consume KEY_DOWN de abajo
   if(d.type==='SET_CONTROL')S.controlMode=d.mode||'swipe';
   // KEY_DOWN del D-PAD del padre (mobile)
