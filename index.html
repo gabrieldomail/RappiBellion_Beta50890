@@ -10197,6 +10197,13 @@ function typeHTML(element, htmlString, speed) {
                     </button>
                 </div>
                 <div class="game-placeholder">
+                    <img src="juegos beta/snake.PNG" alt="SNAKE-PROTOCOL" style="width: 100%; height: auto; display: block;">
+                    <p style="margin-top: 10px;"><strong style="color: var(--color-caos-amarillo); text-shadow: 0 0 8px var(--color-caos-amarillo);">[SNAKE-PROTOCOL]</strong><br>(La \"Intranet\")</p>
+                    <button class="cta-button" id="make-bet-snake" style="background-color: var(--color-caos-amarillo); border-color: var(--color-caos-amarillo); padding: 15px 30px; font-size: 1.2em;">
+                        MAKE YOUR BET!
+                    </button>
+                </div>
+                <div class="game-placeholder">
                     <img src="juegos beta/memorama.webp" alt="MEMORY-BREACH" style="width: 100%; height: auto; display: block;">
                     <p style="margin-top: 10px;"><strong style="color: var(--color-primario); text-shadow: 0 0 8px var(--color-primario);">[MEMORY-BREACH]</strong><br>(La \"Memoria\")</p>
                     <button class="cta-button" id="make-bet-memorybreach" style="background-color: #555; border-color: #888; padding: 15px 30px; font-size: 1.2em; cursor: default;" disabled>
@@ -13722,6 +13729,9 @@ document.addEventListener('DOMContentLoaded', function() {
                      nextGameSrc = 'Tetris-Cipher-T2E/index.html';
                  } else if (gameType.toLowerCase().indexOf('space') !== -1) {
                      nextGameSrc = 'Space-Breaker-T2E/space-t2e.html?player=p1';
+                 } else if (gameType.toLowerCase().indexOf('snake') !== -1) {
+                     // SNAKE-PROTOCOL T2E
+                     nextGameSrc = 'snake-protocol-freeplay/snake-protocol-v2.html';
                  } else {
                      // Pac-Hack T2E por defecto
                      nextGameSrc = 'pac-hack/game.html?player=p1';
@@ -14578,11 +14588,54 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     ];
 
+    // ── TABLA DE LA INTRANET (SNAKE-PROTOCOL) ──
+    // AA v6: umbrales x10 sincronizados con la escala generalizada de puntos del juego
+    // (apple 10->100, cherry 100->1000, whack 25->250 → misma curva de rangos, economia x10)
+    const _snakeRanks = [
+        {
+            min:0, max:3000,
+            icon:'🐍', rank:'GUSANO DE RED',
+            phrase:'"Ni el firewall te vio pasar. El protocolo ni te registró."'
+        },
+        {
+            min:3000, max:8000,
+            icon:'📡', rank:'PACKET RUNNER',
+            phrase:'"Unos packets circulando. La intranet apenas nota tu presencia."'
+        },
+        {
+            min:8000, max:20000,
+            icon:'🔌', rank:'INFILTRADOR JUNIOR',
+            phrase:'"Conectás circuitos con estilo. Los security nodes empiezan a vigilarte."'
+        },
+        {
+            min:20000, max:45000,
+            icon:'⚡', rank:'OVERCLOCK OPERATOR',
+            phrase:'"Tu serpiente fluye como corriente pura. El sistema suda."'
+        },
+        {
+            min:45000, max:80000,
+            icon:'🌐', rank:'MAESTRO DEL PROTOCOLO',
+            phrase:'"Cada packet es tuyo. La red entera responde a tu comando."'
+        },
+        {
+            min:80000, max:130000,
+            icon:'💠', rank:'LEYENDA DE LA INTRANET',
+            phrase:'"Tu nombre circula en cada nodo. Rappibellion te inscribe en el backbone."'
+        },
+        {
+            min:130000, max:Infinity,
+            icon:'👑', rank:'SOBERANO DEL CIRCUITO',
+            phrase:'"El firewall te teme. Sos la señal. Sos el protocolo. SUPREMO."'
+        }
+    ];
+
     function fpGetVerdict(score) {
         var isTetris      = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher')  !== -1;
         var isSpaceBreak  = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker')  !== -1;
+        var isSnake       = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('snake')           !== -1;
         if (isTetris)     return fpGetVerdictTetris(score);
         if (isSpaceBreak) return _cosmic.find(function(r) { return score >= r.min && score < r.max; }) || _cosmic[_cosmic.length - 1];
+        if (isSnake)      return _snakeRanks.find(function(r) { return score >= r.min && score < r.max; }) || _snakeRanks[_snakeRanks.length - 1];
         return _inferno.find(function(r) { return score >= r.min && score < r.max; }) || _inferno[_inferno.length - 1];
     }
 
@@ -14634,7 +14687,14 @@ document.addEventListener('DOMContentLoaded', function() {
             var colors, verdArray;
             var isTetris_v     = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
             var isSpaceBreak_v = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker') !== -1;
-            if (isTetris_v) {
+            var isSnake_v      = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('snake')           !== -1;
+            if (isSnake_v) {
+                verdArray = _snakeRanks;
+                colors = ['rgba(130,130,130,0.8)','rgba(248,255,43,0.65)',
+                         'var(--color-caos-verde)','var(--color-azul-glitch)',
+                         'var(--color-caos-amarillo)','var(--color-primario)',
+                         'var(--color-caos-rosa)'];
+            } else if (isTetris_v) {
                 verdArray = _strategyRanks;
                 colors = ['rgba(150,150,150,0.8)','rgba(200,200,200,0.8)',
                          'var(--color-caos-verde)','var(--color-caos-amarillo)',
@@ -14953,6 +15013,13 @@ function fpEndPractice() {
             fpIframe.style.boxShadow = '0 0 40px 10px rgba(0,188,255,0.9)';
             setTimeout(function() { fpIframe.style.boxShadow = ''; }, 500);
         }
+    } else if (isSnake) {
+        // EFECTO SNAKE-PROTOCOL: glow dorado del iframe (WHACKING DAY).
+        // El fantasma (boost-ghost-no.png) es arte exclusivo de Pac-Hack.
+        if (fpIframe) {
+            fpIframe.style.boxShadow = '0 0 44px 12px rgba(255,215,0,0.85)';
+            setTimeout(function() { fpIframe.style.boxShadow = ''; }, 520);
+        }
     } else {
         // EFECTO PAC-HACK: Flash del Fantasma
         if (typeof fpBoostGhostFlash === 'function') {
@@ -14967,6 +15034,20 @@ function fpEndPractice() {
                           isSpaceBreak ? 'ATOMIC_PULSE'  : 'TRIGGER_BOOST';
         fpIframe.contentWindow.postMessage({ type: messageType }, '*');
     }
+
+    // 4b. REARMADO DE SEGURIDAD: si el iframe no confirma con BOOST_USED (p.ej.
+    // el efecto ya estaba activo y traga la segunda pulsación), los botones
+    // quedarían deshabilitados para siempre. Con cargas restantes >0 los
+    // re-habilitamos tras el ciclo del feedback visual (300ms de animación).
+    setTimeout(function() {
+        var remainNow = Math.max(0,(fpState.boostLimit||0)-(fpState.boostsUsed||0));
+        if (remainNow <= 0) return;
+        ['fp-boost-btn','fp-boost-overlay-btn','fp-tetris-botton-neon',
+         'fp-spacebreaker-boost-btn','fp-snake-botton-neon'].forEach(function(id) {
+            var b = document.getElementById(id);
+            if (b) { b.disabled = false; b.style.opacity = '1'; }
+        });
+    }, 480);
 
     // 5. FEEDBACK VISUAL EN BOTONES (Animación de disparo)
     if (btn) {
@@ -15334,7 +15415,7 @@ function fpCloseArena() {
             return;
         }
 
-        if (d.type === 'SCORE_UPDATE') {
+        if (d.type === 'SCORE_UPDATE' || d.type === 'SCORE') {   // 'SCORE' = legacy snake-protocol
             fpState.score = d.score;
             if (window.cyberpunkHUD && typeof window.cyberpunkHUD.updatePlayerScore === 'function') {
                 window.cyberpunkHUD.updatePlayerScore(d.score);
@@ -15432,6 +15513,13 @@ function fpCloseArena() {
                 tetrisOverlayBtn.disabled = bRemain <= 0;
                 tetrisOverlayBtn.style.opacity = bRemain <= 0 ? '0.3' : '1';
             }
+            // FIX BOOST-ONCE: faltaba re-habilitar el botón SNAKE aquí (se deshabilitaba
+            // en el disparo y quedaba muerto para siempre → "el boost funciona una sola vez")
+            var snakeBoostOverlay = document.getElementById('fp-snake-botton-neon');
+            if (snakeBoostOverlay) {
+                snakeBoostOverlay.disabled = bRemain <= 0;
+                snakeBoostOverlay.style.opacity = bRemain <= 0 ? '0.3' : '1';
+            }
             var sbBoostOverlay = document.getElementById('fp-spacebreaker-boost-btn');
             if (sbBoostOverlay) {
                 sbBoostOverlay.disabled = bRemain <= 0;
@@ -15454,10 +15542,18 @@ function fpCloseArena() {
             // Flash overlay según juego
             var isTetrisGame_f       = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Tetris-Cipher') !== -1;
             var isSpaceBreakerGame_f = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('Space-Breaker') !== -1;
+            var isSnakeGame_f        = window._fpLastGameSrc && window._fpLastGameSrc.indexOf('snake') !== -1;
+            var isPacHackGame_f      = !isTetrisGame_f && !isSpaceBreakerGame_f && !isSnakeGame_f;
             if (isSpaceBreakerGame_f) {
                 fpAtomicPulseFlash();
-            } else if (!isTetrisGame_f) {
+            } else if (isPacHackGame_f) {
                 fpBoostGhostFlash();
+            } else if (isSnakeGame_f) {
+                // SNAKE-PROTOCOL: glow dorado propio — nunca el fantasma de Pac-Hack
+                if (fpIframe) {
+                    fpIframe.style.boxShadow = '0 0 40px 10px rgba(255,215,0,0.8)';
+                    setTimeout(function() { fpIframe.style.boxShadow = ''; }, 480);
+                }
             }
             if (fpState.betMode && fpState.betId && fpState.myRole && window._fbDB) {
                 window._fbDB.ref('t2e_bets/' + fpState.betId + '/boosts/' + fpState.myRole)
@@ -15605,7 +15701,7 @@ function fpCloseArena() {
     document.head.appendChild(betOptStyle);
 
     // spacebreaker, tetriscipher y memorybreach no están disponibles — no reciben el listener del modal
-    const betButtons = ['make-bet-pachack', 'make-bet-spacebreaker', 'make-bet-tetriscipher', 'make-bet-memorybreach'];
+    const betButtons = ['make-bet-pachack', 'make-bet-spacebreaker', 'make-bet-tetriscipher', 'make-bet-memorybreach', 'make-bet-snake'];
 
     // Regla general: si no hay billetera conectada, redirige a conectar
     function requireWalletThenBet(gameId) {
@@ -26367,18 +26463,21 @@ function zeusCloseReal() {
 var _rppiGmColors = {
     pachack:      { main:'#FF2D78', rgb:'255,45,120' },
     spacebreaker: { main:'#00BCFF', rgb:'0,188,255'  },
-    tetriscipher: { main:'#00FF41', rgb:'0,255,65'   }
+    tetriscipher: { main:'#00FF41', rgb:'0,255,65'   },
+    snake:        { main:'#F8FF2B', rgb:'248,255,43' }
 };
 var _rppiGmGameType = {
     pachack:      'pac-hack',
     spacebreaker: 'space-breaker',
-    tetriscipher: 'tetris-cipher'
+    tetriscipher: 'tetris-cipher',
+    snake:        'snake-protocol'
 };
 var _rppiGmState = {};
 var _rppiGmMap = {
     'make-bet-pachack':      'pachack',
     'make-bet-spacebreaker': 'spacebreaker',
-    'make-bet-tetriscipher': 'tetriscipher'
+    'make-bet-tetriscipher': 'tetriscipher',
+    'make-bet-snake':        'snake'
 };
 
 function rppiOpenGameModal(buttonId) {
@@ -27166,10 +27265,10 @@ function listRppiOpenBets(callback) {
 
 <script>
 /* ── RPPI-C GAME MODALS ENGINE ─────────────────────────── */
-var _rppiGmColors={pachack:{main:'#FF2D78',rgb:'255,45,120'},spacebreaker:{main:'#00BCFF',rgb:'0,188,255'},tetriscipher:{main:'#00FF41',rgb:'0,255,65'}};
-var _rppiGmGameType={pachack:'pac-hack',spacebreaker:'space-breaker',tetriscipher:'tetris-cipher'};
+var _rppiGmColors={pachack:{main:'#FF2D78',rgb:'255,45,120'},spacebreaker:{main:'#00BCFF',rgb:'0,188,255'},tetriscipher:{main:'#00FF41',rgb:'0,255,65'},snake:{main:'#F8FF2B',rgb:'248,255,43'}};
+var _rppiGmGameType={pachack:'pac-hack',spacebreaker:'space-breaker',tetriscipher:'tetris-cipher',snake:'snake-protocol'};
 var _rppiGmState={};
-var _rppiGmMap={'make-bet-pachack':'pachack','make-bet-spacebreaker':'spacebreaker','make-bet-tetriscipher':'tetriscipher'};
+var _rppiGmMap={'make-bet-pachack':'pachack','make-bet-spacebreaker':'spacebreaker','make-bet-tetriscipher':'tetriscipher','make-bet-snake':'snake'};
 
 function rppiOpenGameModal(buttonId) {
     if(!window._rppiUser){rppiOpenLogin();return;}
