@@ -8531,14 +8531,30 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
         width: 100%;
         box-sizing: border-box;
         margin-top: 16px;
+        /* SURGERY-010B: 1fr = minmax(auto,1fr) crecía al min-content de los
+           placeholders (botón INICIAR_SNAKE_PROTOCOL.exe, token inbreakable
+           de 419.6px) → track a 479.6px y scroll horizontal del overlay.
+           minmax(0,1fr) — mismo patrón que .lobby-body — permite el shrink. */
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .beta-column {
         box-sizing: border-box;
         overflow: hidden;
+        /* SURGERY-010B: grid item con min-width:auto impide el shrink del track */
+        min-width: 0;
         /* Desactivar hover scale en mobile (interfiere con el touch) */
         transform: none !important;
         box-shadow: none !important;
+    }
+
+    /* SURGERY-010B: el token inbreakable del botón es el offender real
+       (texto de un solo token sin espacios). Permitir el wrap del texto
+       en mobile — misma fuente/tamaño/colores, sin clipping. */
+    .beta-column .cta-button {
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow-wrap: break-word;
     }
 
     /* Mensaje santo-grial: sin ancho fijo en mobile */
