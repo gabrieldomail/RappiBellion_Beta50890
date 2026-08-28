@@ -2193,7 +2193,6 @@ height: 8px;
                 _COL_OFF=u32[256]|0;_COL_BG=u32[257]|0;
               }catch(e){_legacy=true;}
             })();
-            window.__ledLegacy = _legacy;
 
             function resize(){
               var r=cvs.parentElement.getBoundingClientRect();
@@ -14019,6 +14018,16 @@ document.addEventListener('DOMContentLoaded', function() {
             fpIframe.src = gameUrl;
             fpIframe.addEventListener('load', function onPVLoad() {
                 fpIframe.removeEventListener('load', onPVLoad);
+                // ── HoloHUD: activar al cargar el juego en PREVIEW (mismo patrón que fpOpenArena.onIframeLoad) ──
+                if (window.cyberpunkHUD && typeof window.cyberpunkHUD.activate === 'function') {
+                    window.cyberpunkHUD.activate('default', {
+                        playerNick: (window._rppiUser ? window._rppiUser.email.split('@')[0] : 'PLAYER').toUpperCase(),
+                        betAmount:  'PREVIEW', // badge visual: preview sin apuesta real
+                        boosts:     3,
+                        betMode:    true,
+                        betId:      'PREVIEW_00'
+                    });
+                }
                 setTimeout(function() { fpIframe.focus(); }, 300);
             });
         }
