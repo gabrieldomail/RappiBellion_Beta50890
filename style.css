@@ -8557,6 +8557,17 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
         overflow-wrap: break-word;
     }
 
+    /* SURGERY-010B.2: tokens largos (INICIAR_SNAKE_PROTOCOL.exe /
+       EJECUTAR_PACKHACK_DEATH.exe) dejaban un '>' suelto en su propio
+       renglón (3 líneas). word-break:break-all rellena cada línea → 2
+       renglones prolijos (1 en pantallas más anchas). Aplicado SOLO a
+       estos 2 botones; sin cambios de fuente/tamaño/colores. */
+    #play-snake-demo,
+    #play-pacman-demo {
+        word-break: break-all;
+        white-space: normal;
+    }
+
     /* Mensaje santo-grial: sin ancho fijo en mobile */
     #santo-grial-message {
         max-width: 100% !important;
@@ -8578,18 +8589,13 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
 }
 
 /* ══════════════════════════════════════════════════
-   PAC-HACK free play button — texto largo en mobile
+   PAC-HACK free play button — SURGERY-010B.2
+   El encogido exclusivo (font-size:0.72em + padding:10px 6px
+   con !important) fue ELIMINADO. Pac-hack hereda la regla
+   compartida .beta-column .cta-button del media query mobile:
+   mismo tamaño/estructura/responsive que el snake.
+   Sus colores .rosa permanecen intactos (regla #play-pacman-demo).
    ══════════════════════════════════════════════════ */
-@media (max-width: 767px) {
-    #play-pacman-demo {
-        letter-spacing: 0.5px !important;
-        font-size: 0.72em !important;
-        white-space: normal !important;
-        word-break: break-all !important;
-        line-height: 1.3 !important;
-        padding: 10px 6px !important;
-    }
-}
 
 /* ======================================================
    ARENA PORTRAIT MOBILE (browser normal, no standalone)
