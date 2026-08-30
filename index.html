@@ -7211,20 +7211,20 @@ document.addEventListener('keydown', function(e){
 
 <div class="bt-live-ticker">
   <div class="bt-ticker-inner" id="bt-ticker-inner">
-    <span class="bt-tick-item"><span class="bt-tick-sym">SPX</span><span class="bt-tick-val" id="bt-t-spx">5,248.80</span>&nbsp;<span class="bt-tick-chg up" id="bt-tc-spx">+0.24%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">NDQ</span><span class="bt-tick-val" id="bt-t-ndq">18,342.10</span>&nbsp;<span class="bt-tick-chg up" id="bt-tc-ndq">+0.41%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">GOLD</span><span class="bt-tick-val" id="bt-t-gold">2,387.40</span>&nbsp;<span class="bt-tick-chg up" id="bt-tc-gold">+0.87%</span></span>
+    <span class="bt-tick-item"><span class="bt-tick-sym">SPX</span><span class="bt-tick-val" id="bt-t-spx">7,710.70</span>&nbsp;<span class="bt-tick-chg up" id="bt-tc-spx">+0.24%</span></span>
+    <span class="bt-tick-item"><span class="bt-tick-sym">NDQ</span><span class="bt-tick-val" id="bt-t-ndq">29,455.02</span>&nbsp;<span class="bt-tick-chg up" id="bt-tc-ndq">+0.41%</span></span>
+    <span class="bt-tick-item"><span class="bt-tick-sym">GOLD</span><span class="bt-tick-val" id="bt-t-gold">4,456.90</span>&nbsp;<span class="bt-tick-chg up" id="bt-tc-gold">+0.87%</span></span>
     <span class="bt-tick-item"><span class="bt-tick-sym">BTC</span><span class="bt-tick-val" id="bt-t-btc">67,234.50</span>&nbsp;<span class="bt-tick-chg down" id="bt-tc-btc">-1.24%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">WTI</span><span class="bt-tick-val" id="bt-t-wti">78.43</span>&nbsp;<span class="bt-tick-chg down" id="bt-tc-wti">-0.33%</span></span>
+    <span class="bt-tick-item"><span class="bt-tick-sym">WTI</span><span class="bt-tick-val" id="bt-t-wti">128.46</span>&nbsp;<span class="bt-tick-chg down" id="bt-tc-wti">-0.33%</span></span>
     <span class="bt-tick-item"><span class="bt-tick-sym">VIX</span><span class="bt-tick-val" id="bt-t-vix">17.34</span>&nbsp;<span class="bt-tick-chg up" id="bt-tc-vix">+2.14%</span></span>
     <span class="bt-tick-item"><span class="bt-tick-sym">DXY</span><span class="bt-tick-val" id="bt-t-dxy">104.87</span>&nbsp;<span class="bt-tick-chg flat" id="bt-tc-dxy">+0.02%</span></span>
     <span class="bt-tick-item"><span class="bt-tick-sym">EUR/USD</span><span class="bt-tick-val" id="bt-t-eurusd">1.0847</span>&nbsp;<span class="bt-tick-chg down" id="bt-tc-eurusd">-0.18%</span></span>
     <!-- duplicado para loop continuo -->
-    <span class="bt-tick-item"><span class="bt-tick-sym">SPX</span><span class="bt-tick-val">5,248.80</span>&nbsp;<span class="bt-tick-chg up">+0.24%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">NDQ</span><span class="bt-tick-val">18,342.10</span>&nbsp;<span class="bt-tick-chg up">+0.41%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">GOLD</span><span class="bt-tick-val">2,387.40</span>&nbsp;<span class="bt-tick-chg up">+0.87%</span></span>
+    <span class="bt-tick-item"><span class="bt-tick-sym">SPX</span><span class="bt-tick-val">7,710.70</span>&nbsp;<span class="bt-tick-chg up">+0.24%</span></span>
+    <span class="bt-tick-item"><span class="bt-tick-sym">NDQ</span><span class="bt-tick-val">29,455.02</span>&nbsp;<span class="bt-tick-chg up">+0.41%</span></span>
+    <span class="bt-tick-item"><span class="bt-tick-sym">GOLD</span><span class="bt-tick-val">4,456.90</span>&nbsp;<span class="bt-tick-chg up">+0.87%</span></span>
     <span class="bt-tick-item"><span class="bt-tick-sym">BTC</span><span class="bt-tick-val">67,234.50</span>&nbsp;<span class="bt-tick-chg down">-1.24%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">WTI</span><span class="bt-tick-val">78.43</span>&nbsp;<span class="bt-tick-chg down">-0.33%</span></span>
+    <span class="bt-tick-item"><span class="bt-tick-sym">WTI</span><span class="bt-tick-val">128.46</span>&nbsp;<span class="bt-tick-chg down">-0.33%</span></span>
     <span class="bt-tick-item"><span class="bt-tick-sym">VIX</span><span class="bt-tick-val">17.34</span>&nbsp;<span class="bt-tick-chg up">+2.14%</span></span>
     <span class="bt-tick-item"><span class="bt-tick-sym">DXY</span><span class="bt-tick-val">104.87</span>&nbsp;<span class="bt-tick-chg flat">+0.02%</span></span>
     <span class="bt-tick-item"><span class="bt-tick-sym">EUR/USD</span><span class="bt-tick-val">1.0847</span>&nbsp;<span class="bt-tick-chg down">-0.18%</span></span>
@@ -7424,23 +7424,25 @@ document.addEventListener('keydown', function(e){
       <svg class="bt-radar-svg" viewBox="0 0 140 140">
         <defs>
           <radialGradient id="radar-danger-grad" cx="50%" cy="50%" r="55%">
-            <stop offset="0%" stop-color="#00FF41" stop-opacity="0.85"/>
-            <stop offset="20%" stop-color="#00FF41" stop-opacity="0.7"/>
-            <stop offset="40%" stop-color="#F8FF2B" stop-opacity="0.55"/>
-            <stop offset="60%" stop-color="#FFB800" stop-opacity="0.5"/>
-            <stop offset="80%" stop-color="#FF6B00" stop-opacity="0.55"/>
-            <stop offset="100%" stop-color="#FF2D78" stop-opacity="0.5"/>
+            <!-- PANEL-02-FIX: gradiente invertido — centro ROJO = underperformance,
+                 borde VERDE = outperformance. El 0% es el anillo neutro a r=48. -->
+            <stop offset="0%" stop-color="#FF2D78" stop-opacity="0.85"/>
+            <stop offset="25%" stop-color="#FF6B00" stop-opacity="0.6"/>
+            <stop offset="50%" stop-color="#FFB800" stop-opacity="0.55"/>
+            <stop offset="75%" stop-color="#F8FF2B" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#00FF41" stop-opacity="0.8"/>
           </radialGradient>
           <radialGradient id="radar-danger-grad-intense" cx="50%" cy="50%" r="55%">
-            <stop offset="0%" stop-color="#39FF14" stop-opacity="0.9"/>
-            <stop offset="20%" stop-color="#39FF14" stop-opacity="0.75"/>
-            <stop offset="40%" stop-color="#F8FF2B" stop-opacity="0.65"/>
-            <stop offset="60%" stop-color="#FFB800" stop-opacity="0.6"/>
-            <stop offset="80%" stop-color="#FF6B00" stop-opacity="0.65"/>
-            <stop offset="100%" stop-color="#FF2D78" stop-opacity="0.6"/>
+            <stop offset="0%" stop-color="#FF2D78" stop-opacity="0.9"/>
+            <stop offset="25%" stop-color="#FF6B00" stop-opacity="0.65"/>
+            <stop offset="50%" stop-color="#FFB800" stop-opacity="0.6"/>
+            <stop offset="75%" stop-color="#F8FF2B" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#39FF14" stop-opacity="0.85"/>
           </radialGradient>
+          <!-- PANEL-02-FIX: clip regenerado con geometria pentagonal regular
+               (angulos -90/-18/54/126/198, baseR=48, centro 70,70) -->
           <clipPath id="radar-poly-clip">
-            <polygon id="radar-clip-shape" points="70,22 109,56 101,91 52,95 36,52"/>
+            <polygon id="radar-clip-shape" points="70,22 115.7,55.2 98.2,108.8 41.8,108.8 24.4,55.2"/>
           </clipPath>
         </defs>
         <!-- Background rings — white subtle with pulse -->
@@ -7456,24 +7458,26 @@ document.addEventListener('keydown', function(e){
           <line x1="19" y1="42.5" x2="121" y2="97.5"/>
           <line x1="121" y1="42.5" x2="19" y2="97.5"/>
         </g>
+        <!-- PANEL-02-FIX: anillo NEUTRO (0% de cambio) a r=48 — referencia visible -->
+        <polygon points="70,22 115.7,55.2 98.2,108.8 41.8,108.8 24.4,55.2"
+          fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.7" stroke-dasharray="3 2.5"/>
         <!-- Gradient background clipped to polygon shape -->
         <rect x="0" y="0" width="140" height="140" fill="url(#radar-danger-grad)" clip-path="url(#radar-poly-clip)"/>
         <!-- Data polygon — stroke only, fill transparent to reveal gradient -->
         <polygon id="bt-radar-poly"
-          points="70,22 109,56 101,91 52,95 36,52"
+          points="70,22 115.7,55.2 98.2,108.8 41.8,108.8 24.4,55.2"
           fill="none" stroke="#BF00FF" stroke-width="1.5"
           style="filter:drop-shadow(0 0 4px rgba(191,0,255,0.5)) drop-shadow(0 0 8px rgba(191,0,255,0.25))"/>
-        <!-- Labels -->
+        <!-- PANEL-02-FIX: labels alineados a vertices (pentagono regular) -->
         <text x="70" y="10" fill="rgba(255,255,255,0.45)" font-size="10" text-anchor="middle" font-family="monospace">XLK</text>
-        <text x="128" y="46" fill="rgba(255,255,255,0.45)" font-size="10" text-anchor="start" font-family="monospace">XLE</text>
-        <text x="124" y="102" fill="rgba(255,255,255,0.45)" font-size="10" text-anchor="start" font-family="monospace">XLF</text>
-        <text x="16" y="102" fill="rgba(255,255,255,0.45)" font-size="10" text-anchor="end" font-family="monospace">XLV</text>
-        <text x="12" y="46" fill="rgba(255,255,255,0.45)" font-size="10" text-anchor="end" font-family="monospace">XLU</text>
+        <text x="121" y="58" fill="rgba(255,255,255,0.45)" font-size="10" text-anchor="start" font-family="monospace">XLE</text>
+        <text x="103" y="122" fill="rgba(255,255,255,0.45)" font-size="10" text-anchor="start" font-family="monospace">XLF</text>
+        <text x="37" y="122" fill="rgba(255,255,255,0.45)" font-size="10" text-anchor="end" font-family="monospace">XLV</text>
+        <text x="19" y="58" fill="rgba(255,255,255,0.45)" font-size="10" text-anchor="end" font-family="monospace">XLU</text>
         <!-- Rotating scan line — LAST so it renders ON TOP of everything -->
         <line id="bt-radar-line" class="bt-radar-spin" x1="70" y1="70" x2="70" y2="14"
           stroke="oklch(70% 0.19 50)" stroke-width="1.5"
           style="transform-origin:70px 70px;filter:drop-shadow(0 0 4px oklch(70% 0.19 50)) drop-shadow(0 0 8px oklch(70% 0.19 50/0.4))"/>
-        <text x="12" y="46" fill="rgba(255,255,255,0.45)" font-size="10" text-anchor="end" font-family="monospace">XLU</text>
       </svg>
     </div>
     <div style="display:inline-block;font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:1px;padding:1px 6px;margin-top:4px;border-radius:1px;color:#F8FF2B;border:1px solid rgba(248,255,43,0.5);background:rgba(248,255,43,0.08);animation:btAlertYellow 0.7s step-end infinite;">
@@ -7482,13 +7486,15 @@ document.addEventListener('keydown', function(e){
   </div>
 
   <!-- INSTITUTIONAL FLOW -->
-  <div class="bt-hero-panel bt-clip">
+  <div class="bt-hero-panel bt-clip" title="[PROXY] Motor de divergencias de precio sobre datos live del terminal. NO es order flow real, tape institucional ni posicionamiento — son proxies de confirmacion/deterioro por precio.">
     <div style="border-bottom:1px solid rgba(0,188,255,0.2);background:rgba(0,188,255,0.05);padding:8px 12px;margin:-16px -16px 12px;display:flex;align-items:center;gap:10px;">
       <span style="font-family:'Orbitron',monospace;font-weight:700;font-size:14px;letter-spacing:3px;color:rgba(0,188,255,0.7);">PANEL 03</span>
       <span style="font-family:'Share Tech Mono',monospace;font-size:15px;letter-spacing:2px;color:#00BCFF;text-shadow:0 0 6px rgba(0,188,255,0.5);">INSTITUTIONAL FLOW</span>
-      <div style="width:7px;height:7px;border-radius:50%;background:#00BCFF;box-shadow:0 0 6px #00BCFF;animation:btPulse 1.8s ease-in-out infinite;margin-left:auto;"></div>
+      <!-- PANEL-03-FLOW-LOGIC: regime chip (ABSORCIÓN/NEUTRAL/DISTRIBUCIÓN/WAITING) -->
+      <span id="bt-flow-regime" title="[PROXY] Proxies derivados de precios (retornos de sesión). No es order-flow real ni tape institucional." style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;padding:2px 8px;border:1px solid rgba(255,255,255,0.15);border-radius:2px;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.05);margin-left:auto;">WAITING</span>
+      <div style="width:7px;height:7px;border-radius:50%;background:#00BCFF;box-shadow:0 0 6px #00BCFF;animation:btPulse 1.8s ease-in-out infinite;"></div>
     </div>
-    <div class="bt-hero-title">PUENTE INSTITUCIONAL · ABSORCIÓN vs DISTRIBUCIÓN</div>
+    <div class="bt-hero-title">PUENTE INSTITUCIONAL · ABSORCIÓN vs DISTRIBUCIÓN <span style="font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:1px;">[PROXY]</span></div>
     <div class="bt-flow-row" id="bt-flow-rows">
       <div class="bt-flow-item">
         <span class="bt-flow-lbl">SMART $</span>
@@ -29908,10 +29914,10 @@ try {
 var BT_ASSETS = {
   /* NODE 01 */
   'MSCI':  {p:3847.21,  opy:3612.44, opm:3801.33, node:1, type:'idx'},
-  'SPX':   {p:5248.80,  opy:4788.43, opm:5137.08, node:1, type:'idx', alert:'jpy160'},
-  'NDQ':   {p:18342.10, opy:16825.88,opm:17934.22, node:1, type:'idx'},
-  'DJI':   {p:39127.43, opy:37689.54,opm:38844.11, node:1, type:'idx'},
-  'RUT':   {p:2044.33,  opy:1974.87, opm:2021.44, node:1, type:'idx'},
+  'SPX':   {p:7710.70,  opy:7035.30, opm:7546.60, node:1, type:'idx', alert:'jpy160'},  /* 011C: SPYX x10 = indice */
+  'NDQ':   {p:29455.02, opy:27021.98, opm:28801.91, node:1, type:'idx'},  /* 011C: QQQX x41.05 = NDX */
+  'DJI':   {p:53506.00, opy:37689.54,opm:38844.11, node:1, type:'idx'},  /* 011D: DIA x100 */
+  'RUT':   {p:2957.50,  opy:1974.87, opm:2021.44, node:1, type:'idx'},  /* 011D: IWM x10 */
   'RSP':   {p:158.44,   opy:147.23,  opm:155.87,  node:1, type:'etf'},
   'IBEX35':{p:11842.30, opy:10834.22,opm:11634.87, node:1, type:'idx'},
   'DAX40': {p:18234.80, opy:16678.34,opm:17987.44, node:1, type:'idx'},
@@ -29921,36 +29927,36 @@ var BT_ASSETS = {
   'HSI':   {p:18234.10, opy:17012.88,opm:17634.22, node:1, type:'idx'},
   'KOSPI': {p:2748.20,  opy:2655.33, opm:2712.87,  node:1, type:'idx'},
   'AAPL':  {p:213.07,   opy:184.92,  opm:209.33,   node:1, type:'heavy'},
-  'META':  {p:524.67,   opy:353.96,  opm:501.22,   node:1, type:'heavy'},
+  'META':  {p:578.43,   opy:390.23,  opm:552.58,   node:1, type:'heavy'},  /* 011C: METAX */
   'TSLA':  {p:174.48,   opy:248.42,  opm:182.33,   node:1, type:'heavy'},
-  'NFLX':  {p:628.31,   opy:484.87,  opm:612.44,   node:1, type:'heavy'},
-  'MSFT':  {p:413.23,   opy:374.51,  opm:407.88,   node:1, type:'heavy'},
+  'NFLX':  {p:81.72,    opy:63.06,   opm:79.65,    node:1, type:'heavy'},  /* 011D live */
+  'MSFT':  {p:513.53,   opy:465.42,  opm:506.87,   node:1, type:'heavy'},  /* 011D live */
   'NVDA':  {p:134.87,   opy:49.52,   opm:118.33,   node:1, type:'heavy'},
-  'AVGO':  {p:172.34,   opy:104.22,  opm:161.87,   node:1, type:'heavy'},
-  'GOOGL': {p:177.84,   opy:140.93,  opm:172.44,   node:1, type:'heavy'},
-  'IONQ':  {p:34.67,    opy:12.87,   opm:28.33,    node:1, type:'pist'},
-  'QTUM':  {p:62.34,    opy:48.22,   opm:58.87,    node:1, type:'pist'},
-  'SPCX':  {p:18.44,    opy:14.33,   opm:17.22,    node:1, type:'pist'},
+  'AVGO':  {p:368.79,   opy:223.03,  opm:346.40,   node:1, type:'heavy'},  /* 011D live */
+  'GOOGL': {p:345.73,   opy:273.95,  opm:335.19,   node:1, type:'heavy'},  /* 011C: GOOGLX */
+  'IONQ':  {p:39.18,    opy:14.54,   opm:32.02,    node:1, type:'pist'},  /* 011C: IONQX */
+  'QTUM':  {p:148.23,   opy:114.64,  opm:139.96,   node:1, type:'pist'},  /* 011D: finnhub live */
+  'SPCX':  {p:141.50,   opy:109.96,  opm:132.14,   node:1, type:'pist'},  /* 011D: finnhub live */
   /* NODE 02 */
-  'XLE':   {p:93.44,    opy:88.22,   opm:91.87,    node:2, type:'etf'},
-  'XLB':   {p:87.23,    opy:82.44,   opm:85.87,    node:2, type:'etf'},
-  'XLF':   {p:41.87,    opy:36.22,   opm:40.33,    node:2, type:'etf'},
-  'XLK':   {p:213.44,   opy:177.33,  opm:208.87,   node:2, type:'etf'},
-  'XLV':   {p:147.23,   opy:131.44,  opm:144.87,   node:2, type:'etf'},
-  'XLU':   {p:68.44,    opy:59.87,   opm:66.22,    node:2, type:'etf'},
-  'XLP':   {p:79.33,    opy:72.87,   opm:77.44,    node:2, type:'etf'},
-  'KRE':   {p:48.73,    opy:43.22,   opm:47.33,    node:2, type:'etf'},
-  'IGV':   {p:387.44,   opy:338.87,  opm:374.22,   node:2, type:'etf'},
-  'MAGS':  {p:48.73,    opy:34.22,   opm:45.87,    node:2, type:'etf'},
-  'SOXX':  {p:227.34,   opy:187.44,  opm:218.87,   node:2, type:'etf'},
-  'ARKQ':  {p:31.44,    opy:22.87,   opm:29.33,    node:2, type:'etf'},
-  'HYG':   {p:79.33,    opy:74.87,   opm:78.22,    node:2, type:'debt'},
+  'XLE':   {p:62.68,    opy:59.18,   opm:61.63,    node:2, type:'etf'},  /* 011D live */
+  'XLB':   {p:53.18,    opy:50.26,   opm:52.35,    node:2, type:'etf'},  /* 011D live */
+  'XLF':   {p:58.10,    opy:50.26,   opm:55.96,    node:2, type:'etf'},  /* 011D live */
+  'XLK':   {p:185.69,   opy:154.28,  opm:181.72,   node:2, type:'etf'},  /* 011D live */
+  'XLV':   {p:171.16,   opy:152.80,  opm:168.31,   node:2, type:'etf'},  /* 011D live */
+  'XLU':   {p:42.73,    opy:37.38,   opm:41.35,    node:2, type:'etf'},  /* 011D live */
+  'XLP':   {p:85.45,    opy:78.49,   opm:83.41,    node:2, type:'etf'},  /* 011D live */
+  'KRE':   {p:74.30,    opy:65.90,   opm:72.17,    node:2, type:'etf'},  /* 011D live */
+  'IGV':   {p:109.50,   opy:95.77,   opm:105.76,   node:2, type:'etf'},  /* 011D live */
+  'MAGS':  {p:69.07,    opy:48.50,   opm:65.01,    node:2, type:'etf'},  /* 011D live */
+  'SOXX':  {p:508.62,   opy:419.35,  opm:489.67,   node:2, type:'etf'},  /* 011D live */
+  'ARKQ':  {p:122.32,   opy:88.98,   opm:114.12,   node:2, type:'etf'},  /* 011D live */
+  'HYG':   {p:79.74,    opy:75.26,   opm:78.62,    node:2, type:'debt'},  /* 011D live */
   'US02Y': {p:4.87,     opy:4.42,    opm:4.77,     node:2, type:'debt', fmt:'pct'},
   'US10Y': {p:4.34,     opy:3.88,    opm:4.22,     node:2, type:'debt', fmt:'pct'},
   'EU02':  {p:2.87,     opy:2.44,    opm:2.77,     node:2, type:'debt', fmt:'pct'},
-  'TLT':   {p:88.44,    opy:93.22,   opm:89.87,    node:2, type:'debt'},
+  'TLT':   {p:82.88,    opy:88.14,   opm:84.53,    node:2, type:'debt'},  /* 011D live */
   /* NODE 03 */
-  'WTI':   {p:78.43,    opy:71.65,   opm:76.87,    node:3, type:'energy'},
+  'WTI':   {p:128.46,   opy:117.36,  opm:125.91,   node:3, type:'energy'},  /* 011C: USOX (trackea WTI) */
   'BRENT': {p:82.14,    opy:77.34,   opm:80.87,    node:3, type:'energy'},
   'OMOIL': {p:73.22,    opy:68.87,   opm:71.44,    node:3, type:'energy'},
   'NG':    {p:2.847,    opy:2.521,   opm:2.744,    node:3, type:'energy', fmt:'dec3'},
@@ -29959,9 +29965,9 @@ var BT_ASSETS = {
   'SPGSCI':{p:547.34,   opy:521.87,  opm:541.22,   node:3, type:'idx'},
   /* NODE 04 */
   'GOLD':  {p:2387.40,  opy:2063.73, opm:2334.87,  node:4, type:'metal'},
-  'SI':    {p:31.44,    opy:23.87,   opm:29.22,    node:4, type:'metal'},
+  'SI':    {p:60.05,    opy:45.59,   opm:55.81,    node:4, type:'metal'},  /* 011C: SLVX */
   'HG':    {p:4.847,    opy:3.882,   opm:4.622,    node:4, type:'metal', fmt:'dec3'},
-  'VIX':   {p:17.34,    opy:12.45,   opm:14.87,    node:4, type:'vol'},
+  'VIX':   {p:14.51,    opy:12.45,   opm:14.87,    node:4, type:'vol'},  /* 011D: VIXY x0.82163 = indice */
   'VVIX':  {p:82.44,    opy:74.22,   opm:79.87,    node:4, type:'vol'},
   'SVIX':  {p:23.87,    opy:18.33,   opm:21.44,    node:4, type:'vol'},
   /* NODE 05 */
@@ -29974,8 +29980,8 @@ var BT_ASSETS = {
   /* NODE 06 crypto (V02 premium) */
   'BTC':   {p:67234.50, opy:42283.58,opm:63887.22,  node:6, type:'crypto'},
   'ETH':   {p:3487.30,  opy:2281.44, opm:3322.87,   node:6, type:'crypto'},
-  'SOL':   {p:184.73,   opy:101.87,  opm:168.44,    node:6, type:'crypto'},
-  'BNB':   {p:587.34,   opy:312.22,  opm:554.87,    node:6, type:'crypto'},
+  'SOL':   {p:105.10,   opy:57.96,   opm:95.84,    node:6, type:'crypto'},  /* 011C: SOL_USDT live */
+  'BNB':   {p:692.41,   opy:368.07,  opm:654.13,   node:6, type:'crypto'},  /* 011C: BNB_USDT live */
   'XRP':   {p:0.5234,   opy:0.6122,  opm:0.4987,    node:6, type:'crypto', fmt:'dec4'}
 };
 
@@ -30087,9 +30093,15 @@ function btPopulate() {
 }
  
 /* ── UNIFIED MARKET FEED (GAMMA ENGINE) — 2000ms poll ── */
+/* PRODUCTION FEED ENDPOINT: reemplazá por la URL de tu MARKET WORKER.
+   En localhost sigue usando el proxy local (127.0.0.1:8787). */
+var BT_FEED_URL = 'https://TU-WORKER.TU-SUBDOMINIO.workers.dev/api/market/tickers';
+if (location.hostname === '127.0.0.1' || location.hostname === 'localhost') {
+  BT_FEED_URL = 'http://127.0.0.1:8787/api/market/tickers';
+}
 async function conectarMarketFeed() {
     try {
-        const response = await fetch('http://127.0.0.1:8787/api/market/tickers');
+        const response = await fetch(BT_FEED_URL);
         const json = await response.json();
         if (json && json.data && typeof btApplyUpdate === 'function') {
             btApplyUpdate(json.data);
@@ -30106,6 +30118,16 @@ conectarMarketFeed();
 function btApplyUpdate(prices) {
   Object.keys(prices).forEach(function(sym) {
     var newP = prices[sym];
+
+    /* PANEL-03-FLOW-LOGIC: input-level hook — la flecha US10Y compara
+       actualizaciones REALES del feed (no ticks de animacion ni EMA). */
+    if (sym === 'US10Y') {
+      if (Number.isFinite(newP) && _flow10yPrev != null && Number.isFinite(_flow10yPrev)) {
+        _flow10yArrow = newP > _flow10yPrev ? '▲' : (newP < _flow10yPrev ? '▼' : '→');
+      }
+      if (Number.isFinite(newP)) _flow10yPrev = newP;
+    }
+
     var id   = sym.replace('/','_');
     var card = document.getElementById('btc-' + id);
     var valEl= document.getElementById('btcv-' + id);
@@ -30217,39 +30239,169 @@ function btTick() {
 }
 
 /* ── Flow bars animation ── */
+/* ══ PANEL-03-FLOW-LOGIC: PRICE-DIVERGENCE PROXY ENGINE ══
+   Motor determinista: SIN Math.random(). Cada score es un proxy de
+   retornos de sesión derivado de BT_ASSETS (hechos del feed).
+   NO es order-flow real ni tape institucional — ver [PROXY] en el chip.
+   Escalas centralizadas + EMA(alpha=2/9) sobre SCORES + clamp 5..95. */
+var BT_FLOW_SCALE_RISK     = 1.2;  // smart $: sensibilidad a rets SPX/HYG/VIX
+var BT_FLOW_SCALE_CREDIT   = 1.0;  // HYG SPD: inverso del retorno de HYG
+var BT_FLOW_SCALE_RELATIVE = 1.5;  // rets relativos (retail/mags/dist)
+var BT_FLOW_SCALE_TREND    = 2.0;  // CTA: distancia media a OPY
+var BT_US10Y_RANGE_MIN = 3.5;      // banda visual del yield real
+var BT_US10Y_RANGE_MAX = 5.0;
+var BT_FLOW_EMA_ALPHA = 2 / (8 + 1);
+
+var _flow10yPrev = null;   // último yield válido del feed (hook en btApplyUpdate)
+var _flow10yArrow = '→';   // ▲/▼/→ SOLO ante actualizaciones reales del feed
+var _flowEma = {};         // score EMA por métrica
+var _flowRegime = 'WAITING';
+var _flowRegimeCand = null, _flowRegimeCount = 0;
+
+function _flowRet(sym) {
+  /* ret de sesión en %. INVALID si falta dato (missing != 0). */
+  var a = BT_ASSETS[sym];
+  if (!a) return null;
+  var base = _btBase[sym];
+  var p = a.p;
+  if (!Number.isFinite(p) || !Number.isFinite(base) || base <= 0) return null;
+  return 100 * (p / base - 1);
+}
+function _flowNorm(raw, scale) {
+  /* normalización monotónica determinista: raw 0 -> 50; clamp 5..95 */
+  if (!Number.isFinite(raw)) return null;
+  var s = 50 + 45 * Math.tanh(raw / scale);
+  return Math.max(5, Math.min(95, s));
+}
+function _flowEmaScore(key, target) {
+  if (target == null) return null;            // no fabricar: preserva último válido
+  var cur = _flowEma[key];
+  _flowEma[key] = (cur == null || !Number.isFinite(cur)) ? target
+                  : cur + BT_FLOW_EMA_ALPHA * (target - cur);
+  return _flowEma[key];
+}
+function _flowMean(arr) {
+  var v = [];
+  for (var i = 0; i < arr.length; i++) if (arr[i] != null) v.push(arr[i]);
+  if (v.length < 2) return null;              // minimo 2 componentes validos
+  var s = 0; for (var j = 0; j < v.length; j++) s += v[j];
+  return s / v.length;
+}
+function _flowRender(id, pctId, score, txtOverride) {
+  var fillEl = document.getElementById('btf-' + id);
+  var pctEl  = document.getElementById(pctId);
+  if (score != null && fillEl) fillEl.style.width = score.toFixed(0) + '%';
+  if (pctEl) {
+    if (txtOverride != null)  pctEl.textContent = txtOverride;
+    else if (score != null)   pctEl.textContent = score.toFixed(0) + '%';
+  }
+}
+
 function btAnimateFlows() {
-  var flows = [
-    {id:'smart',  pctId:'btfp-smart',  min:60, max:85, col:'#00FF41'},
-    {id:'retail', pctId:'btfp-retail', min:15, max:40, col:'#FF2D78'},
-    {id:'hyg',    pctId:'btfp-hyg',    min:30, max:65, col:'#F8FF2B'},
-    {id:'10y',    pctId:'btfp-10y',    min:40, max:75, col:'#00BCFF', fmt:'pct'},
-    {id:'mags',   pctId:'btfp-mags',   min:65, max:95, col:'#00FF41'},
-    {id:'cta',    pctId:'btfp-cta',    min:35, max:75, col:'#BF00FF'},
-    {id:'dist',   pctId:'btfp-dist',   min:20, max:55, col:'#FF2D78'}
-  ];
-  flows.forEach(function(f) {
-    var fillEl = document.getElementById('btf-' + f.id);
-    var pctEl  = document.getElementById(f.pctId);
-    var val = f.min + Math.random() * (f.max - f.min);
-    if (fillEl) fillEl.style.width = val.toFixed(0) + '%';
-    if (pctEl)  pctEl.textContent = f.fmt === 'pct' ? val.toFixed(2) + '%' : val.toFixed(0) + '%';
+  var rSPX = _flowRet('SPX'),  rHYG = _flowRet('HYG'),  rVIX = _flowRet('VIX');
+  var rARKQ = _flowRet('ARKQ'), rXLK = _flowRet('XLK');
+  var rRUT = _flowRet('RUT'),  rMAGS = _flowRet('MAGS'), rXLU = _flowRet('XLU');
+
+  /* SMART $ — [PROXY] risk-on confirmation: SPX+HYG fuertes suben, VIX fuerte baja */
+  var smart = _flowEmaScore('smart', _flowNorm(
+        _flowMean([rSPX, rHYG, rVIX != null ? -rVIX : null]), BT_FLOW_SCALE_RISK));
+
+  /* RETAIL — [PROXY] speculative participation: ARKQ-XLK y RUT-SPX */
+  var retail = _flowEmaScore('retail', _flowNorm(
+        _flowMean([
+          (rARKQ != null && rXLK != null) ? (rARKQ - rXLK) : null,
+          (rRUT  != null && rSPX != null) ? (rRUT  - rSPX) : null
+        ]), BT_FLOW_SCALE_RELATIVE));
+
+  /* HYG SPD — [PROXY] credit stress INVERSO: HYG baja -> barra sube */
+  var hyg = _flowEmaScore('hyg',
+      (rHYG != null) ? _flowNorm(-rHYG, BT_FLOW_SCALE_CREDIT) : null);
+
+  /* US10Y — yield REAL en banda 3.5-5.0; texto = yield real + flecha feed */
+  var a10y = BT_ASSETS['US10Y'];
+  var y10 = a10y ? a10y.p : NaN;
+  var pos10 = (Number.isFinite(y10))
+      ? Math.max(5, Math.min(95, 5 + 90 * (y10 - BT_US10Y_RANGE_MIN) /
+                                  (BT_US10Y_RANGE_MAX - BT_US10Y_RANGE_MIN)))
+      : null;
+
+  /* MAGS — [PROXY] mega-cap leadership: rel(MAGS, SPX) */
+  var mags = _flowEmaScore('mags',
+      (rMAGS != null && rSPX != null)
+          ? _flowNorm(rMAGS - rSPX, BT_FLOW_SCALE_RELATIVE) : null);
+
+  /* CTA FLOW — [PROXY] multi-asset trend alignment: distancia CONTINUA a OPY
+     (sin momentum sintetico: no hay historia legitima de ticks de mercado) */
+  var ctaParts = [];
+  ['SPX', 'NDQ', 'GOLD', 'BTC'].forEach(function(s) {
+    var a = BT_ASSETS[s];
+    if (a && Number.isFinite(a.p) && Number.isFinite(a.opy) && a.opy > 0)
+      ctaParts.push(100 * (a.p / a.opy - 1));
   });
+  var cta = null;
+  if (ctaParts.length >= 2) {
+    var mean = 0; ctaParts.forEach(function(d){ mean += d; }); mean /= ctaParts.length;
+    cta = _flowNorm(mean, BT_FLOW_SCALE_TREND);
+  }
+  cta = _flowEmaScore('cta', cta);
+
+  /* DIST % — [PROXY] deterioro interno: VIX+, RUT<SPX, HYG-, XLU>XLK */
+  var dist = _flowEmaScore('dist', _flowNorm(
+        _flowMean([
+          rVIX,
+          (rSPX != null && rRUT != null) ? (rSPX - rRUT) : null,
+          (rHYG != null) ? -rHYG : null,
+          (rXLU != null && rXLK != null) ? (rXLU - rXLK) : null
+        ]), BT_FLOW_SCALE_RELATIVE));
+
+  _flowRender('smart',  'btfp-smart',  smart);
+  _flowRender('retail', 'btfp-retail', retail);
+  _flowRender('hyg',    'btfp-hyg',    hyg);
+  _flowRender('10y',    'btfp-10y',    pos10,
+      (Number.isFinite(y10) ? y10.toFixed(2) + '%' : '--') + ' ' + _flow10yArrow);
+  _flowRender('mags',   'btfp-mags',   mags);
+  _flowRender('cta',    'btfp-cta',    cta);
+  _flowRender('dist',   'btfp-dist',   dist);
+
+  /* REGIME — 2 ejes independientes (SMART/DIST) + histeresis de 3 ticks validos */
+  var chip = document.getElementById('bt-flow-regime');
+  if (chip) {
+    var cand = null;
+    if (smart != null && dist != null) {
+      if (smart >= 60 && dist <= 45)      cand = 'ABSORCIÓN';
+      else if (dist >= 60 && smart <= 50) cand = 'DISTRIBUCIÓN';
+      else                                cand = 'NEUTRAL';
+    }
+    if (cand == null) {
+      _flowRegime = 'WAITING'; _flowRegimeCand = null; _flowRegimeCount = 0;
+    } else if (cand === _flowRegime) {
+      _flowRegimeCount = 0;
+    } else if (cand === _flowRegimeCand) {
+      _flowRegimeCount++;
+      if (_flowRegimeCount >= 3) _flowRegime = cand;
+    } else {
+      _flowRegimeCand = cand; _flowRegimeCount = 1;
+    }
+    chip.textContent = _flowRegime;
+  }
 }
 
 /* ── Sector Radar animation ── */
 function btAnimateRadar() {
-  // Radar vertices (center 70,70): XLK(top), XLE(right), XLF(bottom-right), XLV(bottom-left), XLU(left)
-  // Base radius: 48. Scale factor based on chgPct: 1 + chgPct/100 * 0.5
+  // PANEL-02-FIX: pentagono REGULAR (72° entre vertices), centro (70,70).
+  // r=48 = 0% (anillo neutro visible); inward = underperformance;
+  // outward = outperformance; rango efectivo ±33% (cap del scale).
   var sectors = [
     {sym: 'XLK', baseR: 48, angle: -90},   // top
-    {sym: 'XLE', baseR: 48, angle: 18},    // right
-    {sym: 'XLF', baseR: 48, angle: 90},    // bottom-right
-    {sym: 'XLV', baseR: 48, angle: 162},   // bottom-left
-    {sym: 'XLU', baseR: 48, angle: -54}    // left
+    {sym: 'XLE', baseR: 48, angle: -18},   // right-top
+    {sym: 'XLF', baseR: 48, angle: 54},    // right-bottom
+    {sym: 'XLV', baseR: 48, angle: 126},   // left-bottom
+    {sym: 'XLU', baseR: 48, angle: 198}    // left-top
   ];
   
   var poly = document.getElementById('bt-radar-poly');
   if (!poly) return;
+  var clipShape = document.getElementById('radar-clip-shape');
   
   var cx = 70, cy = 70;
   var points = [];
@@ -30266,7 +30418,10 @@ function btAnimateRadar() {
   });
   
   if (points.length === 5) {
-    poly.setAttribute('points', points.join(' '));
+    var pts = points.join(' ');
+    poly.setAttribute('points', pts);
+    // PANEL-02-FIX: el gradiente de fondo sigue a los datos reales
+    if (clipShape) clipShape.setAttribute('points', pts);
   }
 }
 
