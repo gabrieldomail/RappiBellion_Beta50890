@@ -30093,9 +30093,15 @@ function btPopulate() {
 }
  
 /* ── UNIFIED MARKET FEED (GAMMA ENGINE) — 2000ms poll ── */
+/* PRODUCTION FEED ENDPOINT: reemplazá por la URL de tu MARKET WORKER.
+   En localhost sigue usando el proxy local (127.0.0.1:8787). */
+var BT_FEED_URL = 'https://TU-WORKER.TU-SUBDOMINIO.workers.dev/api/market/tickers';
+if (location.hostname === '127.0.0.1' || location.hostname === 'localhost') {
+  BT_FEED_URL = 'http://127.0.0.1:8787/api/market/tickers';
+}
 async function conectarMarketFeed() {
     try {
-        const response = await fetch('http://127.0.0.1:8787/api/market/tickers');
+        const response = await fetch(BT_FEED_URL);
         const json = await response.json();
         if (json && json.data && typeof btApplyUpdate === 'function') {
             btApplyUpdate(json.data);
