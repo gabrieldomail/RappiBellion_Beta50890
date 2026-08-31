@@ -7357,6 +7357,31 @@ document.addEventListener('keydown', function(e){
   </div>
 </div>
 
+<!-- NODE 07: UTF-8 BOM / THE AI BUBBLE -->
+<div class="bt-node bt-clip node-ai" id="bt-node-07">
+  <div class="bt-node-header" onclick="btToggleNode('bt-node-07')" style="border-bottom-color:rgba(0,200,255,0.25);background:rgba(0,200,255,0.05);cursor:pointer;">
+    <span class="bt-node-id" style="color:rgba(0,210,255,0.7);">NODO 07 ★ UTF-8 BOM</span>
+    <span class="bt-node-title" style="color:#00D2FF;">THE AI BUBBLE</span>
+    <button class="bt-node-close-btn" onclick="event.stopPropagation();btToggleNode('bt-node-07')">✕ CERRAR</button>
+    <div class="bt-node-dot" style="background:#00D2FF;box-shadow:0 0 8px #00D2FF;"></div>
+  </div>
+  <div class="bt-node-content-grid">
+  <div class="bt-node-body" id="bn07-body">
+    <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:#00D2FF;text-shadow:0 0 6px rgba(0,210,255,0.4);letter-spacing:1px;padding:4px 0 6px;">EVERYTHING IS PRICED IN = [MARKET OK]</div>
+    <div id="bn07-cards"></div>
+    <div class="bt-sub-gate">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(0,210,255,0.55);letter-spacing:1px;">CAPEX // HBM // GPU // POWER // CLOUD</div>
+    </div>
+  </div>
+  <div class="bt-node-desc">
+    <div class="bt-node-desc-hdr">// LECTURA DEL OPERADOR //</div>
+    <p>Esta es la <b>canalización física del capex de IA</b>: el chip (NVDA/AVGO), el silicio a escala (TSM), la memoria HBM que lo alimenta (MU/SAMSUNG/SK HYNIX), el almacenamiento, la red del datacenter (ANET), la energía y refrigeración que lo sostienen (VRT), y el software que lo vende (ORCL).</p>
+    <p>Cuando la cinta sectorial (SOXX/SMH) y los aceleradores se mueven juntos, el <em>trade</em> está confirmado. Cuando divergen, alguien está repartiendo la euforia.</p>
+    <div class="bt-node-desc-quote">"Todo tiene precio. El problema es cuando el precio ya no pregunta cuánto vale nada."</div>
+  </div>
+  </div>
+</div>
+
 </div><!-- /bt-grid -->
 
 <!-- Hero row: VIX Gauge + Radar + Flow -->
@@ -29982,7 +30007,17 @@ var BT_ASSETS = {
   'ETH':   {p:3487.30,  opy:2281.44, opm:3322.87,   node:6, type:'crypto'},
   'SOL':   {p:105.10,   opy:57.96,   opm:95.84,    node:6, type:'crypto'},  /* 011C: SOL_USDT live */
   'BNB':   {p:692.41,   opy:368.07,  opm:654.13,   node:6, type:'crypto'},  /* 011C: BNB_USDT live */
-  'XRP':   {p:0.5234,   opy:0.6122,  opm:0.4987,    node:6, type:'crypto', fmt:'dec4'}
+  'XRP':   {p:0.5234,   opy:0.6122,  opm:0.4987,    node:6, type:'crypto', fmt:'dec4'},
+  /* NODE 07 — UTF-8 BOM / THE AI BUBBLE (SURGERY-012) */
+  'TSM':   {p:417.52,   opy:322.11,  opm:395.88,    node:7, type:'heavy'},
+  'MU':    {p:932.86,   opy:512.33,  opm:847.22,    node:7, type:'heavy'},
+  'SAMSUNG':{p:257000.00,opy:188400.00,opm:245500.00,node:7, type:'pist'},
+  'SK HYNIX':{p:1653000.00,opy:1128000.00,opm:1512000.00,node:7, type:'pist'},
+  'SNDK':  {p:1484.98,  opy:1042.50, opm:1398.70,   node:7, type:'pist'},
+  'ORCL':  {p:150.85,   opy:118.33,  opm:144.87,    node:7, type:'heavy'},
+  'ANET':  {p:195.38,   opy:152.20,  opm:188.44,    node:7, type:'heavy'},
+  'VRT':   {p:257.08,   opy:177.44,  opm:248.22,    node:7, type:'heavy'},
+  'SMH':   {p:553.11,   opy:431.88,  opm:529.33,    node:7, type:'etf'}
 };
 
 /* ── State: store open prices at session start ── */
@@ -30021,7 +30056,9 @@ function btBarPct(price, opYear) {
 }
 
 /* ── Build one ticker card ── */
-function btCard(sym, asset, price) {
+function btCard(sym, asset, price, idpfx) {
+  idpfx = idpfx || '';
+  var uid = idpfx ? (idpfx + '-' + sym.replace('/','_')) : (sym.replace('/','_'));
   var chg    = price - _btBase[sym];
   var chgPct = (chg / _btBase[sym]) * 100;
   var thermal = btThermal(chgPct, asset.type);
@@ -30051,13 +30088,13 @@ function btCard(sym, asset, price) {
     '<span class="bt-delta-label">[ ' + deltaLabel + ' ]</span>' +
     '<span>' + deltaStr + '</span></div>';
 
-  return '<div class="bt-card bt-clip-sm ' + thermal + '" id="btc-' + sym.replace('/','_') + '">' +
+  return '<div class="bt-card bt-clip-sm ' + thermal + '" id="btc-' + uid + '">' +
     '<div class="bt-card-top">' +
       '<span class="bt-sym">' + sym + '</span>' +
-      '<span class="bt-chg ' + chgCls + '" id="btcc-' + sym.replace('/','_') + '">' + chgStr + '</span>' +
+      '<span class="bt-chg ' + chgCls + '" id="btcc-' + uid + '">' + chgStr + '</span>' +
     '</div>' +
     '<div class="bt-data-grid">' +
-      '<div class="bt-field"><span class="bt-lbl">ÚLTIMA</span><span class="bt-val" id="btcv-' + sym.replace('/','_') + '">' + btFmt(price,sym) + '</span></div>' +
+      '<div class="bt-field"><span class="bt-lbl">ÚLTIMA</span><span class="bt-val" id="btcv-' + uid + '">' + btFmt(price,sym) + '</span></div>' +
       '<div class="bt-field"><span class="bt-lbl">Cbo</span><span class="bt-val">' + (chg >= 0 ? '+' : '') + btFmt(Math.abs(chg),sym) + '</span></div>' +
       '<div class="bt-field"><span class="bt-lbl">CAMBIO%</span><span class="bt-val thermal">' + chgStr + '</span></div>' +
       '<div class="bt-field"><span class="bt-lbl">OP YEAR</span><span class="bt-val">' + btFmt(asset.opy,sym) + '</span></div>' +
@@ -30090,16 +30127,34 @@ function btPopulate() {
     });
     c6.innerHTML = ch;
   }
+  var c7 = document.getElementById('bn07-cards');
+  if (c7) {
+    /* NODE 07 — UTF-8 BOM / THE AI BUBBLE.
+       Membership single-node en BT_ASSETS: NVDA/AVGO/SOXX ya viven en node 1/2
+       y NO se pueden duplicar claves. Esta lista de membresía explícita reusa
+       esos 3 assets existentes sin duplicarlos ni tocarlos. (SURGERY-012) */
+    var aiMembers = ['NVDA','AVGO','TSM','MU','SAMSUNG','SK HYNIX','SNDK','ANET','VRT','ORCL','SOXX','SMH'];
+    var ah = '';
+    aiMembers.forEach(function(sym) {
+      if (BT_ASSETS[sym]) ah += btCard(sym, BT_ASSETS[sym], BT_ASSETS[sym].p, '7');
+    });
+    c7.innerHTML = ah;
+  }
 }
  
 /* ── UNIFIED MARKET FEED (GAMMA ENGINE) — 2000ms poll ── */
-/* PRODUCTION FEED ENDPOINT: reemplazá por la URL de tu MARKET WORKER.
-   En localhost sigue usando el proxy local (127.0.0.1:8787). */
-var BT_FEED_URL = 'https://TU-WORKER.TU-SUBDOMINIO.workers.dev/api/market/tickers';
+/* SURGERY-012F: endpoint de producción = Cloudflare MARKET WORKER.
+   En localhost (dev) sigue usando el proxy local 127.0.0.1:8787.
+   NOTA: Pionex bloquea el egress de Cloudflare → las claves crypto
+   (BTC/ETH/SOL/BNB/XRP/tokens) solo llegan vía proxy local por ahora. */
+var BT_FEED_URL = 'https://market-worker.gabrieldomail.workers.dev/api/market/tickers';
 if (location.hostname === '127.0.0.1' || location.hostname === 'localhost') {
   BT_FEED_URL = 'http://127.0.0.1:8787/api/market/tickers';
 }
+var _btFeedInFlight = false;
 async function conectarMarketFeed() {
+    if (_btFeedInFlight) return; /* single-flight: no apilar requests si el feed tarda (cold start worker) */
+    _btFeedInFlight = true;
     try {
         const response = await fetch(BT_FEED_URL);
         const json = await response.json();
@@ -30108,6 +30163,8 @@ async function conectarMarketFeed() {
         }
     } catch (err) {
         console.warn('⚠️ [MARKET FEED] Error, reintentando...', err.message);
+    } finally {
+        _btFeedInFlight = false;
     }
 }
 
@@ -30132,18 +30189,29 @@ function btApplyUpdate(prices) {
     var card = document.getElementById('btc-' + id);
     var valEl= document.getElementById('btcv-' + id);
     var chgEl= document.getElementById('btcc-' + id);
-    if (!card || !valEl || !chgEl) return;
-
     var a      = BT_ASSETS[sym];
     var base   = _btBase[sym];
     var chgPct = (newP - base) / base * 100;
     var chgStr = (chgPct>=0?'+':'') + chgPct.toFixed(2)+'%';
     var thermal= btThermal(chgPct, a.type);
 
-    valEl.textContent = btFmt(newP, sym);
-    chgEl.textContent = chgStr;
-    chgEl.className   = 'bt-chg ' + (chgPct>0?'up':chgPct<0?'down':'flat');
-    card.className    = 'bt-card bt-clip-sm ' + thermal;
+    if (card && valEl && chgEl) {
+      valEl.textContent = btFmt(newP, sym);
+      chgEl.textContent = chgStr;
+      chgEl.className   = 'bt-chg ' + (chgPct>0?'up':chgPct<0?'down':'flat');
+      card.className    = 'bt-card bt-clip-sm ' + thermal;
+    }
+
+    /* NODE 07 — AI Bubble replicas (idpfx '7'): actualizar tambien la copia */
+    var card7 = document.getElementById('btc-7-' + id);
+    var val7  = document.getElementById('btcv-7-' + id);
+    var chg7  = document.getElementById('btcc-7-' + id);
+    if (card7 && val7 && chg7) {
+      val7.textContent = btFmt(newP, sym);
+      chg7.textContent = chgStr;
+      chg7.className   = 'bt-chg ' + (chgPct>0?'up':chgPct<0?'down':'flat');
+      card7.className  = 'bt-card bt-clip-sm ' + thermal;
+    }
 
     if (sym === 'VIX') btUpdateGauge(newP);
     var tickVal = document.getElementById('bt-t-' + sym.toLowerCase().replace('/',''));
