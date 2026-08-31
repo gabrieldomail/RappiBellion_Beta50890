@@ -30175,6 +30175,9 @@ conectarMarketFeed();
 function btApplyUpdate(prices) {
   Object.keys(prices).forEach(function(sym) {
     var newP = prices[sym];
+    /* FEED-GHOST-KEY GUARD: claves del feed sin card en BT_ASSETS
+       (BTC/USD, ETH/USD) NO deben abortar el lote de actualizaciones. */
+    if (!BT_ASSETS[sym]) return;
 
     /* PANEL-03-FLOW-LOGIC: input-level hook — la flecha US10Y compara
        actualizaciones REALES del feed (no ticks de animacion ni EMA). */
