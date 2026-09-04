@@ -6103,6 +6103,86 @@ body.bt-node-focus { overflow: hidden; }
   position:relative; z-index:4; }
 .bt-node-body::-webkit-scrollbar { width:3px; }
 .bt-node-body::-webkit-scrollbar-thumb { background:rgba(0,255,65,0.3); }
+/* ── SURGERY-015: 3D ORBITAL NODE SELECTOR (namespaced: .bt-orb-) ── */
+.bt-orb { margin:0 0 20px; user-select:none; }
+.bt-orb-head {
+  display:flex; align-items:center; gap:10px; margin-bottom:10px;
+  font-family:'Orbitron',monospace; font-size:11px; letter-spacing:3px;
+  color:rgba(0,255,65,0.55);
+}
+.bt-orb-head::before, .bt-orb-head::after {
+  content:''; flex:1; height:1px;
+  background:linear-gradient(90deg, transparent, rgba(0,255,65,0.25), transparent);
+}
+.bt-orb-stage {
+  --orb-r: clamp(170px, 48vw, 250px);
+  position:relative; height:clamp(200px, 56vw, 280px);
+  perspective:1100px; overflow:hidden; touch-action:pan-y;
+  outline:none;
+}
+.bt-orb-ring { position:absolute; inset:0; transform-style:preserve-3d; }
+.bt-orb-card {
+  position:absolute; left:50%; top:50%;
+  width:clamp(150px, 46vw, 215px);
+  padding:12px 14px 10px;
+  background:linear-gradient(160deg, rgba(0,20,10,0.92), rgba(0,8,4,0.96));
+  border:1px solid rgba(0,255,65,0.25);
+  box-shadow:0 0 18px rgba(0,255,65,0.08), inset 0 0 24px rgba(0,255,65,0.04);
+  cursor:pointer;
+  transition:transform .55s cubic-bezier(.22,.61,.36,1), opacity .55s ease;
+  will-change:transform, opacity;
+}
+.bt-orb-card.rel-0 {
+  opacity:1; z-index:6; border-color:rgba(0,255,65,0.6);
+  box-shadow:0 0 26px rgba(0,255,65,0.22), inset 0 0 24px rgba(0,255,65,0.06);
+}
+.bt-orb-card.rel-1, .bt-orb-card.rel-6 { opacity:0.55; z-index:4; }
+.bt-orb-card.rel-2, .bt-orb-card.rel-5 { opacity:0.28; z-index:3; }
+.bt-orb-card.rel-3, .bt-orb-card.rel-4 { opacity:0.12; z-index:2; }
+.bt-orb-num {
+  display:block; font-family:'Orbitron',monospace; font-weight:700;
+  font-size:11px; letter-spacing:2px; color:rgba(0,255,65,0.6); margin-bottom:4px;
+}
+.bt-orb-title {
+  display:block; font-family:'Share Tech Mono',monospace; font-size:13px;
+  letter-spacing:1px; color:#00FF41; text-shadow:0 0 6px rgba(0,255,65,0.5);
+  line-height:1.35;
+}
+.bt-orb-tk {
+  display:block; margin-top:7px; font-family:'Share Tech Mono',monospace;
+  font-size:10px; letter-spacing:0.5px; color:rgba(255,255,255,0.45);
+  line-height:1.5; word-break:break-word;
+}
+.bt-orb-count {
+  display:block; margin-top:6px; font-family:'Share Tech Mono',monospace;
+  font-size:9px; letter-spacing:2px; color:rgba(0,255,65,0.35);
+}
+.bt-orb-card.acc-gold { border-color:rgba(255,215,0,0.3); }
+.bt-orb-card.acc-gold .bt-orb-title { color:#FFD700; text-shadow:0 0 6px rgba(255,215,0,0.5); }
+.bt-orb-card.acc-gold .bt-orb-num   { color:rgba(255,215,0,0.6); }
+.bt-orb-card.acc-ai { border-color:rgba(0,210,255,0.3); }
+.bt-orb-card.acc-ai .bt-orb-title { color:#00D2FF; text-shadow:0 0 6px rgba(0,210,255,0.5); }
+.bt-orb-card.acc-ai .bt-orb-num   { color:rgba(0,210,255,0.6); }
+.bt-orb-ctl { display:flex; align-items:center; justify-content:center; gap:12px; margin-top:12px; }
+.bt-orb-btn {
+  width:44px; height:34px; background:rgba(0,255,65,0.06);
+  border:1px solid rgba(0,255,65,0.35); color:#00FF41;
+  font-family:'Share Tech Mono',monospace; font-size:14px; cursor:pointer;
+  transition:background .2s;
+}
+.bt-orb-btn:hover { background:rgba(0,255,65,0.14); }
+.bt-orb-open {
+  background:rgba(0,255,65,0.1); border:1px solid rgba(0,255,65,0.5);
+  color:#00FF41; font-family:'Orbitron',monospace; font-weight:700;
+  font-size:11px; letter-spacing:2px; padding:9px 18px; cursor:pointer;
+  transition:background .2s;
+}
+.bt-orb-open:hover { background:rgba(0,255,65,0.2); }
+@media (prefers-reduced-motion: reduce) {
+  .bt-orb-card { transition:none; }
+}
+
+
 
 /* ── Ticker card ── */
 .bt-card {
@@ -7266,6 +7346,19 @@ document.addEventListener('keydown', function(e){
         <span>OCI DIVISION</span>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- SURGERY-015: 3D ORBITAL NODE SELECTOR — capa de navegación sobre los nodos existentes -->
+<div class="bt-orb" id="bt-orb">
+  <div class="bt-orb-head">NODE ORBITAL SELECTOR</div>
+  <div class="bt-orb-stage" id="bt-orb-stage">
+    <div class="bt-orb-ring" id="bt-orb-ring"></div>
+  </div>
+  <div class="bt-orb-ctl">
+    <button type="button" class="bt-orb-btn" id="bt-orb-prev" aria-label="Nodo anterior">◀</button>
+    <button type="button" class="bt-orb-open" id="bt-orb-open">ABRIR NODO ▸</button>
+    <button type="button" class="bt-orb-btn" id="bt-orb-next" aria-label="Nodo siguiente">▶</button>
   </div>
 </div>
 
@@ -30524,6 +30617,95 @@ if (document.readyState === 'loading') {
 }
 })(); /* end BlackTerminalV2 IIFE */
 </script>
+<script>
+/* ── SURGERY-015: 3D Orbital Node Selector — navigation layer ONLY.
+   Node titles + ticker previews are REAL membership audited from the
+   BlackTerminalV2 IIFE BT_ASSETS (node:1..7). Calls existing
+   window.btToggleNode. No RAF, no canvas — discrete event-driven
+   transforms only. ── */
+(function() {
+  var stage = document.getElementById('bt-orb-stage');
+  var ring  = document.getElementById('bt-orb-ring');
+  if (!stage || !ring) return;
+
+  var NODES = [
+    { id:'bt-node-01', num:'01', title:'MACRO-VIGILANCE & PISTERAS', tks:['MSCI','SPX','NDQ','DJI','RUT','RSP'], extra:18 },
+    { id:'bt-node-02', num:'02', title:'ROTACIÓN SECTORIAL & SPREADS', tks:['XLE','XLB','XLF','XLK','XLV','XLU'], extra:11 },
+    { id:'bt-node-03', num:'03', title:'ENERGÍA & BASE FÍSICA', tks:['WTI','BRENT','OMOIL','NG','ZC','ZS'], extra:1 },
+    { id:'bt-node-04', num:'04', title:'METALES VS VOLATILIDAD', tks:['GOLD','SI','HG','VIX','VVIX','SVIX'], extra:0 },
+    { id:'bt-node-05', num:'05', title:'PLOMERÍA FOREX & DISTORSIÓN', tks:['DXY','EUR/USD','GBP/USD','JPY/USD','CNY/USD','AUD/USD'], extra:0 },
+    { id:'bt-node-06', num:'06', title:'ENGINE LUDO CRYPTO BRO', accent:'gold', tks:['BTC','ETH','SOL','BNB','XRP'], extra:0 },
+    { id:'bt-node-07', num:'07', title:'THE AI BUBBLE', accent:'ai', tks:['TSM','MU','SAMSUNG','SK HYNIX','SNDK','ORCL'], extra:3 }
+  ];
+  var STEP = 360 / NODES.length;
+  var active = 0;
+
+  NODES.forEach(function(nd, i) {
+    var el = document.createElement('div');
+    el.className = 'bt-orb-card' + (nd.accent ? ' acc-' + nd.accent : '');
+    el.setAttribute('role', 'button');
+    el.innerHTML =
+      '<span class="bt-orb-num">NODO ' + nd.num + '</span>' +
+      '<span class="bt-orb-title">' + nd.title + '</span>' +
+      '<span class="bt-orb-tk">' + nd.tks.join(' · ') + (nd.extra ? ' · +' + nd.extra : '') + '</span>' +
+      '<span class="bt-orb-count">' + (nd.tks.length + nd.extra) + ' ASSETS</span>';
+    el.addEventListener('click', function() {
+      if (i === active) { openActive(); } else { active = i; render(); }
+    });
+    ring.appendChild(el);
+  });
+  var cards = ring.children;
+
+  function openActive() {
+    if (typeof window.btToggleNode === 'function') window.btToggleNode(NODES[active].id);
+  }
+
+  function render() {
+    for (var k = 0; k < cards.length; k++) {
+      var rel = ((k - active) % NODES.length + NODES.length) % NODES.length;
+      var behind = (rel === 3 || rel === 4);
+      cards[k].style.transform =
+        'translate(-50%,-50%) rotateY(' + (rel * STEP) + 'deg) translateZ(var(--orb-r))' +
+        (behind ? ' rotateY(180deg)' : '');
+      cards[k].classList.remove('rel-0','rel-1','rel-2','rel-3','rel-4','rel-5','rel-6');
+      cards[k].classList.add('rel-' + rel);
+    }
+  }
+
+  function rotate(dir) {
+    active = (active + dir + NODES.length) % NODES.length;
+    render();
+  }
+
+  document.getElementById('bt-orb-prev').addEventListener('click', function(){ rotate(-1); });
+  document.getElementById('bt-orb-next').addEventListener('click', function(){ rotate(1); });
+  document.getElementById('bt-orb-open').addEventListener('click', openActive);
+
+  /* keyboard: scoped to selector focus — no global hijack */
+  stage.setAttribute('tabindex', '0');
+  stage.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft')  { rotate(-1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { rotate(1);  e.preventDefault(); }
+    if (e.key === 'Enter' || e.key === ' ') { openActive(); e.preventDefault(); }
+  });
+
+  /* swipe: deterministic single-step per gesture, 40px threshold */
+  var tx = null, ty = null;
+  stage.addEventListener('touchstart', function(e) {
+    tx = e.touches[0].clientX; ty = e.touches[0].clientY;
+  }, { passive: true });
+  stage.addEventListener('touchend', function(e) {
+    if (tx === null) return;
+    var dx = e.changedTouches[0].clientX - tx;
+    var dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) rotate(dx < 0 ? 1 : -1);
+    tx = ty = null;
+  }, { passive: true });
+
+  render();
+})();
+</script>
+
 
 <script>
 /* ═══════════════════════════════════════════════════════════════

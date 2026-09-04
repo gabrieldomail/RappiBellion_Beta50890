@@ -84,10 +84,9 @@ PROVIDER_MAP = {
     "WTI":     {"provider": "pionex", "symbol": "USOX_USDT"},  # USO ETF tracks WTI (proxy, no futuro directo)
     "SI":      {"provider": "pionex", "symbol": "SLVX_USDT"},  # SLV tokenized silver
 
-    # TWELVEDATA (3) — refresco SOLO en sesión regular (política de cuota)
+    # TWELVEDATA — FX puro (BTC/USD y ETH/USD eran ghost keys: el frontend
+    # usa BTC/ETH de binance/pionex; quemaban cuota sin card que actualizar)
     "EUR/USD": {"provider": "twelvedata", "symbol": "EUR/USD"},
-    "BTC/USD": {"provider": "twelvedata", "symbol": "BTC/USD"},
-    "ETH/USD": {"provider": "twelvedata", "symbol": "ETH/USD"},
 
     # FINNHUB (22) — stocks/ETFs sin tokenizado en Pionex, SOLO en sesión regular
     "DJI":   {"provider": "finnhub", "symbol": "DIA"},     # x100 = DJI puntos
@@ -131,6 +130,27 @@ PROVIDER_MAP = {
     # MSCI = MSCI World — aprobado por decisión de producto (user 2026-08-28)
     "MSCI":   {"provider": "yahoo", "symbol": "^990100-USD-STRD"},
 
+    # SURGERY-012 — NODE UTF-8 BOM / THE AI BUBBLE (Yahoo v8, 24/7)
+    # Probe vivo 2026-08-29: los 12 símbolos resuelven; SAMSUNG/SK HYNIX en KRW.
+    # NVDA/AVGO/SOXX ya existen (no se duplican); se añaden los 9 nuevos.
+    "TSM":     {"provider": "yahoo", "symbol": "TSM"},
+    "MU":      {"provider": "yahoo", "symbol": "MU"},
+    "SAMSUNG": {"provider": "yahoo", "symbol": "005930.KS"},
+    "SK HYNIX":{"provider": "yahoo", "symbol": "000660.KS"},
+    "SNDK":    {"provider": "yahoo", "symbol": "SNDK"},
+    "ORCL":    {"provider": "yahoo", "symbol": "ORCL"},
+    "ANET":    {"provider": "yahoo", "symbol": "ANET"},
+    "VRT":     {"provider": "yahoo", "symbol": "VRT"},
+    "SMH":     {"provider": "yahoo", "symbol": "SMH"},
+
+    # SURGERY-014A.2 — FX MAJORS Nodo 05: 4 pares que solo existían como
+    # seeds estáticos en el frontend. 'JPY/USD' y 'CNY/USD' son en realidad
+    # USD/JPY y USD/CNY (valor directo). Yahoo X= pairs: sin key, sin cuota.
+    "GBP/USD": {"provider": "yahoo", "symbol": "GBPUSD=X"},
+    "JPY/USD": {"provider": "yahoo", "symbol": "USDJPY=X"},
+    "CNY/USD": {"provider": "yahoo", "symbol": "USDCNY=X"},
+    "AUD/USD": {"provider": "yahoo", "symbol": "AUDUSD=X"},
+
     # MOEX ISS (SURGERY-011E) — IMOEX, API pública oficial, sin key
     "MOEX":   {"provider": "moex", "symbol": "IMOEX"},
 }
@@ -153,8 +173,6 @@ PIONEX_TTL = 5.0                 # bulk refresh ~5s bajo demanda
 FINNHUB_TTL = 60.0               # por-símbolo ~60s durante sesión
 TWELVEDATA_TTL = 120.0           # set cada ~120s durante sesión
 FRED_TTL = 6 * 3600.0            # ~cada 6h
-YAHOO_TTL = 300.0                # SURGERY-011E: índices globales, conservador
-MOEX_TTL = 300.0                 # SURGERY-011E: IMOEX, conservador
 YAHOO_TTL = 300.0                # SURGERY-011E: índices globales, conservador
 MOEX_TTL = 300.0                 # SURGERY-011E: IMOEX, conservador
 FINNHUB_MAX_CALLS_PER_MINUTE = 45  # HARD SAFETY CEILING, no objetivo
