@@ -7222,7 +7222,7 @@ font-size: 27px;
    ═════════════════════════════════════════════════════════════ */
 (function () {
   var CW = {
-    state: { filter: 'ALL', desk: '', asset: '', bias: '', horizon: '', nodes: [] },
+    state: { filter: 'ALL', desk: '', filterDesk: '', asset: '', bias: '', horizon: '', nodes: [] },
     nodes: [],
     initDone: false
   };
@@ -7417,11 +7417,11 @@ font-size: 27px;
   }
   window.callWallDeskChanged = cwDeskChanged;
 
-  function cwFilterDesk() {
+    function cwFilterDesk() {
     var s = document.getElementById('call-filter-desk');
-    cw.state.desk = s ? s.value : '';
+    cw.state.filterDesk = s ? s.value : '';
     cw.nodes = cwBuildNodes();
-    cwFillAssetSelect('call-filter-asset', cw.state.desk);
+    cwFillAssetSelect('call-filter-asset', cw.state.filterDesk);
     cwRenderList();
   }
   window.callWallFilterDesk = cwFilterDesk;
@@ -7451,6 +7451,8 @@ font-size: 27px;
     if (!assetEl || !assetEl.value) errs.push('TICKER');
     if (!cw.state.bias) errs.push('BIAS');
     if (!cw.state.horizon) errs.push('HORIZON');
+    var rpEl = document.getElementById('call-cw-refprice');
+    cw.state.refPrice = rpEl ? (parseFloat(rpEl.value) || null) : null;
     var thesis = document.getElementById('call-cw-thesis');
     if (!thesis || thesis.value.trim().length < 8) errs.push('THESIS');
     if (errs.length) {
@@ -7566,6 +7568,7 @@ font-size: 27px;
         </div>
       </div>
       <label class="call-composer-area">THESIS <textarea id="call-cw-thesis" rows="3" placeholder="// YOUR MARKET THESIS //"></textarea></label>
+      <label class="call-composer-field call-composer-target">REFERENCE PRICE // MANUAL <input type="number" id="call-cw-refprice" step="0.01" placeholder="// EJ: 198.42 //" /></label>
       <label class="call-composer-area">INVALIDATION <textarea id="call-cw-invalid" rows="2" placeholder="// WHAT WOULD PROVE YOU WRONG //"></textarea></label>
       <label class="call-composer-field call-composer-target">TARGET // OPTIONAL <input type="text" id="call-cw-target" placeholder="// OPTIONAL LEVEL //"></label>
       <div class="call-composer-sealed">
