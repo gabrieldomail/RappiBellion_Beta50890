@@ -10895,3 +10895,193 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
   }
 
 }
+
+
+/* ═════════════════════════════════════════════════════════════
+   SURGERY-017A — THE [ CALL ] WALL // GLOBAL MARKET-THESIS REGISTRY
+   Namespaced. Forensic-financial cyberpunk. No social-media chrome.
+   ═════════════════════════════════════════════════════════════ */
+
+/* ── WALL SECTION (inside bt-core) ── */
+.call-wall {
+  position: relative;
+  overflow: hidden;
+  padding: 34px 18px 24px;
+  margin: 0 auto 6px;
+  max-width: 960px;
+  border-top: 1px solid rgba(0,255,65,0.18);
+  border-bottom: 1px solid rgba(0,255,65,0.18);
+  background:
+    radial-gradient(ellipse 55% 45% at 18% 12%, rgba(255,45,120,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 40% at 85% 22%, rgba(0,188,255,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 50% 95%, rgba(0,255,65,0.05) 0%, transparent 70%);
+}
+.call-wall-bg {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0 1px, transparent 1px 4px),
+    linear-gradient(90deg, transparent, rgba(0,255,65,0.03), transparent);
+  animation: callWallSweep 9s ease-in-out infinite;
+}
+@keyframes callWallSweep { 0%,100% { opacity:.6; transform: translateX(-8%); } 50% { opacity:1; transform: translateX(8%); } }
+
+@keyframes callWallGlitch {
+  0% { transform: translate(0); text-shadow: 0 0 18px rgba(0,255,65,0.8), 0 0 42px rgba(0,255,65,0.35); opacity:1; }
+  7% { transform: translate(2px,-1px); text-shadow: 3px 0 #FF003C, -3px 0 #00BCFF; opacity:0.92; }
+  9% { transform: translate(-2px,1px); text-shadow: -3px 0 #FF003C, 3px 0 #00BCFF; opacity:0.95; }
+  11% { transform: translate(0); text-shadow: 0 0 18px rgba(0,255,65,0.8), 0 0 42px rgba(0,255,65,0.35); opacity:1; }
+  100% { transform: translate(0); opacity:1; }
+}
+.call-wall * { position: relative; z-index: 1; }
+
+.call-wall-title-block { text-align: center; padding: 6px 0 14px; }
+.call-wall-title {
+  display: inline-block;
+  font-family: 'Orbitron', 'Courier New', monospace;
+  font-weight: 900; font-size: clamp(24px, 5.4vw, 46px);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 0 16px #00FF41, 0 0 38px rgba(0,255,65,0.45), 3px 3px 0 #FF003C, -2px -2px 0 #00BCFF;
+  animation: callWallGlitch 6s steps(1,end) infinite;
+}
+.call-wall-manifesto {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: clamp(11px, 2.6vw, 14px); letter-spacing: 0.34em; margin-top: 10px;
+  color: rgba(0,255,65,0.8); text-shadow: 0 0 8px rgba(0,255,65,0.5);
+  text-transform: uppercase;
+}
+.call-wall-sub {
+  font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 0.28em;
+  margin-top: 8px; color: rgba(255,255,255,0.4);
+}
+
+/* ── AUTH STRIP ── */
+.call-wall-auth {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  margin: 6px 0 16px; padding: 10px 14px;
+  border: 1px solid rgba(0,255,65,0.16); background: rgba(0,10,5,0.55);
+}
+.call-wall-auth-msg { font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 0.12em; color: rgba(255,255,255,0.7); }
+.call-wall-auth-ctrls { display: flex; gap: 10px; flex-wrap: wrap; }
+.call-wall-btn {
+  font-family: 'Orbitron', 'Courier New', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer;
+  padding: 8px 16px; color: #00FF41; background: transparent;
+  border: 1px solid rgba(0,255,65,0.45);
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  transition: all .18s;
+}
+.call-wall-btn:hover { background: rgba(0,255,65,0.14); box-shadow: 0 0 16px rgba(0,255,65,0.4); }
+.call-wall-btn-sign { color: #fff; border-color: rgba(0,255,65,0.8); box-shadow: 0 0 12px rgba(0,255,65,0.25); }
+
+/* ── FILTERS ── */
+.call-wall-filters {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  margin: 0 0 16px; padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.35);
+}
+.call-wall-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.call-filter-chip {
+  font-family: 'Share Tech Mono', 'Courier New', monospace; font-size: 10px; letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.5); background: transparent;
+  border: 1px solid rgba(255,255,255,0.16); padding: 4px 12px; cursor: pointer; transition: all .15s;
+}
+.call-filter-chip:hover { color: #fff; border-color: rgba(0,255,65,0.5); }
+.call-filter-chip.active { color: #001100; background: #00FF41; border-color: #00FF41; box-shadow: 0 0 12px rgba(0,255,65,0.5); }
+.call-wall-filter-selects { display: flex; gap: 12px; flex-wrap: wrap; }
+.call-filter-label { font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: rgba(255,255,255,0.5); }
+.call-filter-label select {
+  margin-left: 6px; font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: .08em;
+  color: #00FF41; background: #02080a; border: 1px solid rgba(0,255,65,0.3); padding: 4px 6px; max-width: 240px;
+}
+/* ── COMPOSER ── */
+.call-composer { margin: 0 0 18px; border: 1px solid rgba(0,255,65,0.22); background: rgba(0,10,5,0.5); }
+.call-composer-head {
+  display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; cursor: pointer;
+  border-bottom: 1px solid rgba(0,255,65,0.12);
+}
+.call-composer-title { font-family: 'Orbitron', monospace; font-weight: 700; font-size: 13px; letter-spacing: 0.24em; color: #00FF41; text-shadow: 0 0 8px rgba(0,255,65,0.5); }
+.call-composer-toggle { font-family: 'Share Tech Mono', monospace; color: rgba(255,255,255,0.6); }
+.call-composer-body { padding: 14px 16px; display: none; border-top: 1px dashed rgba(0,255,65,0.18); animation: callPanelIn .35s ease both; }
+@keyframes callPanelIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.call-composer-grid { display: grid; grid-template-columns: 1.2fr 1.6fr 1.4fr; gap: 10px; }
+.call-composer-field { display: flex; flex-direction: column; gap: 4px; font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: .14em; color: rgba(255,255,255,0.55); }
+.call-composer-field input, .call-composer-field select {
+  font-family: 'Share Tech Mono', monospace; font-size: 11px; color: #dff7e8; background: #02080a;
+  border: 1px solid rgba(0,255,65,0.25); padding: 6px 8px; min-width: 0;
+}
+.call-composer-field input:disabled { color: rgba(255,255,255,0.35); }
+.call-composer-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.call-composer-sub { font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: .16em; color: rgba(255,255,255,0.55); }
+.call-composer-sub-gap { margin-left: 8px; }
+.call-composer-seg { display: flex; gap: 4px; flex-wrap: wrap; }
+.call-seg {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: .12em;
+  color: rgba(255,255,255,0.55); background: transparent; border: 1px solid rgba(255,255,255,0.18);
+  padding: 4px 12px; cursor: pointer;
+}
+.call-seg.active { color: #001100; background: #00FF41; border-color: #00FF41; }
+.call-composer-area { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: .14em; color: rgba(255,255,255,0.55); }
+.call-composer-area textarea {
+  font-family: 'Share Tech Mono', monospace; font-size: 11px; color: #dff7e8; background: #02080a;
+  border: 1px solid rgba(0,255,65,0.25); padding: 8px; resize: vertical;
+}
+.call-composer-target { max-width: 320px; margin-top: 12px; }
+.call-composer-sealed {
+  display: flex; flex-wrap: wrap; gap: 18px; margin-top: 12px;
+  font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: .1em; color: rgba(255,255,255,0.4);
+}
+.call-composer-actions { display: flex; align-items: center; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+.call-composer-footnote { font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: .14em; color: rgba(255,255,255,0.32); line-height: 1.6; }
+.call-composer-msg {
+  display: none; margin-top: 12px; padding: 8px 12px;
+  font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: .1em;
+  color: #F8FF2B; border: 1px solid rgba(248,255,43,0.4); background: rgba(248,255,43,0.06);
+}
+
+/* ── RECENT CARDS ── */
+.call-wall-section-head { font-family: 'Orbitron', monospace; font-size: 11px; letter-spacing: 0.3em; color: rgba(0,255,65,0.55); margin: 18px 0 12px; text-align: center; }
+.call-wall-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.call-card {
+  position: relative; padding: 14px; min-height: 150px;
+  border: 1px solid rgba(0,255,65,0.18); background: rgba(0,10,5,0.6);
+  overflow: hidden;
+}
+.call-card-empty { opacity: 0.92; }
+.call-card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.call-card-head span:first-child { font-family: 'Orbitron', monospace; font-size: 11px; letter-spacing: .18em; color: rgba(255,255,255,0.65); }
+.call-card-status { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing:.14em; color: rgba(255,255,255,0.3); }
+.call-card-no { font-family: 'Courier New', monospace; font-size: 10px; letter-spacing:.18em; color: rgba(255,255,255,0.25); }
+.call-reaction { position: absolute; left: 14px; right: 14px; bottom: 12px; display: flex; gap: 8px; }
+.call-reaction-btn {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: .1em;
+  color: rgba(255,255,255,0.45); background: transparent; border: 1px solid rgba(255,255,255,0.14);
+  padding: 3px 8px; cursor: pointer; transition: all .15s;
+}
+.call-reaction-btn:hover { color: #00FF41; border-color: rgba(0,255,65,0.5); }
+
+/* ── REGISTRY ── */
+.call-wall-registry { margin-top: 10px; }
+.call-wall-table { font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: .08em; }
+.call-wall-row { display: grid; grid-template-columns: 1fr 1.4fr 1.8fr 1fr 0.8fr 1fr 1fr 1.4fr; gap: 6px; padding: 7px 8px; align-items: center; }
+.call-wall-row-head { color: rgba(0,255,65,0.45); border-bottom: 1px solid rgba(0,255,65,0.2); text-transform: uppercase; }
+.call-wall-empty { text-align: center; padding: 26px 10px; color: rgba(255,255,255,0.28); font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: .2em; line-height: 1.7; }
+
+/* ── DESK CTA ── */
+.call-wall-desk-cta { margin-top: 20px; text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.3em; color: rgba(0,255,65,0.6); text-shadow: 0 0 10px rgba(0,255,65,0.4); }
+.call-wall-arrow { display: block; margin-top: 6px; animation: callArrowBreathe 1.6s ease-in-out infinite; }
+@keyframes callArrowBreathe { 0%,100% { transform: translateY(0); opacity: 0.6; } 50% { transform: translateY(4px); opacity: 1; } }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 700px) {
+  .call-wall { padding: 26px 12px 18px; }
+  .call-composer-grid { grid-template-columns: 1fr; }
+  .call-wall-cards { grid-template-columns: 1fr; }
+  .call-wall-row { grid-template-columns: 1fr 1fr 1fr 1fr 0.8fr 1fr 1fr; font-size: 9px; }
+  .call-wall-row-head span:nth-child(8) { display: none; }
+  .call-wall-row span:nth-child(8) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .call-wall-bg, .call-wall-title, .call-wall-arrow { animation: none; }
+  .call-composer-body { animation: none; }
+}

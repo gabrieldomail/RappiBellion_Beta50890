@@ -4583,133 +4583,7 @@ body.ultra-dark #ultra-dark-toggle {
 </script>
 
 
-<!-- ══════════════════════════════════════════════════════════════
-     THE WALL // LOS MÁS VIVOS — CYBER-GRAFFITI LEADERBOARD
-════════════════════════════════════════════════════════════════ -->
-<section id="leaderboard" class="container section-separator" style="position:relative;overflow:hidden;padding:40px 0;">
 
-  <div style="position:absolute;inset:0;z-index:0;pointer-events:none;
-    background:
-      radial-gradient(ellipse 60% 40% at 20% 30%,rgba(255,45,120,0.07) 0%,transparent 70%),
-      radial-gradient(ellipse 50% 35% at 80% 60%,rgba(0,188,255,0.06) 0%,transparent 70%),
-      radial-gradient(ellipse 70% 50% at 50% 90%,rgba(0,255,65,0.05) 0%,transparent 70%),
-      repeating-linear-gradient(0deg,rgba(255,255,255,0.008) 0px 1px,transparent 1px 4px);"></div>
-  <div style="position:absolute;top:0;left:-100%;width:60%;height:100%;z-index:0;pointer-events:none;
-    background:linear-gradient(90deg,transparent,rgba(0,255,65,0.025),transparent);
-    animation:wallSpraySweep 8s ease-in-out infinite;"></div>
-
-  <style>
-  @keyframes wallSpraySweep{0%{left:-60%}50%{left:120%}100%{left:-60%}}
-  @keyframes wallTagIn{from{opacity:0;transform:scale(0.85) rotate(-2deg)}to{opacity:1;transform:scale(1) rotate(var(--rot,0deg))}}
-  @keyframes wallDrip{0%{height:0;opacity:0.8}100%{height:var(--drip-h,30px);opacity:0}}
-  @keyframes wallPulse{0%,100%{text-shadow:0 0 20px var(--col),0 0 40px var(--col),0 0 80px var(--col),2px 2px 0 rgba(0,0,0,0.8)}50%{text-shadow:0 0 30px var(--col),0 0 60px var(--col),0 0 120px var(--col),2px 2px 0 rgba(0,0,0,0.8)}}
-  @keyframes crownFloat{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-4px) rotate(5deg)}}
-  .wall-top3-tag{position:relative;font-family:'Orbitron',monospace;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;animation:wallTagIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both,wallPulse 3s ease-in-out infinite;cursor:default;user-select:none;}
-  .wall-tag-drip{position:absolute;bottom:-2px;width:3px;border-radius:0 0 3px 3px;animation:wallDrip 2s ease-in 1.2s both;}
-  .wall-rank-row{display:flex;align-items:center;gap:12px;padding:9px 14px;margin-bottom:5px;border-radius:3px;font-family:'Share Tech Mono',monospace;font-size:13px;border-left:3px solid var(--row-col,#333);background:rgba(255,255,255,0.025);backdrop-filter:blur(4px);transition:all 0.2s;cursor:default;animation:wallTagIn 0.4s ease both;}
-  .wall-rank-row:hover{background:rgba(255,255,255,0.05);transform:translateX(4px);border-left-width:5px;}
-  </style>
-
-  <div style="position:relative;z-index:1;text-align:center;margin-bottom:32px;">
-    <div style="font-family:'Fat Wandals',cursive;font-weight:900;font-size:clamp(28px,5.5vw,52px);color:#fff;letter-spacing:0.08em;text-shadow:0 0 20px #FF2D78,0 0 40px rgba(255,45,120,0.5),3px 3px 0 #00BCFF,-1px -1px 0 #00FF41,5px 5px 0 rgba(0,0,0,0.6);transform:skewX(-2deg);display:inline-block;">THE WALL</div>
-    <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:rgba(0,255,65,0.6);letter-spacing:0.4em;margin-top:6px;">// LOS MÁS VIVOS // REBEL_RANKING // RPPI-C //</div>
-    <div id="lb-status-bar" style="font-size:10px;letter-spacing:0.3em;color:rgba(0,255,65,0.35);margin-top:8px;font-family:'Courier New',monospace;">[ CARGANDO THE WALL... ]</div>
-  </div>
-
-  <div id="wall-top3" style="position:relative;z-index:1;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:32px;min-height:140px;">
-    <div style="text-align:center;color:rgba(255,255,255,0.2);font-family:Share Tech Mono,monospace;font-size:12px;letter-spacing:0.3em;padding:40px 0;">CARGANDO...</div>
-  </div>
-
-  <div style="position:relative;z-index:1;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.06);border-radius:4px;padding:16px;backdrop-filter:blur(8px);">
-    <div style="font-family:'Orbitron',monospace;font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:0.4em;margin-bottom:12px;border-bottom:1px dashed rgba(255,255,255,0.06);padding-bottom:8px;">[ PACK — RESTO DE LA BANDA ]</div>
-    <div id="wall-list" style="min-height:60px;"><div style="text-align:center;padding:20px;color:rgba(255,255,255,0.15);font-family:Share Tech Mono,monospace;font-size:11px;letter-spacing:0.3em;">CARGANDO STICKERS...</div></div>
-  </div>
-
-  <div style="position:relative;z-index:1;text-align:center;margin-top:20px;">
-    <button onclick="loadLeaderboard()" style="background:transparent;border:1px solid rgba(0,255,65,0.3);color:rgba(0,255,65,0.5);font-family:'Orbitron',monospace;font-size:10px;letter-spacing:0.35em;padding:8px 20px;cursor:pointer;border-radius:3px;transition:all 0.2s;text-transform:uppercase;"
-      onmouseover="this.style.borderColor='#00FF41';this.style.color='#00FF41';this.style.boxShadow='0 0 12px rgba(0,255,65,0.3)'"
-      onmouseout="this.style.borderColor='rgba(0,255,65,0.3)';this.style.color='rgba(0,255,65,0.5)';this.style.boxShadow='none'">
-      ↺ REFRESH THE WALL
-    </button>
-  </div>
-
-</section>
-
-<script>
-var _wallColors=['#FFD700','#C0C0C0','#CD7F32','#FF2D78','#00BCFF','#00FF41','#FF6B00','#BF00FF'];
-var _wallRots=['-3deg','2deg','-1deg','3deg','-2deg','1deg','-4deg','2deg'];
-var _wallSizes=['clamp(28px,6vw,52px)','clamp(22px,5vw,40px)','clamp(18px,4vw,32px)'];
-var _wallLabels=['#1 EL MÁS VIVO','#2 EN LA PARED','#3 TAGUEA'];
-var _wallCrowns=['👑','⚡','🔥'];
-
-function _wallColorFromAlias(alias){
-  var h=0; for(var i=0;i<alias.length;i++) h=(h*31+alias.charCodeAt(i))&0xffff;
-  return ['#FF2D78','#00BCFF','#00FF41','#FFD700','#BF00FF','#FF6B00','#00FFD1','#FF4500'][h%8];
-}
-function _wallDrips(col,n){
-  var d=''; for(var i=0;i<n;i++){
-    d+='<div class="wall-tag-drip" style="left:'+(15+Math.random()*70).toFixed(0)+'%;background:'+col+';--drip-h:'+(12+Math.random()*20).toFixed(0)+'px;animation-delay:'+(Math.random()*1.5).toFixed(2)+'s;opacity:0.7;"></div>';
-  } return d;
-}
-function renderWall(data){
-  var t3=document.getElementById('wall-top3'), lEl=document.getElementById('wall-list'), stEl=document.getElementById('lb-status-bar');
-  if(!t3||!lEl) return;
-  var lb=(data&&data.top)?data.top:[];
-  if(!lb.length){t3.innerHTML='<div style="color:rgba(255,255,255,0.2);font-family:Share Tech Mono,monospace;font-size:12px;letter-spacing:0.3em;padding:40px;">// THE WALL ESTA VACIO — SE EL PRIMERO //</div>';lEl.innerHTML='';return;}
-  var h3='';
-  lb.slice(0,3).forEach(function(p,i){
-    var col=_wallColors[i],sz=_wallSizes[i]||_wallSizes[2],dl=(i*0.15).toFixed(2)+'s';
-    var rgb=parseInt(col.slice(1,3),16)+','+parseInt(col.slice(3,5),16)+','+parseInt(col.slice(5,7),16);
-    h3+='<div style="text-align:center;flex:1;min-width:140px;max-width:240px;padding:16px 12px;position:relative;border:1px solid rgba('+rgb+',0.2);border-radius:4px;background:rgba(0,0,0,0.3);backdrop-filter:blur(8px);">'
-      +'<div style="font-size:20px;margin-bottom:6px;animation:crownFloat 2s ease-in-out infinite;animation-delay:'+dl+';">'+_wallCrowns[i]+'</div>'
-      +'<div class="wall-top3-tag" style="--col:'+col+';--rot:'+_wallRots[i]+';font-size:'+sz+';color:'+col+';animation-delay:'+dl+';">'
-      +p.alias+_wallDrips(col,2+i)+'</div>'
-      +'<div style="margin-top:10px;font-family:Orbitron,monospace;font-size:11px;color:'+col+';letter-spacing:0.2em;text-shadow:0 0 8px '+col+';">'+p.credits+' RPPI-C</div>'
-      +'<div style="font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:0.3em;font-family:Share Tech Mono,monospace;margin-top:3px;">'+_wallLabels[i]+'</div>'
-      +'</div>';
-  });
-  t3.innerHTML=h3;
-  var rest=lb.slice(3);
-  if(!rest.length){lEl.innerHTML='<div style="color:rgba(255,255,255,0.15);font-family:Share Tech Mono,monospace;font-size:11px;text-align:center;padding:16px;letter-spacing:0.2em;">// SOLO 3 REBELDES EN LA PARED //</div>';return;}
-  lEl.innerHTML=rest.map(function(p,i){
-    var col=_wallColorFromAlias(p.alias);
-    return '<div class="wall-rank-row" style="--row-col:'+col+';animation-delay:'+(i*0.06).toFixed(2)+'s;">'
-      +'<span style="font-family:Orbitron,monospace;font-size:11px;color:rgba(255,255,255,0.25);min-width:28px;">#'+p.rank+'</span>'
-      +'<span style="color:'+col+';font-size:13px;font-weight:700;flex:1;text-shadow:0 0 8px '+col+';">'+p.alias+'</span>'
-      +'<span style="font-family:Orbitron,monospace;font-size:11px;color:rgba(255,255,255,0.5);">'+p.credits+'</span>'
-      +'<span style="font-size:11px;color:rgba(255,255,255,0.15);letter-spacing:0.2em;">RPPI-C</span>'
-      +'</div>';
-  }).join('');
-  if(stEl){var ts=data.updatedAt?new Date(data.updatedAt).toLocaleTimeString('es-AR'):'—';stEl.textContent='[ THE WALL // '+lb.length+' REBELDES // ACTUALIZADO '+ts+' ]';}
-}
-function loadLeaderboard(){
-  var stEl=document.getElementById('lb-status-bar');
-  if(stEl) stEl.textContent='[ ESCANEANDO THE WALL... ]';
-  var FB='https://rappibellion-comments-default-rtdb.firebaseio.com';
-  fetch(FB+'/rppi_leaderboard.json')
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(data&&data.top&&data.top.length>0){renderWall(data);}
-      else{
-        fetch((typeof WORKER_URL!=='undefined'?WORKER_URL:'https://rapid-figemini-proxy.gabrieldomail.workers.dev')+'/rappia/leaderboard',
-          {method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})
-        .then(function(r){return r.json();})
-        .then(function(d){if(d.ok)renderWall({top:d.leaderboard,updatedAt:d.updatedAt});});
-      }
-    })
-    .catch(function(){
-      var lEl=document.getElementById('wall-list');
-      if(lEl)lEl.innerHTML='<div style="color:rgba(255,45,120,0.5);font-family:Share Tech Mono,monospace;font-size:11px;text-align:center;padding:16px;letter-spacing:0.2em;">// ERROR CONECTANDO CON THE WALL //</div>';
-    });
-}
-(function(){
-  var sec=document.getElementById('leaderboard');if(!sec)return;
-  if('IntersectionObserver'in window){
-    var obs=new IntersectionObserver(function(e){if(e[0].isIntersecting){loadLeaderboard();obs.disconnect();}},{threshold:0.15});
-    obs.observe(sec);
-  } else setTimeout(loadLeaderboard,2000);
-})();
-</script>
 
 <!-- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
      RA9P1A [RPPI] T0KΞN — TOKENOMICS SOBERANO
@@ -6258,6 +6132,62 @@ body.bt-node-focus { overflow: hidden; }
   .bt-orb-card.rel-0 .bt-orb-title { animation:none; }
   .bt-orb-num::before { animation:none; }
 }
+/* ── SURGERY-015E: SINGLE-COLUMN INTELLIGENCE STACK ── */
+.bt-grid {
+  grid-template-columns: 1fr;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.bt-node:not(.expanded) { width: 100%; justify-self: stretch; }
+.bt-panel-inline {
+  position: relative;
+  width: 100%;
+  animation: btPanelRise 0.7s cubic-bezier(0.22,0.61,0.36,1) both;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.bt-panel-inline::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0,255,65,0.03) 0 1px, transparent 1px 3px);
+  mix-blend-mode: screen;
+}
+.bt-panel-inline:hover {
+  border-color: rgba(0,255,65,0.55);
+  box-shadow: 0 0 34px rgba(0,255,65,0.18), inset 0 0 26px rgba(0,255,65,0.05);
+}
+/* glitch RGB-split on panel title (hover) */
+.bt-panel-inline:hover .bt-hero-title { animation: btGlitchTxt 0.3s steps(2,end) 1; }
+/* conduit link between node and its panel */
+.bt-conduit {
+  display: flex; align-items: center; gap: 10px; margin: 24px 0 14px;
+}
+.bt-conduit-beam {
+  position: relative; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,255,65,0.6), transparent);
+  box-shadow: 0 0 8px rgba(0,255,65,0.5);
+}
+.bt-conduit-beam::after {
+  content: '';
+  position: absolute; top: -3px; right: 0; width: 7px; height: 7px;
+  background: #00FF41; transform: rotate(45deg);
+  box-shadow: 0 0 8px #00FF41; animation: btConduitPulse 2.2s ease-in-out infinite;
+}
+.bt-conduit-tag {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 3px;
+  color: rgba(0,255,65,0.55); text-shadow: 0 0 6px rgba(0,255,65,0.4);
+}
+@keyframes btPanelRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes btConduitPulse { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+@keyframes btGlitchTxt {
+  0%   { transform: translate(1px,-1px); text-shadow: 2px 0 #FF003C, -2px 0 #00BCFF; }
+  40%  { transform: translate(-1px,1px); text-shadow: -2px 0 #FF003C, 2px 0 #00BCFF; }
+  100% { transform: none; text-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bt-panel-inline { animation: none; }
+  .bt-conduit-beam::after { animation: none; }
+  .bt-panel-inline:hover .bt-hero-title { animation: none; }
+}
 
 
 
@@ -7285,148 +7215,388 @@ font-size: 27px;
 </div>
 
 <script>
-(function(){
-  var cards = document.querySelectorAll('.bt-rekt-card[data-desc]');
-  var modal = document.getElementById('bt-rekt-modal');
-  var modalBox = modal ? modal.querySelector('.bt-rekt-modal') : null;
-  var titleEl = document.getElementById('bt-rekt-modal-title');
-  var descEl = document.getElementById('bt-rekt-modal-desc');
-  var ctaEl = document.querySelector('.bt-rekt-modal-cta');
-  var imgEl = document.getElementById('bt-rekt-modal-img');
-  var imgWrap = document.getElementById('bt-rekt-modal-imgwrap');
-  var track = document.getElementById('bt-rekt-track');
+/* ═════════════════════════════════════════════════════════════
+   SURGERY-017A — THE [ CALL ] WALL // GLOBAL MARKET-THESIS REGISTRY
+   UI-only. NO Firebase writes. NO fake data. Source of truth for
+   node/ticker membership: window.BT_ASSETS (read at runtime).
+   ═════════════════════════════════════════════════════════════ */
+(function () {
+  var CW = {
+    state: { filter: 'ALL', desk: '', asset: '', bias: '', horizon: '', nodes: [] },
+    nodes: [],
+    initDone: false
+  };
+  window.CALL_WALL = CW;
+  var cw = CW;
 
-  cards.forEach(function(card){
-    card.addEventListener('click', function(){
-      var headline = card.querySelector('.bt-rekt-headline');
-      var desc = card.getAttribute('data-desc');
-      var url = card.getAttribute('data-url');
-      var img = card.getAttribute('data-img');
-      titleEl.textContent = headline ? headline.textContent.replace(/\n/g, ' ') : '';
-      descEl.textContent = desc || '';
-      if(ctaEl) ctaEl.href = url || '#';
-      if(imgEl && img) { imgEl.src = img; imgEl.style.display = 'block'; }
-      else if(imgEl) { imgEl.style.display = 'none'; }
-      modal.style.display = 'flex';
-      if(track) track.style.animationPlayState = 'paused';
-
-      /* ── EL HACKEO DE 20 PARES DE NARICES ──
-         Se dispara cada vez que se abre un expediente nuevo */
-      if (imgWrap) {
-        imgWrap.classList.remove('decrypting');
-        void imgWrap.offsetWidth; // forzar reflow para poder re-disparar
-        imgWrap.classList.add('decrypting');
-      }
-      if (modalBox) {
-        modalBox.classList.remove('decrypting');
-        void modalBox.offsetWidth;
-        modalBox.classList.add('decrypting');
-      }
-      if (typeof playTerminalBeep === 'function') playTerminalBeep();
-    });
-  });
-
-// ═══════════════════════════════════════════════════════
-// SUNSET RIDERS — Balacera al abrir/cerrar expediente
-// ═══════════════════════════════════════════════════════
-const sunsetAudio = new Audio('sounds/sunset-riders-intro.mp3');
-sunsetAudio.volume = 0.8;
-
-document.querySelectorAll('.bt-rekt-card').forEach(function(card) {
-    card.addEventListener('click', function() {
-        sunsetAudio.currentTime = 0;
-        sunsetAudio.play().catch(function(e) {
-            console.warn('El Cartel informa: Navegador bloqueó el autoplay de Sunset Riders.', e);
-        });
-    });
-});
-
-window.closeRektModal = function(){
-    var modal = document.getElementById('bt-rekt-modal');
-    var track = document.getElementById('bt-rekt-track');
-
-    if(modal) modal.style.display = 'none';
-    if(track) track.style.animationPlayState = 'running';
-
-    sunsetAudio.pause();
-    sunsetAudio.currentTime = 0;
-};
-
-var modalElement = document.getElementById('bt-rekt-modal');
-if(modalElement) {
-    modalElement.addEventListener('click', function(e){
-        if(e.target === modalElement) closeRektModal();
-    });
-}
-
-document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape' && document.getElementById('bt-rekt-modal').style.display !== 'none') {
-        closeRektModal();
+  function cwNodeTitles() {
+    var t = {};
+    for (var n = 1; n <= 7; n++) {
+      var el = document.querySelector('#bt-node-0' + n + ' .bt-node-title');
+      t[n] = el ? el.textContent.replace(/\s+/g, ' ').trim() : 'NODO 0' + n;
     }
-});
+    return t;
+  }
+
+  function cwReadDomTickers(n) {
+    var nodeEl = document.getElementById('bt-node-0' + n);
+    if (!nodeEl) return [];
+    var out = [];
+    var syms = nodeEl.querySelectorAll('.bt-sym');
+    for (var i = 0; i < syms.length; i++) {
+      var t = syms[i].textContent.replace(/^\$/, '').trim();
+      if (t && out.indexOf(t) < 0) out.push(t);
+    }
+    return out;
+  }
+
+  function cwBuildNodes() {
+    var titles = cwNodeTitles();
+    var ba = null;
+    try { ba = window.BT_ASSETS || null; } catch (e) { ba = null; }
+    var nodes = [];
+    var byNode = {};
+    if (ba && typeof ba === 'object') {
+      try {
+        Object.keys(ba).forEach(function (sym) {
+          var a = ba[sym];
+          if (a && a.node) {
+            var k = String(a.node);
+            (byNode[k] = byNode[k] || []).push(sym);
+          }
+        });
+      } catch (e) { byNode = {}; }
+    }
+    for (var n = 1; n <= 7; n++) {
+      var key = String(n);
+      var tickers = (byNode[key] || []).slice();
+      if (!tickers.length) tickers = cwReadDomTickers(n);
+      nodes.push({ idx: n, title: titles[n] || ('NODO 0' + n), tickers: tickers });
+    }
+    window.CALL_WALL.nodes = nodes;
+    return nodes;
+  }
+
+  function cwUser() {
+    try { return window._rppiUser || null; } catch (e) { return null; }
+  }
+  function cwAlias() {
+    var u = cwUser();
+    if (!u || !u.email) return null;
+    return u.email.split('@')[0].toUpperCase();
+  }
+
+  function cwAuthMsg() {
+    var m = document.getElementById('call-cw-auth-msg');
+    var loginBtn = document.getElementById('call-cw-login-btn');
+    var signBtn = document.getElementById('call-cw-sign-btn');
+    if (!m) return;
+    var alias = cwAlias();
+    var op = document.getElementById('call-cw-op');
+    if (alias) {
+      m.textContent = 'OPERATOR // @' + alias;
+      if (loginBtn) loginBtn.style.display = 'none';
+      if (signBtn) signBtn.style.display = '';
+      if (op) op.value = '@' + alias;
+    } else {
+      m.textContent = '// READ ACCESS: OPEN // SIGNING ACCESS: AUTH REQUIRED';
+      if (loginBtn) loginBtn.style.display = '';
+      if (signBtn) signBtn.style.display = 'none';
+      if (op) op.value = '';
+    }
+  }
+  CW.auth = cwAuthMsg;
+
+  function cwFillSelects() {
+    var ids = ['call-filter-desk', 'call-cw-desk'];
+    ids.forEach(function (id) {
+      var s = document.getElementById(id);
+      if (!s) return;
+      s.innerHTML = '<option value="">' + (id.indexOf('filter') >= 0 ? 'ALL NODES ▼' : 'SELECT NODE ▼') + '</option>';
+      cw.nodes.forEach(function (nd) {
+        var o = document.createElement('option');
+        o.value = String(nd.idx);
+        o.textContent = 'NODO 0' + nd.idx + ' · ' + nd.title;
+        s.appendChild(o);
+      });
+    });
+    cwFillAssetSelect('call-filter-asset', '');
+    cwFillAssetSelect('call-cw-asset', '');
+  }
+  CW.fillSelects = cwFillSelects;
+
+  function cwFillAssetSelect(selectId, desk) {
+    var s = document.getElementById(selectId);
+    if (!s) return;
+    s.innerHTML = ''; /* 017A-FIX: clear before fill — prevent option accumulation across desk changes */
+    var node = null;
+    if (desk) {
+      for (var i = 0; i < cw.nodes.length; i++) if (String(cw.nodes[i].idx) === String(desk)) { node = cw.nodes[i]; break; }
+    } else {
+      var prependAll = document.createElement('option');
+      prependAll.value = '';
+      prependAll.textContent = selectId.indexOf('filter') >= 0 ? 'ALL ASSETS ▼' : 'SELECT TICKER ▼';
+      s.appendChild(prependAll);
+      var added = {};
+      cw.nodes.forEach(function (nd) { nd.tickers.forEach(function (tk) { if (!added[tk]) { added[tk] = 1; var o = document.createElement('option'); o.value = tk; o.textContent = tk; s.appendChild(o); } }); });
+      return node;
+    }
+    s.appendChild(document.createElement('option')).textContent = 'SELECT TICKER ▼';
+    s.querySelector('option:last-child').value = '';
+    (node ? node.tickers : []).forEach(function (tk) {
+      var o = document.createElement('option');
+      o.value = tk;
+      o.textContent = tk;
+      s.appendChild(o);
+    });
+  }
+  CW.fillAsset = cwFillAssetSelect;
+
+  function cwRenderCards() {
+    var box = document.getElementById('call-recent-cards');
+    if (!box) return;
+    box.innerHTML = '';
+    for (var i = 0; i < 3; i++) {
+      var card = document.createElement('div');
+      card.className = 'call-card call-card-empty';
+      card.innerHTML =
+        '<div class="call-card-head"><span>CALL // -----</span><span class="call-card-status">WAITING</span></div>' +
+        '<div class="call-card-no">// NO DATA //</div>' +
+        '<div class="call-reaction">' +
+        '<button type="button" class="call-reaction-btn" onclick="callWallReact(\'LIKE\', this)">LIKE // --</button>' +
+        '<button type="button" class="call-reaction-btn" onclick="callWallReact(\'DISLIKE\', this)">DISLIKE // --</button>' +
+        '</div>';
+      box.appendChild(card);
+    }
+  }
+
+  function cwRenderList() {
+    var el = document.getElementById('call-wall-list');
+    if (!el) return;
+    var f = cw.state.filter;
+    var label = f === 'ALL' ? '' : ' [' + f + ']';
+    el.innerHTML =
+      '<div class="call-wall-empty">' +
+      '// NO REGISTERED CALLS YET' + label + '<br>' +
+      '// THE WALL IS CLEAN //' +
+      '</div>';
+  }
+
+  function cwMsg(txt) {
+    var m = document.getElementById('call-composer-msg');
+    if (m) { m.textContent = txt; m.style.display = 'block'; }
+  }
+
+  window.callWallReact = function (kind) {
+    var u = cwUser();
+    if (!u) { cwMsg('// AUTHENTICATION REQUIRED // READ ACCESS REMAINS OPEN'); return; }
+    cwMsg('[ PERSISTENCE NOT ARMED ] // ' + kind + ' NOT REGISTERED // FIREBASE BRIDGE EXPECTED IN 017B');
+  };
+
+  function cwToggleComposer() {
+    var body = document.getElementById('call-composer-body');
+    var tog = document.getElementById('call-composer-toggle');
+    if (!body) return;
+    var u = cwUser();
+    if (!u) { cwMsg('// AUTHENTICATION REQUIRED // READ ACCESS REMAINS OPEN'); return; }
+    var open = body.style.display !== 'none';
+    body.style.display = open ? 'none' : 'block';
+    if (tog) tog.textContent = open ? '[ + ]' : '[ − ]';
+    if (!open) { cw.nodes = cwBuildNodes(); cwFillAssetSelect('call-cw-asset', cw.state.desk); }
+  }
+  window.callWallToggleComposer = cwToggleComposer;
+
+  function cwDeskChanged() {
+    var s = document.getElementById('call-cw-desk');
+    cw.state.desk = s ? s.value : '';
+    cw.nodes = cwBuildNodes();
+    cwFillAssetSelect('call-cw-asset', cw.state.desk);
+    var a = document.getElementById('call-cw-asset');
+    if (a) a.selectedIndex = 0;
+    cwMsg('');
+  }
+  window.callWallDeskChanged = cwDeskChanged;
+
+  function cwFilterDesk() {
+    var s = document.getElementById('call-filter-desk');
+    cw.state.desk = s ? s.value : '';
+    cw.nodes = cwBuildNodes();
+    cwFillAssetSelect('call-filter-asset', cw.state.desk);
+    cwRenderList();
+  }
+  window.callWallFilterDesk = cwFilterDesk;
+
+  window.callWallBias = function (v) {
+    cw.state.bias = v;
+    var box = document.getElementById('call-cw-bias');
+    if (box) Array.prototype.forEach.call(box.children, function (b) {
+      b.classList.toggle('active', b.getAttribute('data-v') === v);
+    });
+  };
+
+  window.callWallHorizon = function (v) {
+    cw.state.horizon = v;
+    var box = document.getElementById('call-cw-horizon');
+    if (box) Array.prototype.forEach.call(box.children, function (b) {
+      b.classList.toggle('active', b.getAttribute('data-v') === v);
+    });
+  };
+
+  function cwRegister() {
+    var u = cwUser();
+    if (!u) { cwMsg('// AUTHENTICATION REQUIRED // READ ACCESS REMAINS OPEN'); return; }
+    var errs = [];
+    if (!cw.state.desk) errs.push('DESK');
+    var assetEl = document.getElementById('call-cw-asset');
+    if (!assetEl || !assetEl.value) errs.push('TICKER');
+    if (!cw.state.bias) errs.push('BIAS');
+    if (!cw.state.horizon) errs.push('HORIZON');
+    var thesis = document.getElementById('call-cw-thesis');
+    if (!thesis || thesis.value.trim().length < 8) errs.push('THESIS');
+    if (errs.length) {
+      cwMsg('////// INVALID >>> ' + errs.join(' / '));
+      return;
+    }
+    cwMsg('[ PERSISTENCE NOT ARMED ] // CALL NOT REGISTERED // FIREBASE BRIDGE EXPECTED IN 017B');
+  }
+  window.callWallRegister = cwRegister;
+  window.callWallRenderList = cwRenderList;
+
+  function cwBind() {
+    var chips = document.getElementById('call-filter-status');
+    if (chips) {
+      Array.prototype.forEach.call(chips.children, function (c) {
+        c.addEventListener('click', function () {
+          var cur = document.querySelector('.call-filter-chip.active');
+          if (cur) cur.classList.remove('active');
+          c.classList.add('active');
+          cw.state.filter = c.getAttribute('data-f') || 'ALL';
+          cwRenderList();
+        });
+      });
+    }
+    window.addEventListener('storage', function () { cwAuthMsg(); });
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', cwInit);
+    } else {
+      cwInit();
+    }
+  }
+
+  function cwInit() {
+    if (cw.initDone) return;
+    cw.initDone = true;
+    cw.nodes = cwBuildNodes();
+    cwFillSelects();
+    cwRenderCards();
+    cwRenderList();
+    cwAuthMsg();
+    var body = document.getElementById('call-composer-body');
+    if (body) body.style.display = 'none';
+  }
+  window.callWallInit = cwInit;
+  window.callWallRefreshAuth = cwAuthMsg;
+
+  cwBind();
 })();
 </script>
 
-<div class="bt-live-ticker">
-  <div class="bt-ticker-inner" id="bt-ticker-inner">
-    <span class="bt-tick-item"><span class="bt-tick-sym">SPX</span><span class="bt-tick-val" id="bt-t-spx">7,710.70</span>&nbsp;<span class="bt-tick-chg up" id="bt-tc-spx">+0.24%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">NDQ</span><span class="bt-tick-val" id="bt-t-ndq">29,455.02</span>&nbsp;<span class="bt-tick-chg up" id="bt-tc-ndq">+0.41%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">GOLD</span><span class="bt-tick-val" id="bt-t-gold">4,456.90</span>&nbsp;<span class="bt-tick-chg up" id="bt-tc-gold">+0.87%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">BTC</span><span class="bt-tick-val" id="bt-t-btc">67,234.50</span>&nbsp;<span class="bt-tick-chg down" id="bt-tc-btc">-1.24%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">WTI</span><span class="bt-tick-val" id="bt-t-wti">128.46</span>&nbsp;<span class="bt-tick-chg down" id="bt-tc-wti">-0.33%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">VIX</span><span class="bt-tick-val" id="bt-t-vix">17.34</span>&nbsp;<span class="bt-tick-chg up" id="bt-tc-vix">+2.14%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">DXY</span><span class="bt-tick-val" id="bt-t-dxy">104.87</span>&nbsp;<span class="bt-tick-chg flat" id="bt-tc-dxy">+0.02%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">EUR/USD</span><span class="bt-tick-val" id="bt-t-eurusd">1.0847</span>&nbsp;<span class="bt-tick-chg down" id="bt-tc-eurusd">-0.18%</span></span>
-    <!-- duplicado para loop continuo -->
-    <span class="bt-tick-item"><span class="bt-tick-sym">SPX</span><span class="bt-tick-val">7,710.70</span>&nbsp;<span class="bt-tick-chg up">+0.24%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">NDQ</span><span class="bt-tick-val">29,455.02</span>&nbsp;<span class="bt-tick-chg up">+0.41%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">GOLD</span><span class="bt-tick-val">4,456.90</span>&nbsp;<span class="bt-tick-chg up">+0.87%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">BTC</span><span class="bt-tick-val">67,234.50</span>&nbsp;<span class="bt-tick-chg down">-1.24%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">WTI</span><span class="bt-tick-val">128.46</span>&nbsp;<span class="bt-tick-chg down">-0.33%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">VIX</span><span class="bt-tick-val">17.34</span>&nbsp;<span class="bt-tick-chg up">+2.14%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">DXY</span><span class="bt-tick-val">104.87</span>&nbsp;<span class="bt-tick-chg flat">+0.02%</span></span>
-    <span class="bt-tick-item"><span class="bt-tick-sym">EUR/USD</span><span class="bt-tick-val">1.0847</span>&nbsp;<span class="bt-tick-chg down">-0.18%</span></span>
+<!-- SURGERY-017A: THE [ CALL ] WALL — global market-thesis registry -->
+<section id="leaderboard" class="call-wall">
+  <div class="call-wall-bg"></div>
+  <div class="call-wall-title-block">
+    <h2 class="call-wall-title" data-glitch="THE [ CALL ] WALL">THE [ CALL ] WALL</h2>
+    <div class="call-wall-manifesto">// TALK IS FREE // CALLS LEAVE A SCAR //</div>
+    <div class="call-wall-sub">[ IMMUTABLE MARKET THESIS // THE TERMINAL REMEMBERS ]</div>
   </div>
-</div>
 
-<!-- Master header V2 - GAMMA Design System -->
-<div class="bt-header-v2">
-  <div class="bt-header-grid-bg"></div>
-  <div class="bt-header-scanline"></div>
-
-  <div class="bt-header-left">
-    <div class="bt-header-logo-block">
-      <div class="bt-glitch-text" data-text="SB">SB</div>
-      <div class="bt-header-logo-line"></div>
-    </div>
-    <div class="bt-header-title-wrap">
-      <div class="bt-header-meta">CASE_FILE: 0xBT-V2 // CLEARANCE: GAMMA</div>
-      <h2 class="bt-header-title">BLACK TERMINAL</h2>
-      <div class="bt-header-sub">// SOVEREIGN FINANCIAL INTELLIGENCE · OKLCH ENGINE //</div>
+  <div class="call-wall-auth" id="call-wall-auth">
+    <div class="call-wall-auth-msg" id="call-cw-auth-msg"></div>
+    <div class="call-wall-auth-ctrls">
+      <button type="button" class="call-wall-btn" id="call-cw-login-btn" onclick="rppiOpenLogin()">LOGIN / REGISTER</button>
+      <button type="button" class="call-wall-btn call-wall-btn-sign" id="call-cw-sign-btn" onclick="callWallToggleComposer()">SIGN A CALL</button>
     </div>
   </div>
 
-  <div class="bt-header-right-v2">
-    <div class="bt-stat-block">
-      <span class="bt-stat-label">MARKET</span>
-      <div class="bt-rth-badge" id="bt-rth-badge">RTH ACTIVE</div>
+  <div class="call-wall-filters">
+    <div class="call-wall-chips" id="call-filter-status">
+      <button type="button" class="call-filter-chip active" data-f="ALL">ALL</button>
+      <button type="button" class="call-filter-chip" data-f="OPEN">OPEN</button>
+      <button type="button" class="call-filter-chip" data-f="CLOSED">CLOSED</button>
+      <button type="button" class="call-filter-chip" data-f="LONG">LONG</button>
+      <button type="button" class="call-filter-chip" data-f="SHORT">SHORT</button>
     </div>
-
-    <div class="bt-stat-block bt-clock-block">
-      <span class="bt-stat-label">EST TIME</span>
-      <div class="bt-clock-display" id="bt-clock">--:--:--</div>
+    <div class="call-wall-filter-selects">
+      <label class="call-filter-label">DESK
+        <select id="call-filter-desk" onchange="callWallFilterDesk()"><option value="">ALL NODES ▼</option></select>
+      </label>
+      <label class="call-filter-label">ASSET
+        <select id="call-filter-asset" onchange="callWallRenderList()"><option value="">ALL ASSETS ▼</option></select>
+      </label>
     </div>
+  </div>
 
-    <div class="bt-stat-block bt-cartel-mark">
-      <span class="bt-cartel-symbol">⟁</span>
-      <div class="bt-cartel-text">
-        <strong>SB CARTEL</strong>
-        <span>OCI DIVISION</span>
+  <div class="call-composer" id="call-composer">
+    <div class="call-composer-head" onclick="callWallToggleComposer()">
+      <span class="call-composer-title">SIGN A CALL</span>
+      <span class="call-composer-toggle" id="call-composer-toggle">[ + ]</span>
+    </div>
+    <div class="call-composer-body" id="call-composer-body">
+      <div class="call-composer-grid">
+        <label class="call-composer-field">OPERATOR <input type="text" id="call-cw-op" disabled placeholder="// SEALED AT REGISTRATION"></label>
+        <label class="call-composer-field">DESK
+          <select id="call-cw-desk" onchange="callWallDeskChanged()"><option value="">SELECT NODE ▼</option></select>
+        </label>
+        <label class="call-composer-field">ASSET
+          <select id="call-cw-asset"><option value="">SELECT TICKER ▼</option></select>
+        </label>
       </div>
+      <div class="call-composer-row">
+        <span class="call-composer-sub">BIAS</span>
+        <div class="call-composer-seg" id="call-cw-bias">
+          <button type="button" class="call-seg" data-v="LONG" onclick="callWallBias('LONG')">LONG</button>
+          <button type="button" class="call-seg" data-v="SHORT" onclick="callWallBias('SHORT')">SHORT</button>
+        </div>
+        <span class="call-composer-sub call-composer-sub-gap">HORIZON</span>
+        <div class="call-composer-seg" id="call-cw-horizon">
+          <button type="button" class="call-seg" data-v="1D" onclick="callWallHorizon('1D')">1D</button>
+          <button type="button" class="call-seg" data-v="5D" onclick="callWallHorizon('5D')">5D</button>
+          <button type="button" class="call-seg" data-v="10D" onclick="callWallHorizon('10D')">10D</button>
+          <button type="button" class="call-seg" data-v="30D" onclick="callWallHorizon('30D')">30D</button>
+        </div>
+      </div>
+      <label class="call-composer-area">THESIS <textarea id="call-cw-thesis" rows="3" placeholder="// YOUR MARKET THESIS //"></textarea></label>
+      <label class="call-composer-area">INVALIDATION <textarea id="call-cw-invalid" rows="2" placeholder="// WHAT WOULD PROVE YOU WRONG //"></textarea></label>
+      <label class="call-composer-field call-composer-target">TARGET // OPTIONAL <input type="text" id="call-cw-target" placeholder="// OPTIONAL LEVEL //"></label>
+      <div class="call-composer-sealed">
+        <span>REFERENCE PRICE <b>// SEALED AT REGISTRATION</b></span>
+        <span>TIMESTAMP <b>// SEALED AT REGISTRATION</b></span>
+      </div>
+      <div class="call-composer-actions">
+        <button type="button" class="call-wall-btn call-wall-btn-sign" onclick="callWallRegister()">REGISTER CALL</button>
+        <span class="call-composer-footnote">// MARKET MEMORY IS PERMANENT<br>// YOUR THESIS WILL BE MEASURED</span>
+      </div>
+      <div class="call-composer-msg" id="call-composer-msg"></div>
     </div>
   </div>
-</div>
 
+  <div class="call-wall-recent">
+    <div class="call-wall-section-head">RECENTLY SIGNED // ACTIVE CALLS</div>
+    <div class="call-wall-cards" id="call-recent-cards"></div>
+  </div>
+
+  <div class="call-wall-registry">
+    <div class="call-wall-section-head">[ IMMUTABLE RECORD // COMPLETE WALL ]</div>
+    <div class="call-wall-table">
+      <div class="call-wall-row call-wall-row-head">
+        <span>CALL</span><span>OPERATOR</span><span>DESK</span><span>TICKER</span><span>BIAS</span><span>HORIZON</span><span>STATUS</span><span>SENTIMENT</span>
+      </div>
+      <div id="call-wall-list"></div>
+    </div>
+  </div>
+
+  <div class="call-wall-desk-cta">// CHOOSE YOUR DESK BELOW // <span class="call-wall-arrow">↓</span></div>
+</section>
 <!-- SURGERY-015: 3D ORBITAL NODE SELECTOR — capa de navegación sobre los nodos existentes -->
 <div class="bt-orb" id="bt-orb">
   <div class="bt-orb-head">NODE ORBITAL SELECTOR</div>
@@ -7465,151 +7635,11 @@ document.addEventListener('keydown', function(e){
   <div class="bt-node-content-grid"><div class="bt-node-body" id="bn02-body"></div><div class="bt-node-desc"><div class="bt-node-desc-hdr">// LECTURA DEL OPERADOR //</div><p>La rotación sectorial revela hacia dónde está fluyendo el capital institucional <b>antes</b> de que se note en el índice general — cuando la plata sale de Tech y entra a Utilities/Staples, el mercado está posicionándose defensivo aunque el precio todavía no lo grite.</p><p>El spread de deuda (<b>HYG vs TLT</b>, curva 2Y/10Y) es históricamente el mejor predictor de recesión que existe — mejor que cualquier economista con corbata en la tele.</p><div class="bt-node-desc-quote">"La curva no opina. La curva invierte, y después vienen a explicarte por qué."</div></div></div>
 </div>
 
-<!-- NODE 03: ENERGÍA -->
-<div class="bt-node bt-clip" id="bt-node-03">
-  <div class="bt-node-header" onclick="btToggleNode('bt-node-03')" style="cursor:pointer;">
-    <span class="bt-node-id">NODO 03</span>
-    <span class="bt-node-title">ENERGÍA & BASE FÍSICA</span>
-    <button class="bt-node-close-btn" onclick="event.stopPropagation();btToggleNode('bt-node-03')">✕ CERRAR</button>
-    <div class="bt-node-dot"></div>
-  </div>
-  <div class="bt-node-content-grid"><div class="bt-node-body" id="bn03-body"></div><div class="bt-node-desc"><div class="bt-node-desc-hdr">// LECTURA DEL OPERADOR //</div><p>Los commodities físicos no se dejan manipular con un comunicado de prensa. WTI, Brent y Gas miden demanda real de la economía real — fábricas, transporte, calefacción — no lo que un banco central <em>diga</em> que está pasando.</p><p>El agro (maíz, soja) agrega la variable que todos ignoran: inflación de alimentos, la que de verdad le duele a la calle, no la que sale en el IPC recortado.</p><div class="bt-node-desc-quote">"Los bancos centrales imprimen papel. Nadie imprime petróleo."</div></div></div>
-</div>
 
-<!-- NODE 04: METALES VS VIX -->
-<div class="bt-node bt-clip" id="bt-node-04">
-  <div class="bt-node-header" onclick="btToggleNode('bt-node-04')" style="cursor:pointer;">
-    <span class="bt-node-id">NODO 04</span>
-    <span class="bt-node-title">METALES VS VOLATILIDAD</span>
-    <button class="bt-node-close-btn" onclick="event.stopPropagation();btToggleNode('bt-node-04')">✕ CERRAR</button>
-    <div class="bt-node-dot"></div>
-  </div>
-  <div class="bt-node-content-grid"><div class="bt-node-body" id="bn04-body"></div><div class="bt-node-desc"><div class="bt-node-desc-hdr">// LECTURA DEL OPERADOR //</div><p>El oro sube cuando el sistema pierde confianza en el papel — es el activo que no le debe nada a nadie. El <b>"Doctor Cobre"</b> mide industria real: si el cobre cae mientras el oro sube, no es miedo especulativo, es contracción económica de verdad.</p><p>Cruzar esto contra <b>VIX/VVIX/SVIX</b> me dice si el mercado está genuinamente asustado o solo comprando protección barata porque puede.</p><div class="bt-node-desc-quote">"Cuando el oro y el miedo suben juntos, dejá de mirar el precio y empezá a mirar la salida."</div></div></div>
-</div>
-
-<!-- NODE 05: FOREX -->
-<div class="bt-node bt-clip" id="bt-node-05">
-  <div class="bt-node-header" onclick="btToggleNode('bt-node-05')" style="cursor:pointer;">
-    <span class="bt-node-id">NODO 05</span>
-    <span class="bt-node-title">PLOMERÍA FOREX & DISTORSIÓN</span>
-    <button class="bt-node-close-btn" onclick="event.stopPropagation();btToggleNode('bt-node-05')">✕ CERRAR</button>
-    <div class="bt-node-dot"></div>
-  </div>
-  <div class="bt-node-content-grid"><div class="bt-node-body" id="bn05-body"></div><div class="bt-node-desc"><div class="bt-node-desc-hdr">// LECTURA DEL OPERADOR //</div><p>El dólar es el oxígeno del sistema financiero global. Cuando el <b>DXY</b> se encarece, no solo mueve el forex — aprieta la liquidez de <em>todos</em> los activos del planeta denominados en dólares, desde el Bitcoin hasta la soja brasilera.</p><p>El par <b>JPY/USD</b> cerca de zona de intervención (155-160) es la mecha más corta del sistema: cuando el Banco de Japón actúa, el carry trade global se desarma en horas.</p><div class="bt-node-desc-quote">"Nadie mira el yen hasta que el yen los mira a todos primero."</div></div></div>
-</div>
-
-<!-- NODE 06: CRYPTO PREMIUM -->
-<div class="bt-node bt-clip node-crypto" id="bt-node-06">
-  <div class="bt-node-header" onclick="btToggleNode('bt-node-06')" style="border-bottom-color:rgba(255,215,0,0.2);background:rgba(255,215,0,0.05);cursor:pointer;">
-    <span class="bt-node-id" style="color:rgba(255,215,0,0.6);">NODO 06 ★ V02</span>
-    <span class="bt-node-title" style="color:#FFD700;">ENGINE LUDO CRYPTO BRO</span>
-    <button class="bt-node-close-btn" onclick="event.stopPropagation();btToggleNode('bt-node-06')">✕ CERRAR</button>
-    <div class="bt-node-dot gold"></div>
-  </div>
-  <div class="bt-node-content-grid">
-  <div class="bt-node-body" id="bn06-body">
-    <div class="bt-crypto-lock">⚡ COINALYZE API · CVD + OI DELTA + LIQ BARS</div>
-    <div id="bn06-cards"></div>
-    <div class="bt-sub-gate">
-      <div class="bt-sub-tier">SUSCRIPCIÓN V02 — PREMIUM QUANTITATIVE</div>
-      <div class="bt-sub-price">$19.99<span style="font-size:12px;color:rgba(255,255,255,0.3)">/mes</span></div>
-      <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);margin:6px 0;letter-spacing:1px;">
-        LIQUIDATION_POOL · CVD DIVERGENCE · 0DTE LEVELS
-      </div>
-      <button class="bt-sub-btn bt-clip-sm">ACTIVAR ACCESO PREMIUM →</button>
-    </div>
-  </div>
-  <div class="bt-node-desc">
-    <div class="bt-node-desc-hdr">// LECTURA DEL OPERADOR //</div>
-    <p>En cripto, el apalancamiento (10x-50x) es tan alto que el precio spot casi no importa — lo que mueve el mercado de verdad son las <b>zonas de liquidación forzada</b>, el combustible real detrás de cada movimiento violento.</p>
-    <p>Cuando el <b>CVD diverge</b> del precio (el volumen acumulado no confirma el movimiento), casi siempre hay una ballena absorbiendo en silencio lo que el retail está vendiendo en pánico.</p>
-    <div class="bt-node-desc-quote">"El precio es el humo. La liquidación es el fuego."</div>
-  </div>
-  </div>
-</div>
-
-<!-- NODE 07: UTF-8 BOM / THE AI BUBBLE -->
-<div class="bt-node bt-clip node-ai" id="bt-node-07">
-  <div class="bt-node-header" onclick="btToggleNode('bt-node-07')" style="border-bottom-color:rgba(0,200,255,0.25);background:rgba(0,200,255,0.05);cursor:pointer;">
-    <span class="bt-node-id" style="color:rgba(0,210,255,0.7);">NODO 07 ★ UTF-8 BOM</span>
-    <span class="bt-node-title" style="color:#00D2FF;">THE AI BUBBLE</span>
-    <button class="bt-node-close-btn" onclick="event.stopPropagation();btToggleNode('bt-node-07')">✕ CERRAR</button>
-    <div class="bt-node-dot" style="background:#00D2FF;box-shadow:0 0 8px #00D2FF;"></div>
-  </div>
-  <div class="bt-node-content-grid">
-  <div class="bt-node-body" id="bn07-body">
-    <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:#00D2FF;text-shadow:0 0 6px rgba(0,210,255,0.4);letter-spacing:1px;padding:4px 0 6px;">EVERYTHING IS PRICED IN = [MARKET OK]</div>
-    <div id="bn07-cards"></div>
-    <div class="bt-sub-gate">
-      <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(0,210,255,0.55);letter-spacing:1px;">CAPEX // HBM // GPU // POWER // CLOUD</div>
-    </div>
-  </div>
-  <div class="bt-node-desc">
-    <div class="bt-node-desc-hdr">// LECTURA DEL OPERADOR //</div>
-    <p>Esta es la <b>canalización física del capex de IA</b>: el chip (NVDA/AVGO), el silicio a escala (TSM), la memoria HBM que lo alimenta (MU/SAMSUNG/SK HYNIX), el almacenamiento, la red del datacenter (ANET), la energía y refrigeración que lo sostienen (VRT), y el software que lo vende (ORCL).</p>
-    <p>Cuando la cinta sectorial (SOXX/SMH) y los aceleradores se mueven juntos, el <em>trade</em> está confirmado. Cuando divergen, alguien está repartiendo la euforia.</p>
-    <div class="bt-node-desc-quote">"Todo tiene precio. El problema es cuando el precio ya no pregunta cuánto vale nada."</div>
-  </div>
-  </div>
-</div>
-
-</div><!-- /bt-grid -->
-
-<!-- Hero row: VIX Gauge + Radar + Flow -->
-<div class="bt-hero-row">
-
-  <!-- VIX FEAR GAUGE -->
-  <div class="bt-hero-panel bt-clip" style="position:relative;">
-    <div style="border-bottom:1px solid rgba(248,255,43,0.2);background:rgba(248,255,43,0.05);padding:8px 12px;margin:-16px -16px 12px;display:flex;align-items:center;gap:10px;position:relative;z-index:3;">
-      <span style="font-family:'Orbitron',monospace;font-weight:700;font-size:14px;letter-spacing:3px;color:rgba(248,255,43,0.7);">PANEL 01</span>
-      <span style="font-family:'Share Tech Mono',monospace;font-size:15px;letter-spacing:2px;color:oklch(70% 0.19 50);text-shadow:0 0 6px oklch(70% 0.19 50/0.5);">VIX FEAR GAUGE</span>
-      <div style="width:7px;height:7px;border-radius:50%;background:oklch(70% 0.19 50);box-shadow:0 0 6px oklch(70% 0.19 50);animation:btPulse 1.8s ease-in-out infinite;margin-left:auto;"></div>
-    </div>
-    <!-- V3: Holographic Radar Orbital (decoración de fondo, rotateX+rotateZ+perspective) -->
-    <div class="bt-radar-viewport" aria-hidden="true">
-      <div class="bt-radar-ring"></div>
-      <div class="bt-radar-core"></div>
-    </div>
-    <div style="border:1px solid oklch(70% 0.19 50/0.4);border-bottom:1px solid oklch(70% 0.19 50/0.4);background:oklch(70% 0.19 50/0.05);padding:6px 10px;margin:0 -16px 8px;display:flex;align-items:center;justify-content:center;">
-      <div class="bt-radar-label" style="position:static;transform:none;">ORBITAL SCAN</div>
-    </div>
-    <div class="bt-hero-title" style="position:relative;z-index:2;">VIX · ÍNDICE DE MIEDO INSTITUCIONAL</div>
-    <div class="bt-gauge-wrap" id="bt-gauge-wrap">
-      <svg class="bt-gauge-svg" viewBox="0 0 160 90">
-        <defs>
-          <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%"   stop-color="#00FF41"/>
-            <stop offset="40%"  stop-color="#F8FF2B"/>
-            <stop offset="75%"  stop-color="#FF6B00"/>
-            <stop offset="100%" stop-color="#FF0000"/>
-          </linearGradient>
-        </defs>
-        <!-- Track arc -->
-        <path d="M16,84 A 64 64 0 0 1 144,84" stroke="rgba(255,255,255,0.08)" stroke-width="12" fill="none"/>
-        <!-- Active arc -->
-        <path id="bt-gauge-arc" d="M16,84 A 64 64 0 0 1 144,84" stroke="url(#gaugeGrad)" stroke-width="12" fill="none"
-          stroke-dasharray="201" stroke-dashoffset="100" stroke-linecap="round"/>
-        <!-- Ticks -->
-        <text x="10" y="88" fill="rgba(255,255,255,0.3)" font-size="8" font-family="monospace">0</text>
-        <text x="70" y="20" fill="rgba(255,255,255,0.3)" font-size="8" font-family="monospace">50</text>
-        <text x="138" y="88" fill="rgba(255,255,255,0.3)" font-size="8" font-family="monospace">80</text>
-        <!-- Center dot -->
-        <circle cx="80" cy="84" r="5" fill="#FF2D78" style="filter:drop-shadow(0 0 4px #FF2D78)"/>
-      </svg>
-      <div class="bt-gauge-needle-wrap" id="bt-gauge-needle" style="--needle-deg:-45deg;">
-        <div class="bt-gauge-needle"></div>
-      </div>
-    </div>
-    <div class="bt-gauge-val" id="bt-gauge-val" style="color:#F8FF2B;">17.34</div>
-    <div class="bt-gauge-lbl" id="bt-gauge-lbl">MODERADO · TRANSICIÓN</div>
-    <div style="margin-top:10px;font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:1.5px;">
-      VVIX: <span id="bt-vvix-val" style="color:rgba(255,255,255,0.6);">82.44</span> &nbsp;|&nbsp;
-      SVIX: <span id="bt-svix-val" style="color:#00FF41;">23.87</span>
-    </div>
-  </div>
-
+    <!-- S015E conduit: node => panel -->
+    <div class="bt-conduit" aria-hidden="true"><i class="bt-conduit-beam"></i><span class="bt-conduit-tag">LINK // PROXY DATA</span></div>
   <!-- SECTOR RADAR -->
-  <div class="bt-hero-panel bt-clip">
+  <div class="bt-hero-panel bt-panel-inline bt-clip">
     <div style="border-bottom:1px solid rgba(248,255,43,0.2);background:rgba(248,255,43,0.05);padding:8px 12px;margin:-16px -16px 12px;display:flex;align-items:center;gap:10px;">
       <span style="font-family:'Orbitron',monospace;font-weight:700;font-size:14px;letter-spacing:3px;color:rgba(248,255,43,0.7);">PANEL 02</span>
       <span style="font-family:'Share Tech Mono',monospace;font-size:15px;letter-spacing:2px;color:#F8FF2B;text-shadow:0 0 6px rgba(248,255,43,0.5);">SECTOR RADAR</span>
@@ -7681,8 +7711,152 @@ document.addEventListener('keydown', function(e){
     </div>
   </div>
 
+<!-- NODE 03: ENERGÍA -->
+<div class="bt-node bt-clip" id="bt-node-03">
+  <div class="bt-node-header" onclick="btToggleNode('bt-node-03')" style="cursor:pointer;">
+    <span class="bt-node-id">NODO 03</span>
+    <span class="bt-node-title">ENERGÍA & BASE FÍSICA</span>
+    <button class="bt-node-close-btn" onclick="event.stopPropagation();btToggleNode('bt-node-03')">✕ CERRAR</button>
+    <div class="bt-node-dot"></div>
+  </div>
+  <div class="bt-node-content-grid"><div class="bt-node-body" id="bn03-body"></div><div class="bt-node-desc"><div class="bt-node-desc-hdr">// LECTURA DEL OPERADOR //</div><p>Los commodities físicos no se dejan manipular con un comunicado de prensa. WTI, Brent y Gas miden demanda real de la economía real — fábricas, transporte, calefacción — no lo que un banco central <em>diga</em> que está pasando.</p><p>El agro (maíz, soja) agrega la variable que todos ignoran: inflación de alimentos, la que de verdad le duele a la calle, no la que sale en el IPC recortado.</p><div class="bt-node-desc-quote">"Los bancos centrales imprimen papel. Nadie imprime petróleo."</div></div></div>
+</div>
+
+<!-- NODE 04: METALES VS VIX -->
+<div class="bt-node bt-clip" id="bt-node-04">
+  <div class="bt-node-header" onclick="btToggleNode('bt-node-04')" style="cursor:pointer;">
+    <span class="bt-node-id">NODO 04</span>
+    <span class="bt-node-title">METALES VS VOLATILIDAD</span>
+    <button class="bt-node-close-btn" onclick="event.stopPropagation();btToggleNode('bt-node-04')">✕ CERRAR</button>
+    <div class="bt-node-dot"></div>
+  </div>
+  <div class="bt-node-content-grid"><div class="bt-node-body" id="bn04-body"></div><div class="bt-node-desc"><div class="bt-node-desc-hdr">// LECTURA DEL OPERADOR //</div><p>El oro sube cuando el sistema pierde confianza en el papel — es el activo que no le debe nada a nadie. El <b>"Doctor Cobre"</b> mide industria real: si el cobre cae mientras el oro sube, no es miedo especulativo, es contracción económica de verdad.</p><p>Cruzar esto contra <b>VIX/VVIX/SVIX</b> me dice si el mercado está genuinamente asustado o solo comprando protección barata porque puede.</p><div class="bt-node-desc-quote">"Cuando el oro y el miedo suben juntos, dejá de mirar el precio y empezá a mirar la salida."</div></div></div>
+</div>
+
+
+    <!-- S015E conduit: node => panel -->
+    <div class="bt-conduit" aria-hidden="true"><i class="bt-conduit-beam"></i><span class="bt-conduit-tag">LINK // PROXY DATA</span></div>
+  <!-- VIX FEAR GAUGE -->
+  <div class="bt-hero-panel bt-panel-inline bt-clip" style="position:relative;">
+    <div style="border-bottom:1px solid rgba(248,255,43,0.2);background:rgba(248,255,43,0.05);padding:8px 12px;margin:-16px -16px 12px;display:flex;align-items:center;gap:10px;position:relative;z-index:3;">
+      <span style="font-family:'Orbitron',monospace;font-weight:700;font-size:14px;letter-spacing:3px;color:rgba(248,255,43,0.7);">PANEL 01</span>
+      <span style="font-family:'Share Tech Mono',monospace;font-size:15px;letter-spacing:2px;color:oklch(70% 0.19 50);text-shadow:0 0 6px oklch(70% 0.19 50/0.5);">VIX FEAR GAUGE</span>
+      <div style="width:7px;height:7px;border-radius:50%;background:oklch(70% 0.19 50);box-shadow:0 0 6px oklch(70% 0.19 50);animation:btPulse 1.8s ease-in-out infinite;margin-left:auto;"></div>
+    </div>
+    <!-- V3: Holographic Radar Orbital (decoración de fondo, rotateX+rotateZ+perspective) -->
+    <div class="bt-radar-viewport" aria-hidden="true">
+      <div class="bt-radar-ring"></div>
+      <div class="bt-radar-core"></div>
+    </div>
+    <div style="border:1px solid oklch(70% 0.19 50/0.4);border-bottom:1px solid oklch(70% 0.19 50/0.4);background:oklch(70% 0.19 50/0.05);padding:6px 10px;margin:0 -16px 8px;display:flex;align-items:center;justify-content:center;">
+      <div class="bt-radar-label" style="position:static;transform:none;">ORBITAL SCAN</div>
+    </div>
+    <div class="bt-hero-title" style="position:relative;z-index:2;">VIX · ÍNDICE DE MIEDO INSTITUCIONAL</div>
+    <div class="bt-gauge-wrap" id="bt-gauge-wrap">
+      <svg class="bt-gauge-svg" viewBox="0 0 160 90">
+        <defs>
+          <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stop-color="#00FF41"/>
+            <stop offset="40%"  stop-color="#F8FF2B"/>
+            <stop offset="75%"  stop-color="#FF6B00"/>
+            <stop offset="100%" stop-color="#FF0000"/>
+          </linearGradient>
+        </defs>
+        <!-- Track arc -->
+        <path d="M16,84 A 64 64 0 0 1 144,84" stroke="rgba(255,255,255,0.08)" stroke-width="12" fill="none"/>
+        <!-- Active arc -->
+        <path id="bt-gauge-arc" d="M16,84 A 64 64 0 0 1 144,84" stroke="url(#gaugeGrad)" stroke-width="12" fill="none"
+          stroke-dasharray="201" stroke-dashoffset="100" stroke-linecap="round"/>
+        <!-- Ticks -->
+        <text x="10" y="88" fill="rgba(255,255,255,0.3)" font-size="8" font-family="monospace">0</text>
+        <text x="70" y="20" fill="rgba(255,255,255,0.3)" font-size="8" font-family="monospace">50</text>
+        <text x="138" y="88" fill="rgba(255,255,255,0.3)" font-size="8" font-family="monospace">80</text>
+        <!-- Center dot -->
+        <circle cx="80" cy="84" r="5" fill="#FF2D78" style="filter:drop-shadow(0 0 4px #FF2D78)"/>
+      </svg>
+      <div class="bt-gauge-needle-wrap" id="bt-gauge-needle" style="--needle-deg:-45deg;">
+        <div class="bt-gauge-needle"></div>
+      </div>
+    </div>
+    <div class="bt-gauge-val" id="bt-gauge-val" style="color:#F8FF2B;">17.34</div>
+    <div class="bt-gauge-lbl" id="bt-gauge-lbl">MODERADO · TRANSICIÓN</div>
+    <div style="margin-top:10px;font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:1.5px;">
+      VVIX: <span id="bt-vvix-val" style="color:rgba(255,255,255,0.6);">82.44</span> &nbsp;|&nbsp;
+      SVIX: <span id="bt-svix-val" style="color:#00FF41;">23.87</span>
+    </div>
+  </div>
+
+<!-- NODE 05: FOREX -->
+<div class="bt-node bt-clip" id="bt-node-05">
+  <div class="bt-node-header" onclick="btToggleNode('bt-node-05')" style="cursor:pointer;">
+    <span class="bt-node-id">NODO 05</span>
+    <span class="bt-node-title">PLOMERÍA FOREX & DISTORSIÓN</span>
+    <button class="bt-node-close-btn" onclick="event.stopPropagation();btToggleNode('bt-node-05')">✕ CERRAR</button>
+    <div class="bt-node-dot"></div>
+  </div>
+  <div class="bt-node-content-grid"><div class="bt-node-body" id="bn05-body"></div><div class="bt-node-desc"><div class="bt-node-desc-hdr">// LECTURA DEL OPERADOR //</div><p>El dólar es el oxígeno del sistema financiero global. Cuando el <b>DXY</b> se encarece, no solo mueve el forex — aprieta la liquidez de <em>todos</em> los activos del planeta denominados en dólares, desde el Bitcoin hasta la soja brasilera.</p><p>El par <b>JPY/USD</b> cerca de zona de intervención (155-160) es la mecha más corta del sistema: cuando el Banco de Japón actúa, el carry trade global se desarma en horas.</p><div class="bt-node-desc-quote">"Nadie mira el yen hasta que el yen los mira a todos primero."</div></div></div>
+</div>
+
+<!-- NODE 06: CRYPTO PREMIUM -->
+<div class="bt-node bt-clip node-crypto" id="bt-node-06">
+  <div class="bt-node-header" onclick="btToggleNode('bt-node-06')" style="border-bottom-color:rgba(255,215,0,0.2);background:rgba(255,215,0,0.05);cursor:pointer;">
+    <span class="bt-node-id" style="color:rgba(255,215,0,0.6);">NODO 06 ★ V02</span>
+    <span class="bt-node-title" style="color:#FFD700;">ENGINE LUDO CRYPTO BRO</span>
+    <button class="bt-node-close-btn" onclick="event.stopPropagation();btToggleNode('bt-node-06')">✕ CERRAR</button>
+    <div class="bt-node-dot gold"></div>
+  </div>
+  <div class="bt-node-content-grid">
+  <div class="bt-node-body" id="bn06-body">
+    <div class="bt-crypto-lock">⚡ COINALYZE API · CVD + OI DELTA + LIQ BARS</div>
+    <div id="bn06-cards"></div>
+    <div class="bt-sub-gate">
+      <div class="bt-sub-tier">SUSCRIPCIÓN V02 — PREMIUM QUANTITATIVE</div>
+      <div class="bt-sub-price">$19.99<span style="font-size:12px;color:rgba(255,255,255,0.3)">/mes</span></div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);margin:6px 0;letter-spacing:1px;">
+        LIQUIDATION_POOL · CVD DIVERGENCE · 0DTE LEVELS
+      </div>
+      <button class="bt-sub-btn bt-clip-sm">ACTIVAR ACCESO PREMIUM →</button>
+    </div>
+  </div>
+  <div class="bt-node-desc">
+    <div class="bt-node-desc-hdr">// LECTURA DEL OPERADOR //</div>
+    <p>En cripto, el apalancamiento (10x-50x) es tan alto que el precio spot casi no importa — lo que mueve el mercado de verdad son las <b>zonas de liquidación forzada</b>, el combustible real detrás de cada movimiento violento.</p>
+    <p>Cuando el <b>CVD diverge</b> del precio (el volumen acumulado no confirma el movimiento), casi siempre hay una ballena absorbiendo en silencio lo que el retail está vendiendo en pánico.</p>
+    <div class="bt-node-desc-quote">"El precio es el humo. La liquidación es el fuego."</div>
+  </div>
+  </div>
+</div>
+
+<!-- NODE 07: UTF-8 BOM / THE AI BUBBLE -->
+<div class="bt-node bt-clip node-ai" id="bt-node-07">
+  <div class="bt-node-header" onclick="btToggleNode('bt-node-07')" style="border-bottom-color:rgba(0,200,255,0.25);background:rgba(0,200,255,0.05);cursor:pointer;">
+    <span class="bt-node-id" style="color:rgba(0,210,255,0.7);">NODO 07 ★ UTF-8 BOM</span>
+    <span class="bt-node-title" style="color:#00D2FF;">THE AI BUBBLE</span>
+    <button class="bt-node-close-btn" onclick="event.stopPropagation();btToggleNode('bt-node-07')">✕ CERRAR</button>
+    <div class="bt-node-dot" style="background:#00D2FF;box-shadow:0 0 8px #00D2FF;"></div>
+  </div>
+  <div class="bt-node-content-grid">
+  <div class="bt-node-body" id="bn07-body">
+    <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:#00D2FF;text-shadow:0 0 6px rgba(0,210,255,0.4);letter-spacing:1px;padding:4px 0 6px;">EVERYTHING IS PRICED IN = [MARKET OK]</div>
+    <div id="bn07-cards"></div>
+    <div class="bt-sub-gate">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(0,210,255,0.55);letter-spacing:1px;">CAPEX // HBM // GPU // POWER // CLOUD</div>
+    </div>
+  </div>
+  <div class="bt-node-desc">
+    <div class="bt-node-desc-hdr">// LECTURA DEL OPERADOR //</div>
+    <p>Esta es la <b>canalización física del capex de IA</b>: el chip (NVDA/AVGO), el silicio a escala (TSM), la memoria HBM que lo alimenta (MU/SAMSUNG/SK HYNIX), el almacenamiento, la red del datacenter (ANET), la energía y refrigeración que lo sostienen (VRT), y el software que lo vende (ORCL).</p>
+    <p>Cuando la cinta sectorial (SOXX/SMH) y los aceleradores se mueven juntos, el <em>trade</em> está confirmado. Cuando divergen, alguien está repartiendo la euforia.</p>
+    <div class="bt-node-desc-quote">"Todo tiene precio. El problema es cuando el precio ya no pregunta cuánto vale nada."</div>
+  </div>
+  </div>
+</div>
+
+
+    <!-- S015E conduit: node => panel -->
+    <div class="bt-conduit" aria-hidden="true"><i class="bt-conduit-beam"></i><span class="bt-conduit-tag">LINK // PROXY DATA</span></div>
   <!-- INSTITUTIONAL FLOW -->
-  <div class="bt-hero-panel bt-clip" title="[PROXY] Motor de divergencias de precio sobre datos live del terminal. NO es order flow real, tape institucional ni posicionamiento — son proxies de confirmacion/deterioro por precio.">
+  <div class="bt-hero-panel bt-panel-inline bt-clip" title="[PROXY] Motor de divergencias de precio sobre datos live del terminal. NO es order flow real, tape institucional ni posicionamiento — son proxies de confirmacion/deterioro por precio.">
     <div style="border-bottom:1px solid rgba(0,188,255,0.2);background:rgba(0,188,255,0.05);padding:8px 12px;margin:-16px -16px 12px;display:flex;align-items:center;gap:10px;">
       <span style="font-family:'Orbitron',monospace;font-weight:700;font-size:14px;letter-spacing:3px;color:rgba(0,188,255,0.7);">PANEL 03</span>
       <span style="font-family:'Share Tech Mono',monospace;font-size:15px;letter-spacing:2px;color:#00BCFF;text-shadow:0 0 6px rgba(0,188,255,0.5);">INSTITUTIONAL FLOW</span>
@@ -7730,7 +7904,9 @@ document.addEventListener('keydown', function(e){
     </div>
   </div>
 
-</div><!-- /bt-hero-row -->
+</div><!-- /bt-grid -->
+
+
 
 <!-- Wall Street Candlestick Runner — Inline Widget -->
 <div id="wst-inline-runner-container">
