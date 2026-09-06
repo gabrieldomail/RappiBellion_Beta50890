@@ -7504,6 +7504,7 @@ font-size: 27px;
 </script>
 
 <!-- SURGERY-017A: THE [ CALL ] WALL — global market-thesis registry -->
+<div class="bt-social-row">
 <section id="leaderboard" class="call-wall">
   <div class="call-wall-bg"></div>
   <div class="call-wall-title-block">
@@ -7600,6 +7601,66 @@ font-size: 27px;
 
   <div class="call-wall-desk-cta">// CHOOSE YOUR DESK BELOW // <span class="call-wall-arrow">↓</span></div>
 </section>
+<!-- SURGERY-017C: OPEN CHANNEL // LIVE — right-side live commentary -->
+<aside class="open-channel" id="open-channel" aria-label="Open Channel Live">
+  <button class="open-channel-close" id="oc-close" type="button" aria-label="Close channel">CLOSE</button>
+  <div class="open-channel-header">
+    <div class="open-channel-title">OPEN CHANNEL // LIVE</div>
+    <div class="open-channel-status" id="oc-status">CHANNEL OFFLINE // PERSISTENCE NOT ARMED</div>
+    <div class="open-channel-context" id="oc-context">GLOBAL</div>
+  </div>
+  <div class="open-channel-stream" id="oc-stream">
+    <div class="open-channel-empty" id="oc-empty">
+      <div class="open-channel-empty-text">// NO TRANSMISSIONS YET</div>
+      <div class="open-channel-empty-sub">// OPEN CHANNEL IS LISTENING</div>
+    </div>
+  </div>
+  <div class="open-channel-new" id="oc-new">
+    <button class="open-channel-new-btn" id="oc-new-btn" type="button">VIEW NEW TRANSMISSIONS</button>
+  </div>
+  <div class="open-channel-input" id="oc-input">
+    <div class="open-channel-input-wrap">
+      <textarea class="open-channel-textarea" id="oc-textarea" placeholder="TRANSMIT TO OPEN CHANNEL..." maxlength="500"></textarea>
+      <button class="open-channel-transmit" id="oc-transmit" type="button">TRANSMIT</button>
+    </div>
+    <div class="open-channel-counter" id="oc-counter">0 / 500</div>
+  </div>
+  <div class="open-channel-readonly" id="oc-readonly" style="display:none;">
+    // READ-ONLY CHANNEL // LOGIN REQUIRED TO TRANSMIT
+    <br><button class="open-channel-login-btn" id="oc-login-btn" type="button">LOGIN / REGISTER</button>
+  </div>
+</aside>
+<!-- Mobile trigger + drawer -->
+<button class="open-channel-mobile-trigger" id="oc-mobile-trigger" type="button">OPEN CHANNEL // 0</button>
+<div class="open-channel-drawer" id="oc-drawer">
+  <button class="open-channel-close" id="oc-drawer-close" type="button" aria-label="Close channel">CLOSE</button>
+  <div class="open-channel-header">
+    <div class="open-channel-title">OPEN CHANNEL // LIVE</div>
+    <div class="open-channel-status" id="oc-drawer-status">CHANNEL OFFLINE // PERSISTENCE NOT ARMED</div>
+    <div class="open-channel-context" id="oc-drawer-context">GLOBAL</div>
+  </div>
+  <div class="open-channel-stream" id="oc-drawer-stream">
+    <div class="open-channel-empty">
+      <div class="open-channel-empty-text">// NO TRANSMISSIONS YET</div>
+      <div class="open-channel-empty-sub">// OPEN CHANNEL IS LISTENING</div>
+    </div>
+  </div>
+  <div class="open-channel-new" id="oc-drawer-new">
+    <button class="open-channel-new-btn" id="oc-drawer-new-btn" type="button">VIEW NEW TRANSMISSIONS</button>
+  </div>
+  <div class="open-channel-input" id="oc-drawer-input">
+    <div class="open-channel-input-wrap">
+      <textarea class="open-channel-textarea" id="oc-drawer-textarea" placeholder="TRANSMIT TO OPEN CHANNEL..." maxlength="500"></textarea>
+      <button class="open-channel-transmit" id="oc-drawer-transmit" type="button">TRANSMIT</button>
+    </div>
+    <div class="open-channel-counter" id="oc-drawer-counter">0 / 500</div>
+  </div>
+  <div class="open-channel-readonly" id="oc-drawer-readonly" style="display:none;">
+    // READ-ONLY CHANNEL // LOGIN REQUIRED TO TRANSMIT
+    <br><button class="open-channel-login-btn" id="oc-drawer-login-btn" type="button">LOGIN / REGISTER</button>
+  </div>
+</div>
+</div><!-- /bt-social-row -->
 <!-- SURGERY-015: 3D ORBITAL NODE SELECTOR — capa de navegación sobre los nodos existentes -->
 <div class="bt-orb" id="bt-orb">
   <div class="bt-orb-head">NODE ORBITAL SELECTOR</div>
@@ -20125,12 +20186,21 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
            window._fbDB = database; // Exponer para betting-engine (cross-device sync)
 
         // --- NUEVO: AUTENTICACIÓN SILENCIOSA ---
-           firebase.auth().signInAnonymously()
-           .then((userCredential) => {
-           console.log("⚡ [SISTEMA] Conectado a Firebase Auth (Anónimo). UID:", userCredential.user.uid);
-           })
-           .catch((error) => {
-           console.error("⚠ [SISTEMA] Error en Auth:", error.code, error.message);
+        // SURGERY-018.2: bootstrap anónimo DELIBERADO — solo si no existe sesión
+        // Firebase restaurada. Una identidad permanente NUNCA se sobrescribe.
+           firebase.auth().onAuthStateChanged(function _rappiaBoot(u) {
+             try { firebase.auth().offAuthStateChanged(_rappiaBoot); } catch (e) {}
+             if (!u) {
+                firebase.auth().signInAnonymously()
+                .then((userCredential) => {
+                console.log("⚡ [SISTEMA] Conectado a Firebase Auth (Anónimo). UID:", userCredential.user.uid);
+                })
+                .catch((error) => {
+                console.error("⚠ [SISTEMA] Error en Auth:", error.code, error.message);
+                });
+             } else {
+                console.log("⚡ [SISTEMA] Sesión Firebase detectada (" + (u.isAnonymous ? "Anónima" : "Rappia Permanente") + "). UID:", u.uid);
+             }
            });
 
         // 3. Referencias y DOM (Fuera de las promesas para que siempre estén disponibles)
@@ -21004,6 +21074,93 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
          // space-breaker, tetris-cipher y memory-breach están deshabilitados hasta su lanzamiento
          // — no se registran listeners para que los botones no abran el modal de apuestas
      }); // <-- FIN DEL 'DOMContentLoaded'
+</script>
+
+<script>
+/* ── SURGERY-018.2: CANONICAL RAPPIA IDENTITY FOUNDATION ──
+   ONE MONKEY // ONE IDENTITY
+   Autoridad: Firebase Auth con email VERIFICADO (Email Link / passwordless).
+   localStorage.rppi_user queda como CACHE/DISPLAY only — jamás como prueba
+   de identidad. El binding authUid↔RPPI lo hace el Worker (autoridad de
+   confianza) localizando rppi_users por el email VERIFICADO del ID token. */
+(function() {
+  function _bootIdentity() {
+  var auth = firebase.auth();
+  var ID = window.RappiaIdentity = {
+    user: null, mode: 'none', profile: null, ready: false, _waiters: [],
+    whenReady: function(fn) { if (this.ready) fn(this); else this._waiters.push(fn); },
+    isPermanent: function() { return !!(this.user && !this.user.isAnonymous); }
+  };
+  var _settled = false;
+  function _settle() { if (_settled) return; _settled = true; ID.ready = true; ID._waiters.splice(0).forEach(function(f){ try { f(ID); } catch(e){} }); }
+
+  auth.onAuthStateChanged(function(u) {
+    if (u && u.isAnonymous) { ID.user = u; ID.mode = 'anonymous-legacy'; _settle(); }
+    else if (u && !u.isAnonymous) { ID.user = u; ID.mode = 'permanent'; _settle(); _claim(u); }
+    else { ID.user = null; ID.mode = 'none'; }
+  });
+
+  function _workerUrl() { return (typeof WORKER_URL !== 'undefined') ? WORKER_URL : ''; }
+
+  // ── EMAIL LINK (passwordless) ──
+  window.rappiaSendLoginEmail = function(email) {
+    var acs = { url: location.origin + location.pathname, handleCodeInApp: true };
+    return auth.sendSignInLinkToEmail(email, acs).then(function() {
+      try { localStorage.setItem('rappia_email_for_login', email); } catch(e) {}
+      return true;
+    });
+  };
+
+  window.rappiaCompleteEmailLinkIfNeeded = function() {
+    if (!auth.isSignInWithEmailLink(location.href)) return Promise.resolve(false);
+    var email = '';
+    try { email = localStorage.getItem('rappia_email_for_login') || ''; } catch(e) {}
+    if (!email) { console.warn('⚠ [IDENTIDAD] Email Link detectado sin email almacenado.'); return Promise.resolve(false); }
+    return auth.signInWithEmailLink(email, location.href).then(function(cred) {
+      try { localStorage.removeItem('rappia_email_for_login'); } catch(e) {}
+      try { history.replaceState(null, '', location.pathname); } catch(e) {}
+      console.log('⚡ [IDENTIDAD] Email Link OK — UID permanente:', cred.user.uid);
+      return true;
+    });
+  };
+
+  // ── CLAIM: binding trusted authUid ↔ RPPI (Worker = autoridad) ──
+  function _claim(u) {
+    if (!_workerUrl()) { console.warn('⚠ [IDENTIDAD] WORKER_URL no disponible — claim diferido.'); return; }
+    u.getIdToken().then(function(tok) {
+      var alias = '';
+      try { var c = JSON.parse(localStorage.getItem('rppi_user') || 'null'); if (c && typeof c.alias === 'string') alias = c.alias; } catch(e) {}
+      return fetch(_workerUrl() + '/rappia/identity/claim', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+        body: JSON.stringify({ alias: alias })
+      });
+    }).then(function(r) { return r.json(); }).then(function(d) {
+      if (d && d.ok) {
+        ID.profile = d.profile;
+        // Cache de UI — NO es autoridad
+        try { localStorage.setItem('rppi_user', JSON.stringify({
+          email: d.profile.email, alias: d.profile.alias, credits: d.profile.credits || 0,
+          createdAt: d.profile.createdAt || Date.now(), uid: d.profile.rppiUid, authUid: d.profile.authUid
+        })); } catch(e) {}
+        if (typeof window._rppiUpdateUI === 'function') window._rppiUpdateUI();
+        console.log('⚡ [IDENTIDAD] Rappia bind:', d.bound, '— RPPI UID:', d.profile.rppiUid);
+      } else {
+        console.warn('⚠ [IDENTIDAD] Claim denegado:', d && d.error, d && d.detail);
+      }
+    }).catch(function(e) { console.warn('⚠ [IDENTIDAD] Claim error:', e); });
+  }
+
+  window.rappiaLogoutFirebase = function() { return auth.signOut(); };
+
+  // auto-complete si la URL vuelve del email link
+  window.rappiaCompleteEmailLinkIfNeeded();
+  }
+  /* SURGERY-018.2 FIX: Firebase se inicializa dentro de DOMContentLoaded en el
+     bloque legacy — el módulo NO puede ejecutar firebase.auth() a parse-time. */
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _bootIdentity);
+  else _bootIdentity();
+})();
 </script>
     <!-- Canvas Confetti library -->
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -31484,26 +31641,13 @@ window.btBootGate = function() {
         if (typeof playTerminalBeep === 'function') playTerminalBeep();
     });
 
-    // ⚡ PROTOCOLO GAMMA: LIMPIEZA DE ELEMENTOS FLOTANTES (FOCUS MODE)
-    var btFloatElements = [
-        '#finder-float-window',
-        '#rppi-duel-trigger-btn',
-        '#snake-promo-window',
-        '#lamp-flicker-btn',
-        '#ultra-dark-toggle'
-    ];
-    btFloatElements.forEach(function(selector) {
-        var el = document.querySelector(selector);
-        if (el) el.style.display = 'none';
-    });
-
     // 4. EL TIRO DE GRACIA (Redirección sincronizada)
     setTimeout(function() {
 
         // Apagamos la alerta roja para la transición suave
         if (box) box.style.animation = 'none';
 
-        // Transición de Gate a Core (Código Original Intacto)
+        // Transición de Gate a Core
         gate.style.transition = 'opacity 0.5s ease';
         gate.style.opacity = '0';
 
@@ -31536,8 +31680,205 @@ window.btBootGate = function() {
 
     }, 5500);
 };
+/* ── SURGERY-017C: OPEN CHANNEL // LIVE — controller ── */
+(function() {
+  'use strict';
+  var MAX_LEN = 500;
+  var CHANNEL_OFFLINE = true; /* SURGERY-018: se limpia cuando el puente Firebase arma */
+  var ocArmed = false; var ocSending = false; var seenKeys = {};
+  var stream = document.getElementById('oc-stream');
+  var drawerStream = document.getElementById('oc-drawer-stream');
+  var statusEl = document.getElementById('oc-status');
+  var drawerStatusEl = document.getElementById('oc-drawer-status');
+  var ctxEl = document.getElementById('oc-context');
+  var drawerCtxEl = document.getElementById('oc-drawer-context');
+  var empty = document.getElementById('oc-empty');
+  var counter = document.getElementById('oc-counter');
+  var drawerCounter = document.getElementById('oc-drawer-counter');
+  var textarea = document.getElementById('oc-textarea');
+  var drawerTextarea = document.getElementById('oc-drawer-textarea');
+  var transmitBtn = document.getElementById('oc-transmit');
+  var drawerTransmit = document.getElementById('oc-drawer-transmit');
+  var readonly = document.getElementById('oc-readonly');
+  var drawerReadonly = document.getElementById('oc-drawer-readonly');
+  var loginBtn = document.getElementById('oc-login-btn');
+  var drawerLoginBtn = document.getElementById('oc-drawer-login-btn');
+  var newBtn = document.getElementById('oc-new-btn');
+  var drawerNewBtn = document.getElementById('oc-drawer-new-btn');
+  var newWrap = document.getElementById('oc-new');
+  var drawerNewWrap = document.getElementById('oc-drawer-new');
+  var mobileTrigger = document.getElementById('oc-mobile-trigger');
+  var drawer = document.getElementById('oc-drawer');
+  var drawerCloseBtn = document.getElementById('oc-drawer-close');
+  var messages = [];
+  var isAtBottom = true;
+  var pendingNew = 0;
+  var currentUser = null;
 
+  function probeAuth() {
+    try { var u = window._rppiUser; if (u && u.uid && u.alias) { currentUser = { uid: u.uid, alias: u.alias }; return true; } } catch (e) {}
+    currentUser = null; return false;
+  }
+  function renderAuthUI() {
+    var authed = probeAuth();
+    [textarea, drawerTextarea].forEach(function(ta) { if (!ta) return; if (authed) { ta.disabled = false; ta.classList.remove('disabled'); ta.placeholder = 'TRANSMIT TO OPEN CHANNEL...'; } else { ta.disabled = true; ta.classList.add('disabled'); ta.placeholder = 'LOGIN REQUIRED TO TRANSMIT'; } });
+    [readonly, drawerReadonly].forEach(function(el) { if (el) el.style.display = authed ? 'none' : 'block'; });
+    [transmitBtn, drawerTransmit].forEach(function(btn) { if (btn) btn.style.display = authed ? 'block' : 'none'; });
+  }
+  function setContext(scope, label) { var txt = scope === 'GLOBAL' ? 'GLOBAL' : ('NODE ' + (label || '')); if (ctxEl) ctxEl.textContent = txt; if (drawerCtxEl) drawerCtxEl.textContent = txt; }
+
+  var origToggle = window.btToggleNode;
+  window.btToggleNode = function(nodeId) {
+    if (origToggle) origToggle(nodeId);
+    var num = nodeId.replace('bt-node-', '');
+    var titles = { '01':'MACRO-VIGILANCE & PISTERAS','02':'ROTACIÓN SECTORIAL & SPREADS','03':'ENERGÍA & BASE FÍSICA','04':'METALES VS VOLATILIDAD','05':'PLOMERÍA FOREX & DISTORSIÓN','06':'ENGINE LUDO CRYPTO BRO','07':'THE AI BUBBLE' };
+    var n = parseInt(num, 10);
+    if (!isNaN(n) && titles[num]) setContext(n < 10 ? '0'+n : ''+n, titles[num]);
+    else setContext('GLOBAL');
+  };
+
+  function trackScroll(drawer) {
+    var t = drawer ? drawerStream : stream; if (!t) return;
+    var dist = t.scrollHeight - t.scrollTop - t.clientHeight; var was = isAtBottom;
+    isAtBottom = dist < 40;
+    if (isAtBottom && !was) { pendingNew = 0; if (newWrap) newWrap.classList.remove('visible'); if (drawerNewWrap) drawerNewWrap.classList.remove('visible'); if (mobileTrigger) mobileTrigger.textContent = 'OPEN CHANNEL // 0'; }
+  }
+  function scrollToBottom(drawer) {
+    var t = drawer ? drawerStream : stream; if (t) t.scrollTop = t.scrollHeight;
+    pendingNew = 0; if (newWrap) newWrap.classList.remove('visible'); if (drawerNewWrap) drawerNewWrap.classList.remove('visible'); if (mobileTrigger) mobileTrigger.textContent = 'OPEN CHANNEL // 0';
+  }
+  function fmtTime(ts) { var d = new Date(ts); return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0'); }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function renderMessage(msg, drawer){
+    var t = drawer ? drawerStream : stream; if (!t) return;
+    var emptyEl = t.querySelector('.open-channel-empty'); if (emptyEl) emptyEl.remove();
+    var div = document.createElement('div'); div.className = 'open-channel-msg';
+    var top = document.createElement('div'); top.className = 'open-channel-msg-top';
+    var author = document.createElement('span'); author.className = 'open-channel-author'; author.textContent = '@' + (msg.alias || 'ANON');
+    var timeEl = document.createElement('span'); timeEl.className = 'open-channel-time'; timeEl.textContent = fmtTime(msg.ts);
+    top.appendChild(author); top.appendChild(timeEl);
+    var txt = document.createElement('div'); txt.className = 'open-channel-text'; txt.textContent = msg.text;
+    div.appendChild(top); div.appendChild(txt);
+    if (msg.tickers && msg.tickers.length){
+      var tkWrap = document.createElement('div'); tkWrap.className = 'open-channel-tickers';
+      msg.tickers.forEach(function(sym){
+        var span = document.createElement('span'); span.className = 'open-channel-ticker'; span.textContent = sym;
+        tkWrap.appendChild(span);
+      });
+      div.appendChild(tkWrap);
+    }
+    t.appendChild(div);
+  }
+  function renderAll(drawer){
+    var t = drawer ? drawerStream : stream; if (!t) return;
+    t.querySelectorAll('.open-channel-msg').forEach(function(m){ m.remove(); });
+    var e = t.querySelector('.open-channel-empty'); if (e) e.style.display = messages.length ? 'none' : 'block';
+  }
+  /* ── SURGERY-018: Firebase bridge — push + child_added listener ── */
+  function ocStatus(txt){ if (statusEl) statusEl.textContent = txt; if (drawerStatusEl) drawerStatusEl.textContent = txt; }
+  function ocRef(){ try { if (window._fbDB && typeof window._fbDB.ref === 'function') return window._fbDB.ref('open-channel/global'); } catch(e){} return null; }
+  function ocLocal(msg, drawer){
+    var ta = drawer ? drawerTextarea : textarea; if (!ta) return;
+    messages.push(msg); renderMessage(msg, drawer);
+    ta.value = '';
+    var c = drawer ? drawerCounter : counter; if (c){ c.textContent = '0 / ' + MAX_LEN; c.classList.remove('near-limit'); }
+    scrollToBottom(drawer);
+  }
+  function ocIncoming(msg){
+    messages.push(msg);
+    renderMessage(msg, false); renderMessage(msg, true);
+    if (isAtBottom) { scrollToBottom(false); }
+    else {
+      pendingNew++;
+      if (newWrap) newWrap.classList.add('visible');
+      if (drawerNewWrap) drawerNewWrap.classList.add('visible');
+      if (mobileTrigger) mobileTrigger.textContent = 'OPEN CHANNEL // ' + pendingNew;
+    }
+  }
+  function transmit(drawer){
+    if (!currentUser || !currentUser.uid) return;
+    var ta = drawer ? drawerTextarea : textarea; if (!ta) return;
+    var text = ta.value.trim();
+    if (!text || text.length > MAX_LEN) return;
+    var msg = { uid: currentUser.uid, alias: currentUser.alias, text: text, ts: Date.now(), tickers: [] };
+    if (ocArmed) {
+      var ref = ocRef();
+      if (!ref) { ocLocal(msg, drawer); return; }
+      if (ocSending) return;
+      ocSending = true;
+      var b = drawer ? drawerTransmit : transmitBtn; if (b) b.disabled = true;
+      ref.push(msg, function(err){
+        ocSending = false;
+        if (b) b.disabled = false;
+        var c = drawer ? drawerCounter : counter;
+        if (err) {
+          console.warn('[OC] transmit failed — falling back to local echo', err);
+          if (c) { c.textContent = '✗ TRANSMIT FAILED // RETRY'; c.classList.add('near-limit'); }
+          ocLocal(msg, drawer);
+        } else {
+          ta.value = '';
+          if (c){ c.textContent = '0 / ' + MAX_LEN; c.classList.remove('near-limit'); }
+          scrollToBottom(drawer);
+        }
+      });
+    } else { ocLocal(msg, drawer); }
+  }
+  function armFirebase(){
+    if (ocArmed) return;
+    var db = window._fbDB;
+    if (!db || typeof db.ref !== 'function') return;
+    try {
+      db.ref('open-channel/global').limitToLast(120).on('child_added', function(snap){
+        var k = snap.key; if (!k || seenKeys[k]) return; seenKeys[k] = true;
+        var v = snap.val() || {};
+        ocIncoming({
+          uid: v.uid || '',
+          alias: v.alias || 'ANON',
+          text: String(v.text || '').slice(0, MAX_LEN),
+          ts: v.ts || Date.now(),
+          tickers: Array.isArray(v.tickers) ? v.tickers : []
+        });
+      }, function(err){
+        console.warn('[OC] Firebase listener error — disarming bridge', err);
+        ocArmed = false; CHANNEL_OFFLINE = true;
+        ocStatus('CHANNEL OFFLINE // PERSISTENCE BLOCKED');
+      });
+      ocArmed = true; CHANNEL_OFFLINE = false;
+      ocStatus('CHANNEL LIVE // TRANSMISSIONS PERSISTED');
+      console.log('[OC] SURGERY-018 armed — RTDB node: open-channel/global');
+    } catch(e) { console.warn('[OC] arm failed', e); }
+  }
+  function tryArm(n){
+    if (ocArmed) return;
+    if (window._fbDB && typeof window._fbDB.ref === 'function') { armFirebase(); return; }
+    if (n > 0) setTimeout(function(){ tryArm(n - 1); }, 250);
+  }
+  function init(){
+    renderAuthUI();
+    [stream, drawerStream].forEach(function(t){ if (t) t.addEventListener('scroll', function(){ trackScroll(t === drawerStream); }); });
+    [textarea, drawerTextarea].forEach(function(ta){
+      if (!ta) return;
+      ta.addEventListener('input', function(){
+        var len = ta.value.length; var c = ta === drawerTextarea ? drawerCounter : counter;
+        if (c) c.textContent = len + ' / ' + MAX_LEN; if (len > 450) c.classList.add('near-limit'); else c.classList.remove('near-limit');
+      });
+      ta.addEventListener('keydown', function(e){ if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)){ e.preventDefault(); transmit(ta === drawerTextarea); } });
+    });
+    [transmitBtn, drawerTransmit].forEach(function(btn){ if (btn) btn.addEventListener('click', function(){ transmit(btn === drawerTransmit); }); });
+    [loginBtn, drawerLoginBtn].forEach(function(btn){ if (btn) btn.addEventListener('click', function(){ if (typeof window.showLoginModal === 'function') window.showLoginModal(); else window.location.hash = '#auth'; }); });
+    [newBtn, drawerNewBtn].forEach(function(btn){ if (btn) btn.addEventListener('click', function(){ scrollToBottom(btn === drawerNewBtn); }); });
+    if (mobileTrigger) mobileTrigger.addEventListener('click', function(){ if (drawer) drawer.classList.add('open'); });
+    if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', function(){ if (drawer) drawer.classList.remove('open'); });
+    // SURGERY-017C: event-driven auth detection (no polling per Section 22/37)
+    window.addEventListener('focus', function(){ probeAuth(); renderAuthUI(); });
+    document.addEventListener('visibilitychange', function(){ if (!document.hidden){ probeAuth(); renderAuthUI(); } });
+    probeAuth(); renderAuthUI();
+    tryArm(25); /* SURGERY-018: armar puente Firebase (hasta ~6s de reintentos) */
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
 /* PUNTO 2 — EXIT: cierra el overlay fullscreen, vuelve al gate y restaura
+
    el scroll normal de la página (idéntica mecánica que fp-exit-btn del
    Circuito Beta) */
 window.btExitTerminal = function() {
