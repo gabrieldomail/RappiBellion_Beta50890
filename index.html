@@ -11435,12 +11435,21 @@ function rppiDoLogin() {
     var errEl = document.getElementById('rppi-login-error');
     if (err) { errEl.style.display = 'block'; errEl.textContent = '⚠ ' + err; return; }
     errEl.style.display = 'none';
-    _rppiFetchOrCreateUser(email, alias, function(user) {
-        _rppiUser = user;
-        localStorage.setItem('rppi_user', JSON.stringify(user));
-        _rppiUpdateUI();
-        rppiSetPanel('user');
-    }, function(e) { errEl.style.display = 'block'; errEl.textContent = '⚠ ' + (e || 'Error'); });
+    // SURGERY-018.2B Defect E: flujo canónico — email link (Firebase Auth =
+    // autoridad). El claim del Worker resuelve el trusted profile. NO se
+    // presenta estado "registrado" exitoso sin backend autoritativo.
+    if (typeof window.rappiaSendLoginEmail !== 'function') {
+        errEl.style.display = 'block'; errEl.textContent = '⚠ Sistema de identidad no disponible'; return;
+    }
+    if (alias) { try { localStorage.setItem('rppi_alias_pending', alias); } catch(e) {} }
+    errEl.style.display = 'block'; errEl.style.color = '#00FF41';
+    errEl.textContent = '⏳ Enviando link de acceso a ' + email + '...';
+    window.rappiaSendLoginEmail(email).then(function() {
+        errEl.textContent = '✅ Link enviado. Abrilo desde tu email para ingresar.';
+    }).catch(function(e) {
+        errEl.style.color = '';
+        errEl.textContent = '⚠ Error: ' + ((e && e.code) || 'no se pudo enviar el link');
+    });
 }
 
 function rppiDoRegister() {
@@ -11450,13 +11459,28 @@ function rppiDoRegister() {
     var errEl = document.getElementById('rppi-reg-error');
     if (err) { errEl.style.display = 'block'; errEl.textContent = '⚠ ' + err; return; }
     errEl.style.display = 'none';
-    _rppiFetchOrCreateUser(email, alias, function(user) {
-        _rppiUser = user;
-        localStorage.setItem('rppi_user', JSON.stringify(user));
-        _rppiUpdateUI();
-        rppiSetPanel('user');
-    }, function(e) { errEl.style.display = 'block'; errEl.textContent = '⚠ ' + (e || 'Error'); });
+    // SURGERY-018.2B Defect E: registro canónico — email link + claim.
+    // El alias queda pendiente y se consume en _claim() del bloque de identidad.
+    if (typeof window.rappiaSendLoginEmail !== 'function') {
+        errEl.style.display = 'block'; errEl.textContent = '⚠ Sistema de identidad no disponible'; return;
+    }
+    if (alias) { try { localStorage.setItem('rppi_alias_pending', alias); } catch(e) {} }
+    errEl.style.display = 'block'; errEl.style.color = '#00FF41';
+    errEl.textContent = '⏳ Enviando link de registro a ' + email + '...';
+    window.rappiaSendLoginEmail(email).then(function() {
+        errEl.textContent = '✅ Link enviado. Abrilo desde tu email para completar el registro.';
+    }).catch(function(e) {
+        errEl.style.color = '';
+        errEl.textContent = '⚠ Error: ' + ((e && e.code) || 'no se pudo enviar el link');
+    });
 }
+
+/* SURGERY-018.2B Defect E — NON-AUTHORITATIVE / ISOLATED:
+   _rppiFetchOrCreateUser crea cuentas RTDB directas con UID random (ghost
+   authority). Ya NO es invocada por ningún flujo canónico. Se conserva solo
+   como referencia legacy — JAMÁS debe usarse para producir un estado de
+   identidad "autenticada" en el runtime. La autoridad es:
+   Firebase Auth → Worker claim → trusted profile → _syncTrustedProfile. */
 
 function _rppiFetchOrCreateUser(email, alias, onOk, onErr) {
     var FB_URL = 'https://rappibellion-comments-default-rtdb.firebaseio.com';
@@ -11501,11 +11525,11 @@ function _rppiUpdateUI() {
     if (lb) lb.textContent = (_rppiUser.email.split('@')[0].substring(0,10).toUpperCase());
     _rppiGenQR();
     if (typeof _rppiDuelSyncVisibility === 'function') _rppiDuelSyncVisibility();
-    // Refrescar balance desde worker
-    fetch(WORKER_URL + '/rappia/balance', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: _rppiUser.email })
-    }).then(function(r) { return r.json(); }).then(function(d) {
+    // Refrescar balance desde worker — SURGERY-018.2B Defect J: Bearer +
+    // 404 user-not-found NO es éxito (guard sobre r.ok antes de d.ok).
+    window._rppiAuthorizedFetch(WORKER_URL + '/rappia/balance', {
+        method: 'POST', body: JSON.stringify({ email: _rppiUser.email })
+    }).then(function(r) { if (!r.ok) return { ok: false, status: r.status }; return r.json(); }).then(function(d) {
         if (d.ok && c) {
             c.textContent = d.credits;
             _rppiUser.credits = d.credits;
@@ -11642,8 +11666,11 @@ function _rppiLoadDynQR() {
     if (statusEl) { statusEl.style.color='rgba(255,165,0,0.7)'; statusEl.textContent='⏳ Generando QR real...'; }
     if (genBtn)   { genBtn.disabled=true; genBtn.textContent='...'; }
     
-    fetch(WORKER_URL + '/rappia/qr-dynamic', {
-        method:'POST', headers:{'Content-Type':'application/json'},
+    // SURGERY-018.2B Defect G: contrato staged 018.2W — Bearer token.
+    // Ownership por token del Worker; centId queda SOLO como campo compat
+    // que el Worker hardened ignora como autoridad. Browser declara amountRppi.
+    window._rppiAuthorizedFetch(WORKER_URL + '/rappia/qr-dynamic', {
+        method:'POST',
         body: JSON.stringify({centId:centId, amountRppi:amountRppi})
     }).then(function(r){return r.json();}).then(function(d){
         if (genBtn) { genBtn.disabled=false; genBtn.textContent='GENERAR QR'; }
@@ -11732,9 +11759,11 @@ function rppiDoBurn() {
     if (amt > (_rppiUser.credits || 0)) {
         alert('RPPI-C insuficientes'); return;
     }
-    // Llamar al worker para registrar el retiro
-    fetch(WORKER_URL + '/rappia/withdraw', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+    // Llamar al worker para registrar el retiro — SURGERY-018.2B Defect I:
+    // Bearer token; el Worker selecciona la cuenta por trusted profile.
+    // body.email queda solo como campo compat de display, NO como autoridad.
+    window._rppiAuthorizedFetch(WORKER_URL + '/rappia/withdraw', {
+        method: 'POST',
         body: JSON.stringify({ email: _rppiUser.email, credits: amt })
     }).then(function(r) { return r.json(); }).then(function(d) {
         if (d.ok) {
@@ -20181,18 +20210,32 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
         };
         
         // Inicializar Firebase
-           firebase.initializeApp(firebaseConfig);
+        // SURGERY-018.2B Defect D: init único e idempotente — ningún consumidor
+        // de Auth/Database puede ejecutarse antes de que exista el app [DEFAULT].
+           if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
            const database = firebase.database();
            window._fbDB = database; // Exponer para betting-engine (cross-device sync)
 
         // --- NUEVO: AUTENTICACIÓN SILENCIOSA ---
         // SURGERY-018.2: bootstrap anónimo DELIBERADO — solo si no existe sesión
         // Firebase restaurada. Una identidad permanente NUNCA se sobrescribe.
-           firebase.auth().onAuthStateChanged(function _rappiaBoot(u) {
-             try { firebase.auth().offAuthStateChanged(_rappiaBoot); } catch (e) {}
+        // SURGERY-018.2B Defect B: unsubscribe vía el handle retornado por
+        // onAuthStateChanged (offAuthStateChanged NO es API pública del SDK).
+        // Observación one-shot: sin zombie listeners que re-disparen
+        // signInAnonymously después de un logout permanente.
+           var _rappiaBootUnsub = firebase.auth().onAuthStateChanged(function _rappiaBoot(u) {
+             if (typeof _rappiaBootUnsub === 'function') { _rappiaBootUnsub(); _rappiaBootUnsub = null; }
              if (!u) {
                 firebase.auth().signInAnonymously()
                 .then((userCredential) => {
+                /* SURGERY-018.2B: guard anti-resurrección — si el usuario hizo
+                   logout mientras este sign-in estaba en vuelo, la sesión
+                   anónima NO debe reaparecer como efecto secundario. */
+                if (window._rappiaLoggedOut) {
+                    firebase.auth().signOut();
+                    console.log('⚡ [SISTEMA] Sign-in anónimo en vuelo cancelado post-logout (guard).');
+                    return;
+                }
                 console.log("⚡ [SISTEMA] Conectado a Firebase Auth (Anónimo). UID:", userCredential.user.uid);
                 })
                 .catch((error) => {
@@ -21087,20 +21130,68 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
   function _bootIdentity() {
   var auth = firebase.auth();
   var ID = window.RappiaIdentity = {
-    user: null, mode: 'none', profile: null, ready: false, _waiters: [],
+    user: null, mode: 'none', profile: null, ready: false, claimError: null, _waiters: [],
     whenReady: function(fn) { if (this.ready) fn(this); else this._waiters.push(fn); },
+    /* SURGERY-018.2B: semántica canónica — solo permanente CON trusted profile */
+    isCanonical: function() { return !!(this.ready && this.profile && this.mode === 'permanent-canonical'); },
     isPermanent: function() { return !!(this.user && !this.user.isAnonymous); }
   };
   var _settled = false;
   function _settle() { if (_settled) return; _settled = true; ID.ready = true; ID._waiters.splice(0).forEach(function(f){ try { f(ID); } catch(e){} }); }
 
+  /* SURGERY-018.2B Defect C: la ÚNICA fuente del runtime identity es el
+     trusted profile devuelto por el Worker. uid compat = rppiUid (una sola
+     identidad — no se crean identidades paralelas). */
+  function _syncTrustedProfile(profile) {
+    var compat = {
+      email: profile.email, alias: profile.alias, credits: profile.credits || 0,
+      createdAt: profile.createdAt || Date.now(),
+      uid: profile.rppiUid, rppiUid: profile.rppiUid, authUid: profile.authUid
+    };
+    window._rppiUser = compat;                                        /* runtime — sin reload */
+    try { localStorage.setItem('rppi_user', JSON.stringify(compat)); } catch(e) {}  /* CACHE only */
+    ID.profile = profile;
+    if (typeof window._rppiUpdateUI === 'function') { try { window._rppiUpdateUI(); } catch(e) {} }
+    if (typeof window._rppiDuelSyncVisibility === 'function') { try { window._rppiDuelSyncVisibility(); } catch(e) {} }
+    try { window.dispatchEvent(new CustomEvent('rppi-identity-ready', { detail: { rppiUid: profile.rppiUid, alias: profile.alias } })); } catch(e) {}
+  }
+  /* SURGERY-018.2B.1: hook de test staged (Worker 018.2W no deployado aún).
+     Permite certificar el path canónico claim→profile→runtime sin backend.
+     NO es una vía de autoridad: la seguridad vive en el Worker, no acá. */
+  ID._applyTrustedProfile = _syncTrustedProfile;
+
+  /* Máquina de estados canónica. Este listener PERSISTE (es el observador de
+     transiciones A–E). NO inicia auth anónima — el bootstrap one-shot está en
+     el bloque legacy con unsubscribe real. */
   auth.onAuthStateChanged(function(u) {
     if (u && u.isAnonymous) { ID.user = u; ID.mode = 'anonymous-legacy'; _settle(); }
-    else if (u && !u.isAnonymous) { ID.user = u; ID.mode = 'permanent'; _settle(); _claim(u); }
-    else { ID.user = null; ID.mode = 'none'; }
+    else if (u && !u.isAnonymous) {
+      /* SURGERY-018.2B Defect A: NO _settle() acá — solo _claim() decide el
+         settle, para que ningún consumidor canónico observe ready-success
+         antes del trusted profile. Si el claim falla → estado determinista
+         'permanent-unbound' (settle garantizado, sin privilegio). */
+      window._rappiaLoggedOut = false; /* login permanente = transición explícita */
+      ID.user = u; ID.mode = 'permanent';
+      _claim(u);
+    }
+    else { ID.user = null; ID.mode = 'none'; _settle(); }
   });
 
   function _workerUrl() { return (typeof WORKER_URL !== 'undefined') ? WORKER_URL : ''; }
+
+  /* ── SURGERY-018.2B Defect F: helper ÚNICO para llamadas privilegiadas al
+     Worker. firebase.auth().currentUser → getIdToken() → Authorization Bearer.
+     Nunca loguear el token, nunca persistirlo, nunca aceptarlo de cache. ── */
+  window._rppiAuthorizedFetch = function(url, opts) {
+    opts = opts || {};
+    opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+    var cu = auth.currentUser;
+    if (!cu) return Promise.reject(new Error('NO_FIREBASE_AUTH_SESSION'));
+    return cu.getIdToken().then(function(tok) {
+      opts.headers['Authorization'] = 'Bearer ' + tok;
+      return fetch(url, opts);
+    });
+  };
 
   // ── EMAIL LINK (passwordless) ──
   window.rappiaSendLoginEmail = function(email) {
@@ -21126,32 +21217,47 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
 
   // ── CLAIM: binding trusted authUid ↔ RPPI (Worker = autoridad) ──
   function _claim(u) {
-    if (!_workerUrl()) { console.warn('⚠ [IDENTIDAD] WORKER_URL no disponible — claim diferido.'); return; }
+    if (!_workerUrl()) {
+      ID.mode = 'permanent-unbound'; ID.claimError = 'WORKER_URL_UNAVAILABLE';
+      console.warn('⚠ [IDENTIDAD] WORKER_URL no disponible — estado limitado sin privilegio.');
+      _settle(); return;
+    }
     u.getIdToken().then(function(tok) {
       var alias = '';
-      try { var c = JSON.parse(localStorage.getItem('rppi_user') || 'null'); if (c && typeof c.alias === 'string') alias = c.alias; } catch(e) {}
+      try { alias = localStorage.getItem('rppi_alias_pending') || ''; if (alias) localStorage.removeItem('rppi_alias_pending'); } catch(e) {}
+      if (!alias) { try { var c = JSON.parse(localStorage.getItem('rppi_user') || 'null'); if (c && typeof c.alias === 'string') alias = c.alias; } catch(e) {} }
       return fetch(_workerUrl() + '/rappia/identity/claim', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
         body: JSON.stringify({ alias: alias })
       });
     }).then(function(r) { return r.json(); }).then(function(d) {
-      if (d && d.ok) {
-        ID.profile = d.profile;
-        // Cache de UI — NO es autoridad
-        try { localStorage.setItem('rppi_user', JSON.stringify({
-          email: d.profile.email, alias: d.profile.alias, credits: d.profile.credits || 0,
-          createdAt: d.profile.createdAt || Date.now(), uid: d.profile.rppiUid, authUid: d.profile.authUid
-        })); } catch(e) {}
-        if (typeof window._rppiUpdateUI === 'function') window._rppiUpdateUI();
+      if (d && d.ok && d.profile) {
+        _syncTrustedProfile(d.profile);
+        ID.mode = 'permanent-canonical';
         console.log('⚡ [IDENTIDAD] Rappia bind:', d.bound, '— RPPI UID:', d.profile.rppiUid);
       } else {
+        ID.mode = 'permanent-unbound'; ID.claimError = (d && d.error) || 'CLAIM_DENIED';
         console.warn('⚠ [IDENTIDAD] Claim denegado:', d && d.error, d && d.detail);
       }
-    }).catch(function(e) { console.warn('⚠ [IDENTIDAD] Claim error:', e); });
+      _settle();
+    }).catch(function(e) {
+      ID.mode = 'permanent-unbound'; ID.claimError = 'CLAIM_ERROR';
+      console.warn('⚠ [IDENTIDAD] Claim error:', e);
+      _settle();
+    });
   }
 
-  window.rappiaLogoutFirebase = function() { return auth.signOut(); };
+  /* ── SURGERY-018.2B LOGOUT STATE MACHINE (transición E): limpiar privilegio
+     runtime + cache ANTES de signOut. El estado queda 'none' determinista vía
+     el listener canónico. La reanudación anonymous-legacy solo ocurre por una
+     transición explícita (bootstrap one-shot ya desuscrito). ── */
+  window.rappiaLogoutFirebase = function() {
+    window._rppiUser = null;
+    window._rappiaLoggedOut = true; /* SURGERY-018.2B: cancela sign-in anónimo en vuelo */
+    try { localStorage.removeItem('rppi_user'); } catch(e) {}
+    return auth.signOut();
+  };
 
   // auto-complete si la URL vuelve del email link
   window.rappiaCompleteEmailLinkIfNeeded();
@@ -26991,13 +27097,12 @@ function zeusHeroLaunch() {
     var gw = document.getElementById('zeus-real-game-wrap');
     if (gw) gw.style.display = 'none';
 
-    // Refrescar balance y mostrar panel
+    // Refrescar balance y mostrar panel — SURGERY-018.2B Defect J: Bearer + guard 404
     var user = window._rppiUser;
-    fetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/balance', {
+    window._rppiAuthorizedFetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/balance', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email })
-    }).then(function(r) { return r.json(); })
+    }).then(function(r) { if (!r.ok) return { ok: false, status: r.status }; return r.json(); })
       .then(function(d) {
         if (d.ok) {
             user.credits = d.credits;
@@ -27062,10 +27167,9 @@ function zeusLaunchReal() {
     window._rppiUser = user;
     localStorage.setItem('rppi_user', JSON.stringify(user));
 
-    // Registrar como withdrawal en Firebase via worker
-    fetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/withdraw', {
+    // Registrar como withdrawal en Firebase via worker — SURGERY-018.2B Defect I: Bearer
+    window._rppiAuthorizedFetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/withdraw', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email, credits: credits })
     }).catch(function() {});
 
@@ -27111,10 +27215,9 @@ function zeusLaunchReal() {
                 user.credits = (user.credits || 0) + mpLeft;
                 window._rppiUser = user;
                 localStorage.setItem('rppi_user', JSON.stringify(user));
-                // Acreditar de vuelta en Firebase
-                fetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/balance', {
+                // Acreditar de vuelta en Firebase — SURGERY-018.2B Defect J: Bearer
+                window._rppiAuthorizedFetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/balance', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: user.email })
                 }).catch(function(){});
             }
@@ -27194,11 +27297,11 @@ function rppiOpenGameModal(buttonId) {
     var balEl = document.getElementById('bal-'+game);
     if (balEl) {
         balEl.textContent = (window._rppiUser.credits || 0) + ' RPPI-C';
-        // Sync real desde Firebase
-        fetch(typeof WORKER_URL !== 'undefined' ? WORKER_URL+'/rappia/balance' : 'https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/balance', {
-            method:'POST', headers:{'Content-Type':'application/json'},
+        // Sync real desde Firebase — SURGERY-018.2B Defect J: Bearer + guard 404
+        window._rppiAuthorizedFetch(typeof WORKER_URL !== 'undefined' ? WORKER_URL+'/rappia/balance' : 'https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/balance', {
+            method:'POST',
             body: JSON.stringify({ email: window._rppiUser.email })
-        }).then(function(r){ return r.json(); }).then(function(d){
+        }).then(function(r){ if (!r.ok) return { ok: false, status: r.status }; return r.json(); }).then(function(d){
             if (d.ok) {
                 window._rppiUser.credits = d.credits;
                 localStorage.setItem('rppi_user', JSON.stringify(window._rppiUser));
@@ -30107,9 +30210,8 @@ function rppiDoInitialBurn() {
     var mb = document.getElementById('rppi-user-credits');
     if (mb) mb.textContent = _rppiUser.credits;
 
-    fetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/withdraw', {
+    window._rppiAuthorizedFetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/withdraw', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid: _rppiUser.uid || _rppiUser.email, amount: amount, type: 'initial' })
     })
     .then(function(r) { return r.json(); })
@@ -30156,9 +30258,8 @@ function rppiDoRewardsBurn() {
         if (btn) btn.textContent = '⏳ VERIFICANDO' + '.'.repeat(dots);
     }, 700);
 
-    fetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/withdraw', {
+    window._rppiAuthorizedFetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/withdraw', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid: _rppiUser.uid || _rppiUser.email, amount: amount, type: 'rewards' })
     })
     .then(function(r) { return r.json(); })
@@ -31715,6 +31816,14 @@ window.btBootGate = function() {
   var pendingNew = 0;
   var currentUser = null;
 
+  /* ── SURGERY-018.2B Defect L: desktop close/reopen ──
+     #oc-close oculta la columna desktop y expone el trigger como control de
+     reapertura. En mobile el aside ya está oculto por CSS (≤900px) y el
+     oc-close no es clicable → comportamiento mobile intacto. */
+  var ocAside = document.getElementById('open-channel');
+  var ocCloseBtn = document.getElementById('oc-close');
+  var ocClosedByUser = false;
+
   function probeAuth() {
     try { var u = window._rppiUser; if (u && u.uid && u.alias) { currentUser = { uid: u.uid, alias: u.alias }; return true; } } catch (e) {}
     currentUser = null; return false;
@@ -31867,11 +31976,29 @@ window.btBootGate = function() {
     [transmitBtn, drawerTransmit].forEach(function(btn){ if (btn) btn.addEventListener('click', function(){ transmit(btn === drawerTransmit); }); });
     [loginBtn, drawerLoginBtn].forEach(function(btn){ if (btn) btn.addEventListener('click', function(){ if (typeof window.showLoginModal === 'function') window.showLoginModal(); else window.location.hash = '#auth'; }); });
     [newBtn, drawerNewBtn].forEach(function(btn){ if (btn) btn.addEventListener('click', function(){ scrollToBottom(btn === drawerNewBtn); }); });
-    if (mobileTrigger) mobileTrigger.addEventListener('click', function(){ if (drawer) drawer.classList.add('open'); });
+    if (mobileTrigger) mobileTrigger.addEventListener('click', function(){
+      /* SURGERY-018.2B Defect L: reapertura desktop después de #oc-close */
+      if (ocClosedByUser) {
+        ocClosedByUser = false;
+        if (ocAside) ocAside.style.display = '';
+        mobileTrigger.style.display = '';
+        return;
+      }
+      if (drawer) drawer.classList.add('open');
+    });
     if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', function(){ if (drawer) drawer.classList.remove('open'); });
+    if (ocCloseBtn) ocCloseBtn.addEventListener('click', function(){
+      ocClosedByUser = true;
+      if (ocAside) ocAside.style.display = 'none';
+      if (mobileTrigger) mobileTrigger.style.display = 'block';
+    });
     // SURGERY-017C: event-driven auth detection (no polling per Section 22/37)
     window.addEventListener('focus', function(){ probeAuth(); renderAuthUI(); });
     document.addEventListener('visibilitychange', function(){ if (!document.hidden){ probeAuth(); renderAuthUI(); } });
+    /* SURGERY-018.2B Defect K: detección de identidad inmediata post-claim
+       (sin reload) — el evento rppi-identity-ready se emite desde
+       _syncTrustedProfile cuando el trusted profile llega al runtime. */
+    window.addEventListener('rppi-identity-ready', function(){ probeAuth(); renderAuthUI(); });
     probeAuth(); renderAuthUI();
     tryArm(25); /* SURGERY-018: armar puente Firebase (hasta ~6s de reintentos) */
   }
