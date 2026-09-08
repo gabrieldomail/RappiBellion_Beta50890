@@ -7352,16 +7352,66 @@ font-size: 27px;
   }
   CW.fillAsset = cwFillAssetSelect;
 
+  function cwEsc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (ch) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+    });
+  }
+
+  function cwFilteredRecords() {
+    var list = cw.records || [];
+    var f = cw.state.filter || 'ALL';
+    var desk = String(cw.state.filterDesk || '').trim();
+    var asset = String(cw.state.filterAsset || '').trim();
+    var out = [];
+    for (var i = 0; i < list.length; i++) {
+      var r = list[i];
+      if (desk && String(r.desk) !== desk) continue;
+      if (asset && String(r.ticker).toUpperCase() !== String(asset).toUpperCase()) continue;
+      var st = String(r.status || 'open').toLowerCase();
+      if (f === 'OPEN' && st !== 'open') continue;
+      if (f === 'CLOSED' && st === 'open') continue;
+      if (f === 'LONG' && String(r.bias).toUpperCase() !== 'LONG') continue;
+      if (f === 'SHORT' && String(r.bias).toUpperCase() !== 'SHORT') continue;
+      out.push(r);
+    }
+    return out;
+  }
+
+  function cwShortId(id) {
+    var s = String(id || '');
+    if (s.indexOf('CALL-') === 0 && s.length > 12) return 'CALL-…' + s.slice(s.length - 4);
+    return s || '---';
+  }
+
   function cwRenderCards() {
     var box = document.getElementById('call-recent-cards');
     if (!box) return;
     box.innerHTML = '';
-    for (var i = 0; i < 3; i++) {
+    var recs = cwFilteredRecords().slice(0, 3);
+    if (!recs.length) {
+      for (var e = 0; e < 3; e++) {
+        var empty = document.createElement('div');
+        empty.className = 'call-card call-card-empty';
+        empty.innerHTML =
+          '<div class="call-card-head"><span>CALL // -----</span><span class="call-card-status">WAITING</span></div>' +
+          '<div class="call-card-no">// NO DATA //</div>' +
+          '<div class="call-reaction">' +
+          '<button type="button" class="call-reaction-btn" onclick="callWallReact(\'LIKE\', this)">LIKE // --</button>' +
+          '<button type="button" class="call-reaction-btn" onclick="callWallReact(\'DISLIKE\', this)">DISLIKE // --</button>' +
+          '</div>';
+        box.appendChild(empty);
+      }
+      return;
+    }
+    for (var i = 0; i < recs.length; i++) {
+      var r = recs[i];
       var card = document.createElement('div');
-      card.className = 'call-card call-card-empty';
+      card.className = 'call-card';
       card.innerHTML =
-        '<div class="call-card-head"><span>CALL // -----</span><span class="call-card-status">WAITING</span></div>' +
-        '<div class="call-card-no">// NO DATA //</div>' +
+        '<div class="call-card-head"><span>CALL // ' + cwEsc(cwShortId(r.callId)) + '</span><span class="call-card-status">' + cwEsc(String(r.status || 'open').toUpperCase()) + '</span></div>' +
+        '<div class="call-card-no">@' + cwEsc(r.alias) + ' // $' + cwEsc(String(r.ticker).toUpperCase()) + ' // ' + cwEsc(r.bias) + ' // ' + cwEsc(r.horizon) + '</div>' +
+        '<div class="call-card-no">“' + cwEsc(r.thesis) + '”</div>' +
         '<div class="call-reaction">' +
         '<button type="button" class="call-reaction-btn" onclick="callWallReact(\'LIKE\', this)">LIKE // --</button>' +
         '<button type="button" class="call-reaction-btn" onclick="callWallReact(\'DISLIKE\', this)">DISLIKE // --</button>' +
@@ -7373,14 +7423,58 @@ font-size: 27px;
   function cwRenderList() {
     var el = document.getElementById('call-wall-list');
     if (!el) return;
-    var f = cw.state.filter;
-    var label = f === 'ALL' ? '' : ' [' + f + ']';
-    el.innerHTML =
-      '<div class="call-wall-empty">' +
-      '// NO REGISTERED CALLS YET' + label + '<br>' +
-      '// THE WALL IS CLEAN //' +
-      '</div>';
+    var recs = cwFilteredRecords();
+    if (!recs.length) {
+      var f2 = cw.state.filter;
+      var label = f2 === 'ALL' ? '' : ' [' + f2 + ']';
+      el.innerHTML =
+        '<div class="call-wall-empty">' +
+        '// NO REGISTERED CALLS YET' + label + '<br>' +
+        '// THE WALL IS CLEAN //' +
+        '</div>';
+      return;
+    }
+    var html = '';
+    for (var i = 0; i < recs.length; i++) {
+      var r = recs[i];
+      html +=
+        '<div class="call-wall-row">' +
+        '<span>' + cwEsc(cwShortId(r.callId)) + '</span>' +
+        '<span>@' + cwEsc(r.alias) + '</span>' +
+        '<span>NODO 0' + cwEsc(String(r.desk)) + '</span>' +
+        '<span>$' + cwEsc(String(r.ticker).toUpperCase()) + '</span>' +
+        '<span>' + cwEsc(r.bias) + '</span>' +
+        '<span>' + cwEsc(r.horizon) + '</span>' +
+        '<span>' + cwEsc(String(r.status || 'open').toUpperCase()) + '</span>' +
+        '<span>--</span>' +
+        '</div>';
+    }
+    el.innerHTML = html;
   }
+
+  function cwLoadWall() {
+    var base = (typeof WORKER_URL !== 'undefined' && WORKER_URL) ? WORKER_URL : 'https://rapid-figemini-proxy.gabrieldomail.workers.dev';
+    fetch(base + '/rappia/call-wall', { method: 'GET' })
+      .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+      .then(function (d) {
+        cw.records = (d && d.ok && Array.isArray(d.calls)) ? d.calls : [];
+        cwRenderCards();
+        cwRenderList();
+      })
+      .catch(function () {
+        cw.records = [];
+        cwRenderCards();
+        cwRenderList();
+      });
+  }
+  window.callWallLoad = cwLoadWall;
+
+  window.callWallFilterAsset = function () {
+    var s = document.getElementById('call-filter-asset');
+    cw.state.filterAsset = s ? s.value : '';
+    cwRenderList();
+  };
+
 
   function cwMsg(txt) {
     var m = document.getElementById('call-composer-msg');
@@ -7493,6 +7587,7 @@ font-size: 27px;
     }).then(function (d) {
       if (d && d.ok && d.callId) {
         cwMsg('// SIGNED // CALL ' + d.callId + ' ON THE WALL');
+        cwLoadWall();
       } else {
         cwMsg('// SIGN FAILED // ' + ((d && d.error) || 'UNKNOWN') + ' // AUTH REQUIRED?');
       }
@@ -7532,6 +7627,7 @@ font-size: 27px;
     cwRenderCards();
     cwRenderList();
     cwAuthMsg();
+    cwLoadWall();
     var body = document.getElementById('call-composer-body');
     if (body) body.style.display = 'none';
   }
@@ -7573,7 +7669,7 @@ font-size: 27px;
         <select id="call-filter-desk" onchange="callWallFilterDesk()"><option value="">ALL NODES ▼</option></select>
       </label>
       <label class="call-filter-label">ASSET
-        <select id="call-filter-asset" onchange="callWallRenderList()"><option value="">ALL ASSETS ▼</option></select>
+        <select id="call-filter-asset" onchange="callWallFilterAsset()"><option value="">ALL ASSETS ▼</option></select>
       </label>
     </div>
   </div>
