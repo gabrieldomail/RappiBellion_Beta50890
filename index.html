@@ -7459,7 +7459,46 @@ font-size: 27px;
       cwMsg('////// INVALID >>> ' + errs.join(' / '));
       return;
     }
-    cwMsg('[ PERSISTENCE NOT ARMED ] // CALL NOT REGISTERED // FIREBASE BRIDGE EXPECTED IN 017B');
+    // SURGERY-018.2B.1: registro vía Worker (autoridad). El frontend declara
+    // INTENT; el Worker resuelve identidad desde Bearer + rppi_profiles y escribe.
+    cwMsg('// SIGNING CALL // SENDING TO TERMINAL WALL...');
+    cw.state.signing = true;
+    var cwBody = JSON.stringify({
+      desk: cw.state.desk,
+      ticker: assetEl.value,
+      bias: cw.state.bias,
+      horizon: cw.state.horizon,
+      refPrice: cw.state.refPrice,
+      thesis: thesis.value.trim()
+    });
+    var cwSend = function (token) {
+      var h = { 'Content-Type': 'application/json' };
+      if (token) h['Authorization'] = 'Bearer ' + token;
+      return fetch((typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://rapid-figemini-proxy.gabrieldomail.workers.dev') + '/rappia/call-wall', {
+        method: 'POST', headers: h, body: cwBody
+      });
+    };
+    var cwWithToken = function () {
+      if (typeof window._rppiAuthorizedFetch === 'function') {
+        return window._rppiAuthorizedFetch((typeof WORKER_URL !== 'undefined' ? WORKER_URL : 'https://rapid-figemini-proxy.gabrieldomail.workers.dev') + '/rappia/call-wall', {
+          method: 'POST', body: cwBody
+        });
+      }
+      var cu = (typeof auth !== 'undefined' && auth.currentUser) ? auth.currentUser : null;
+      if (cu && typeof cu.getIdToken === 'function') return cu.getIdToken().then(function (tok) { return cwSend(tok); });
+      return Promise.resolve(cwSend(null));
+    };
+    cwWithToken().then(function (r) {
+      return r.json().catch(function () { return { ok: false, error: 'invalid_json' }; });
+    }).then(function (d) {
+      if (d && d.ok && d.callId) {
+        cwMsg('// SIGNED // CALL ' + d.callId + ' ON THE WALL');
+      } else {
+        cwMsg('// SIGN FAILED // ' + ((d && d.error) || 'UNKNOWN') + ' // AUTH REQUIRED?');
+      }
+    }).catch(function (e) {
+      cwMsg('// SIGN NETWORK ERROR // ' + (e && e.message ? e.message : e));
+    });
   }
   window.callWallRegister = cwRegister;
   window.callWallRenderList = cwRenderList;
