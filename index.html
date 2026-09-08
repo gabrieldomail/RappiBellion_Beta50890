@@ -32172,7 +32172,7 @@ window.btExitTerminal = function() {
         gate.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         // ⚡ PROTOCOLO GAMMA: RESTAURAR ELEMENTOS FLOTANTES AL SALIR
-        btFloatElements.forEach(function(selector) {
+        (window.btFloatElements || []).forEach(function(selector) {
             var el = document.querySelector(selector);
             if (el) el.style.display = '';
         });
