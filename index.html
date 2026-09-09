@@ -7736,6 +7736,67 @@ font-size: 27px;
 
   <div class="call-wall-desk-cta">// CHOOSE YOUR DESK BELOW // <span class="call-wall-arrow">↓</span></div>
 </section>
+
+<!-- SURGERY-017C: OPEN CHANNEL // LIVE — right-side live commentary -->
+<aside class="open-channel" id="open-channel" aria-label="Open Channel Live">
+  <button class="open-channel-close" id="oc-close" type="button" aria-label="Close channel">CLOSE</button>
+  <div class="open-channel-header">
+    <div class="open-channel-title">OPEN CHANNEL // LIVE</div>
+    <div class="open-channel-status" id="oc-status">CHANNEL OFFLINE // PERSISTENCE NOT ARMED</div>
+    <div class="open-channel-context" id="oc-context">GLOBAL</div>
+  </div>
+  <div class="open-channel-stream" id="oc-stream">
+    <div class="open-channel-empty" id="oc-empty">
+      <div class="open-channel-empty-text">// NO TRANSMISSIONS YET</div>
+      <div class="open-channel-empty-sub">// OPEN CHANNEL IS LISTENING</div>
+    </div>
+  </div>
+  <div class="open-channel-new" id="oc-new">
+    <button class="open-channel-new-btn" id="oc-new-btn" type="button">VIEW NEW TRANSMISSIONS</button>
+  </div>
+  <div class="open-channel-input" id="oc-input">
+    <div class="open-channel-input-wrap">
+      <textarea class="open-channel-textarea" id="oc-textarea" placeholder="TRANSMIT TO OPEN CHANNEL..." maxlength="500"></textarea>
+      <button class="open-channel-transmit" id="oc-transmit" type="button">TRANSMIT</button>
+    </div>
+    <div class="open-channel-counter" id="oc-counter">0 / 500</div>
+  </div>
+  <div class="open-channel-readonly" id="oc-readonly" style="display:none;">
+    // READ-ONLY CHANNEL // LOGIN REQUIRED TO TRANSMIT
+    <br><button class="open-channel-login-btn" id="oc-login-btn" type="button">LOGIN / REGISTER</button>
+  </div>
+</aside>
+<!-- Mobile trigger + drawer -->
+<button class="open-channel-mobile-trigger" id="oc-mobile-trigger" type="button">OPEN CHANNEL // 0</button>
+<div class="open-channel-drawer" id="oc-drawer">
+  <button class="open-channel-close" id="oc-drawer-close" type="button" aria-label="Close channel">CLOSE</button>
+  <div class="open-channel-header">
+    <div class="open-channel-title">OPEN CHANNEL // LIVE</div>
+    <div class="open-channel-status" id="oc-drawer-status">CHANNEL OFFLINE // PERSISTENCE NOT ARMED</div>
+    <div class="open-channel-context" id="oc-drawer-context">GLOBAL</div>
+  </div>
+  <div class="open-channel-stream" id="oc-drawer-stream">
+    <div class="open-channel-empty">
+      <div class="open-channel-empty-text">// NO TRANSMISSIONS YET</div>
+      <div class="open-channel-empty-sub">// OPEN CHANNEL IS LISTENING</div>
+    </div>
+  </div>
+  <div class="open-channel-new" id="oc-drawer-new">
+    <button class="open-channel-new-btn" id="oc-drawer-new-btn" type="button">VIEW NEW TRANSMISSIONS</button>
+  </div>
+  <div class="open-channel-input" id="oc-drawer-input">
+    <div class="open-channel-input-wrap">
+      <textarea class="open-channel-textarea" id="oc-drawer-textarea" placeholder="TRANSMIT TO OPEN CHANNEL..." maxlength="500"></textarea>
+      <button class="open-channel-transmit" id="oc-drawer-transmit" type="button">TRANSMIT</button>
+    </div>
+    <div class="open-channel-counter" id="oc-drawer-counter">0 / 500</div>
+  </div>
+  <div class="open-channel-readonly" id="oc-drawer-readonly" style="display:none;">
+    // READ-ONLY CHANNEL // LOGIN REQUIRED TO TRANSMIT
+    <br><button class="open-channel-login-btn" id="oc-drawer-login-btn" type="button">LOGIN / REGISTER</button>
+  </div>
+</div>
+</div><!-- /bt-social-row -->
 <!-- ══════════ NO MONKEY'S AREA · RELEASE-018.3 (from indexNMA.html) ══════════ -->
 <style>
 @keyframes nmaHazardMove { 0%{background-position:0 0} 100%{background-position:56px 0} }
@@ -8267,66 +8328,6 @@ font-size: 27px;
 })();
 </script>
 <!-- ══════════ /NO MONKEY'S AREA ══════════ -->
-<!-- SURGERY-017C: OPEN CHANNEL // LIVE — right-side live commentary -->
-<aside class="open-channel" id="open-channel" aria-label="Open Channel Live">
-  <button class="open-channel-close" id="oc-close" type="button" aria-label="Close channel">CLOSE</button>
-  <div class="open-channel-header">
-    <div class="open-channel-title">OPEN CHANNEL // LIVE</div>
-    <div class="open-channel-status" id="oc-status">CHANNEL OFFLINE // PERSISTENCE NOT ARMED</div>
-    <div class="open-channel-context" id="oc-context">GLOBAL</div>
-  </div>
-  <div class="open-channel-stream" id="oc-stream">
-    <div class="open-channel-empty" id="oc-empty">
-      <div class="open-channel-empty-text">// NO TRANSMISSIONS YET</div>
-      <div class="open-channel-empty-sub">// OPEN CHANNEL IS LISTENING</div>
-    </div>
-  </div>
-  <div class="open-channel-new" id="oc-new">
-    <button class="open-channel-new-btn" id="oc-new-btn" type="button">VIEW NEW TRANSMISSIONS</button>
-  </div>
-  <div class="open-channel-input" id="oc-input">
-    <div class="open-channel-input-wrap">
-      <textarea class="open-channel-textarea" id="oc-textarea" placeholder="TRANSMIT TO OPEN CHANNEL..." maxlength="500"></textarea>
-      <button class="open-channel-transmit" id="oc-transmit" type="button">TRANSMIT</button>
-    </div>
-    <div class="open-channel-counter" id="oc-counter">0 / 500</div>
-  </div>
-  <div class="open-channel-readonly" id="oc-readonly" style="display:none;">
-    // READ-ONLY CHANNEL // LOGIN REQUIRED TO TRANSMIT
-    <br><button class="open-channel-login-btn" id="oc-login-btn" type="button">LOGIN / REGISTER</button>
-  </div>
-</aside>
-<!-- Mobile trigger + drawer -->
-<button class="open-channel-mobile-trigger" id="oc-mobile-trigger" type="button">OPEN CHANNEL // 0</button>
-<div class="open-channel-drawer" id="oc-drawer">
-  <button class="open-channel-close" id="oc-drawer-close" type="button" aria-label="Close channel">CLOSE</button>
-  <div class="open-channel-header">
-    <div class="open-channel-title">OPEN CHANNEL // LIVE</div>
-    <div class="open-channel-status" id="oc-drawer-status">CHANNEL OFFLINE // PERSISTENCE NOT ARMED</div>
-    <div class="open-channel-context" id="oc-drawer-context">GLOBAL</div>
-  </div>
-  <div class="open-channel-stream" id="oc-drawer-stream">
-    <div class="open-channel-empty">
-      <div class="open-channel-empty-text">// NO TRANSMISSIONS YET</div>
-      <div class="open-channel-empty-sub">// OPEN CHANNEL IS LISTENING</div>
-    </div>
-  </div>
-  <div class="open-channel-new" id="oc-drawer-new">
-    <button class="open-channel-new-btn" id="oc-drawer-new-btn" type="button">VIEW NEW TRANSMISSIONS</button>
-  </div>
-  <div class="open-channel-input" id="oc-drawer-input">
-    <div class="open-channel-input-wrap">
-      <textarea class="open-channel-textarea" id="oc-drawer-textarea" placeholder="TRANSMIT TO OPEN CHANNEL..." maxlength="500"></textarea>
-      <button class="open-channel-transmit" id="oc-drawer-transmit" type="button">TRANSMIT</button>
-    </div>
-    <div class="open-channel-counter" id="oc-drawer-counter">0 / 500</div>
-  </div>
-  <div class="open-channel-readonly" id="oc-drawer-readonly" style="display:none;">
-    // READ-ONLY CHANNEL // LOGIN REQUIRED TO TRANSMIT
-    <br><button class="open-channel-login-btn" id="oc-drawer-login-btn" type="button">LOGIN / REGISTER</button>
-  </div>
-</div>
-</div><!-- /bt-social-row -->
 <!-- SURGERY-015: 3D ORBITAL NODE SELECTOR — capa de navegación sobre los nodos existentes -->
 <div class="bt-orb" id="bt-orb">
   <div class="bt-orb-head">NODE ORBITAL SELECTOR</div>
