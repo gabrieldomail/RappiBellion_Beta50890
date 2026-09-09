@@ -7736,6 +7736,537 @@ font-size: 27px;
 
   <div class="call-wall-desk-cta">// CHOOSE YOUR DESK BELOW // <span class="call-wall-arrow">↓</span></div>
 </section>
+<!-- ══════════ NO MONKEY'S AREA · RELEASE-018.3 (from indexNMA.html) ══════════ -->
+<style>
+@keyframes nmaHazardMove { 0%{background-position:0 0} 100%{background-position:56px 0} }
+@keyframes nmaPulseRed { 0%,100%{opacity:1} 50%{opacity:0.4} }
+@keyframes nmaFlickerSync { 0%,89%,100%{opacity:1} 90%{opacity:0.5} 92%{opacity:1} 94%{opacity:0.6} 96%{opacity:1} }
+@keyframes nmaScan { 0%{top:-6%} 100%{top:106%} }
+@keyframes nmaGTFadeIn { from{opacity:0} to{opacity:1} }
+@keyframes nmaGTGlitchIn { 0%{clip-path:inset(0 0 100% 0);opacity:0} 40%{clip-path:inset(0 0 40% 0);opacity:0.7} 100%{clip-path:inset(0 0 0 0);opacity:1} }
+
+#nma-entry-banner {
+  position:relative; z-index:2; margin:22px 22px 8px; max-width:1240px; margin-left:auto; margin-right:auto;
+  border:2px solid oklch(0.65 0.32 35/0.8);
+  background:
+    repeating-linear-gradient(45deg, oklch(0.65 0.32 35/0.12) 0 14px, transparent 14px 28px),
+    oklch(9% 0.014 160/0.92);
+  clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px);
+  padding:16px 22px; cursor:pointer;
+  display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  transition:box-shadow 0.2s, transform 0.2s;
+  box-shadow:0 0 24px oklch(0.65 0.32 35/0.15);
+}
+#nma-entry-banner:hover { box-shadow:0 0 40px oklch(0.65 0.32 35/0.4); transform:translateY(-2px); }
+.nma-entry-left { display:flex; align-items:center; gap:14px; }
+.nma-entry-icon { font-size:26px; filter:drop-shadow(0 0 8px oklch(0.65 0.32 35)); }
+.nma-entry-title-wrap { display:flex; flex-direction:column; gap:3px; }
+.nma-entry-title {
+  font-family:'Orbitron',monospace; font-weight:900; font-size:clamp(15px,2vw,20px);
+  letter-spacing:2px; color:#fff; text-shadow:0 0 12px oklch(0.65 0.32 35/0.7);
+}
+.nma-entry-sub {
+  font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1.5px;
+  color:oklch(0.65 0.32 35/0.85);
+}
+.nma-entry-btn {
+  font-family:'Orbitron',monospace; font-weight:700; font-size:12px; letter-spacing:2px;
+  color:#000; background:oklch(0.65 0.32 35);
+  padding:10px 20px; border:none; cursor:pointer;
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+  box-shadow:0 0 16px oklch(0.65 0.32 35/0.6);
+  white-space:nowrap;
+}
+.nma-entry-btn:hover { filter:brightness(1.15); }
+
+#nma-gate-overlay {
+  position:fixed; inset:0; z-index:9997; display:none;
+  align-items:center; justify-content:center; padding:20px;
+  background:oklch(4% 0.01 160/0.97); backdrop-filter:blur(6px);
+}
+.nma-gate-box {
+  position:relative; width:min(480px,92vw);
+  border:2px solid oklch(0.65 0.32 35/0.8);
+  background:oklch(8% 0.012 160);
+  clip-path:polygon(24px 0,100% 0,100% calc(100% - 24px),calc(100% - 24px) 100%,0 100%,0 24px);
+  padding:32px 26px; text-align:center;
+  box-shadow:0 0 60px oklch(0.65 0.32 35/0.3);
+  animation:nmaGTFadeIn 0.4s ease both;
+}
+.nma-gate-stripes {
+  position:absolute; top:0; left:0; right:0; height:6px;
+  background:repeating-linear-gradient(45deg, oklch(0.65 0.32 35) 0 10px, #000 10px 20px);
+  animation:nmaHazardMove 1.2s linear infinite;
+}
+.nma-gate-icon { font-size:38px; margin:14px 0 6px; filter:drop-shadow(0 0 12px oklch(0.65 0.32 35)); }
+.nma-gate-warn {
+  font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:3px;
+  color:oklch(0.65 0.32 35); animation:nmaPulseRed 1s step-end infinite; margin-bottom:10px;
+}
+.nma-gate-title {
+  font-family:'Orbitron',monospace; font-weight:900; font-size:22px; letter-spacing:2px;
+  color:#fff; text-shadow:0 0 16px oklch(0.65 0.32 35/0.6); margin-bottom:6px;
+}
+.nma-gate-desc {
+  font-family:'Share Tech Mono',monospace; font-size:11px; color:rgba(255,255,255,0.5);
+  line-height:1.7; margin:14px 0 20px;
+}
+.nma-gate-btn-row { display:flex; gap:10px; }
+.nma-gate-enter, .nma-gate-cancel {
+  flex:1; font-family:'Orbitron',monospace; font-weight:700; font-size:12px; letter-spacing:2px;
+  padding:12px; cursor:pointer; clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+}
+.nma-gate-enter { background:oklch(0.65 0.32 35); color:#000; border:none; }
+.nma-gate-cancel { background:transparent; color:oklch(82% 0.22 145); border:1px solid oklch(82% 0.22 145/0.5); }
+
+#nma-core { position:fixed; inset:0; z-index:9997; display:none; opacity:0; transition:opacity 0.4s ease;
+  background:oklch(6% 0.01 160); overflow-y:auto; }
+.nma-core-header {
+  position:sticky; top:0; z-index:5; display:flex; align-items:center; justify-content:space-between;
+  padding:12px 20px; background:oklch(6% 0.01 160/0.97); border-bottom:2px solid oklch(0.65 0.32 35/0.5);
+  backdrop-filter:blur(6px);
+}
+.nma-core-title { font-family:'Orbitron',monospace; font-weight:900; font-size:15px; letter-spacing:2px; color:oklch(0.65 0.32 35); text-shadow:0 0 10px oklch(0.65 0.32 35/0.5); }
+.nma-core-exit {
+  font-family:'Orbitron',monospace; font-weight:700; font-size:11px; letter-spacing:2px;
+  color:oklch(0.65 0.32 35); background:oklch(0.65 0.32 35/0.1); border:1px solid oklch(0.65 0.32 35/0.6);
+  padding:8px 16px; cursor:pointer; clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+}
+.nma-core-body { max-width:1200px; margin:0 auto; padding:20px 20px 60px; display:flex; flex-direction:column; gap:22px; }
+
+.nma-module {
+  border:1px solid oklch(82% 0.22 145/0.3); border-top:2px solid oklch(0.65 0.32 35/0.6);
+  background:oklch(9% 0.014 160/0.85); backdrop-filter:blur(6px);
+  clip-path:polygon(18px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%,0 18px);
+  padding:20px; position:relative; overflow:hidden;
+}
+.nma-module-scan { position:absolute; left:0; width:100%; height:2px; pointer-events:none;
+  background:linear-gradient(90deg,transparent,oklch(82% 0.22 145/0.4),transparent); animation:nmaScan 7s linear infinite; }
+.nma-module-hdr { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px; }
+.nma-module-title { font-family:'Orbitron',monospace; font-weight:900; font-size:15px; letter-spacing:1.5px; color:#fff; }
+.nma-module-sub { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:2px; color:rgba(255,255,255,0.4); }
+
+.nma-spread-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
+@media(max-width:640px){ .nma-spread-row{grid-template-columns:1fr;} }
+.nma-asset-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:3px; padding:12px; }
+.nma-asset-sym { font-family:'Orbitron',monospace; font-weight:700; font-size:13px; color:#fff; margin-bottom:6px; }
+.nma-asset-vals { display:flex; justify-content:space-between; font-family:'Share Tech Mono',monospace; font-size:10px; color:rgba(255,255,255,0.45); margin-bottom:4px; }
+.nma-asset-var { font-family:'Orbitron',monospace; font-weight:900; font-size:20px; }
+.nma-asset-var.pos { color:#00FF88; text-shadow:0 0 8px rgba(0,255,136,0.5); }
+.nma-asset-var.neg { color:#FF0055; text-shadow:0 0 8px rgba(255,0,85,0.5); }
+
+.nma-delta-box { text-align:center; padding:14px; border:1px dashed oklch(0.65 0.32 35/0.4); border-radius:3px; background:oklch(0.65 0.32 35/0.05); margin-bottom:14px; }
+.nma-delta-lbl { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:2px; color:rgba(255,255,255,0.4); }
+.nma-delta-val { font-family:'Orbitron',monospace; font-weight:900; font-size:28px; color:oklch(0.65 0.32 35); text-shadow:0 0 14px oklch(0.65 0.32 35/0.6); }
+
+.nma-trigger-row { display:flex; flex-direction:column; gap:8px; }
+.nma-trigger {
+  display:flex; align-items:center; justify-content:space-between; padding:8px 12px;
+  border-radius:2px; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1px;
+  border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.02); color:rgba(255,255,255,0.5);
+}
+.nma-trigger.active {
+  border-color:oklch(0.65 0.32 35/0.7); background:oklch(0.65 0.32 35/0.1); color:oklch(0.65 0.32 35);
+  animation:nmaPulseRed 1.4s ease-in-out infinite;
+}
+.nma-trigger b { color:inherit; }
+
+.nma-sector-widget { border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:14px; margin-bottom:12px; background:rgba(255,255,255,0.02); }
+.nma-sector-hdr { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.nma-sector-sym { font-family:'Orbitron',monospace; font-weight:900; font-size:16px; color:#fff; }
+.nma-sector-dot { width:7px;height:7px;border-radius:50%; background:oklch(82% 0.22 145); box-shadow:0 0 6px oklch(82% 0.22 145); animation:nmaFlickerSync 2.5s linear infinite; }
+.nma-bar-line { margin-bottom:10px; }
+.nma-bar-lbl-row { display:flex; justify-content:space-between; font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:1px; color:rgba(255,255,255,0.45); margin-bottom:4px; }
+.nma-bar-track { height:8px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; }
+.nma-bar-fill { height:100%; border-radius:2px; transition:width 0.6s ease; animation:nmaFlickerSync 3s linear infinite; }
+.nma-bar-fill.dominance { background:linear-gradient(90deg,oklch(72% 0.18 200),oklch(82% 0.22 145)); box-shadow:0 0 8px oklch(82% 0.22 145/0.5); }
+.nma-bar-fill.flow-in { background:linear-gradient(90deg,#00994d,#00FF88); box-shadow:0 0 8px rgba(0,255,136,0.5); }
+.nma-bar-fill.flow-out { background:linear-gradient(90deg,#990022,#FF0055); box-shadow:0 0 8px rgba(255,0,85,0.5); }
+.nma-las-split { display:flex; height:10px; border-radius:2px; overflow:hidden; }
+.nma-las-spot { background:oklch(82% 0.22 145); box-shadow:0 0 8px oklch(82% 0.22 145/0.5); }
+.nma-las-notional { background:oklch(0.65 0.32 35); box-shadow:0 0 8px oklch(0.65 0.32 35/0.6); }
+.nma-alert-tag {
+  display:inline-block; margin-top:8px; font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:1.5px;
+  padding:3px 9px; border-radius:2px; color:#FF0055; border:1px solid rgba(255,0,85,0.5); background:rgba(255,0,85,0.08);
+  animation:nmaPulseRed 0.8s step-end infinite;
+}
+
+.nma-gt-trigger-btn {
+  width:100%; margin-top:6px; font-family:'Orbitron',monospace; font-weight:700; font-size:11px; letter-spacing:2px;
+  color:oklch(72% 0.18 200); background:oklch(72% 0.18 200/0.08); border:1px solid oklch(72% 0.18 200/0.5);
+  padding:11px; cursor:pointer; clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+}
+.nma-gt-trigger-btn:hover { background:oklch(72% 0.18 200/0.18); }
+.nma-gt-hint { text-align:center; font-family:'Share Tech Mono',monospace; font-size:9px; color:rgba(255,255,255,0.3); margin-top:6px; letter-spacing:1px; }
+
+#nma-groundtruth { position:fixed; inset:0; z-index:9999; display:none; background:oklch(3% 0.008 160/0.97);
+  backdrop-filter:blur(8px); overflow-y:auto; }
+#nma-groundtruth.show { display:block; }
+.nma-gt-content { max-width:900px; margin:0 auto; padding:30px 20px 60px; animation:nmaGTGlitchIn 0.5s cubic-bezier(0.22,0.61,0.36,1) both; }
+.nma-gt-hdr { text-align:center; margin-bottom:26px; }
+.nma-gt-hdr-tag { font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:4px; color:oklch(0.65 0.32 35); animation:nmaPulseRed 1s step-end infinite; margin-bottom:8px; }
+.nma-gt-hdr-title { font-family:'Orbitron',monospace; font-weight:900; font-size:clamp(22px,4vw,34px); letter-spacing:2px; color:#fff; text-shadow:0 0 20px oklch(0.65 0.32 35/0.6); }
+.nma-gt-hdr-sub { font-family:'Share Tech Mono',monospace; font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:2px; margin-top:6px; }
+.nma-gt-close {
+  position:absolute; top:16px; right:20px; font-family:'Orbitron',monospace; font-weight:700; font-size:11px; letter-spacing:2px;
+  color:oklch(0.65 0.32 35); background:none; border:1px solid oklch(0.65 0.32 35/0.6); padding:7px 14px; cursor:pointer;
+}
+.nma-gt-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+@media(max-width:820px){ .nma-gt-grid{grid-template-columns:1fr;} }
+.nma-gt-panel { border:1px solid rgba(255,255,255,0.12); border-top:2px solid var(--gtc); background:rgba(255,255,255,0.02); padding:16px; clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px); }
+.nma-gt-panel-tag { font-family:'Orbitron',monospace; font-weight:900; font-size:11px; letter-spacing:2px; color:var(--gtc); margin-bottom:10px; text-shadow:0 0 8px var(--gtc); }
+.nma-gt-panel-item { font-family:'Share Tech Mono',monospace; font-size:11px; color:rgba(255,255,255,0.7); line-height:1.9; }
+.nma-gt-panel-item b { color:#fff; }
+.nma-gt-verdict { margin-top:22px; padding:18px; text-align:center; border:2px solid #FF0055; background:rgba(255,0,85,0.08); clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px); }
+.nma-gt-verdict-tag { font-family:'Orbitron',monospace; font-weight:900; font-size:16px; letter-spacing:2px; color:#FF0055; text-shadow:0 0 14px rgba(255,0,85,0.7); animation:nmaPulseRed 0.7s step-end infinite; }
+.nma-gt-verdict-desc { font-family:'Share Tech Mono',monospace; font-size:11px; color:rgba(255,255,255,0.6); margin-top:8px; line-height:1.6; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nma-gate-stripes, .nma-bar-fill, .nma-sector-dot, .nma-trigger.active, .nma-gt-verdict-tag, .nma-gate-warn { animation:none !important; }
+}
+</style>
+
+<div id="nma-entry-banner" onclick="window.nmaOpenGate()">
+  <div class="nma-entry-left">
+    <div class="nma-entry-icon">☣</div>
+    <div class="nma-entry-title-wrap">
+      <div class="nma-entry-title">[ NO MONKEY'S AREA ]</div>
+      <div class="nma-entry-sub">// ACCESO RESTRINGIDO · MOTOR DE ENTRECRUZAMIENTO SB CARTEL //</div>
+    </div>
+  </div>
+  <button class="nma-entry-btn">INGRESAR →</button>
+</div>
+
+<div id="nma-gate-overlay">
+  <div class="nma-gate-box">
+    <div class="nma-gate-stripes"></div>
+    <div class="nma-gate-icon">☣</div>
+    <div class="nma-gate-warn">⚠ CONTENIDO NO APTO PARA PRINCIPIANTES ⚠</div>
+    <div class="nma-gate-title">NO MONKEY'S AREA</div>
+    <div class="nma-gate-desc">
+      Análisis algorítmico de entrecruzamiento de activos: spreads sintéticos,
+      absorción real vs financiarización, apalancamiento sistémico oculto.
+      Si no entendés lo que vas a ver, este no es tu lugar.
+    </div>
+    <div class="nma-gate-btn-row">
+      <button class="nma-gate-cancel" onclick="window.nmaCloseGate()">CANCELAR</button>
+      <button class="nma-gate-enter" onclick="window.nmaEnterCore()">ACCEDER →</button>
+    </div>
+  </div>
+</div>
+
+<div id="nma-core">
+  <div class="nma-core-header">
+    <div class="nma-core-title">☣ NO MONKEY'S AREA — SB CARTEL INTEL</div>
+    <button class="nma-core-exit" onclick="window.nmaExitCore()">✕ SALIR</button>
+  </div>
+  <div class="nma-core-body">
+
+    <div class="nma-module">
+      <div class="nma-module-scan"></div>
+      <div class="nma-module-hdr">
+        <div>
+          <div class="nma-module-title">THE SILICON MIRAGE</div>
+          <div class="nma-module-sub">SEMICONDUCTORS (SOXX) VS ENERGY (XLE) · SPREAD DE FANTASÍA IA</div>
+        </div>
+      </div>
+      <div class="nma-spread-row">
+        <div class="nma-asset-card">
+          <div class="nma-asset-sym">SOXX</div>
+          <div class="nma-asset-vals"><span>POINT ZERO</span><span id="nma-soxx-zero">$235.35</span></div>
+          <div class="nma-asset-vals"><span>CURRENT</span><span id="nma-soxx-now">--</span></div>
+          <div class="nma-asset-var pos" id="nma-soxx-var">+0.0%</div>
+        </div>
+        <div class="nma-asset-card">
+          <div class="nma-asset-sym">XLE</div>
+          <div class="nma-asset-vals"><span>POINT ZERO</span><span id="nma-xle-zero">$42.88</span></div>
+          <div class="nma-asset-vals"><span>CURRENT</span><span id="nma-xle-now">--</span></div>
+          <div class="nma-asset-var pos" id="nma-xle-var">+0.0%</div>
+        </div>
+      </div>
+      <div class="nma-delta-box">
+        <div class="nma-delta-lbl">// DELTA (SOXX − XLE) //</div>
+        <div class="nma-delta-val" id="nma-mirage-delta">0.0%</div>
+      </div>
+      <div class="nma-trigger-row">
+        <div class="nma-trigger" id="nma-mirage-trigger"><b>IF DELTA &gt; 100%</b><span id="nma-mirage-trigger-status">MONITOREANDO</span></div>
+      </div>
+    </div>
+
+    <div class="nma-module">
+      <div class="nma-module-scan"></div>
+      <div class="nma-module-hdr">
+        <div>
+          <div class="nma-module-title">THE SOVEREIGN FRACTURE</div>
+          <div class="nma-module-sub">GOLD VS TLT (BONOS 20+) · DIVERGENCIA DE CONFIANZA SOBERANA</div>
+        </div>
+      </div>
+      <div class="nma-spread-row">
+        <div class="nma-asset-card">
+          <div class="nma-asset-sym">GOLD</div>
+          <div class="nma-asset-vals"><span>POINT ZERO</span><span id="nma-gold-zero">$1,520.00</span></div>
+          <div class="nma-asset-vals"><span>CURRENT</span><span id="nma-gold-now">--</span></div>
+          <div class="nma-asset-var pos" id="nma-gold-var">+0.0%</div>
+        </div>
+        <div class="nma-asset-card">
+          <div class="nma-asset-sym">TLT</div>
+          <div class="nma-asset-vals"><span>POINT ZERO</span><span id="nma-tlt-zero">$168.00</span></div>
+          <div class="nma-asset-vals"><span>CURRENT</span><span id="nma-tlt-now">--</span></div>
+          <div class="nma-asset-var neg" id="nma-tlt-var">-0.0%</div>
+        </div>
+      </div>
+      <div class="nma-delta-box">
+        <div class="nma-delta-lbl">// SPREAD DE DIVERGENCIA //</div>
+        <div class="nma-delta-val" id="nma-fracture-spread">0.0%</div>
+      </div>
+      <div class="nma-trigger-row">
+        <div class="nma-trigger" id="nma-tlt-trigger"><b>TLT &gt; $101.99</b><span id="nma-tlt-trigger-status">ESPERANDO SEÑAL</span></div>
+        <div class="nma-trigger" id="nma-gold-trigger"><b>GOLD &lt; $3,582.74</b><span id="nma-gold-trigger-status">ESPERANDO SEÑAL</span></div>
+      </div>
+    </div>
+
+    <div class="nma-module">
+      <div class="nma-module-scan"></div>
+      <div class="nma-module-hdr">
+        <div>
+          <div class="nma-module-title">FINANCIARIZACIÓN SINTÉTICA VS ABSORCIÓN REAL</div>
+          <div class="nma-module-sub">DOMINANCIA · CAPITAL FLOW (vs M2) · APALANCAMIENTO SISTÉMICO (LAS)</div>
+        </div>
+      </div>
+
+      <div class="nma-sector-widget">
+        <div class="nma-sector-hdr">
+          <span class="nma-sector-sym">XLK</span>
+          <span class="nma-sector-dot"></span>
+        </div>
+        <div class="nma-bar-line">
+          <div class="nma-bar-lbl-row"><span>DOMINANCIA GLOBAL</span><span id="nma-xlk-dom-val">32.5%</span></div>
+          <div class="nma-bar-track"><div class="nma-bar-fill dominance" id="nma-xlk-dom-bar" style="width:32.5%;"></div></div>
+        </div>
+        <div class="nma-bar-line">
+          <div class="nma-bar-lbl-row"><span>CAPITAL FLOW (vs M2 BASE)</span><span id="nma-xlk-flow-val" style="color:#00FF88;">+14.2% 🟢 INFLOW</span></div>
+          <div class="nma-bar-track"><div class="nma-bar-fill flow-in" id="nma-xlk-flow-bar" style="width:64%;"></div></div>
+        </div>
+        <div class="nma-bar-line">
+          <div class="nma-bar-lbl-row"><span>RIESGO SISTÉMICO (LAS)</span><span id="nma-xlk-las-val">SPOT 15% / NOTIONAL 85%</span></div>
+          <div class="nma-las-split"><div class="nma-las-spot" id="nma-xlk-las-spot" style="width:15%;"></div><div class="nma-las-notional" id="nma-xlk-las-notional" style="width:85%;"></div></div>
+        </div>
+        <div class="nma-alert-tag" id="nma-xlk-alert">🔴 ALERT: LIQUIDITY TRAP</div>
+      </div>
+
+      <div class="nma-sector-widget">
+        <div class="nma-sector-hdr">
+          <span class="nma-sector-sym">XLE</span>
+          <span class="nma-sector-dot"></span>
+        </div>
+        <div class="nma-bar-line">
+          <div class="nma-bar-lbl-row"><span>DOMINANCIA GLOBAL</span><span id="nma-xle2-dom-val">8.1%</span></div>
+          <div class="nma-bar-track"><div class="nma-bar-fill dominance" id="nma-xle2-dom-bar" style="width:8.1%;"></div></div>
+        </div>
+        <div class="nma-bar-line">
+          <div class="nma-bar-lbl-row"><span>CAPITAL FLOW (vs M2 BASE)</span><span id="nma-xle2-flow-val" style="color:#FF0055;">-6.4% 🔴 OUTFLOW</span></div>
+          <div class="nma-bar-track"><div class="nma-bar-fill flow-out" id="nma-xle2-flow-bar" style="width:22%;"></div></div>
+        </div>
+        <div class="nma-bar-line">
+          <div class="nma-bar-lbl-row"><span>RIESGO SISTÉMICO (LAS)</span><span id="nma-xle2-las-val">SPOT 71% / NOTIONAL 29%</span></div>
+          <div class="nma-las-split"><div class="nma-las-spot" id="nma-xle2-las-spot" style="width:71%;"></div><div class="nma-las-notional" id="nma-xle2-las-notional" style="width:29%;"></div></div>
+        </div>
+      </div>
+
+      <button class="nma-gt-trigger-btn" onclick="window.nmaOpenGroundTruth()">⬡ THE GROUND TRUTH — DIAGNÓSTICO COMPLETO</button>
+      <div class="nma-gt-hint">[ F2 ] O [ CTRL+SHIFT+X ] TAMBIÉN ABRE EL DIAGNÓSTICO · [ ESC ] CIERRA</div>
+    </div>
+
+  </div>
+</div>
+
+<div id="nma-groundtruth">
+  <button class="nma-gt-close" onclick="window.nmaCloseGroundTruth()">✕ CERRAR [ESC]</button>
+  <div class="nma-gt-content">
+    <div class="nma-gt-hdr">
+      <div class="nma-gt-hdr-tag">◈ REALITY DIAGNOSTIC PROTOCOL ◈</div>
+      <div class="nma-gt-hdr-title">THE GROUND TRUTH</div>
+      <div class="nma-gt-hdr-sub">// SEPARANDO LA SEÑAL DEL RUIDO — SB CARTEL //</div>
+    </div>
+    <div class="nma-gt-grid">
+      <div class="nma-gt-panel" style="--gtc:#00BCFF;">
+        <div class="nma-gt-panel-tag">ALFA · DOMINANCIA</div>
+        <div class="nma-gt-panel-item">Dominancia XLK: <b>32.5%</b> del total sectorial</div>
+        <div class="nma-gt-panel-item">Rotación detectada: <b>Tech → defensivos</b></div>
+        <div class="nma-gt-panel-item">Concentración: <b>ALTA</b> (top-heavy)</div>
+      </div>
+      <div class="nma-gt-panel" style="--gtc:#00FF88;">
+        <div class="nma-gt-panel-tag">BETA · FLUJO REAL (M2)</div>
+        <div class="nma-gt-panel-item">Capital Flow XLK: <b>+14.2% INFLOW</b></div>
+        <div class="nma-gt-panel-item">Crecimiento ajustado por M2: <b>Real, no solo nominal</b></div>
+        <div class="nma-gt-panel-item">Absorción de liquidez: <b>Confirmada</b></div>
+      </div>
+      <div class="nma-gt-panel" style="--gtc:#FF0055;">
+        <div class="nma-gt-panel-tag">OMEGA · RIESGO SISTÉMICO</div>
+        <div class="nma-gt-panel-item">LAS (Leverage Sintético): <b>0.85</b></div>
+        <div class="nma-gt-panel-item">Spot real: <b>15%</b> · Notional: <b>85%</b></div>
+        <div class="nma-gt-panel-item">Zona: <b style="color:#FF0055;">CRÍTICA (≥0.80)</b></div>
+      </div>
+    </div>
+    <div class="nma-gt-verdict">
+      <div class="nma-gt-verdict-tag">⚠ VEREDICTO: LIQUIDITY TRAP DETECTADO ⚠</div>
+      <div class="nma-gt-verdict-desc">
+        El 85% de la exposición en XLK es apalancamiento sintético (derivados/notional),
+        no capital real depositado. Una corrección abrupta del subyacente puede forzar
+        liquidaciones en cascada muy por encima del volumen spot disponible.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function NoMonkeysArea() {
+    'use strict';
+
+    var SB_ANCHOR = {
+        SOXX: { zero: 235.35 },
+        XLE:  { zero: 42.88 },
+        GOLD: { zero: 1520.00 },
+        TLT:  { zero: 168.00 }
+    };
+
+    function sbLivePrice(sym) {
+        try {
+            if (window.BT_ASSETS && window.BT_ASSETS[sym]) return window.BT_ASSETS[sym].p;
+        } catch(e) {}
+        return SB_ANCHOR[sym] ? SB_ANCHOR[sym].zero : 0;
+    }
+    function sbVar(sym) {
+        var zero = SB_ANCHOR[sym].zero;
+        var now = sbLivePrice(sym);
+        return ((now - zero) / zero) * 100;
+    }
+    function fmtMoney(v) { return '$' + v.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+    function fmtPct(v) { return (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; }
+
+    function nmaUpdateModules() {
+        var soxxNow = sbLivePrice('SOXX'), xleNow = sbLivePrice('XLE');
+        var varSoxx = sbVar('SOXX'), varXle = sbVar('XLE');
+        var delta = varSoxx - varXle;
+        var soxxNowEl = document.getElementById('nma-soxx-now'); if (soxxNowEl) soxxNowEl.textContent = fmtMoney(soxxNow);
+        var xleNowEl = document.getElementById('nma-xle-now'); if (xleNowEl) xleNowEl.textContent = fmtMoney(xleNow);
+        var soxxVarEl = document.getElementById('nma-soxx-var');
+        if (soxxVarEl) { soxxVarEl.textContent = fmtPct(varSoxx); soxxVarEl.className = 'nma-asset-var ' + (varSoxx>=0?'pos':'neg'); }
+        var xleVarEl = document.getElementById('nma-xle-var');
+        if (xleVarEl) { xleVarEl.textContent = fmtPct(varXle); xleVarEl.className = 'nma-asset-var ' + (varXle>=0?'pos':'neg'); }
+        var deltaEl = document.getElementById('nma-mirage-delta'); if (deltaEl) deltaEl.textContent = fmtPct(delta);
+        var mirageTrig = document.getElementById('nma-mirage-trigger');
+        var mirageTrigStatus = document.getElementById('nma-mirage-trigger-status');
+        if (mirageTrig && mirageTrigStatus) {
+            var active = delta > 100;
+            mirageTrig.classList.toggle('active', active);
+            mirageTrigStatus.textContent = active ? '⚡ SEÑAL ACTIVA' : 'MONITOREANDO';
+        }
+
+        var goldNow = sbLivePrice('GOLD'), tltNow = sbLivePrice('TLT');
+        var varGold = sbVar('GOLD'), varTlt = sbVar('TLT');
+        var spread = varGold - varTlt;
+        var goldNowEl = document.getElementById('nma-gold-now'); if (goldNowEl) goldNowEl.textContent = fmtMoney(goldNow);
+        var tltNowEl = document.getElementById('nma-tlt-now'); if (tltNowEl) tltNowEl.textContent = fmtMoney(tltNow);
+        var goldVarEl = document.getElementById('nma-gold-var');
+        if (goldVarEl) { goldVarEl.textContent = fmtPct(varGold); goldVarEl.className = 'nma-asset-var ' + (varGold>=0?'pos':'neg'); }
+        var tltVarEl = document.getElementById('nma-tlt-var');
+        if (tltVarEl) { tltVarEl.textContent = fmtPct(varTlt); tltVarEl.className = 'nma-asset-var ' + (varTlt>=0?'pos':'neg'); }
+        var spreadEl = document.getElementById('nma-fracture-spread'); if (spreadEl) spreadEl.textContent = fmtPct(spread);
+
+        var tltTrig = document.getElementById('nma-tlt-trigger');
+        var tltTrigStatus = document.getElementById('nma-tlt-trigger-status');
+        if (tltTrig && tltTrigStatus) {
+            var tltActive = tltNow > 101.99;
+            tltTrig.classList.toggle('active', tltActive);
+            tltTrigStatus.textContent = tltActive ? '⚡ SEÑAL ACTIVA' : 'ESPERANDO SEÑAL';
+        }
+        var goldTrig = document.getElementById('nma-gold-trigger');
+        var goldTrigStatus = document.getElementById('nma-gold-trigger-status');
+        if (goldTrig && goldTrigStatus) {
+            var goldActive = goldNow < 3582.74;
+            goldTrig.classList.toggle('active', goldActive);
+            goldTrigStatus.textContent = goldActive ? '⚡ SEÑAL ACTIVA' : 'ESPERANDO SEÑAL';
+        }
+    }
+
+    function nmaFlickerBars() {
+        ['nma-xlk-dom-bar','nma-xlk-flow-bar','nma-xle2-dom-bar','nma-xle2-flow-bar'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            var base = parseFloat(el.style.width) || 30;
+            var jitter = base + (Math.random() * 2 - 1);
+            el.style.width = Math.max(2, Math.min(100, jitter)) + '%';
+        });
+    }
+
+    var nmaUpdateInterval = null;
+    window.nmaOpenGate = function() {
+        var g = document.getElementById('nma-gate-overlay');
+        if (g) g.style.display = 'flex';
+    };
+    window.nmaCloseGate = function() {
+        var g = document.getElementById('nma-gate-overlay');
+        if (g) g.style.display = 'none';
+    };
+    window.nmaEnterCore = function() {
+        window.nmaCloseGate();
+        var core = document.getElementById('nma-core');
+        if (!core) return;
+        core.style.display = 'block';
+        void core.offsetWidth;
+        core.style.opacity = '1';
+        core.scrollTop = 0;
+        nmaUpdateModules();
+        if (nmaUpdateInterval) clearInterval(nmaUpdateInterval);
+        nmaUpdateInterval = setInterval(function() { nmaUpdateModules(); nmaFlickerBars(); }, 3200);
+    };
+    window.nmaExitCore = function() {
+        var core = document.getElementById('nma-core');
+        if (!core) return;
+        core.style.opacity = '0';
+        setTimeout(function() { core.style.display = 'none'; }, 350);
+        if (nmaUpdateInterval) { clearInterval(nmaUpdateInterval); nmaUpdateInterval = null; }
+    };
+
+    window.nmaOpenGroundTruth = function() {
+        var gt = document.getElementById('nma-groundtruth');
+        if (gt) gt.classList.add('show');
+    };
+    window.nmaCloseGroundTruth = function() {
+        var gt = document.getElementById('nma-groundtruth');
+        if (gt) gt.classList.remove('show');
+    };
+
+    document.addEventListener('keydown', function(e) {
+        var gtEl = document.getElementById('nma-groundtruth');
+        var gtOpen = gtEl && gtEl.classList.contains('show');
+        if (e.key === 'Escape') {
+            if (gtOpen) { window.nmaCloseGroundTruth(); return; }
+            var core = document.getElementById('nma-core');
+            if (core && core.style.display === 'block') window.nmaExitCore();
+            return;
+        }
+        if (e.key === 'F2' || (e.ctrlKey && e.shiftKey && (e.key === 'X' || e.key === 'x'))) {
+            var coreEl = document.getElementById('nma-core');
+            var coreVisible = coreEl && coreEl.style.display === 'block';
+            if (coreVisible) { e.preventDefault(); window.nmaOpenGroundTruth(); }
+        }
+    });
+
+    var _nmaGTAutoFired = false;
+    setInterval(function() {
+        var core = document.getElementById('nma-core');
+        if (!core || core.style.display !== 'block') return;
+        var lasNotional = 85;
+        if (lasNotional >= 80 && !_nmaGTAutoFired) {
+            _nmaGTAutoFired = true;
+            window.nmaOpenGroundTruth();
+        }
+    }, 5000);
+})();
+</script>
+<!-- ══════════ /NO MONKEY'S AREA ══════════ -->
 <!-- SURGERY-017C: OPEN CHANNEL // LIVE — right-side live commentary -->
 <aside class="open-channel" id="open-channel" aria-label="Open Channel Live">
   <button class="open-channel-close" id="oc-close" type="button" aria-label="Close channel">CLOSE</button>
@@ -30762,6 +31293,7 @@ var BT_ASSETS = {
   'VRT':   {p:257.08,   opy:177.44,  opm:248.22,    node:7, type:'heavy'},
   'SMH':   {p:553.11,   opy:431.88,  opm:529.33,    node:7, type:'etf'}
 };
+window.BT_ASSETS = BT_ASSETS; /* RELEASE-018.3: live ref export (btApplyUpdate mutates .p in place) — NMA + Call Wall sync */
 
 /* ── State: store open prices at session start ── */
 var _btBase = {};
