@@ -12483,6 +12483,17 @@ function rppiDoBurn() {
 }
 
 function rppiLogout() {
+    /* ATOM-018.2A.1F: delega en el logout CANÓNICO (flag anti-resurrección +
+       signOut de Firebase + settle 'none' determinista vía listener). */
+    if (typeof window.rappiaLogoutFirebase === 'function') {
+        try { window.rappiaLogoutFirebase(); }
+        catch (e) { console.warn('⚠ [RAPPIA] Logout canónico error:', e && e.message); }
+        var lbC = document.getElementById('login-float-btn');
+        if (lbC) lbC.textContent = 'ACCESO RAPPIA';
+        rppiCloseLogin();
+        return;
+    }
+    /* Fallback (identity IIFE no booteado): comportamiento legacy sin tocar sesión Firebase. */
     _rppiUser = null;
     localStorage.removeItem('rppi_user');
     var lb = document.getElementById('login-float-btn');
@@ -21959,7 +21970,10 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
     window._rppiUser = null;
     window._rappiaLoggedOut = true; /* SURGERY-018.2B: cancela sign-in anónimo en vuelo */
     try { localStorage.removeItem('rppi_user'); } catch(e) {}
-    return auth.signOut();
+    /* ATOM-018.2A.1F: `auth` vive en el scope de _bootIdentity, no acá —
+       usar firebase.auth() global (el ReferenceError latente hacía este
+       logout ininvocable; por eso el botón legacy nunca se reconectó). */
+    return firebase.auth().signOut();
   };
 
   // auto-complete si la URL vuelve del email link
