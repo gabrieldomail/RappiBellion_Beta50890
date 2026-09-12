@@ -12486,18 +12486,65 @@ function rppiLogout() {
     /* ATOM-018.2A.1F: delega en el logout CANÓNICO (flag anti-resurrección +
        signOut de Firebase + settle 'none' determinista vía listener). */
     if (typeof window.rappiaLogoutFirebase === 'function') {
-        try { window.rappiaLogoutFirebase(); }
-        catch (e) { console.warn('⚠ [RAPPIA] Logout canónico error:', e && e.message); }
-        var lbC = document.getElementById('login-float-btn');
-        if (lbC) lbC.textContent = 'ACCESO RAPPIA';
+        var pLogout = null;
+        try { pLogout = window.rappiaLogoutFirebase(); }
+        catch (e) { console.warn('⚠ [RAPPIA] Logout canónico error:', e && e.message); return; }
+        if (pLogout && typeof pLogout.then === 'function') {
+            pLogout.then(function () {
+                /* Sólo tras signOut OK: reflejar UI deslogueada. */
+                var lbS = document.getElementById('login-float-btn');
+                if (lbS) lbS.textContent = 'ACCESO RAPPIA';
+                rppiCloseLogin();
+            }).catch(function (err) {
+                /* ATOM-018.2A.1F v2 (review CodeRabbit): signOut rechazó → la sesión
+                   SIGUE activa: no simular logout; restaurar flag y re-sincronizar
+                   runtime para no dejar el estado híbrido (cache limpio + sesión viva). */
+                console.warn('⚠ [RAPPIA] Logout canónico falló — sesión sigue activa:', err && err.message);
+                window._rappiaLoggedOut = false;
+                var ID = window.RappiaIdentity;
+                if (ID && ID.profile && ID.mode === 'permanent-canonical' &&
+                    typeof ID._applyTrustedProfile === 'function') {
+                    try { ID._applyTrustedProfile(ID.profile); } catch (_e) {}
+                }
+            });
+            return;
+        }
+        /* Fallback: ruta canónica sin promise (stub/test) — asumir éxito ecológico. */
+        var lbN = document.getElementById('login-float-btn');
+        if (lbN) lbN.textContent = 'ACCESO RAPPIA';
         rppiCloseLogin();
         return;
     }
-    /* Fallback (identity IIFE no booteado): comportamiento legacy sin tocar sesión Firebase. */
-    _rppiUser = null;
-    localStorage.removeItem('rppi_user');
-    var lb = document.getElementById('login-float-btn');
-    if (lb) lb.textContent = 'ACCESO RAPPIA';
+    if (typeof firebase === 'undefined' || !firebase.auth) {
+        /* FAIL CLOSED (ATOM-018.2A.1F.1 §5): sin vía real de signOut — NO simular
+           logout limpiando cache con la sesión viva. Sesión y UI preservadas. */
+        console.warn('⚠ [RAPPIA] Logout bloqueado: firebase.auth() no disponible — sesión preservada.');
+        return;
+    }
+    /* Nivel 2 (identity IIFE no booteado): signOut DIRECTO; limpiar SOLO tras éxito. */
+    var pDirect = null;
+    try { pDirect = firebase.auth().signOut(); }
+    catch (e) { console.warn('⚠ [RAPPIA] signOut directo error:', e && e.message); return; }
+    if (pDirect && typeof pDirect.then === 'function') {
+        pDirect.then(function () {
+            window._rppiUser = null;
+            window._rappiaLoggedOut = true;
+            try { localStorage.removeItem('rppi_user'); } catch (_e) {}
+            var lbD = document.getElementById('login-float-btn');
+            if (lbD) lbD.textContent = 'ACCESO RAPPIA';
+            rppiCloseLogin();
+        }).catch(function (err) {
+            /* Nada fue limpiado → sesión preservada íntegra; solo informar. */
+            console.warn('⚠ [RAPPIA] signOut falló — sesión preservada sin cambios:', err && err.message);
+        });
+        return;
+    }
+    /* Stub sin promise: último recurso de compatibilidad (equivalente a éxito síncrono). */
+    window._rppiUser = null;
+    window._rappiaLoggedOut = true;
+    try { localStorage.removeItem('rppi_user'); } catch (_e) {}
+    var lbX = document.getElementById('login-float-btn');
+    if (lbX) lbX.textContent = 'ACCESO RAPPIA';
     rppiCloseLogin();
 }
 </script>
