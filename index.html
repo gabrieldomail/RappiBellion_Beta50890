@@ -30915,7 +30915,7 @@ function rppiDoInitialBurn() {
 
     window._rppiAuthorizedFetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/withdraw', {
         method: 'POST',
-        body: JSON.stringify({ uid: _rppiUser.uid || _rppiUser.email, amount: amount, type: 'initial' })
+        body: JSON.stringify({ uid: _rppiUser.uid || _rppiUser.email, credits: amount, type: 'initial' })
     })
     .then(function(r) { return r.json(); })
     .then(function(d) {
@@ -30963,7 +30963,7 @@ function rppiDoRewardsBurn() {
 
     window._rppiAuthorizedFetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/withdraw', {
         method: 'POST',
-        body: JSON.stringify({ uid: _rppiUser.uid || _rppiUser.email, amount: amount, type: 'rewards' })
+        body: JSON.stringify({ uid: _rppiUser.uid || _rppiUser.email, credits: amount, type: 'rewards' })
     })
     .then(function(r) { return r.json(); })
     .then(function(d) {
