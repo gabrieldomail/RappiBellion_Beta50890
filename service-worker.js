@@ -3,7 +3,7 @@
 // ║   Estrategia: Cache-First assets / Network-First HTML      ║
 // ╚═══════════════════════════════════════════════════════════╝
 
-const CACHE_VERSION = 'rappibellion-v3-0183d';
+const CACHE_VERSION = 'rappibellion-v3-0183e';
 const STATIC_CACHE  = CACHE_VERSION + '-static';
 const DYNAMIC_CACHE = CACHE_VERSION + '-dynamic';
 
