@@ -27920,9 +27920,20 @@ function zeusSelectCredits(val) {
 }
 
 function zeusLaunchReal() {
+    /* ATOM-018.2A.3F.1 QUARANTINE: Zeus real-credit launch MUST NOT call
+       /rappia/withdraw. The previous body omitted `type`, and the Worker
+       defaults missing type to "initial", which executes the Mercado Pago
+       refund path. Until a dedicated server-side game-stake contract exists,
+       this path is fail-closed: no debit, no withdraw, no paid launch. */
     var user = window._rppiUser;
     if (!user || _zeusRealSelected < 1) return;
-
+    var wrap = document.getElementById('zeus-real-game-wrap');
+    var rem  = document.getElementById('zeus-real-remaining');
+    if (wrap) wrap.style.display = 'none';
+    if (rem) rem.textContent = '⛔ Zeus con crédito real en pausa — migración a contrato de juego pendiente. Tus RPPI-C están intactos.';
+    try { alert('⛔ Zeus con crédito real en pausa — migración a contrato de juego pendiente. Tus RPPI-C están intactos.'); } catch (e) {}
+    return;
+    /* QUARANTINED LEGACY BODY (DO NOT RE-ENABLE WITHOUT SERVER CONTRACT):
     var credits     = _zeusRealSelected;
     var startCredit = credits * 10; // 1 RPPI-C = 10 créditos del slot
 
@@ -27990,6 +28001,7 @@ function zeusLaunchReal() {
         }
     };
     window.addEventListener('message', window._zeusRealListener);
+    END QUARANTINED LEGACY BODY */
 }
 
 function zeusEndRealSession() {
@@ -30968,30 +30980,31 @@ function rppiDoInitialBurn() {
     _rppiBurnInFlight = true;
     if (btn) { btn.disabled = true; btn.textContent = '⏳ PROCESANDO...'; }
 
-    var prevCredits = _rppiUser.credits;
-    _rppiUser.credits -= amount;
-    localStorage.setItem('rppi_user', JSON.stringify(_rppiUser));
-    var mb = document.getElementById('rppi-user-credits');
-    if (mb) mb.textContent = _rppiUser.credits;
-
     window._rppiAuthorizedFetch('https://rapid-figemini-proxy.gabrieldomail.workers.dev/rappia/withdraw', {
         method: 'POST',
         body: JSON.stringify({ uid: _rppiUser.uid || _rppiUser.email, credits: amount, type: 'initial' })
     })
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-        if (btn) { btn.disabled = false; btn.textContent = '⚡ CONFIRMAR BURN INICIAL'; }
+    .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, status: r.status, d: d }; }); })
+    .then(function(res) {
+        var d = res.d || {};
         _rppiBurnInFlight = false;
+        if (btn) { btn.disabled = false; btn.textContent = '⚡ CONFIRMAR BURN INICIAL'; }
+        // SERVER RESPONSE ES AUTORITATIVA: 4xx/5xx NO es éxito financiero
+        if (!res.ok || !d.ok) {
+            if (prev) { prev.textContent = '❌ Devolución rechazada: ' + (d.error && d.error.message ? d.error.message : (d.error || ('HTTP ' + res.status))); prev.style.color = 'rgba(255,45,120,0.8)'; }
+            return;
+        }
+        // Éxito confirmado → aplicar EXACTAMENTE UN débito
+        _rppiUser.credits = Math.max(0, (_rppiUser.credits || 0) - amount);
+        localStorage.setItem('rppi_user', JSON.stringify(_rppiUser));
+        var mb = document.getElementById('rppi-user-credits');
+        if (mb) mb.textContent = _rppiUser.credits;
         if (prev) { prev.textContent = '✅ Reembolso solicitado. ID: ' + (d.withdrawId || '—'); prev.style.color = 'rgba(0,255,65,0.8)'; }
     })
     .catch(function() {
-        // Revertir si falla
-        _rppiUser.credits = prevCredits;
-        localStorage.setItem('rppi_user', JSON.stringify(_rppiUser));
-        if (mb) mb.textContent = _rppiUser.credits;
-        if (btn) { btn.disabled = false; btn.textContent = '⚡ CONFIRMAR BURN INICIAL'; }
-        if (prev) { prev.textContent = '⚠ Error en la red. Reintentá.'; prev.style.color = 'rgba(255,45,120,0.8)'; }
         _rppiBurnInFlight = false;
+        if (btn) { btn.disabled = false; btn.textContent = '⚡ CONFIRMAR BURN INICIAL'; }
+        if (prev) { prev.textContent = '⚠ Error de red. Créditos intactos — reintentá.'; prev.style.color = 'rgba(255,45,120,0.8)'; }
     });
 }
 
@@ -31026,25 +31039,29 @@ function rppiDoRewardsBurn() {
         method: 'POST',
         body: JSON.stringify({ uid: _rppiUser.uid || _rppiUser.email, credits: amount, type: 'rewards' })
     })
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
+    .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, status: r.status, d: d }; }); })
+    .then(function(res) {
         clearInterval(_rppiSpin);
         _rppiBurnInFlight = false;
-        _rppiUser.credits -= amount;
+        if (btn) { btn.disabled = false; btn.textContent = '🔥 CONFIRMAR BURN REWARDS'; }
+        var d = res.d || {};
+        // SERVER RESPONSE ES AUTORITATIVA: 4xx/5xx NO es éxito financiero
+        if (!res.ok || !d.ok) {
+            if (prev) { prev.textContent = '❌ Solicitud rechazada: ' + (d.error && d.error.message ? d.error.message : (d.error || ('HTTP ' + res.status))); prev.style.color = 'rgba(255,45,120,0.8)'; }
+            return;
+        }
+        // Éxito confirmado → aplicar EXACTAMENTE UN débito
+        _rppiUser.credits = Math.max(0, (_rppiUser.credits || 0) - amount);
         localStorage.setItem('rppi_user', JSON.stringify(_rppiUser));
         var mb = document.getElementById('rppi-user-credits');
         if (mb) mb.textContent = _rppiUser.credits;
-        if (btn) { btn.disabled = false; btn.textContent = '🔥 CONFIRMAR BURN REWARDS'; }
-        if (prev) {
-            prev.textContent = '✅ Solicitud registrada. Transferencia en 24hs hábiles. ID: ' + (d.withdrawId || '—');
-            prev.style.color = 'rgba(255,165,0,0.8)';
-        }
+        if (prev) { prev.textContent = '✅ Solicitud registrada. Transferencia en 24hs hábiles. ID: ' + (d.withdrawId || '—'); prev.style.color = 'rgba(255,165,0,0.8)'; }
     })
     .catch(function() {
         clearInterval(_rppiSpin);
         _rppiBurnInFlight = false;
         if (btn) { btn.disabled = false; btn.textContent = '🔥 CONFIRMAR BURN REWARDS'; }
-        if (prev) { prev.textContent = '⚠ Error en la red. Reintentá.'; prev.style.color = 'rgba(255,45,120,0.8)'; }
+        if (prev) { prev.textContent = '⚠ Error de red. Créditos intactos — reintentá.'; prev.style.color = 'rgba(255,45,120,0.8)'; }
     });
 }
 </script>
