@@ -4,6 +4,7 @@
 // ╚═══════════════════════════════════════════════════════════╝
 
 const CACHE_VERSION = 'rappibellion-v3-0183e';
+const CACHE_VERSION = 'rappibellion-v3-0183d';
 const STATIC_CACHE  = CACHE_VERSION + '-static';
 const DYNAMIC_CACHE = CACHE_VERSION + '-dynamic';
 
