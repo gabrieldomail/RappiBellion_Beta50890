@@ -8318,7 +8318,8 @@ body.arena-open #gemini-chat-widget,
 body.arena-open #space-promo-window,
 body.arena-open #usdt-promo-window,
 body.arena-open #mp-promo-window,
-body.arena-open #lamp-flicker-btn { display: none !important; }
+body.arena-open #lamp-flicker-btn,
+body.arena-open #mute-play-btn { display: none !important; }
 
 /* Modo de reducción de carga para la arena: desactiva ticker/partículas/scanlines cuando se activa */
 body.arena-open.arena-lite-mode .cyber-ticker-wrap,
@@ -10826,7 +10827,9 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
     display: none !important;
   }
 
-  /* ══ CYBER PANEL — persistent textual toggle ══ */
+  /* ══ CYBER PANEL — persistent textual toggle ══
+     STATE MACHINE: oculto por defecto (lobby/fresh load). SOLO visible con
+     body.arena-open (match activo). Es control EXCLUSIVO mobile de arena. */
   .hud-toggle-handle {
     position: fixed;
     top: 0; right: 0;
@@ -10835,7 +10838,7 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
     border: none !important;
     border-left: 1px solid rgba(0, 255, 255, 0.15) !important;
     z-index: 10001;
-    display: flex;
+    display: none;
     align-items: center; justify-content: center;
     color: rgba(0, 255, 255, 0.75);
     font-family: 'Share Tech Mono', monospace;
@@ -10846,6 +10849,11 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
     text-shadow: 0 0 6px rgba(0,188,255,0.5);
   }
   .hud-toggle-handle:active { color: #00BCFF; background: rgba(0,255,255,0.05) !important; }
+
+  /* STATE ARENA — body.arena-open es la transición canónica compartida
+     (fpOpenArena/fpOpenArenaPreview la agregan, fpCloseArena la quita).
+     Especificidad 0-2-1: gana al display:none default de arriba. */
+  body.arena-open .hud-toggle-handle { display: flex; }
 
   /* ══ INTEL STREAM — right-side floating telemetry feed (compact only) ══ */
   .hud-intel-stream {
@@ -10895,6 +10903,11 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
   }
 
 }
+
+/* HUD SURGERY 019 — El CYBER PANEL es control SOLO mobile de arena.
+   Desktop (fuera del @media): oculto permanente. En mobile lobby también
+   oculto; body.arena-open (0-2-1) lo re-enciende dentro del match. */
+.hud-toggle-handle { display: none; }
 
 
 /* ═════════════════════════════════════════════════════════════
