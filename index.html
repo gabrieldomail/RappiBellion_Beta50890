@@ -7038,7 +7038,7 @@ font-size: 27px;
 @keyframes wstLiqFlash { 0%,100%{opacity:1} 50%{opacity:0.3} }
 @keyframes wstCandleGlitch { 0%,88%,100%{transform:translateX(0)} 90%{transform:translateX(-3px)} 92%{transform:translateX(3px)} 94%{transform:translateX(-2px)} 96%{transform:translateX(0)} }
 #wst-inline-runner-container {
-    width:100%; height:300px; margin:16px 0 4px;
+    width:100%; height:370px; margin:16px 0 4px; /* +70px vertical playfield (antes 300px) */
     border:1px solid oklch(82% 0.22 145/0.28);
     border-top:2px solid oklch(0.65 0.32 35/0.5);
     background:oklch(9% 0.014 160/0.85);
@@ -7116,7 +7116,7 @@ font-size: 27px;
 .wst-liquidated-banner.show { display:flex; }
 .wst-candle-glitch { animation:wstCandleGlitch 0.4s ease-in-out; }
 @media (max-width:700px) {
-    #wst-inline-runner-container { height:250px; }
+    #wst-inline-runner-container { height:320px; } /* +70px (antes 250px) */
     .wst-price-axis { width:58px; font-size:8px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -8681,7 +8681,7 @@ font-size: 27px;
         <div class="wst-runner-telemetry">
             [ T2E_LIVE_TICKER // CANDLE_RUNNER ] · <span class="wst-boost-lbl">$RPPI BOOST:</span> <b id="wst-runner-score">0000</b>
         </div>
-        <canvas id="wst-runner-canvas" width="600" height="150"></canvas>
+        <canvas id="wst-runner-canvas" width="600" height="220"></canvas>
         <div class="wst-liquidated-banner" id="wst-liquidated-banner">[ POSITION LIQUIDATED // TAP TO RE-ENTER ]</div>
         <div class="wst-runner-timeaxis" id="wst-runner-timeaxis">
             <span id="wst-time-0">--:--:--</span>
@@ -14593,6 +14593,9 @@ document.addEventListener('DOMContentLoaded', function() {
         exitGameButton.addEventListener('click', function() {
             gameOverlay.classList.add('game-menu-hidden');
             betaStartScreen.style.display = 'block';
+            // STATE 5 — el usuario sale del Retro Casino: mute vuelve a oculto
+            betaActive = false;
+            if (typeof updateMuteBtnVisibility === 'function') updateMuteBtnVisibility();
             window.scrollTo({ top: 0, behavior: 'smooth' });
             // Desconectar listeners real-time del lobby
             lobbyDisconnectBets();
@@ -19077,8 +19080,10 @@ const btn = document.getElementById('mute-play-btn');
 const label = document.getElementById('mute-play-label');
 const birdIcon = document.getElementById('bird-icon');
 
-// Hacer visible el botón
-if (btn) btn.style.display = 'block';
+/* STATE 0 — LOBBY-ONLY VISIBILITY (mute-play-btn es control SOLO del lobby retro):
+   el botón NUNCA se muestra por parse. Su visibilidad la controla
+   centralizadamente updateMuteBtnVisibility() (STATE 1/4/5) y el CSS
+   body.arena-open #mute-play-btn lo oculta durante cualquier arena (STATE 2/3). */
 
 let isMuted = false;
 let isPlaying = false;
@@ -19088,6 +19093,26 @@ var _audioCtx = null;
 var _gainNode = null;
 var _sourceNode = null;
 var _webAudioInitialized = false;
+
+// ── resumeCasinoAudioContexts — recuperación de contextos suspendidos ──
+// ROOT CAUSE (War Room): initAudioContext()/initFreeplayAudioContext() corren
+// al parsear, SIN gesto de usuario → los AudioContext quedan en state
+// 'suspended' y silencian los <audio> enrutados via createMediaElementSource.
+// Esta helper SOLO se invoca dentro de gestos reales (COMENZAR / mute-play).
+// No se traga Promises rechazadas: se loguean para forensia.
+function resumeCasinoAudioContexts() {
+    var ctxList = [_audioCtx, (typeof _fpAudioCtx !== 'undefined' ? _fpAudioCtx : null)];
+    ctxList.forEach(function(ctx) {
+        if (ctx && ctx.state === 'suspended') {
+            var p = ctx.resume();
+            if (p && typeof p.catch === 'function') {
+                p.catch(function(err) {
+                    console.warn('[AUDIO] resume() rechazado:', err && err.name, err && err.message);
+                });
+            }
+        }
+    });
+}
 
 function initAudioContext() {
     if (!_audioCtx) {
@@ -19164,6 +19189,10 @@ _playlistIndex++;
 _audio.addEventListener('ended', playNextTrack);
 
 function toggleMutePlay() {
+    // GESTO DE USUARIO (mute/play): recuperar contextos suspendidos por
+    // autoplay policy antes del comportamiento mute/play existente.
+    // NO altera la preferencia explícita de mute del usuario.
+    resumeCasinoAudioContexts();
     if (!isPlaying) {
         _audio.muted = false;
         _audio.play().catch(function(e) {
@@ -20686,16 +20715,25 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
                     lobbyEl2.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
                 // 4. Iniciar la música de la beta (solo al pulsar COMENZAR)
+                // SECUENCIA AUTORIZADA: gesto real → resume() contextos → play()
+                if (typeof resumeCasinoAudioContexts === 'function') resumeCasinoAudioContexts();
                 try {
-                    if (tangoAudio) { tangoAudio.volume = 0.5; tangoAudio.currentTime = 0; tangoAudio.play(); }
-                } catch(e) {}
+                    if (tangoAudio) {
+                        tangoAudio.volume = 0.5;
+                        tangoAudio.currentTime = 0;
+                        var _tangoPlayP = tangoAudio.play();
+                        if (_tangoPlayP && typeof _tangoPlayP.catch === 'function') {
+                            _tangoPlayP.catch(function(err) {
+                                console.warn('[AUDIO] tangoAudio.play() rechazado:', err && err.name, err && err.message);
+                            });
+                        }
+                    }
+                } catch(e) { console.warn('[AUDIO] tangoAudio.play() excepción:', e && e.message); }
 
-                // 5. MOSTRAR EL BOTÓN MUTE/PLAY INMEDIATAMENTE
+                // 5. STATE 1 — MOSTRAR EL BOTÓN MUTE/PLAY (vía controlador central)
                 console.log('🎵 INICIANDO BETA - Mostrando botón mute/play');
                 betaActive = true;
-                muteBtn.style.display = 'block';
-                muteBtn.style.backgroundColor = 'red'; // Debug visual
-                setTimeout(() => { muteBtn.style.backgroundColor = ''; }, 2000);
+                if (typeof updateMuteBtnVisibility === 'function') updateMuteBtnVisibility();
             });
         }
         
@@ -25201,7 +25239,8 @@ https://discord.gg/3zBrPVn7`;
     body.arena-open #fp-fab-reopen-space,
     body.arena-open #lamp-flicker-btn,
     body.arena-open #zeus-promo-window,
-    body.arena-open #pwa-install-btn { display: none !important; }
+    body.arena-open #pwa-install-btn,
+    body.arena-open #mute-play-btn { display: none !important; }
 </style>
 
 <script>
@@ -32231,7 +32270,7 @@ class CandlestickRunnerGame {
 
         this.bull = new CyberBull(this.groundY);
         this.candles = [];
-        this.speed = 3.2;
+        this.speed = 6.4; /* ×2 (antes 3.2) — coherente con la fórmula ×2 */
         this.score = 0;
         this.frame = 0;
         this.running = false;
@@ -32275,7 +32314,7 @@ class CandlestickRunnerGame {
     _reset() {
         this.bull = new CyberBull(this.groundY);
         this.candles = [];
-        this.speed = 3.2;
+        this.speed = 6.4; /* ×2 (antes 3.2) */
         this.score = 0;
         this.frame = 0;
         this.shake = 0;
@@ -32359,7 +32398,7 @@ class CandlestickRunnerGame {
         }
 
         if (this.frame % 4 === 0 && !b.liquidated) this.score++;
-        this.speed = Math.min(7.2, 3.9 + this.score * 0.006); /* SURGERY-012: +jugabilidad */
+        this.speed = Math.min(14.4, 7.8 + this.score * 0.012); /* SURGERY-012×2: BULL IS NOT A TURTLE — ×2 forward (7.2→14.4, 3.9→7.8, 0.006→0.012) */
         this.onScore(this.score);
     }
 
