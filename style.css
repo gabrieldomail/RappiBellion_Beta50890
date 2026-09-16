@@ -11396,3 +11396,58 @@ body.arena-open.arena-lite-mode .cyber-tilt-panel::after {
   .call-wall-bg, .call-wall-title, .call-wall-arrow { animation: none; }
   .call-composer-body { animation: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   MICRO-FIX — IMMERSIVE ZONES / GLOBAL FLOATING UI SUPPRESSION
+   AKA: NO BILLBOARDS INSIDE THE CASINO
+
+   body.rappi-immersive = estado centralizado de "zona inmersiva"
+   (sección Black Terminal activa O Casino Retro activo: lobby,
+   countdown o arena). Lo activa el IntersectionObserver de
+   #black-terminal y el ciclo enter/exit del Casino Retro (index.html).
+
+   Solo suprime UI flotante GLOBAL (promos / widgets / launchers / dock
+   táctico / mensajes fantasma / promo full-screen / terminal decorativa).
+   NO toca controles nativos de cada sección ni su HUD:
+   #mute-play-btn (lobby Retro), #hudToggleHandle (aria-label del handle
+   mobile del HUD), HUD holográfico, arena, #bt-raw-signal y #bt-core,
+   .vrd-led (marco del VERDICT — HUD propio de la arena; body.vrd-show),
+   #lamp-flicker-overlay (ambience: la convención body.arena-open ya
+   oculta sólo su botón, no el overlay), modales de sistema (login / bet
+   / vote), controles de juego.
+
+   Restauración al salir: se elimina la clase y CADA widget recupera
+   su propia lógica de visibilidad (hero-out, timers, login, etc.).
+   No se fuerza display:block en el exit.
+
+   display:none !important gana sobre cualquier style.display inline
+   que escriban los timers → cero resurrección visual dentro de la
+   zona, y sin hitbox fantasma (display:none saca el nodo del árbol).
+═══════════════════════════════════════════════════════════════ */
+body.rappi-immersive #snake-promo-window,
+body.rappi-immersive #rppi-duel-trigger-btn,
+body.rappi-immersive #finder-float-window,
+body.rappi-immersive #lobby-float-window,
+body.rappi-immersive #top-left-tactical-dock,
+body.rappi-immersive #gemini-chat-fab,
+body.rappi-immersive #lamp-flicker-btn,
+body.rappi-immersive #ultra-dark-toggle,
+body.rappi-immersive #live-sync-hero-container,
+/* ADDENDUM — badge de sync satélite (chrome global flotante, top-centro).
+   Vive dentro de #live-sync-hero-container, pero se declara explícitamente:
+   en móvil interceptaba el tap del cierre de NMA Groundtruth
+   (#nma-groundtruth > button.nma-gt-close, top:16px right:20px), y además
+   resiste la resurrección inline del handler del HUD (index.html:29519/29551
+   satBadge.style.display = '' — el inline NO gana sobre !important).
+   Mantiene pointer-events:auto por defecto FUERA de la zona. */
+body.rappi-immersive .rppi-sync-satellite-badge,
+body.rappi-immersive #float-btn-group,
+body.rappi-immersive #ghost-msg,
+body.rappi-immersive #ghost-msg2,
+body.rappi-immersive #ghost-msg3,
+body.rappi-immersive #ghost-msg4,
+body.rappi-immersive #apocalypsis-promo-modal,
+body.rappi-immersive #omega-sybil-terminal {
+    display: none !important;
+    pointer-events: none !important;
+}
