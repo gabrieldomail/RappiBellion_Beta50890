@@ -7968,7 +7968,13 @@ font-size: 27px;
 .nma-gt-hdr-tag { font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:4px; color:oklch(0.65 0.32 35); animation:nmaPulseRed 1s step-end infinite; margin-bottom:8px; }
 .nma-gt-hdr-title { font-family:'Orbitron',monospace; font-weight:900; font-size:clamp(22px,4vw,34px); letter-spacing:2px; color:#fff; text-shadow:0 0 20px oklch(0.65 0.32 35/0.6); }
 .nma-gt-hdr-sub { font-family:'Share Tech Mono',monospace; font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:2px; margin-top:6px; }
+/* ADDENDUM-2 — el botón es position:absolute y el bloque .nma-gt-content
+   (animation ... both con clip-path persistente) crea stacking context propio
+   y, al ir DESPUÉS en el DOM, tapaba el botón en mobile (elementFromPoint
+   devolvía .nma-gt-hdr-tag). z-index explícito = orden de pintado correcto.
+   No cambia posición, ni handler, ni lógica. */
 .nma-gt-close {
+  z-index:2;
   position:absolute; top:16px; right:20px; font-family:'Orbitron',monospace; font-weight:700; font-size:11px; letter-spacing:2px;
   color:oklch(0.65 0.32 35); background:none; border:1px solid oklch(0.65 0.32 35/0.6); padding:7px 14px; cursor:pointer;
 }
@@ -11659,6 +11665,32 @@ body.intro-active #float-btn-group {
         }, { threshold: 0.08 });
         btObserver.observe(blackTerminal);
     }
+
+    /* ── MICRO-FIX IMMERSIVE ZONES — estado centralizado body.rappi-immersive.
+       Activo mientras la SECCIÓN #black-terminal está en viewport
+       (gate o core fullscreen: al bootear, el scroll queda bloqueado
+       con la sección bajo el core fijo, sigue intersectando).
+       El estado del Casino Retro se cablea en los handlers
+       enter/exit de #start-beta-button / #exit-game-button. ── */
+    if (blackTerminal) {
+        var immersiveObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                /* Al entrar en BT, #bt-core pasa a position:fixed y #bt-gate
+                   a display:none: la sección colapsa a unos pocos px. Si el
+                   usuario llegó scrolleando hasta el botón del gate, esa
+                   franja puede quedar por ENCIMA del viewport y la sección
+                   deja de intersectar — el observer apagaría la clase y los
+                   flotantes globales reaparecerían dentro de BT.
+                   Por eso, mientras #bt-core esté en fullscreen, el estado
+                   inmersivo se fuerza a ON (fuente de verdad: el propio
+                   estado existente del core, sin segundo dueño). */
+                var core = document.getElementById('bt-core');
+                var btFullscreen = !!(core && core.classList.contains('bt-fullscreen-active'));
+                document.body.classList.toggle('rappi-immersive', entry.isIntersecting || btFullscreen);
+            });
+        }, { threshold: 0.05 });
+        immersiveObserver.observe(blackTerminal);
+    }
 })();
 </script>
 
@@ -14576,6 +14608,8 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 betaStartScreen.style.display = 'none';
                 gameOverlay.classList.remove('game-menu-hidden');
+                /* MICRO-FIX IMMERSIVE: Casino Retro activo → suprimir flotantes globales */
+                document.body.classList.add('rappi-immersive');
                 if (typeof window.vegasIgnite === 'function') setTimeout(window.vegasIgnite, 100);
                 // Activar sync real-time del lobby
                 lobbyLoadOpenBets();
@@ -14592,6 +14626,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (exitGameButton && betaStartScreen && gameOverlay) {
         exitGameButton.addEventListener('click', function() {
             gameOverlay.classList.add('game-menu-hidden');
+            /* MICRO-FIX IMMERSIVE: fin de Casino Retro → restaurar flotantes globales */
+            document.body.classList.remove('rappi-immersive');
             betaStartScreen.style.display = 'block';
             // STATE 5 — el usuario sale del Retro Casino: mute vuelve a oculto
             betaActive = false;
@@ -20708,6 +20744,8 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
                 betaStartScreen.style.display = 'none';
                 // 2. Muestra el overlay del juego
                 gameOverlay.classList.remove('game-menu-hidden');
+                /* MICRO-FIX IMMERSIVE: Casino Retro activo → suprimir flotantes globales */
+                document.body.classList.add('rappi-immersive');
                 if (typeof window.vegasIgnite === 'function') setTimeout(window.vegasIgnite, 100);
                 // 3. Scroll al lobby del casino
                 const lobbyEl2 = document.getElementById('casino-retro-lobby');
@@ -20743,6 +20781,8 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
             exitGameButton.addEventListener('click', function() {
                 // Oculta el overlay del juego
                 gameOverlay.classList.add('game-menu-hidden');
+                /* MICRO-FIX IMMERSIVE: fin de Casino Retro → restaurar flotantes globales */
+                document.body.classList.remove('rappi-immersive');
                 // Muestra de nuevo la pantalla inicial de la beta
                 betaStartScreen.style.display = 'block';
                 // Pausa cualquier audio que pudiera estar sonando (tango + freeplay)
