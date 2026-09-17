@@ -11666,27 +11666,27 @@ body.intro-active #float-btn-group {
         btObserver.observe(blackTerminal);
     }
 
-    /* ── MICRO-FIX IMMERSIVE ZONES — estado centralizado body.rappi-immersive.
-       Activo mientras la SECCIÓN #black-terminal está en viewport
-       (gate o core fullscreen: al bootear, el scroll queda bloqueado
-       con la sección bajo el core fijo, sigue intersectando).
-       El estado del Casino Retro se cablea en los handlers
-       enter/exit de #start-beta-button / #exit-game-button. ── */
+    /* ── CORRECTION ATOM — BT IMMERSIVE BOUNDARY: THE GATE IS NOT THE TEMPLE.
+       body.rappi-immersive para BT = SOLO interior real (#bt-core activo).
+       #bt-gate es la PORTADA: llegar/scrollear hasta ella NO activa nada.
+       Fuente canonica unica: #bt-core.bt-fullscreen-active (la pone
+       btBootGate, la quita btExitTerminal). Sin segundo flag.
+       El observer de #black-terminal queda SOLO como red de seguridad:
+       si #bt-core esta activo, fuerza ON (cubre colapso de la seccion,
+       cambio de interseccion, scroll, gate display:none, resize) y NUNCA
+       apaga mientras el core siga activo. Si el core NO esta activo,
+       el observer NO enciende nada (gate visible = OFF).
+       Casino Retro se cablea en sus propios handlers enter/exit. ── */
     if (blackTerminal) {
         var immersiveObserver = new IntersectionObserver(function(entries) {
             entries.forEach(function(entry) {
-                /* Al entrar en BT, #bt-core pasa a position:fixed y #bt-gate
-                   a display:none: la sección colapsa a unos pocos px. Si el
-                   usuario llegó scrolleando hasta el botón del gate, esa
-                   franja puede quedar por ENCIMA del viewport y la sección
-                   deja de intersectar — el observer apagaría la clase y los
-                   flotantes globales reaparecerían dentro de BT.
-                   Por eso, mientras #bt-core esté en fullscreen, el estado
-                   inmersivo se fuerza a ON (fuente de verdad: el propio
-                   estado existente del core, sin segundo dueño). */
                 var core = document.getElementById('bt-core');
                 var btFullscreen = !!(core && core.classList.contains('bt-fullscreen-active'));
-                document.body.classList.toggle('rappi-immersive', entry.isIntersecting || btFullscreen);
+                if (btFullscreen) {
+                    document.body.classList.add('rappi-immersive');
+                }
+                /* Si el core NO esta activo: no tocar la clase aqui.
+                   El Casino maneja su propio add/remove; el gate NO enciende. */
             });
         }, { threshold: 0.05 });
         immersiveObserver.observe(blackTerminal);
@@ -32619,6 +32619,10 @@ window.btBootGate = function() {
             void core.offsetWidth;
             core.style.opacity = '1';
             core.classList.add('bt-fullscreen-active');
+            /* CORRECTION ATOM — STATE BT-2: entrar al CORE = inmersivo ON.
+               (El gate visible NO enciende; el observer ya no enciende por
+               intersección. add explícito aquí = fuente canónica.) */
+            document.body.classList.add('rappi-immersive');
             document.body.style.overflow = 'hidden';
             core.scrollTop = 0;
 
@@ -32882,6 +32886,9 @@ window.btExitTerminal = function() {
     setTimeout(function() {
         core.classList.remove('bt-fullscreen-active');
         core.style.display = 'none';
+        /* CORRECTION ATOM — STATE BT-4: salir del CORE = inmersivo OFF
+           (solo remueve; cada widget recupera su propia lógica). */
+        document.body.classList.remove('rappi-immersive');
         document.body.style.overflow = '';
         /* Reset para la próxima vez que se abra */
         gate.style.display = 'flex';
