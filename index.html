@@ -31965,6 +31965,53 @@ function btAnimateRadar() {
   }
 }
 
+/* RESOURCE GOVERNOR R1A BEGIN — BT owns only these four recurring timers. */
+var btTimers = (function() {
+  var handles = [];
+  return {
+    start: function() {
+      if (handles.length) return;
+      try {
+        handles.push(setInterval(btTick, 1000));
+        handles.push(setInterval(btCheckRTH, 30000));
+        handles.push(setInterval(btAnimateFlows, 5200));
+        handles.push(setInterval(btAnimateRadar, 3000));
+      } catch (error) {
+        this.stop();
+        throw error;
+      }
+    },
+    stop: function() {
+      handles.forEach(function(handle) { clearInterval(handle); });
+      handles = [];
+    },
+    isRunning: function() { return handles.length === 4; },
+    count: function() { return handles.length; }
+  };
+})();
+window.RappiResourceGovernor = (function() {
+  var owner = null;
+  return {
+    enterImmersive: function(zone) {
+      if (zone !== 'bt') return;
+      btTimers.start();
+      if (owner !== 'bt') window.btBriefStart();
+      owner = 'bt';
+    },
+    exitImmersive: function(zone) {
+      if (zone !== 'bt') return;
+      btTimers.stop();
+      if (owner === 'bt') window.btBriefStop();
+      owner = null;
+    },
+    getState: function() {
+      return { owner: owner, bt: btTimers.isRunning() ? 'running' : 'stopped',
+        timerCount: btTimers.count() };
+    }
+  };
+})();
+/* RESOURCE GOVERNOR R1A END */
+
 /* ── INIT ── */
 function _btInit() {
   var section = document.getElementById('black-terminal');
@@ -31974,10 +32021,6 @@ function _btInit() {
   btUpdateGauge(BT_ASSETS['VIX'].p);
   btCheckRTH();
   btTick();
-  setInterval(btTick, 1000);
-  setInterval(btCheckRTH, 30000);
-  setInterval(btAnimateFlows, 5200);
-  setInterval(btAnimateRadar, 3000);
   btAnimateFlows();
   btAnimateRadar();
 }
@@ -32619,6 +32662,7 @@ window.btBootGate = function() {
             void core.offsetWidth;
             core.style.opacity = '1';
             core.classList.add('bt-fullscreen-active');
+            window.RappiResourceGovernor.enterImmersive('bt');
             /* CORRECTION ATOM — STATE BT-2: entrar al CORE = inmersivo ON.
                (El gate visible NO enciende; el observer ya no enciende por
                intersección. add explícito aquí = fuente canónica.) */
@@ -32626,9 +32670,6 @@ window.btBootGate = function() {
             document.body.style.overflow = 'hidden';
             core.scrollTop = 0;
 
-            if (typeof window.btBriefInit === 'function') {
-                setTimeout(window.btBriefInit, 800);
-            }
             if (typeof window.wstStartInlineRunner === 'function') {
                 setTimeout(window.wstStartInlineRunner, 900);
             }
@@ -32636,10 +32677,9 @@ window.btBootGate = function() {
                 btPopulate();
                 if (typeof btUpdateGauge === 'function') btUpdateGauge(17.34);
                 if (typeof btCheckRTH === 'function') btCheckRTH();
-                if (typeof btTick === 'function') { btTick(); setInterval(btTick, 1000); }
-                if (typeof btAnimateFlows === 'function') { btAnimateFlows(); setInterval(btAnimateFlows, 5200); }
-                if (typeof btAnimateRadar === 'function') { btAnimateRadar(); setInterval(btAnimateRadar, 3000); }
-                setInterval(btCheckRTH, 30000);
+                if (typeof btTick === 'function') btTick();
+                if (typeof btAnimateFlows === 'function') btAnimateFlows();
+                if (typeof btAnimateRadar === 'function') btAnimateRadar();
             }
             console.log('BLACK TERMINAL V2 · OKLCH ENGINE · SB CARTEL · ONLINE');
         }, 500);
@@ -32878,6 +32918,7 @@ window.btExitTerminal = function() {
     var gate = document.getElementById('bt-gate');
     if (!core || !gate) return;
 
+    window.btBriefStop(); // Cancel pending briefing before the 350ms exit fade.
     core.style.transition = 'opacity 0.35s ease';
     core.style.opacity = '0';
     /* Detiene el motor del widget inline — no queda corriendo en
@@ -32885,6 +32926,7 @@ window.btExitTerminal = function() {
     if (typeof window.wstStopInlineRunner === 'function') window.wstStopInlineRunner();
     setTimeout(function() {
         core.classList.remove('bt-fullscreen-active');
+        window.RappiResourceGovernor.exitImmersive('bt');
         core.style.display = 'none';
         /* CORRECTION ATOM — STATE BT-4: salir del CORE = inmersivo OFF
            (solo remueve; cada widget recupera su propia lógica). */
@@ -32931,7 +32973,7 @@ window.btExitTerminal = function() {
           text:'Te ahorramos 6 horas de modelos cuantitativos diarios. Dark Pools, riesgo asimétrico. ' +
                '<em>Idoneidad algorítmica brutal que haría transpirar a BofA y Goldman. Pura sangre.</em>' }
     ];
-    var _cur=0, _iv=null, _min=false, _manual=false;
+    var _cur=0, _iv=null, _min=false, _manual=false, _pending=null;
 
     function _render(idx) {
         var badge=document.getElementById('bt-brief-badge');
@@ -32956,7 +32998,7 @@ window.btExitTerminal = function() {
 
     window.btBriefTab=function(idx){
         _manual=true;
-        if(_iv){clearInterval(_iv);_iv=null;}
+        window.btBriefStop();
         _cur=idx; _render(idx);
     };
     window.btBriefMinimize=function(){
@@ -32966,13 +33008,26 @@ window.btExitTerminal = function() {
     window.btBriefClose=function(){
         var w=document.getElementById('bt-holo-briefing');
         if(w) w.classList.add('hidden');
-        if(_iv){clearInterval(_iv);_iv=null;}
+        window.btBriefStop();
     };
     window.btBriefInit=function(){
         _render(0);
         if(!_iv) _iv=setInterval(function(){
             if(!_manual){_cur=(_cur+1)%3; _render(_cur);}
         },6000);
+    };
+    /* RESOURCE GOVERNOR R1B — BT-owned lifecycle for the briefing widget.
+       The 800ms delayed-start handle is stored and cancelled on BT exit;
+       btBriefStop reuses the existing _iv owner instead of a second one.
+       R1B also retargets the gate's delayed call: btBootGate now invokes
+       window.btBriefStart() instead of a raw setTimeout(btBriefInit,800). */
+    window.btBriefStart=function(){
+        if(_iv||_pending) return;
+        _pending=setTimeout(function(){ _pending=null; window.btBriefInit(); },800);
+    };
+    window.btBriefStop=function(){
+        if(_pending){clearTimeout(_pending);_pending=null;}
+        if(_iv){clearInterval(_iv);_iv=null;}
     };
 })();
 </script>
