@@ -1930,6 +1930,16 @@ height: 8px;
   setActive(true);
   flicker();
     flickerInterval = setInterval(flicker, 55);
+  /* RESOURCE GOVERNOR R1C BEGIN — owner API de suspensión (ARENA_PRELOAD). */
+  window.__rgLampFlicker = {
+    pause: function () {
+      if (flickerInterval) { clearInterval(flickerInterval); flickerInterval = null; }
+    },
+    resume: function () {
+      if (!flickerInterval) { flickerInterval = setInterval(flicker, 55); flicker(); }
+    }
+  };
+  /* RESOURCE GOVERNOR R1C END */
 })();
 </script>
 
@@ -6691,6 +6701,10 @@ body.bt-node-focus { overflow: hidden; }
 .bt-rekt-track { display:flex; white-space:nowrap; animation:rektScroll 50s linear infinite;
   will-change:transform; transform:translate3d(0,0,0); }
 .bt-rekt-track:hover { animation-play-state:paused; }
+/* RESOURCE GOVERNOR R1C BEGIN — clase ARENA performance: pausa el marquee BT-wall (rektScroll)
+   durante ARENA_PRELOAD. Solo decorativo; el Governor la agrega/remueve en enter/exit. */
+html.rappi-arena-performance .bt-rekt-track { animation-play-state: paused; }
+/* RESOURCE GOVERNOR R1C END */
 .bt-rekt-card {
   flex-shrink:0; width:200px; height:130px; margin:0 8px;
   background:oklch(98% 0.01 95);
@@ -10629,16 +10643,28 @@ font-size: 27px;
             '▓▓▓ SIGNAL_DEGRADED ▓▓▓ ',
             'FATAL: HEAP_CORRUPT @0xDEAD '
         ];
-        setInterval(function() {
+        /* RESOURCE GOVERNOR R1C BEGIN — loops decorativos con owner API (pause/resume). */
+        var ledConflictTimers = [];
+        function ledConflictRotateText() {
             var idx = Math.floor(Math.random() * errorTexts.length);
             ledTop.setText(errorTexts[idx]);
-        }, 2800);
-
-        /* Conflicto: parpadeo errático de opacidad */
-        setInterval(function() {
+        }
+        function ledConflictBlinkOpacity() {
             canvasTop.style.opacity = (0.4 + Math.random() * 0.6).toFixed(2);
             canvasBot.style.opacity = (0.3 + Math.random() * 0.7).toFixed(2);
-        }, 150);
+        }
+        function ledConflictStart() {
+            if (ledConflictTimers.length) return;
+            ledConflictTimers.push(setInterval(ledConflictRotateText, 2800));
+            ledConflictTimers.push(setInterval(ledConflictBlinkOpacity, 150));
+        }
+        function ledConflictStop() {
+            ledConflictTimers.forEach(function (h) { clearInterval(h); });
+            ledConflictTimers = [];
+        }
+        window.__rgLedConflict = { pause: ledConflictStop, resume: ledConflictStart };
+        ledConflictStart();
+        /* RESOURCE GOVERNOR R1C END */
     }
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initLEConflict);
@@ -15554,6 +15580,10 @@ document.addEventListener('DOMContentLoaded', function() {
         var scriptEl = document.getElementById('holo-boot-script');
         if (!el || !bar) { if (callback) callback(); return; }
 
+        /* RESOURCE GOVERNOR R1C BEGIN — ARENA_PRELOAD entry: arranque del Holo boot. */
+        try { if (window.RappiResourceGovernor && typeof window.RappiResourceGovernor.enterArenaPreload === 'function') window.RappiResourceGovernor.enterArenaPreload(); } catch (e) {}
+        /* RESOURCE GOVERNOR R1C END */
+
         // Cuadrados
         sqWrap.innerHTML = '';
         for (var i = 0; i < 8; i++) {
@@ -15682,6 +15712,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function _fpRunCountdown() {
         if (fpState._cdRunning) return;
+        /* RESOURCE GOVERNOR R1C BEGIN — anti-fantasma: si el arena ya no está
+           visible (cierre durante el Holo boot), no arrancar la cuenta regresiva. */
+        if (!fpArena || !fpArena.classList.contains('show')) return;
+        /* RESOURCE GOVERNOR R1C END */
         fpState._cdRunning = true;
         fpState.running = true; // activar ANTES del 3-2-1: el gate de CHAOS_LEVEL lo necesita
         const steps = [
@@ -15694,6 +15728,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fpCdOverlay) fpCdOverlay.classList.add('show');
         let i = 0;
         function step() {
+            /* RESOURCE GOVERNOR R1C BEGIN — cadena cancelable: muerte silenciosa tras fpCloseArena. */
+            if (!fpState._cdRunning) return;
+            /* RESOURCE GOVERNOR R1C END */
             if (i >= steps.length) {
                 if (fpCdOverlay) fpCdOverlay.classList.remove('show');
                 // START_MATCH para todos los modos: arranca T2E y sincroniza freeplay
@@ -15712,6 +15749,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 }
                 fpState._cdRunning = false; // countdown terminado
+                fpState._cdTimer = null; /* RESOURCE GOVERNOR R1C — handle consumido */
                 if (fpState.interval) { clearInterval(fpState.interval); fpState.interval = null; }
                 fpState.interval = setInterval(fpTick, 1000);
                 // Caos Tetris: cada 18-23s lanza 2 piezas casi juntas
@@ -15741,7 +15779,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (fpCdSub) fpCdSub.textContent = s.sub;
             i++;
-            setTimeout(step, s.dur);
+            /* RESOURCE GOVERNOR R1C BEGIN — handle almacenado para cancelación en fpCloseArena. */
+            fpState._cdTimer = setTimeout(step, s.dur);
+            /* RESOURCE GOVERNOR R1C END */
         }
         step();
     }
@@ -16499,6 +16539,12 @@ function fpCloseArena() {
         clearInterval(fpState.interval);
         if (window._fpChaosTetrisTimer) { clearTimeout(window._fpChaosTetrisTimer); window._fpChaosTetrisTimer = null; }
         fpState._cdRunning = false;
+        /* RESOURCE GOVERNOR R1C BEGIN — cancelación de la cadena de cuenta regresiva
+           (cierre durante Holo/countdown) + salida de ARENA_PRELOAD. */
+        if (fpState._cdTimer) { clearTimeout(fpState._cdTimer); fpState._cdTimer = null; }
+        if (fpCdOverlay) fpCdOverlay.classList.remove('show');
+        try { if (window.RappiResourceGovernor && typeof window.RappiResourceGovernor.exitArenaPreload === 'function') window.RappiResourceGovernor.exitArenaPreload(); } catch (e) {}
+        /* RESOURCE GOVERNOR R1C END */
         if (fpArena)  fpArena.classList.remove('show');
         if (fpState.betMode) _fpExitFullscreen();
         if (fpIframe) {
@@ -30441,6 +30487,10 @@ var LED_WELCOME = {
 
 /* ── Clase principal ── */
 function RappibellionLED(canvas, opts) {
+    /* RESOURCE GOVERNOR R1C BEGIN — registro de instancias para suspensión ARENA_PRELOAD. */
+    RappibellionLED._rgAll = RappibellionLED._rgAll || [];
+    RappibellionLED._rgAll.push(this);
+    /* RESOURCE GOVERNOR R1C END */
     this.canvas  = canvas;
     this.ctx     = canvas.getContext('2d');
     this.opts    = Object.assign({
@@ -30628,6 +30678,7 @@ RappibellionLED.prototype._drawFrame = function(ctx, s, r, rows, cols) {
 
 RappibellionLED.prototype.play = function() {
     var self  = this;
+    self._rgPlaying = true; /* RESOURCE GOVERNOR R1C */
     var opts  = this.opts;
     var delay = 1000 / opts.fps;
     var lastBlink = Date.now();
@@ -30650,6 +30701,7 @@ RappibellionLED.prototype.play = function() {
 
 RappibellionLED.prototype.stop = function() {
     if (this._raf) { clearTimeout(this._raf); this._raf = null; }
+    this._rgPlaying = false; /* RESOURCE GOVERNOR R1C */
 };
 
 RappibellionLED.prototype.setMode = function(mode, text) {
@@ -31991,6 +32043,26 @@ var btTimers = (function() {
 })();
 window.RappiResourceGovernor = (function() {
   var owner = null;
+  /* RESOURCE GOVERNOR R1C BEGIN — ARENA_PRELOAD: suspensión de consumidores
+     decorativos Tier-A durante Holo boot → arena. Solo owners con stop/resume
+     verificados: instancias RappibellionLED (stop()/play()), lampFlicker
+     (window.__rgLampFlicker) y LED-conflict (window.__rgLedConflict).
+     FUERA de alcance R1C: gameplay/HUD/NMA/runner/auth/finance/red/audio. */
+  var arenaPreload = false;
+  var arenaLedPaused = [];
+  function tierALedPause() {
+    var all = (window.RappibellionLED && window.RappibellionLED._rgAll) || [];
+    all.forEach(function (inst) {
+      if (inst && inst._rgPlaying) {
+        try { inst.stop(); arenaLedPaused.push(inst); } catch (e) {}
+      }
+    });
+  }
+  function tierALedResume() {
+    arenaLedPaused.forEach(function (inst) { try { inst.play(); } catch (e) {} });
+    arenaLedPaused = [];
+  }
+  /* RESOURCE GOVERNOR R1C END */
   return {
     enterImmersive: function(zone) {
       if (zone !== 'bt') return;
@@ -32004,9 +32076,28 @@ window.RappiResourceGovernor = (function() {
       if (owner === 'bt') window.btBriefStop();
       owner = null;
     },
+    /* RESOURCE GOVERNOR R1C BEGIN — estado ARENA_PRELOAD (idempotente). */
+    enterArenaPreload: function() {
+      if (arenaPreload) return;
+      arenaPreload = true;
+      tierALedPause();
+      try { if (window.__rgLampFlicker) window.__rgLampFlicker.pause(); } catch (e) {}
+      try { if (window.__rgLedConflict) window.__rgLedConflict.pause(); } catch (e) {}
+      try { document.documentElement.classList.add('rappi-arena-performance'); } catch (e) {}
+    },
+    exitArenaPreload: function() {
+      if (!arenaPreload) return;
+      arenaPreload = false;
+      tierALedResume();
+      try { if (window.__rgLampFlicker) window.__rgLampFlicker.resume(); } catch (e) {}
+      try { if (window.__rgLedConflict) window.__rgLedConflict.resume(); } catch (e) {}
+      try { document.documentElement.classList.remove('rappi-arena-performance'); } catch (e) {}
+    },
+    /* RESOURCE GOVERNOR R1C END */
     getState: function() {
       return { owner: owner, bt: btTimers.isRunning() ? 'running' : 'stopped',
-        timerCount: btTimers.count() };
+        timerCount: btTimers.count(),
+        arenaPreload: arenaPreload /* RESOURCE GOVERNOR R1C */ };
     }
   };
 })();
