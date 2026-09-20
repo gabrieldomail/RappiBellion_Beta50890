@@ -2176,6 +2176,21 @@ height: 8px;
             var pctxTmp=pixTmp.getContext('2d',{willReadFrequently:true});
             var sPos=0;
             var lastT=0;
+            /* RESOURCE GOVERNOR R1D BEGIN — owner API: el Governor pausa el trabajo
+               de render durante arena (marquee invisible); el rAF queda vivo pero
+               sin trabajo, y el restore es bit-exacto (lastT=0 re-clava dt≤50ms). */
+            var paused=false;
+            window.__rgHeroLeds = window.__rgHeroLeds || (function () {
+                var apis=[];
+                return {
+                    _register: function (api) { apis.push(api); },
+                    pause: function () { apis.forEach(function (a) { try { a.pause(); } catch (e) {} }); },
+                    resume: function () { apis.forEach(function (a) { try { a.resume(); } catch (e) {} }); },
+                    count: function () { return apis.length; }
+                };
+            })();
+            window.__rgHeroLeds._register({ pause: function () { paused = true; }, resume: function () { paused = false; lastT = 0; } });
+            /* RESOURCE GOVERNOR R1D END */
 
             /* ── AA v7 FASE2: LUT de color CALIBRADA POR PINTURA.
                Los valores se obtienen pintando cada nivel en ESTE motor
@@ -2230,6 +2245,9 @@ height: 8px;
               if(!lastT)lastT=t;
               var dt=Math.min(t-lastT,50);
               lastT=t;
+              /* RESOURCE GOVERNOR R1D BEGIN — en pausa: rAF vivo, cero trabajo. */
+              if (paused) { requestAnimationFrame(render); return; }
+              /* RESOURCE GOVERNOR R1D END */
               sPos+=dt*cfg.speed*cfg.dir;
 
               var W=cvs.width,H=cvs.height;
@@ -5055,8 +5073,19 @@ body.ultra-dark #ultra-dark-toggle {
             wrap.appendChild(em);
         }
     }
+    /* RESOURCE GOVERNOR R1D BEGIN — owner API de suspensión (arena): el spawner
+       se detiene; las brasas existentes drenan solas (CSS animation finite). */
+    var tkEmbersPaused = false;
+    window.__rgTkEmbers = {
+      pause: function () { tkEmbersPaused = true; },
+      resume: function () { tkEmbersPaused = false; },
+      isPaused: function () { return tkEmbersPaused; }
+    };
+    /* RESOURCE GOVERNOR R1D END */
     tkSpawnEmbers();
     setInterval(function() {
+        /* RESOURCE GOVERNOR R1D — suspenso durante arena. */
+        if (tkEmbersPaused) return;
         var wrap = document.getElementById('tk-burn-embers');
         if (wrap && wrap.children.length < 24) tkSpawnEmbers();
     }, 2800);
@@ -30276,11 +30305,26 @@ window.initGammaBomb = function() {
         'PUENTE RPPI-C: OPERATIVO'
     ];
 
+    /* RESOURCE GOVERNOR R1D BEGIN — owner API: loops decorativos del HUD holo
+       (tickers de scan/red + barras biostat/red). Antes: interval sin handle,
+       imposibles de suspender. Ahora: registrados, pausables y restaurables. */
+    window.__rgHoloDeco = window.__rgHoloDeco || (function () {
+        var timers = [];
+        return {
+            _track: function (t) { timers.push(t); },
+            pause: function () { if (!timers.length) return false; timers.forEach(function (t) { clearInterval(t); }); timers = []; return true; },
+            resume: function () { if (timers.length) return; restartAll(); },
+            count: function () { return timers.length; }
+        };
+    }());
+    /* RESOURCE GOVERNOR R1D END */
+
     function rotateTicker(elId, phrases) {
         var el = document.getElementById(elId);
         if (!el) return;
         var idx = 0;
-        setInterval(function() {
+        /* RESOURCE GOVERNOR R1D — handle registrado (antes: interval huérfano). */
+        var rgTimer = setInterval(function() {
             el.classList.add('fade');
             setTimeout(function() {
                 idx = (idx + 1) % phrases.length;
@@ -30288,10 +30332,12 @@ window.initGammaBomb = function() {
                 el.classList.remove('fade');
             }, 400);
         }, 3600);
+        window.__rgHoloDeco._track(rgTimer);
     }
 
     function randomizeBars(ids) {
-        setInterval(function() {
+        /* RESOURCE GOVERNOR R1D — handle registrado (antes: interval huérfano). */
+        var rgTimer = setInterval(function() {
             ids.forEach(function(id) {
                 var el = document.getElementById(id);
                 if (!el) return;
@@ -30299,7 +30345,18 @@ window.initGammaBomb = function() {
                 el.style.width = val + '%';
             });
         }, 4200);
+        window.__rgHoloDeco._track(rgTimer);
     }
+
+    /* RESOURCE GOVERNOR R1D BEGIN — re-arranque exacto de los 4 loops decorativos
+       tras la salida de arena (mismas instancias/frecuencias que el arranque). */
+    function restartAll() {
+        rotateTicker('holo-scan-ticker', PLAYER_PHRASES);
+        rotateTicker('holo-network-ticker', NETWORK_PHRASES);
+        randomizeBars(['holo-bio-1', 'holo-bio-2', 'holo-bio-3']);
+        randomizeBars(['holo-net-1', 'holo-net-2']);
+    }
+    /* RESOURCE GOVERNOR R1D END */
 
     function setPlayerIdReadout() {
         var el = document.getElementById('holo-player-id');
@@ -32063,6 +32120,27 @@ window.RappiResourceGovernor = (function() {
     arenaLedPaused = [];
   }
   /* RESOURCE GOVERNOR R1C END */
+  /* RESOURCE GOVERNOR R1D BEGIN — Tier-B: consumidores decorativos persistentes
+     fuera del BT y sin dueño previo (marquees LED del hero, embers tokenomics,
+     tickers/bars del HUD holo). El Governor registra exactamente lo suspendido y
+     lo restaura en la salida canónica (fpCloseArena → exitArenaPreload).
+     FUERA de alcance R1D: gameplay/HUD funcional/NMA/runner/auth/finance/red/audio. */
+  var tierBSuspended = null;
+  function tierBSuspend() {
+    if (tierBSuspended) return;
+    tierBSuspended = { leds: 0, embers: false, holo: false };
+    try { if (window.__rgHeroLeds) { window.__rgHeroLeds.pause(); tierBSuspended.leds = window.__rgHeroLeds.count(); } } catch (e) {}
+    try { if (window.__rgTkEmbers) { window.__rgTkEmbers.pause(); tierBSuspended.embers = true; } } catch (e) {}
+    try { if (window.__rgHoloDeco) { window.__rgHoloDeco.pause(); tierBSuspended.holo = true; } } catch (e) {}
+  }
+  function tierBResume() {
+    if (!tierBSuspended) return;
+    try { if (tierBSuspended.leds && window.__rgHeroLeds) window.__rgHeroLeds.resume(); } catch (e) {}
+    if (tierBSuspended.embers) { try { window.__rgTkEmbers.resume(); } catch (e) {} }
+    if (tierBSuspended.holo) { try { window.__rgHoloDeco.resume(); } catch (e) {} }
+    tierBSuspended = null;
+  }
+  /* RESOURCE GOVERNOR R1D END */
   return {
     enterImmersive: function(zone) {
       if (zone !== 'bt') return;
@@ -32084,6 +32162,9 @@ window.RappiResourceGovernor = (function() {
       try { if (window.__rgLampFlicker) window.__rgLampFlicker.pause(); } catch (e) {}
       try { if (window.__rgLedConflict) window.__rgLedConflict.pause(); } catch (e) {}
       try { document.documentElement.classList.add('rappi-arena-performance'); } catch (e) {}
+      /* RESOURCE GOVERNOR R1D BEGIN — suspensión decorativa Tier-B durante arena. */
+      tierBSuspend();
+      /* RESOURCE GOVERNOR R1D END */
     },
     exitArenaPreload: function() {
       if (!arenaPreload) return;
@@ -32092,12 +32173,16 @@ window.RappiResourceGovernor = (function() {
       try { if (window.__rgLampFlicker) window.__rgLampFlicker.resume(); } catch (e) {}
       try { if (window.__rgLedConflict) window.__rgLedConflict.resume(); } catch (e) {}
       try { document.documentElement.classList.remove('rappi-arena-performance'); } catch (e) {}
+      /* RESOURCE GOVERNOR R1D BEGIN — restauración decorativa Tier-B tras arena. */
+      tierBResume();
+      /* RESOURCE GOVERNOR R1D END */
     },
     /* RESOURCE GOVERNOR R1C END */
     getState: function() {
       return { owner: owner, bt: btTimers.isRunning() ? 'running' : 'stopped',
         timerCount: btTimers.count(),
-        arenaPreload: arenaPreload /* RESOURCE GOVERNOR R1C */ };
+        arenaPreload: arenaPreload, /* RESOURCE GOVERNOR R1C */
+        tierBActive: !!tierBSuspended /* RESOURCE GOVERNOR R1D */ };
     }
   };
 })();
