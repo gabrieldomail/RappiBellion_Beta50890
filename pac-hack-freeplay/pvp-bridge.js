@@ -39,14 +39,9 @@
 
   // Solo PvP continúa: score polling, BOOST_USED, MATCH_ENDED overlay, etc.
   if (!IS_PVP) {
-    // Freeplay: solo escalar y escuchar TRIGGER_BOOST + MATCH_ENDED básico
-    window.addEventListener('message', function(event) {
-      var data = event.data;
-      if (!data || !data.type) return;
-      if (data.type === 'TRIGGER_BOOST') {
-        document.dispatchEvent(new CustomEvent('pvpBoost', {}));
-      }
-    });
+    // Freeplay: solo escalar. El efecto de juego y la emisión de BOOST_USED
+    // son responsabilidad ÚNICA del listener TRIGGER_BOOST en Init.js (R2A:
+    // una autoridad → 1 frighten + 1 BOOST_USED, sin duplicar el efecto).
     return;
   }
 
@@ -60,107 +55,11 @@
   let matchEnded = false;
   let pollInterval = null;
 
-  // ── 3. DETECCIÓN DE PUNTAJE ──
-  // Intentamos tres métodos, de más a menos específico:
-
-  // MÉTODO A: Hook directo en Score.js
-  // Si tu Score.js tiene una función como Score.add() o Score.set(),
-  // podemos interceptarla aquí una vez que cargue.
-  function tryHookScoreObject() {
-    // Nombres comunes en implementaciones de Pac-Man JS
-    // Ajustá según lo que veas en source/score/Score.js
-    const candidates = [
-      () => window.Score,
-      () => window.score,
-      () => window.GameScore,
-      () => window.game && window.game.score,
-    ];
-
-    for (const getter of candidates) {
-      try {
-        const obj = getter();
-        if (obj && typeof obj.get === 'function') {
-          // Wrapeamos el método que actualiza
-          const originalGet = obj.get.bind(obj);
-          Object.defineProperty(obj, '_pvpHooked', { value: true, writable: false });
-          console.info('[PvP Bridge] Hook en Score.get() exitoso');
-          return true;
-        }
-      } catch(e) {}
-    }
-    return false;
-  }
-
-  // MÉTODO B: MutationObserver sobre el DOM
-  // Si el score se renderiza como texto en algún elemento
-  function tryObserveDOM() {
-    // Selectores comunes donde se muestra el puntaje
-    const selectors = [
-      '.score', '#score', '[class*="score"]',
-      '.points', '#points', '.hud-score',
-      'canvas' // fallback — vemos cambios en canvas
-    ];
-
-    for (const sel of selectors) {
-      const el = document.querySelector(sel);
-      if (el && el.textContent !== undefined && el.tagName !== 'CANVAS') {
-        const observer = new MutationObserver(() => {
-          const val = parseInt(el.textContent.replace(/\D/g, ''), 10);
-          if (!isNaN(val) && val !== lastScore) {
-            onScoreChange(val);
-          }
-        });
-        observer.observe(el, { childList: true, subtree: true, characterData: true });
-        console.info('[PvP Bridge] MutationObserver activo en:', sel);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  // MÉTODO C: Polling de variables globales (fallback seguro)
-  // Busca el puntaje en las variables más comunes del juego
-  function startPolling() {
-    console.info('[PvP Bridge] Iniciando polling de score...');
-    pollInterval = setInterval(() => {
-      if (matchEnded) return;
-
-      const score = readScoreFromGame();
-      if (score !== null && score !== lastScore) {
-        onScoreChange(score);
-      }
-    }, 150); // cada 150ms — suficientemente rápido sin ser costoso
-  }
-
-  function readScoreFromGame() {
-    // ── AJUSTÁ ESTA LISTA según tu Score.js ──
-    // Revisá source/score/Score.js y buscá la variable
-    // donde se guarda el puntaje. Agregala acá arriba:
-    const attempts = [
-      // Patrones directos
-      () => window.score,
-      () => window.Score && window.Score.score,
-      () => window.Score && window.Score.points,
-      () => window.Score && window.Score.value,
-      () => window.Score && window.Score.current,
-      // Patrones de objeto de juego
-      () => window.game && window.game.score,
-      () => window.game && window.game.Score,
-      () => window.Pacman && window.Pacman.score,
-      // Patrones de Data.js (que está en tu proyecto)
-      () => window.Data && window.Data.score,
-      () => window.GameData && window.GameData.score,
-    ];
-
-    for (const attempt of attempts) {
-      try {
-        const val = attempt();
-        if (typeof val === 'number' && !isNaN(val)) return val;
-      } catch(e) {}
-    }
-    return null;
-  }
-
+  // R2A-FIX 01oct2026: deteccion local ELIMINADA. Unica via: Score.js -> PvPBridge.reportScore().
+  function startPolling() {}
+  function tryHookScoreObject() { return false; }
+  function tryObserveDOM() { return false; }
+  function readScoreFromGame() { return null; }
   // ── 4. HANDLER DE CAMBIO DE PUNTAJE ──
   function onScoreChange(newScore) {
     lastScore = newScore;
@@ -179,20 +78,11 @@
   // come un power pellet (las bolitas grandes).
   // O conectarla manualmente en Food.js / Fruit.js
   window.PvPBridge = {
-
     // Llamar cuando se usa un boost (HACK IT button or ate a power pellet).
-    // Also triggers fright mode in the pac-hack engine so it has a real game effect.
+    // R2A-FIX 01oct2026: relay puro. El efecto frighten lo hace Init.js (TRIGGER_BOOST).
     onPowerPellet: function() {
       if (matchEnded) return;
       boostsUsed++;
-      // === REAL GAME EFFECT: frighten all ghosts ====
-      // Access the Ghosts singleton that Init.js creates and call frighten()
-      try {
-        // The ghosts variable is local to Init.js IIFE; we trigger via a custom event
-        // that Init.js listens for, OR we simulate eating an energizer food tile.
-        // Simplest reliable approach: dispatch a custom "pvpBoost" event on document.
-        document.dispatchEvent(new CustomEvent('pvpBoost', { detail: { boostsUsed: boostsUsed } }));
-      } catch(e) {}
       sendToParent({
         type: 'BOOST_USED',
         player: PLAYER,
@@ -225,132 +115,17 @@
     }
   };
 
-  // ── 6. ESCUCHAR MENSAJES DEL HUD PADRE ──
+  // R2A-FIX 01oct2026: switch recortado.
   window.addEventListener('message', function(event) {
     const data = event.data;
     if (!data || !data.type) return;
-
-    switch(data.type) {
-
-      // ⚡️ NUEVO: Escuchar el nivel de caos del padre
-      case 'CHAOS_LEVEL':
-        const level = data.level;
-        console.log('[PvP Bridge] Ajustando velocidad de caos a: ' + level + '%');
-        
-        // Aquí es donde ocurre la magia: 
-        // Buscamos la variable de velocidad en el motor del juego (Data.js / Init.js)
-        // Normalmente el juego usa un multiplicador. 
-        // El 0% sería velocidad 1.0, el 100% sería velocidad 1.8 aprox.
-        if (window.Data && window.Data.gameSpeed !== undefined) {
-             window.Data.gameSpeed = 1 + (level / 100) * 0.8; 
-        } else if (window.game && window.game.speed !== undefined) {
-             window.game.speed = 1 + (level / 100) * 0.8;
-        }
-        // Si el juego tiene una función de actualización de velocidad, la llamamos
-        if (typeof window.updateGameSpeed === 'function') {
-            window.updateGameSpeed(level);
-        }
-        break;
-
-      case 'MATCH_ENDED':
-        matchEnded = true;
-        clearInterval(pollInterval);
-        freezeGame();
-        showMatchResult(data.winner);
-        break;
-
-      case 'RIVAL_BOOST':
-        showRivalBoostWarning(data.boostsRemaining);
-        break;
-
-      case 'RIVAL_SCORE':
-        break;
+    if (data.type === 'MATCH_ENDED') {
+      matchEnded = true;
+      clearInterval(pollInterval);
     }
   });
 
-
-  // ── 7. CONGELAR JUEGO AL TERMINAR ──
-  function freezeGame() {
-    // Intentamos pausar usando las teclas/eventos nativos del juego
-    // Simulamos presionar 'P' (pausa) o Espacio
-    try {
-      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'p', keyCode: 80, bubbles: true }));
-    } catch(e) {}
-
-    // Overlay encima del canvas para bloquear input
-    const overlay = document.createElement('div');
-    overlay.id = 'pvp-freeze-overlay';
-    overlay.style.cssText = `
-      position: fixed; inset: 0; z-index: 9999;
-      background: rgba(0,0,0,0.0);
-      cursor: not-allowed;
-    `;
-    // Bloquea clicks pero no se ve
-    document.body.appendChild(overlay);
-  }
-
-  // ── 8. OVERLAY DE RESULTADO ──
-  function showMatchResult(winner) {
-    const isWinner = winner === PLAYER;
-    const isDraw = winner === 'draw';
-
-    const overlay = document.createElement('div');
-    overlay.style.cssText = `
-      position: fixed; inset: 0; z-index: 10000;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      background: rgba(3,10,6,0.88);
-      font-family: 'Courier New', monospace;
-      animation: pvpFadeIn 0.4s ease;
-    `;
-
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes pvpFadeIn { from { opacity:0; } to { opacity:1; } }
-      @keyframes pvpGlow { 0%,100%{text-shadow:0 0 20px currentColor} 50%{text-shadow:0 0 40px currentColor,0 0 60px currentColor} }
-    `;
-    document.head.appendChild(style);
-
-    const title = isDraw ? '⚡ EMPATE' : isWinner ? '▶ VICTORIA' : '✕ DERROTA';
-    const color = isDraw ? '#ffb700' : isWinner ? '#00e5ff' : '#ff2244';
-
-    overlay.innerHTML = `
-      <div style="
-        font-size: clamp(32px, 8vw, 64px);
-        font-weight: 900;
-        color: ${color};
-        letter-spacing: 8px;
-        animation: pvpGlow 1.5s ease-in-out infinite;
-        margin-bottom: 12px;
-      ">${title}</div>
-      <div style="color:rgba(0,255,65,0.5); font-size:14px; letter-spacing:4px;">
-        SCORE FINAL: ${lastScore}
-      </div>
-    `;
-
-    document.body.appendChild(overlay);
-  }
-
-  // ── 9. AVISO VISUAL DE BOOST RIVAL ──
-  function showRivalBoostWarning(boostsRemaining) {
-    const warn = document.createElement('div');
-    warn.style.cssText = `
-      position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
-      background: rgba(255,0,170,0.12);
-      border: 1px solid rgba(255,0,170,0.5);
-      color: #ff00aa;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      letter-spacing: 3px;
-      padding: 8px 20px;
-      z-index: 8000;
-      pointer-events: none;
-      animation: pvpFadeIn 0.2s ease;
-    `;
-    warn.textContent = '⚡ RIVAL ACTIVÓ INMUNIDAD';
-    document.body.appendChild(warn);
-    setTimeout(() => warn.remove(), 2000);
-  }
+  function showRivalBoostWarning() {}
 
   // ── 10. ENVIAR AL PADRE ──
   function sendToParent(data) {
@@ -406,10 +181,7 @@ function initBridge() {
     // Nota: applyPvpScale ya fue llamado al inicio (antes del guard PvP)
     // para que el freeplay también escale correctamente
 
-    // Intentar los 3 métodos en orden
-    const hooked = tryHookScoreObject();
-    if (!hooked) tryObserveDOM();
-    startPolling(); // siempre activo como respaldo
+    // R2A-FIX 01oct2026: deteccion local eliminada. Unica via: Score.js -> PvPBridge.reportScore().
 
     console.info('[PvP Bridge] Inicializado. Jugador:', PLAYER.toUpperCase());
     console.info('[PvP Bridge] Para debug: PvPBridge.debug()');

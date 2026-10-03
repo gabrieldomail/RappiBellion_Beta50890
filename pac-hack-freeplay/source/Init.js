@@ -190,7 +190,11 @@
                 return;
             }
             
-            let time  = new Date().getTime() - startTime;
+            try {
+            // PATCH: clamp frame time. A slow/throttled frame (heavy parent page,
+            // hidden iframe, tab switch) must not fast-forward timers or inflate
+            // the movement step: the game just runs a bit slower in that frame.
+            let time  = Math.min(new Date().getTime() - startTime, 50);
 
             // ══════════════════════════════════════════
             //  MODO APOCALIPSIS — VELOCIDAD PROGRESIVA
@@ -244,6 +248,13 @@
                     animations.endLevel(newLevel);
                 }
                 ghostCrash();
+            }
+            } catch (err) {
+                // PATCH: an exception in a frame must never kill the loop.
+                window._loopErrCount = (window._loopErrCount || 0) + 1;
+                if (window._loopErrCount <= 5 || window._loopErrCount % 300 === 0) {
+                    console.error('[Pac-Hack] loop error #' + window._loopErrCount + ':', err);
+                }
             }
             requestAnimation();
         });
@@ -649,16 +660,26 @@
         document.addEventListener("mozvisibilitychange", handleVisibility);
         document.addEventListener("msvisibilitychange", handleVisibility);
 
+        // ── R2A: AUTORIDAD ÚNICA DE INICIO (idempotente) ──
+        // Un único lugar escribe window._hackerStartTime y arranca el match.
+        // Los tres caminos legítimos (START_MATCH del HUD, fallback PvP 500ms,
+        // fallback standalone 300ms) convergen aquí: el segundo llamado es
+        // NO-OP, así el reloj de caos no se reescribe ni el match se reinicia.
+        function startMatchOnce() {
+            if (window._hackerStartTime) return false;
+            if (!display.isMainScreen()) return false;
+            window._hackerStartTime = Date.now();
+            newGame();
+            return true;
+        }
+
         // ── Escuchar START_MATCH siempre (PvP y freeplay) ──
         window.addEventListener("message", function(e) {
             var d = e.data;
             if (!d || !d.type) return;
 
             if (d.type === "START_MATCH") {
-                window._hackerStartTime = Date.now();
-                if (display.isMainScreen()) {
-                    newGame();
-                }
+                startMatchOnce();
             }
             if (d.type === "MATCH_ENDED") {
                 // Solo pausar en PvP (cuando hay player)
@@ -673,10 +694,7 @@
         if (pvpPlayer === "p1" || pvpPlayer === "p2") {
             // Fallback: si no recibe START_MATCH en 500ms, auto-arrancar
             setTimeout(function() {
-                if (display.isMainScreen() && !window._hackerStartTime) {
-                    window._hackerStartTime = Date.now();
-                    newGame();
-                }
+                startMatchOnce();
             }, 500);
         } else {
             // Freeplay: solo auto-arrancar si NO estamos en un iframe
@@ -685,10 +703,7 @@
             var _isInIframe = window.self !== window.top;
             if (!_isInIframe) {
                 setTimeout(function() {
-                    if (display.isMainScreen()) {
-                        window._hackerStartTime = Date.now();
-                        newGame();
-                    }
+                    startMatchOnce();
                 }, 300);
             }
         }
