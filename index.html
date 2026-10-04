@@ -2857,6 +2857,14 @@ body.ultra-dark #ultra-dark-toggle {
     }
 }
 
+/* PATCH arena-perf: con la arena abierta el iframe del juego comparte hilo con esta
+   pagina. El tilt 3D y la iridiscencia animada forzaban repintado/recomposicion de
+   toda el area del juego en cada frame -> frames largos -> pasos grandes en el juego.
+   Solo aplica con body.arena-open; fuera de la arena todo queda igual. */
+body.arena-open .cyber-tilt-panel { transform: none !important; transition: none !important; }
+body.arena-open .cyber-tilt-panel::before { display: none !important; }
+body.arena-open .eva-terminal-chamber { perspective: none !important; }
+
 /* ══════════════════════════════════════════════
    HOLOGRAPHIC BOOT SCREEN — DESPROPORCIÓN TOTAL
    Fondo casi transparente + 660 partículas + luz máxima
@@ -3219,7 +3227,12 @@ body.ultra-dark #ultra-dark-toggle {
 
                     // Primer render inmediato + loop cada 3.1s
                     setTimeout(tdRender, 600);
-                    setInterval(tdRender, 3100);
+                    var _tdInterval = setInterval(tdRender, 3100);
+                    /* RESOURCE GOVERNOR TIER-C — suspensión en arena */
+                    window.__rgTimeDistort = {
+                        pause: function() { if (_tdInterval) { clearInterval(_tdInterval); _tdInterval = null; } },
+                        resume: function() { if (!_tdInterval) { _tdInterval = setInterval(tdRender, 3100); } }
+                    };
                 })();
                 </script>
 
@@ -6730,9 +6743,48 @@ body.bt-node-focus { overflow: hidden; }
 .bt-rekt-track { display:flex; white-space:nowrap; animation:rektScroll 50s linear infinite;
   will-change:transform; transform:translate3d(0,0,0); }
 .bt-rekt-track:hover { animation-play-state:paused; }
-/* RESOURCE GOVERNOR R1C BEGIN — clase ARENA performance: pausa el marquee BT-wall (rektScroll)
-   durante ARENA_PRELOAD. Solo decorativo; el Governor la agrega/remueve en enter/exit. */
+/* RESOURCE GOVERNOR R1C/D/Tier-CD — clase ARENA performance: desconexión visual y optimización de render */
 html.rappi-arena-performance .bt-rekt-track { animation-play-state: paused; }
+
+/* Desconexión visual del fondo para liberar 100% de GPU/CPU compositing al iframe */
+html.rappi-arena-performance #hero,
+html.rappi-arena-performance #leaderboard,
+html.rappi-arena-performance #tokenomics,
+html.rappi-arena-performance #roadmap,
+html.rappi-arena-performance #concept,
+html.rappi-arena-performance #team,
+html.rappi-arena-performance #black-terminal,
+html.rappi-arena-performance #story-universe,
+html.rappi-arena-performance #game-overlay,
+html.rappi-arena-performance .rebel-mural-zone,
+html.rappi-arena-performance .time-distort-wrap {
+    visibility: hidden !important;
+}
+
+/* Pausar animaciones del Hero y decoraciones pesadas */
+html.rappi-arena-performance .hero-holo-particles,
+html.rappi-arena-performance .hero-v2-holo-glow,
+html.rappi-arena-performance .hero-v2-title {
+    animation-play-state: paused !important;
+}
+
+/* Reducir sobrecarga de GPU en los paneles del HoloHUD alrededor del iframe */
+html.rappi-arena-performance .hud-holo-panel {
+    backdrop-filter: blur(2px) !important;
+    -webkit-backdrop-filter: blur(2px) !important;
+}
+html.rappi-arena-performance .hud-holo-panel::before {
+    animation-play-state: paused !important;
+}
+html.rappi-arena-performance .holo-particles,
+html.rappi-arena-performance .hero-holo-particles {
+    display: none !important;
+}
+html.rappi-arena-performance .holo-scanline,
+html.rappi-arena-performance .scanlines {
+    animation-play-state: paused !important;
+    opacity: 0.1 !important;
+}
 /* RESOURCE GOVERNOR R1C END */
 .bt-rekt-card {
   flex-shrink:0; width:200px; height:130px; margin:0 8px;
@@ -9426,6 +9478,11 @@ font-size: 27px;
                 if (!_pbPaused) _pbNav(1);
             }, 3800);
         }
+        /* RESOURCE GOVERNOR TIER-C — suspensión en arena */
+        window.__rgPinboard = {
+            pause: function() { if (_pbTimer) { clearInterval(_pbTimer); _pbTimer = null; } },
+            resume: function() { startAutoRotate(); }
+        };
         var wrap = document.querySelector('.pinboard-wrap');
         if (wrap) {
             wrap.addEventListener('mouseenter', function(){ _pbPaused = true;  });
@@ -14596,8 +14653,10 @@ class HoloHUD {
     animateNumber(el, from, to, duration, formatter) {
         if (!el) return;
         duration = duration || 450;
+        const token = el._anTok = (el._anTok || 0) + 1; // PATCH: cancela la cadena rAF previa
         const startTime = performance.now();
         const step = (now) => {
+            if (el._anTok !== token) return;
             const t = Math.min(1, (now - startTime) / duration);
             const eased = 1 - Math.pow(1 - t, 3); // cubic-out
             const val = Math.round(from + (to - from) * eased);
@@ -15130,9 +15189,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (_chaosBar) { _chaosBar.classList.remove('apocalypse'); _chaosBar.style.boxShadow = ''; }
         var _chaosPct = document.getElementById('fp-chaos-pct');
         if (_chaosPct) _chaosPct.textContent = '0%';
-        // Mutear el zorzal mientras el juego está activo
+        // Pausar el zorzal mientras el juego está activo (Tier-C: libera buffers y CPU de audio)
         const tangoAudioFP = document.getElementById('tango-audio');
-        if (tangoAudioFP && !tangoAudioFP.paused) { tangoAudioFP.muted = true; }
+        if (tangoAudioFP && !tangoAudioFP.paused) {
+            window._tangoWasPlaying = true;
+            try { tangoAudioFP.pause(); } catch(e){}
+        }
         // Ocultar chatbot para no interferir con los controles
         const _chatFab = document.getElementById('gemini-chat-fab');
         const _chatWidget = document.getElementById('gemini-chat-widget');
@@ -16615,6 +16677,20 @@ function fpCloseArena() {
             window._fpMarioAudio.pause();
             window._fpMarioAudio.currentTime = 0;
         }
+        /* RESOURCE GOVERNOR TIER-C/D — Restauración de tango y cancelación limpia de holo boot */
+        if (window._tangoWasPlaying) {
+            const tangoAudioFP = document.getElementById('tango-audio');
+            if (tangoAudioFP) {
+                try { tangoAudioFP.play().catch(function(){}); } catch(e){}
+            }
+            window._tangoWasPlaying = false;
+        }
+        if (typeof _holoBootAnimFrame !== 'undefined' && _holoBootAnimFrame) {
+            cancelAnimationFrame(_holoBootAnimFrame);
+            _holoBootAnimFrame = null;
+        }
+        var holoBootEl = document.getElementById('fp-holo-boot');
+        if (holoBootEl) holoBootEl.classList.remove('show');
         // Unlock orientación y ocultar overlay rotate
         if (screen.orientation && screen.orientation.unlock) { try { screen.orientation.unlock(); } catch(e){} }
         const rotOverlay = document.getElementById('fp-rotate-overlay');
@@ -16895,7 +16971,7 @@ function fpCloseArena() {
     window.addEventListener('message', function(e) {
         const d = e.data;
         if (!d || !d.type) return;
-        console.log('[DEBUG iframe message]', d.type, d);
+        if (window.__DEBUG_IFRAME_MSG) console.log('[DEBUG iframe message]', d.type, d); // PATCH: opt-in
 
         // GAME_OVER del iframe: NO terminar la práctica del padre.
         // Timer y caos siguen corriendo. Score se mantiene (peak del intento).
@@ -17423,6 +17499,7 @@ function fpCloseArena() {
     var MAX = 8;
     function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
     document.addEventListener('mousemove', function(e){
+        if (document.body.classList.contains('arena-open')) return; // PATCH arena-perf
         var x = clamp((window.innerWidth/2 - e.pageX) / 50, -MAX, MAX);
         var y = clamp((window.innerHeight/2 - e.pageY) / 50, -MAX, MAX);
         panels.forEach(function(p){
@@ -20399,6 +20476,9 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
                 clearInterval(this.gameTimer);
                 this.gameTimer = null;
             }
+            if (this._scoreSimTimer) { clearInterval(this._scoreSimTimer); this._scoreSimTimer = null; }
+            if (this._rivalSimTimer) { clearInterval(this._rivalSimTimer); this._rivalSimTimer = null; }
+            if (this._notifSimTimer) { clearInterval(this._notifSimTimer); this._notifSimTimer = null; }
 
             // Hide HUD
             this.hud.style.opacity = '0';
@@ -20427,15 +20507,19 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
 
         // Start real-time updates simulation
         startRealTimeUpdates() {
+            if (this._scoreSimTimer) { clearInterval(this._scoreSimTimer); this._scoreSimTimer = null; }
+            if (this._rivalSimTimer) { clearInterval(this._rivalSimTimer); this._rivalSimTimer = null; }
+            if (this._notifSimTimer) { clearInterval(this._notifSimTimer); this._notifSimTimer = null; }
+
             // Simulate score updates
-            setInterval(() => {
+            this._scoreSimTimer = setInterval(() => {
                 if (!this.isActive) return;
                 this.playerStats.score += Math.floor(Math.random() * 100);
                 this.updatePlayerStats();
             }, 2000);
 
             // Simulate rival updates
-            setInterval(() => {
+            this._rivalSimTimer = setInterval(() => {
                 if (!this.isActive) return;
                 this.rivalStats.score += Math.floor(Math.random() * 80);
                 this.rivalStats.distance = Math.max(0, Math.min(100, this.rivalStats.distance + (Math.random() - 0.5) * 10));
@@ -20443,7 +20527,7 @@ if (btn) btn.addEventListener('click', toggleMutePlay);
             }, 3000);
 
             // Simulate notifications
-            setInterval(() => {
+            this._notifSimTimer = setInterval(() => {
                 if (!this.isActive) return;
                 const messages = [
                     'BOOST AVAILABLE',
@@ -29836,7 +29920,8 @@ function rppiGmAccept(betId,game){
         if (typeof window === 'undefined') return;
         var ticking = false;
         document.addEventListener('mousemove', function(e) {
-            if (ticking || window.innerWidth <= 900) return;
+            /* RESOURCE GOVERNOR TIER-D — desactivar tilt 3D durante arena para liberar GPU/CPU */
+            if (ticking || window.innerWidth <= 900 || (document.body && document.body.classList.contains('arena-open'))) return;
             ticking = true;
             requestAnimationFrame(function() {
                 var panelL = document.getElementById('holo-panel-left');
@@ -31746,8 +31831,13 @@ async function conectarMarketFeed() {
     }
 }
 
-setInterval(conectarMarketFeed, 2000);
+var _btFeedInterval = setInterval(conectarMarketFeed, 2000);
 conectarMarketFeed();
+/* RESOURCE GOVERNOR TIER-C — suspensión en arena */
+window.__rgMarketFeed = {
+  pause: function() { if (_btFeedInterval) { clearInterval(_btFeedInterval); _btFeedInterval = null; } },
+  resume: function() { if (!_btFeedInterval) { _btFeedInterval = setInterval(conectarMarketFeed, 2000); conectarMarketFeed(); } }
+};
  
 /* ── Apply price update to DOM ── */
 function btApplyUpdate(prices) {
@@ -32165,6 +32255,18 @@ window.RappiResourceGovernor = (function() {
       /* RESOURCE GOVERNOR R1D BEGIN — suspensión decorativa Tier-B durante arena. */
       tierBSuspend();
       /* RESOURCE GOVERNOR R1D END */
+      /* RESOURCE GOVERNOR TIER-C/D — Suspensión intensiva de consumidores residuales */
+      try {
+        var rVideo = document.getElementById('roadmap-bg');
+        if (rVideo && !rVideo.paused) {
+          rVideo._rgWasPlaying = true;
+          rVideo.pause();
+        }
+      } catch (e) {}
+      try { if (window.__rgMarketFeed) window.__rgMarketFeed.pause(); } catch (e) {}
+      try { if (window.__rgPinboard) window.__rgPinboard.pause(); } catch (e) {}
+      try { if (window.__rgTimeDistort) window.__rgTimeDistort.pause(); } catch (e) {}
+      try { if (window.faqCycle && typeof window.faqCycle.stop === 'function') window.faqCycle.stop(); } catch (e) {}
     },
     exitArenaPreload: function() {
       if (!arenaPreload) return;
@@ -32176,6 +32278,18 @@ window.RappiResourceGovernor = (function() {
       /* RESOURCE GOVERNOR R1D BEGIN — restauración decorativa Tier-B tras arena. */
       tierBResume();
       /* RESOURCE GOVERNOR R1D END */
+      /* RESOURCE GOVERNOR TIER-C/D — Restauración controlada tras arena */
+      try {
+        var rVideo = document.getElementById('roadmap-bg');
+        if (rVideo && rVideo._rgWasPlaying) {
+          rVideo._rgWasPlaying = false;
+          rVideo.play().catch(function(){});
+        }
+      } catch (e) {}
+      try { if (window.__rgMarketFeed) window.__rgMarketFeed.resume(); } catch (e) {}
+      try { if (window.__rgPinboard) window.__rgPinboard.resume(); } catch (e) {}
+      try { if (window.__rgTimeDistort) window.__rgTimeDistort.resume(); } catch (e) {}
+      try { if (window.faqCycle && typeof window.faqCycle.start === 'function') window.faqCycle.start(); } catch (e) {}
     },
     /* RESOURCE GOVERNOR R1C END */
     getState: function() {
