@@ -146,6 +146,14 @@ export class InputUtils {
 		else if (keyCode === 'KeyS') keyCode = 'ArrowDown';
 		else if (keyCode === 'KeyA') keyCode = 'ArrowLeft';
 		else if (keyCode === 'KeyD') keyCode = 'ArrowRight';
+
+		// FIX: Prevent default browser behavior (scroll, etc.) for game keys
+		// to avoid parent document scroll drift that triggers #bt-raw-signal
+		if (this.#consumedKeyCodes.indexOf(keyCode) !== -1 ||
+			['KeyW','KeyS','KeyA','KeyD','Space'].indexOf(event.code) !== -1) {
+			event.preventDefault();
+		}
+
 		this.#onKeyInternal(keyCode, event.type === "keydown");
 	}
 

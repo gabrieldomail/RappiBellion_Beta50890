@@ -6786,6 +6786,27 @@ html.rappi-arena-performance .scanlines {
     opacity: 0.1 !important;
 }
 /* RESOURCE GOVERNOR R1C END */
+
+/* FIX: Suprimir #bt-raw-signal y #bt-core durante arena (Tetris leak fix)
+   Root cause: IntersectionObserver en #black-terminal dispara .bt-signal-visible
+   cuando el documento padre scrollea involuntariamente durante el gameplay.
+   Esto fuerza ambos elementos invisibles mientras body.arena-open esté activo. */
+body.arena-open #bt-raw-signal,
+html.rappi-arena-performance #bt-raw-signal {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+body.arena-open #bt-core,
+html.rappi-arena-performance #bt-core {
+    display: none !important;
+}
+/* Bloquear scroll del body cuando la arena está abierta — prevenir
+   que keypresses o touch gestures muevan el documento padre debajo del iframe */
+body.arena-open {
+    overflow: hidden !important;
+}
+
 .bt-rekt-card {
   flex-shrink:0; width:200px; height:130px; margin:0 8px;
   background:oklch(98% 0.01 95);
@@ -15165,6 +15186,11 @@ document.addEventListener('DOMContentLoaded', function() {
          // 🟢 Focus Mode: activar al inicio para que se ejecute siempre, sin importar returns tempranos
          document.body.classList.add('arena-open');
          _fpApplyArenaPerfMode();
+
+         // FIX: Anclar scroll del padre a top y bloquear overflow
+         // para que el IntersectionObserver de #black-terminal no dispare
+         // #bt-raw-signal si las teclas de juego causan scroll involuntario.
+         window.scrollTo(0, 0);
 
          // Resolver gameType: puede venir como argumento o desde la apuesta aceptada guardada
          if (!gameType && window._currentAcceptedBet && window._currentAcceptedBet.gameType) {
