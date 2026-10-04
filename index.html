@@ -6932,6 +6932,63 @@ body.arena-open {
   100% { opacity:1; transform:translateX(0); }
 }
 
+/* ── REKT MODAL · capa de diseño "expediente de casino" (Claude) ──
+   Mismo lenguaje que el modal (rojo/cian/ámbar sobre verde casi negro). Sin animaciones
+   infinitas nuevas: solo un fade del overlay y el sello, ambos de una sola pasada. */
+.bt-rekt-modal-overlay { animation: rektOverlayIn 0.2s ease-out both; }
+@keyframes rektOverlayIn { from { opacity:0; } to { opacity:1; } }
+
+/* hilera de focos de marquesina (Vegas 50s) — estática */
+.bt-rekt-bulbs { height:8px; margin:-6px 0 12px;
+  background: radial-gradient(circle at 50% 50%, oklch(88% 0.14 85) 0 1.5px, oklch(70% 0.19 50 / 0.4) 2.3px, transparent 3.6px) 0 50% / 14px 8px repeat-x;
+  filter: drop-shadow(0 0 3px oklch(70% 0.19 50 / 0.55)); opacity:0.9; }
+
+/* barra de expediente: la era sale de data-era de la tarjeta (dato real) */
+.bt-rekt-file-bar { display:flex; justify-content:space-between; align-items:center; gap:10px;
+  padding:0 34px 10px 0; font-size:11px; letter-spacing:2px; text-transform:uppercase; }
+.bt-rekt-file-tag { color:oklch(70% 0.19 50); text-shadow:0 0 8px oklch(70% 0.19 50 / 0.5); }
+.bt-rekt-file-class { color:oklch(62% 0.23 25); border:1px solid oklch(62% 0.23 25 / 0.6); padding:1px 6px; }
+
+/* sello REKT: entra después de la "desencriptación" de la imagen (0.7s) */
+.bt-rekt-stamp { position:absolute; left:12px; bottom:12px; z-index:3; pointer-events:none;
+  font-family:'Orbitron',monospace; font-weight:900; font-size:22px; letter-spacing:6px; text-indent:6px;
+  color:oklch(62% 0.23 25); padding:2px 10px; border:3px double oklch(62% 0.23 25);
+  background:oklch(8% 0.012 160 / 0.55); text-shadow:0 0 10px oklch(62% 0.23 25 / 0.7);
+  box-shadow:0 0 14px oklch(62% 0.23 25 / 0.35), inset 0 0 8px oklch(62% 0.23 25 / 0.25);
+  opacity:0.92; transform:rotate(-9deg); }
+.bt-rekt-modal.decrypting .bt-rekt-stamp { animation: rektStampSlam 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) 0.65s both; }
+@keyframes rektStampSlam {
+  0%   { opacity:0;    transform:rotate(-9deg) scale(2.6); }
+  55%  { opacity:0.92; transform:rotate(-9deg) scale(0.94); }
+  78%  { opacity:0.92; transform:rotate(-9deg) scale(1.04); }
+  100% { opacity:0.92; transform:rotate(-9deg) scale(1); }
+}
+
+/* marca de agua: la era en contorno, detrás del contenido (clip-path ya crea el stacking context) */
+.bt-rekt-modal::before { content: attr(data-era); position:absolute; right:12px; bottom:8px; z-index:-1;
+  font-family:'Orbitron',monospace; font-weight:900; font-size:104px; line-height:1; letter-spacing:-4px;
+  color:transparent; -webkit-text-stroke:1px oklch(62% 0.23 25 / 0.15); pointer-events:none; }
+
+.bt-rekt-modal-cta { transition: filter 0.2s, transform 0.2s; }
+.bt-rekt-modal-cta::after { content:" \2197"; }
+.bt-rekt-modal-cta:hover { transform: translateY(-1px); }
+
+/* firma */
+.bt-rekt-sig { display:flex; align-items:center; gap:8px; margin-top:16px; padding-top:10px;
+  border-top:1px dashed oklch(72% 0.18 200 / 0.25); font-size:10px; letter-spacing:2px;
+  color:oklch(60% 0.05 150); text-transform:uppercase; }
+.bt-rekt-sig-mark { flex:none; color:oklch(72% 0.18 200); }
+.bt-rekt-sig-brick { fill:oklch(62% 0.23 25); }
+
+@media (max-width:700px) {
+  .bt-rekt-stamp { font-size:16px; letter-spacing:4px; text-indent:4px; }
+  .bt-rekt-modal::before { font-size:72px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bt-rekt-modal-overlay { animation:none; }
+  .bt-rekt-modal.decrypting .bt-rekt-stamp { animation:none; }
+}
+
 @media (max-width:700px) { .bt-rekt-card{width:160px;height:110px;} .bt-rekt-headline{font-size:11px;} }
 
 /* ═══════════════════════════════════════════════════════
@@ -7318,15 +7375,36 @@ font-size: 27px;
 <div class="bt-rekt-modal-overlay" id="bt-rekt-modal" style="display:none;">
   <div class="bt-rekt-modal">
     <button class="bt-rekt-modal-close" onclick="closeRektModal()">[X]</button>
+    <div class="bt-rekt-bulbs" aria-hidden="true"></div>
+    <div class="bt-rekt-file-bar">
+      <span class="bt-rekt-file-tag" id="bt-rekt-file-tag">EXPEDIENTE</span>
+      <span class="bt-rekt-file-class">CLASIFICADO</span>
+    </div>
     <div class="bt-rekt-modal-img-wrap" id="bt-rekt-modal-imgwrap">
       <img id="bt-rekt-modal-img" src="" alt="Crisis histórica">
       <div class="bt-rekt-modal-img-scan"></div>
       <div class="bt-rekt-modal-img-corner-tl"></div>
       <div class="bt-rekt-modal-img-corner-br"></div>
+      <div class="bt-rekt-stamp" aria-hidden="true">REKT</div>
     </div>
     <div class="bt-rekt-modal-title" id="bt-rekt-modal-title"></div>
     <div class="bt-rekt-modal-desc" id="bt-rekt-modal-desc"></div>
     <a class="bt-rekt-modal-cta" href="#" target="_blank">CLICK TO SEE WALL REKT FACE</a>
+    <!-- firma de Claude: un muro al que le arrancaron un ladrillo ("por acá pasó").
+         Borrable: este div + el bloque .bt-rekt-sig del CSS. -->
+    <div class="bt-rekt-sig" aria-hidden="true">
+      <svg class="bt-rekt-sig-mark" viewBox="0 0 40 24" width="30" height="18" role="img">
+        <title>Por acá pasó Claude</title>
+        <g fill="none" stroke="currentColor" stroke-width="1.4">
+          <rect x="2" y="3" width="12" height="5"/><rect x="16" y="3" width="12" height="5"/>
+          <rect x="2" y="10" width="5" height="5"/><rect x="23" y="10" width="5" height="5"/>
+          <rect x="2" y="17" width="12" height="5"/><rect x="16" y="17" width="12" height="5"/>
+        </g>
+        <rect x="9" y="10" width="12" height="5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="1.6 1.6" opacity=".55"/>
+        <g transform="rotate(22 34 6)"><rect class="bt-rekt-sig-brick" x="29" y="3.5" width="10" height="5"/></g>
+      </svg>
+      <span>ARCHIVO SELLADO</span>
+    </div>
   </div>
 </div>
 
@@ -32214,6 +32292,162 @@ var btTimers = (function() {
     count: function() { return handles.length; }
   };
 })();
+/* BT REKT WALL BEGIN — modal de THE REKT WALL (crisis históricas).
+   Owner: RappiResourceGovernor.enterImmersive/exitImmersive('bt'). Dentro del BT:
+   delegación de click sobre #bt-rekt-track. Fuera del BT: cero listeners, cero audio,
+   modal cerrado. No agrega timers recurrentes (solo un timeout de 1.2s, cancelado al cerrar).
+   Contrato (ya existente en HTML/CSS): .bt-rekt-card[data-img|data-desc|data-url]
+   → #bt-rekt-modal; el botón [X] invoca closeRektModal(). */
+var btRekt = (function () {
+  /* Sonido al abrir un expediente. '' = silencio. Ej.: 'sounds/archivo.mp3' */
+  var SOUND_SRC = 'sounds/sunset-riders-intro.mp3';
+  var SOUND_VOLUME = 0.8;
+
+  /* Si otro script ya define closeRektModal, no duplicamos: este controlador queda inerte. */
+  var external = (typeof window.closeRektModal === 'function');
+  var armed = false, audio = null, decryptTimer = null, trackPaused = false;
+  var el = {};
+
+  function grab() {
+    el.core    = document.getElementById('bt-core');
+    el.track   = document.getElementById('bt-rekt-track');
+    el.overlay = document.getElementById('bt-rekt-modal');
+    if (!el.track || !el.overlay) return false;
+    el.box     = el.overlay.querySelector('.bt-rekt-modal');
+    el.imgWrap = document.getElementById('bt-rekt-modal-imgwrap');
+    el.img     = document.getElementById('bt-rekt-modal-img');
+    el.title   = document.getElementById('bt-rekt-modal-title');
+    el.desc    = document.getElementById('bt-rekt-modal-desc');
+    el.cta     = el.overlay.querySelector('.bt-rekt-modal-cta');
+    el.fileTag = document.getElementById('bt-rekt-file-tag');
+    return true;
+  }
+
+  /* Fuente canónica de "estoy dentro del BT": #bt-core.bt-fullscreen-active (btBootGate/btExitTerminal). */
+  function inBT() {
+    return !!(el.core && el.core.classList.contains('bt-fullscreen-active')) &&
+           !document.body.classList.contains('arena-open') &&
+           !document.documentElement.classList.contains('rappi-arena-performance');
+  }
+
+  function headlineOf(card) {
+    var h = card.querySelector('.bt-rekt-headline');
+    if (!h) return card.getAttribute('data-era') || '';
+    var out = '';
+    Array.prototype.forEach.call(h.childNodes, function (n) {
+      out += (n.nodeName === 'BR') ? ' ' : n.textContent;
+    });
+    return out.replace(/\s+/g, ' ').trim();
+  }
+
+  function setDecrypt(on) {
+    if (el.imgWrap) el.imgWrap.classList.toggle('decrypting', on);
+    if (el.box)     el.box.classList.toggle('decrypting', on);
+  }
+
+  function pauseTrack(on) {
+    if (!el.track) return;
+    if (on) { el.track.style.animationPlayState = 'paused'; trackPaused = true; }
+    else if (trackPaused) { el.track.style.animationPlayState = ''; trackPaused = false; }
+  }
+
+  function warm() {
+    if (!SOUND_SRC || audio) return;
+    try { audio = new Audio(SOUND_SRC); audio.preload = 'auto'; audio.volume = SOUND_VOLUME; } catch (e) {}
+  }
+  function playSound() {
+    if (!SOUND_SRC) return;
+    try {
+      warm();
+      audio.currentTime = 0;
+      var p = audio.play();
+      if (p && p.catch) p.catch(function () {});
+    } catch (e) {}
+  }
+  function stopSound() {
+    if (!audio) return;
+    try { audio.pause(); audio.currentTime = 0; } catch (e) {}
+  }
+
+  function open(card) {
+    if (!armed || !inBT()) return;
+    var url = card.getAttribute('data-url') || '';
+    var img = card.getAttribute('data-img') || '';
+    var title = headlineOf(card);
+
+    var era = card.getAttribute('data-era') || '';
+    el.box.setAttribute('data-era', era);                 /* marca de agua (CSS attr()) */
+    if (el.fileTag) el.fileTag.textContent = 'EXPEDIENTE // ' + era;
+    el.title.textContent = title;
+    el.desc.textContent  = card.getAttribute('data-desc') || '';
+    el.img.alt = title;
+    if (img) el.img.src = img; else el.img.removeAttribute('src');
+
+    if (/^https?:\/\//i.test(url)) {          /* solo http(s): nunca javascript:/data: */
+      el.cta.href = url; el.cta.rel = 'noopener noreferrer'; el.cta.style.display = '';
+    } else {
+      el.cta.removeAttribute('href'); el.cta.style.display = 'none';
+    }
+
+    clearTimeout(decryptTimer);               /* reinicia la animación aunque se reabra rápido */
+    setDecrypt(false);
+    void el.overlay.offsetWidth;
+    setDecrypt(true);
+    decryptTimer = setTimeout(function () { setDecrypt(false); }, 1200);
+
+    el.overlay.style.display = 'flex';
+    pauseTrack(true);
+    playSound();
+  }
+
+  function close() {
+    if (!el.overlay) grab();
+    if (!el.overlay) return;
+    clearTimeout(decryptTimer);
+    setDecrypt(false);
+    el.overlay.style.display = 'none';
+    if (el.img) el.img.removeAttribute('src'); /* evita mostrar la imagen anterior al reabrir */
+    stopSound();
+    pauseTrack(false);
+  }
+
+  function onTrackClick(e) {
+    var node = e.target;
+    var card = (node && node.closest) ? node.closest('.bt-rekt-card') : null;
+    if (card && el.track.contains(card)) open(card);
+  }
+  function onOverlayClick(e) { if (e.target === el.overlay) close(); }
+  function onKey(e) {
+    if (e.key === 'Escape' && el.overlay && el.overlay.style.display === 'flex') close();
+  }
+
+  function arm() {
+    if (armed || external) return;
+    if (!grab()) return;
+    el.track.addEventListener('click', onTrackClick);
+    el.overlay.addEventListener('click', onOverlayClick);
+    document.addEventListener('keydown', onKey);
+    armed = true;
+    warm();                                    /* precarga del sonido solo mientras estamos en el BT */
+  }
+  function disarm() {
+    if (external) return;
+    close();
+    if (!armed) return;
+    el.track.removeEventListener('click', onTrackClick);
+    el.overlay.removeEventListener('click', onOverlayClick);
+    document.removeEventListener('keydown', onKey);
+    audio = null;                              /* libera el elemento de audio fuera del BT */
+    armed = false;
+  }
+
+  if (!external) window.closeRektModal = close;
+  return {
+    arm: arm, disarm: disarm, close: close,
+    state: function () { return external ? 'external' : (armed ? 'armed' : 'idle'); }
+  };
+})();
+/* BT REKT WALL END */
 window.RappiResourceGovernor = (function() {
   var owner = null;
   /* RESOURCE GOVERNOR R1C BEGIN — ARENA_PRELOAD: suspensión de consumidores
@@ -32261,12 +32495,14 @@ window.RappiResourceGovernor = (function() {
     enterImmersive: function(zone) {
       if (zone !== 'bt') return;
       btTimers.start();
+      try { btRekt.arm(); } catch (e) { console.warn('[BT REKT] arm falló:', e); }
       if (owner !== 'bt') window.btBriefStart();
       owner = 'bt';
     },
     exitImmersive: function(zone) {
       if (zone !== 'bt') return;
       btTimers.stop();
+      try { btRekt.disarm(); } catch (e) { console.warn('[BT REKT] disarm falló:', e); }
       if (owner === 'bt') window.btBriefStop();
       owner = null;
     },
@@ -32274,6 +32510,7 @@ window.RappiResourceGovernor = (function() {
     enterArenaPreload: function() {
       if (arenaPreload) return;
       arenaPreload = true;
+      try { btRekt.close(); } catch (e) {}
       tierALedPause();
       try { if (window.__rgLampFlicker) window.__rgLampFlicker.pause(); } catch (e) {}
       try { if (window.__rgLedConflict) window.__rgLedConflict.pause(); } catch (e) {}
@@ -32321,6 +32558,7 @@ window.RappiResourceGovernor = (function() {
     getState: function() {
       return { owner: owner, bt: btTimers.isRunning() ? 'running' : 'stopped',
         timerCount: btTimers.count(),
+        rekt: btRekt.state(),
         arenaPreload: arenaPreload, /* RESOURCE GOVERNOR R1C */
         tierBActive: !!tierBSuspended /* RESOURCE GOVERNOR R1D */ };
     }
