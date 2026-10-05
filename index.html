@@ -6932,14 +6932,14 @@ body.arena-open {
   100% { opacity:1; transform:translateX(0); }
 }
 
-/* ── REKT MODAL · capa de diseño "expediente de casino" (Claude) ──
+/* ΩΩΩ REKT MODAL · capa de diseño "expediente de casino" ΩΩΩ
    Mismo lenguaje que el modal (rojo/cian/ámbar sobre verde casi negro). Sin animaciones
-   infinitas nuevas: solo un fade del overlay y el sello, ambos de una sola pasada. */
+   infinitas: fade del overlay + sello + glitch, todo de una sola pasada. */
 .bt-rekt-modal-overlay { animation: rektOverlayIn 0.2s ease-out both; }
 @keyframes rektOverlayIn { from { opacity:0; } to { opacity:1; } }
 
-/* hilera de focos de marquesina (Vegas 50s) — estática */
-.bt-rekt-bulbs { height:8px; margin:-6px 0 12px;
+/* hilera de focos de marquesina (Vegas 50s) — estática; deja libre el [X] */
+.bt-rekt-bulbs { height:8px; margin:-6px 30px 12px 0;
   background: radial-gradient(circle at 50% 50%, oklch(88% 0.14 85) 0 1.5px, oklch(70% 0.19 50 / 0.4) 2.3px, transparent 3.6px) 0 50% / 14px 8px repeat-x;
   filter: drop-shadow(0 0 3px oklch(70% 0.19 50 / 0.55)); opacity:0.9; }
 
@@ -6949,23 +6949,48 @@ body.arena-open {
 .bt-rekt-file-tag { color:oklch(70% 0.19 50); text-shadow:0 0 8px oklch(70% 0.19 50 / 0.5); }
 .bt-rekt-file-class { color:oklch(62% 0.23 25); border:1px solid oklch(62% 0.23 25 / 0.6); padding:1px 6px; }
 
-/* sello REKT: entra después de la "desencriptación" de la imagen (0.7s) */
-.bt-rekt-stamp { position:absolute; left:12px; bottom:12px; z-index:3; pointer-events:none;
-  font-family:'Orbitron',monospace; font-weight:900; font-size:22px; letter-spacing:6px; text-indent:6px;
-  color:oklch(62% 0.23 25); padding:2px 10px; border:3px double oklch(62% 0.23 25);
-  background:oklch(8% 0.012 160 / 0.55); text-shadow:0 0 10px oklch(62% 0.23 25 / 0.7);
-  box-shadow:0 0 14px oklch(62% 0.23 25 / 0.35), inset 0 0 8px oklch(62% 0.23 25 / 0.25);
-  opacity:0.92; transform:rotate(-9deg); }
+/* sello REKT — punk glitcheado: rojo sangre, sin fondo, borde roto, scanlines y cortes RGB.
+   Los cortes (::before cian / ::after rojo vivo) repiten data-text y se desplazan en bandas. */
+.bt-rekt-stamp { position:absolute; left:14px; bottom:16px; z-index:3; pointer-events:none;
+  font-family:'Orbitron',monospace; font-weight:900; font-size:58px; line-height:1; letter-spacing:6px; text-indent:6px;
+  color:oklch(44% 0.2 27); padding:6px 16px 4px; border:5px solid oklch(44% 0.2 27);
+  transform:rotate(-8deg);
+  text-shadow:0 0 14px oklch(45% 0.21 27 / 0.9), 0 0 3px oklch(55% 0.22 27 / 0.9), -3px 0 oklch(72% 0.18 200 / 0.45), 3px 0 oklch(62% 0.26 25 / 0.5);
+  clip-path:polygon(0 5%, 3% 0, 24% 3%, 49% 0, 73% 4%, 100% 0, 98% 31%, 100% 59%, 97% 100%, 73% 96%, 47% 100%, 22% 95%, 0 100%, 2% 63%);
+  -webkit-mask-image:repeating-linear-gradient(0deg, #000 0 5px, rgba(0,0,0,0.4) 5px 6px);
+  mask-image:repeating-linear-gradient(0deg, #000 0 5px, rgba(0,0,0,0.4) 5px 6px); }
+.bt-rekt-stamp::before, .bt-rekt-stamp::after { content:attr(data-text); position:absolute; left:0; top:0; width:100%; height:100%;
+  box-sizing:border-box; padding:inherit; text-indent:inherit; letter-spacing:inherit; white-space:nowrap; pointer-events:none; text-shadow:none; }
+.bt-rekt-stamp::before { color:oklch(72% 0.18 200); clip-path:inset(25% 0 67% 0); transform:translateX(-10px); }
+.bt-rekt-stamp::after  { color:oklch(64% 0.26 25);  clip-path:inset(43% 0 49% 0); transform:translateX(9px); }
+/* entra tras la "desencriptación" (0.7s): golpe 0.65–0.97s, tirón glitch 0.97–1.33s; el estado final = el base */
 .bt-rekt-modal.decrypting .bt-rekt-stamp { animation: rektStampSlam 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) 0.65s both; }
+.bt-rekt-modal.decrypting .bt-rekt-stamp::before { animation: rektGlitchA 0.36s steps(1, end) 0.97s forwards; }
+.bt-rekt-modal.decrypting .bt-rekt-stamp::after  { animation: rektGlitchB 0.36s steps(1, end) 0.97s forwards; }
 @keyframes rektStampSlam {
-  0%   { opacity:0;    transform:rotate(-9deg) scale(2.6); }
-  55%  { opacity:0.92; transform:rotate(-9deg) scale(0.94); }
-  78%  { opacity:0.92; transform:rotate(-9deg) scale(1.04); }
-  100% { opacity:0.92; transform:rotate(-9deg) scale(1); }
+  0%   { opacity:0; transform:rotate(-8deg) scale(2.8); }
+  55%  { opacity:1; transform:rotate(-8deg) scale(0.93); }
+  78%  { opacity:1; transform:rotate(-8deg) scale(1.04); }
+  100% { opacity:1; transform:rotate(-8deg) scale(1); }
+}
+@keyframes rektGlitchA {
+  0%   { transform:translateX(-24px); clip-path:inset(10% 0 80% 0); }
+  25%  { transform:translateX(16px);  clip-path:inset(58% 0 33% 0); }
+  50%  { transform:translateX(-18px); clip-path:inset(32% 0 58% 0); }
+  75%  { transform:translateX(7px);   clip-path:inset(45% 0 47% 0); }
+  100% { transform:translateX(-10px); clip-path:inset(25% 0 67% 0); }
+}
+@keyframes rektGlitchB {
+  0%   { transform:translateX(20px);  clip-path:inset(60% 0 30% 0); }
+  25%  { transform:translateX(-14px); clip-path:inset(20% 0 70% 0); }
+  50%  { transform:translateX(18px);  clip-path:inset(48% 0 42% 0); }
+  75%  { transform:translateX(-6px);  clip-path:inset(35% 0 56% 0); }
+  100% { transform:translateX(9px);   clip-path:inset(43% 0 49% 0); }
 }
 
-/* marca de agua: la era en contorno, detrás del contenido (clip-path ya crea el stacking context) */
-.bt-rekt-modal::before { content: attr(data-era); position:absolute; right:12px; bottom:8px; z-index:-1;
+/* marca de agua: la era en contorno, detrás del contenido (clip-path ya crea el stacking context).
+   overflow:hidden: el cuerpo de Orbitron excede el line-height y generaba scroll sobrante. */
+.bt-rekt-modal::before { content: attr(data-era); position:absolute; right:12px; bottom:12px; z-index:-1; overflow:hidden;
   font-family:'Orbitron',monospace; font-weight:900; font-size:104px; line-height:1; letter-spacing:-4px;
   color:transparent; -webkit-text-stroke:1px oklch(62% 0.23 25 / 0.15); pointer-events:none; }
 
@@ -6973,20 +6998,26 @@ body.arena-open {
 .bt-rekt-modal-cta::after { content:" \2197"; }
 .bt-rekt-modal-cta:hover { transform: translateY(-1px); }
 
-/* firma */
+/* firma ΩΩΩ — en clave (el tooltip del SVG va en hex; la llave la tiene el equipo) */
 .bt-rekt-sig { display:flex; align-items:center; gap:8px; margin-top:16px; padding-top:10px;
-  border-top:1px dashed oklch(72% 0.18 200 / 0.25); font-size:10px; letter-spacing:2px;
-  color:oklch(60% 0.05 150); text-transform:uppercase; }
+  border-top:1px dashed oklch(62% 0.23 25 / 0.35); font-size:10px; letter-spacing:2px; text-transform:uppercase; }
 .bt-rekt-sig-mark { flex:none; color:oklch(72% 0.18 200); }
 .bt-rekt-sig-brick { fill:oklch(62% 0.23 25); }
+.bt-rekt-sig-ghost { fill:oklch(72% 0.18 200); opacity:0.85; }
+.bt-rekt-sig-code { color:oklch(62% 0.23 25); text-shadow:-1px 0 oklch(72% 0.18 200 / 0.6); }
+.bt-rekt-sig-id { margin-left:auto; color:oklch(70% 0.19 50); }
+.bt-rekt-sig:hover .bt-rekt-sig-code { text-shadow:-2px 0 oklch(72% 0.18 200 / 0.8), 2px 0 oklch(62% 0.26 25 / 0.8); }
 
 @media (max-width:700px) {
-  .bt-rekt-stamp { font-size:16px; letter-spacing:4px; text-indent:4px; }
+  .bt-rekt-stamp { font-size:34px; letter-spacing:4px; text-indent:4px; border-width:4px; padding:4px 12px 2px; bottom:12px; left:10px; }
   .bt-rekt-modal::before { font-size:72px; }
+  .bt-rekt-modal-cta::after { display:none; }   /* en 350px la flecha quedaba huérfana en una 2ª línea */
 }
 @media (prefers-reduced-motion: reduce) {
   .bt-rekt-modal-overlay { animation:none; }
-  .bt-rekt-modal.decrypting .bt-rekt-stamp { animation:none; }
+  .bt-rekt-modal.decrypting .bt-rekt-stamp,
+  .bt-rekt-modal.decrypting .bt-rekt-stamp::before,
+  .bt-rekt-modal.decrypting .bt-rekt-stamp::after { animation:none; }
 }
 
 @media (max-width:700px) { .bt-rekt-card{width:160px;height:110px;} .bt-rekt-headline{font-size:11px;} }
@@ -7385,25 +7416,25 @@ font-size: 27px;
       <div class="bt-rekt-modal-img-scan"></div>
       <div class="bt-rekt-modal-img-corner-tl"></div>
       <div class="bt-rekt-modal-img-corner-br"></div>
-      <div class="bt-rekt-stamp" aria-hidden="true">REKT</div>
+      <div class="bt-rekt-stamp" data-text="REKT" aria-hidden="true">REKT</div>
     </div>
     <div class="bt-rekt-modal-title" id="bt-rekt-modal-title"></div>
     <div class="bt-rekt-modal-desc" id="bt-rekt-modal-desc"></div>
     <a class="bt-rekt-modal-cta" href="#" target="_blank">CLICK TO SEE WALL REKT FACE</a>
-    <!-- firma de Claude: un muro al que le arrancaron un ladrillo ("por acá pasó").
-         Borrable: este div + el bloque .bt-rekt-sig del CSS. -->
+    <!-- ΩΩΩ 04//MOTOR · SB_CARTEL ΩΩΩ — el ladrillo ya no está. rm: este div + .bt-rekt-sig (CSS) -->
     <div class="bt-rekt-sig" aria-hidden="true">
       <svg class="bt-rekt-sig-mark" viewBox="0 0 40 24" width="30" height="18" role="img">
-        <title>Por acá pasó Claude</title>
+        <title>ca ad ca ad ca ad 24 2b 2b 24 55 51 41 49 c7 85 24 41 48 24 49 51 56 4b</title>
         <g fill="none" stroke="currentColor" stroke-width="1.4">
           <rect x="2" y="3" width="12" height="5"/><rect x="16" y="3" width="12" height="5"/>
           <rect x="2" y="10" width="5" height="5"/><rect x="23" y="10" width="5" height="5"/>
           <rect x="2" y="17" width="12" height="5"/><rect x="16" y="17" width="12" height="5"/>
         </g>
         <rect x="9" y="10" width="12" height="5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="1.6 1.6" opacity=".55"/>
-        <g transform="rotate(22 34 6)"><rect class="bt-rekt-sig-brick" x="29" y="3.5" width="10" height="5"/></g>
+        <g transform="rotate(22 34 6)"><rect class="bt-rekt-sig-ghost" x="27.6" y="3.5" width="10" height="5"/><rect class="bt-rekt-sig-brick" x="29" y="3.5" width="10" height="5"/></g>
       </svg>
-      <span>ARCHIVO SELLADO</span>
+      <span class="bt-rekt-sig-code">SIBYL::OVERRIDE</span>
+      <span class="bt-rekt-sig-id">Ω04 // SB_CARTEL</span>
     </div>
   </div>
 </div>
@@ -32292,10 +32323,10 @@ var btTimers = (function() {
     count: function() { return handles.length; }
   };
 })();
-/* BT REKT WALL BEGIN — modal de THE REKT WALL (crisis históricas).
+/* ΩΩΩ BT REKT WALL BEGIN — modal de THE REKT WALL (crisis históricas). ΩΩΩ
    Owner: RappiResourceGovernor.enterImmersive/exitImmersive('bt'). Dentro del BT:
    delegación de click sobre #bt-rekt-track. Fuera del BT: cero listeners, cero audio,
-   modal cerrado. No agrega timers recurrentes (solo un timeout de 1.2s, cancelado al cerrar).
+   modal cerrado. No agrega timers recurrentes (solo un timeout de 1.5s, cancelado al cerrar).
    Contrato (ya existente en HTML/CSS): .bt-rekt-card[data-img|data-desc|data-url]
    → #bt-rekt-modal; el botón [X] invoca closeRektModal(). */
 var btRekt = (function () {
@@ -32393,7 +32424,7 @@ var btRekt = (function () {
     setDecrypt(false);
     void el.overlay.offsetWidth;
     setDecrypt(true);
-    decryptTimer = setTimeout(function () { setDecrypt(false); }, 1200);
+    decryptTimer = setTimeout(function () { setDecrypt(false); }, 1500);
 
     el.overlay.style.display = 'flex';
     pauseTrack(true);
