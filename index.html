@@ -8369,6 +8369,192 @@ font-size: 27px;
       <div class="nma-gt-hint">[ F2 ] O [ CTRL+SHIFT+X ] TAMBIÉN ABRE EL DIAGNÓSTICO · [ ESC ] CIERRA</div>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         MÓDULO 04 · THE CONCENTRATION ABYSS
+         Grupo A (economía real, equal weight) vs Grupo B (IA/mega-cap)
+         + termómetro de correlación implícita COR1M.
+         Variables ruteadas: RSP MDY IJR · SOXX XLK MAGS · COR1M
+    ═══════════════════════════════════════════════════════════ -->
+    <style>
+    .nma45-feed { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:1.5px; padding:3px 9px; border-radius:2px;
+      border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.45); white-space:nowrap; }
+    .nma45-feed.partial { color:#FFC93C; border-color:rgba(255,201,60,0.5); }
+    .nma45-feed.full    { color:#00FF88; border-color:rgba(0,255,136,0.5); }
+    .nma45-badge { font-style:normal; font-family:'Share Tech Mono',monospace; font-size:8px; letter-spacing:1px; padding:1px 5px; border-radius:2px;
+      margin-left:6px; border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.35); }
+    .nma45-badge.live { color:#00FF88; border-color:rgba(0,255,136,0.5); background:rgba(0,255,136,0.07); }
+    .nma45-row { display:flex; justify-content:space-between; align-items:center; font-family:'Share Tech Mono',monospace; font-size:11px;
+      color:rgba(255,255,255,0.75); padding:4px 0; border-bottom:1px dashed rgba(255,255,255,0.06); }
+    .nma45-row b { color:#fff; font-weight:700; letter-spacing:1px; }
+    .nma45-row .px { display:flex; align-items:center; }
+    .nma45-grp-title { font-family:'Orbitron',monospace; font-weight:700; font-size:11px; letter-spacing:1.5px; margin-bottom:6px; }
+    .nma45-grp-sub { font-family:'Share Tech Mono',monospace; font-size:9px; color:rgba(255,255,255,0.35); margin-bottom:8px; letter-spacing:1px; }
+    .nma45-sum { display:flex; justify-content:space-between; font-family:'Orbitron',monospace; font-weight:900; font-size:15px; padding-top:8px; }
+
+    .nma45-parity { position:relative; display:flex; height:16px; border-radius:2px; overflow:hidden; margin:2px 0 4px; background:rgba(255,255,255,0.05); }
+    .nma45-parity .a { background:linear-gradient(90deg,oklch(72% 0.18 200),oklch(82% 0.22 145)); transition:width .6s ease; }
+    .nma45-parity .b { background:linear-gradient(90deg,oklch(0.65 0.32 35),#FF0055); transition:width .6s ease; }
+    .nma45-parity .mid { position:absolute; left:50%; top:-2px; bottom:-2px; width:2px; background:#fff; box-shadow:0 0 6px #fff; }
+    .nma45-parity-lbl { display:flex; justify-content:space-between; font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:1px; margin-bottom:14px; }
+
+    .nma45-thermo { position:relative; display:flex; height:14px; border-radius:2px; overflow:visible; margin:26px 0 6px; }
+    .nma45-thermo .z { height:100%; }
+    .nma45-thermo .z1 { width:12.5%; background:#FF0055; border-radius:2px 0 0 2px; }
+    .nma45-thermo .z2 { width:12.5%; background:#FFC93C; }
+    .nma45-thermo .z3 { width:50%;   background:#00B86B; }
+    .nma45-thermo .z4 { width:12.5%; background:#FFC93C; }
+    .nma45-thermo .z5 { width:12.5%; background:#FF0055; border-radius:0 2px 2px 0; }
+    .nma45-needle { position:absolute; top:-22px; width:0; height:0; transform:translateX(-50%); transition:left .6s ease;
+      border-left:7px solid transparent; border-right:7px solid transparent; border-top:12px solid #fff; filter:drop-shadow(0 0 5px #fff); }
+    .nma45-needle::after { content:''; position:absolute; left:-1px; top:12px; width:2px; height:16px; background:#fff; }
+    .nma45-scale { display:flex; justify-content:space-between; font-family:'Share Tech Mono',monospace; font-size:8px; color:rgba(255,255,255,0.35); margin-bottom:10px; }
+    .nma45-cor-read { display:flex; align-items:baseline; gap:10px; justify-content:center; margin-bottom:14px; flex-wrap:wrap; }
+    .nma45-cor-read b { font-family:'Orbitron',monospace; font-weight:900; font-size:26px; color:#fff; }
+    .nma45-cor-zone { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:2px; }
+
+    .nma45-banner { border:2px solid var(--st,#7a8a99); background:color-mix(in srgb, var(--st,#7a8a99) 9%, transparent); padding:14px 16px; margin-bottom:10px;
+      clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px); }
+    .nma45-banner[data-state="warn"]   { --st:#FFC93C; }
+    .nma45-banner[data-state="fatal"], .nma45-banner[data-state="bloodbath"], .nma45-banner[data-state="killer"] { --st:#FF0055; }
+    .nma45-banner[data-state="printer"] { --st:#00FF88; }
+    .nma45-banner[data-state="gold"]   { --st:#FFC93C; }
+    .nma45-banner[data-state="fatal"] .tag, .nma45-banner[data-state="bloodbath"] .tag { animation:nmaPulseRed .7s step-end infinite; }
+    .nma45-banner[data-state="warn"] .tag, .nma45-banner[data-state="killer"] .tag { animation:nmaPulseRed 1.4s ease-in-out infinite; }
+    .nma45-banner .tag { font-family:'Orbitron',monospace; font-weight:900; font-size:13px; letter-spacing:1.5px; color:var(--st,#9fb0c0); text-shadow:0 0 12px color-mix(in srgb, var(--st,#9fb0c0) 60%, transparent); margin-bottom:6px; }
+    .nma45-banner .desc { font-family:'Share Tech Mono',monospace; font-size:11px; line-height:1.6; color:rgba(255,255,255,0.7); margin-bottom:8px; }
+    .nma45-banner .trg  { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1px; color:var(--st,#9fb0c0); }
+
+    .nma45-monkey { display:flex; gap:10px; align-items:flex-start; padding:10px 12px; border-left:3px solid oklch(0.65 0.32 35);
+      background:oklch(0.65 0.32 35/0.06); font-family:'Share Tech Mono',monospace; font-size:11px; line-height:1.6; color:rgba(255,255,255,0.7); }
+    .nma45-monkey b { color:oklch(0.65 0.32 35); letter-spacing:1px; white-space:nowrap; }
+
+    .nma45-ruler { position:relative; display:flex; height:14px; margin:26px 0 6px; }
+    .nma45-ruler .r1 { width:20%; background:#00B86B; border-radius:2px 0 0 2px; }
+    .nma45-ruler .r2 { width:30%; background:#FF0055; }
+    .nma45-ruler .r3 { width:20%; background:#7a8a99; }
+    .nma45-ruler .r4 { width:30%; background:#B3002F; border-radius:0 2px 2px 0; }
+    .nma45-eq { text-align:center; font-family:'Share Tech Mono',monospace; font-size:11px; color:rgba(255,255,255,0.6); margin:4px 0 14px; letter-spacing:1px; }
+    .nma45-eq b { color:#fff; }
+
+    .nma45-disclaimer { text-align:center; font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:1px; color:rgba(255,255,255,0.28); padding:4px 10px 0; }
+    @media (prefers-reduced-motion: reduce) { .nma45-banner .tag { animation:none !important; } }
+    </style>
+
+    <div class="nma-module" id="nma4">
+      <div class="nma-module-scan"></div>
+      <div class="nma-module-hdr">
+        <div>
+          <div class="nma-module-title">THE CONCENTRATION ABYSS</div>
+          <div class="nma-module-sub">GRUPO A (EQUAL WEIGHT) VS GRUPO B (IA / MEGA-CAP) · CORRELACIÓN IMPLÍCITA COR1M</div>
+        </div>
+        <span class="nma45-feed" id="nma4-feed">FEED 0/7 LIVE</span>
+      </div>
+
+      <div class="nma-spread-row">
+        <div class="nma-asset-card">
+          <div class="nma45-grp-title" style="color:oklch(82% 0.22 145);">GRUPO A · ECONOMÍA REAL</div>
+          <div class="nma45-grp-sub">RSP · MDY · IJR (peso igualitario)</div>
+          <div class="nma45-row"><b>RSP</b><span class="px"><span id="nma4-px-RSP">--</span><i class="nma45-badge" id="nma4-bd-RSP">SEED</i></span></div>
+          <div class="nma45-row"><b>MDY</b><span class="px"><span id="nma4-px-MDY">--</span><i class="nma45-badge" id="nma4-bd-MDY">SEED</i></span></div>
+          <div class="nma45-row"><b>IJR</b><span class="px"><span id="nma4-px-IJR">--</span><i class="nma45-badge" id="nma4-bd-IJR">SEED</i></span></div>
+          <div class="nma45-sum"><span style="color:rgba(255,255,255,0.4);font-size:10px;">Σ A</span><span id="nma4-sumA" style="color:oklch(82% 0.22 145);">--</span></div>
+        </div>
+        <div class="nma-asset-card">
+          <div class="nma45-grp-title" style="color:oklch(0.65 0.32 35);">GRUPO B · SINTÉTICO (IA)</div>
+          <div class="nma45-grp-sub">SOXX · XLK · MAGS (concentración)</div>
+          <div class="nma45-row"><b>SOXX</b><span class="px"><span id="nma4-px-SOXX">--</span><i class="nma45-badge" id="nma4-bd-SOXX">SEED</i></span></div>
+          <div class="nma45-row"><b>XLK</b><span class="px"><span id="nma4-px-XLK">--</span><i class="nma45-badge" id="nma4-bd-XLK">SEED</i></span></div>
+          <div class="nma45-row"><b>MAGS</b><span class="px"><span id="nma4-px-MAGS">--</span><i class="nma45-badge" id="nma4-bd-MAGS">SEED</i></span></div>
+          <div class="nma45-sum"><span style="color:rgba(255,255,255,0.4);font-size:10px;">Σ B</span><span id="nma4-sumB" style="color:oklch(0.65 0.32 35);">--</span></div>
+        </div>
+      </div>
+
+      <div class="nma45-parity"><div class="a" id="nma4-par-a" style="width:50%;"></div><div class="b" id="nma4-par-b" style="width:50%;"></div><span class="mid"></span></div>
+      <div class="nma45-parity-lbl"><span id="nma4-par-a-lbl" style="color:oklch(82% 0.22 145);">A 50.0%</span><span style="color:rgba(255,255,255,0.3);">PARIDAD</span><span id="nma4-par-b-lbl" style="color:oklch(0.65 0.32 35);">B 50.0%</span></div>
+
+      <div class="nma-delta-box">
+        <div class="nma-delta-lbl">// ÍNDICE X = (Σ B ÷ Σ A) × 100 //</div>
+        <div class="nma-delta-val" id="nma4-x">--</div>
+        <div class="nma-delta-lbl" id="nma4-trend" style="margin-top:6px;">TENDENCIA: SIN REFERENCIA</div>
+      </div>
+
+      <div class="nma-delta-lbl" style="text-align:center;margin-bottom:2px;">// TERMÓMETRO DE CORRELACIÓN · COR1M //</div>
+      <div class="nma45-thermo">
+        <div class="z z1"></div><div class="z z2"></div><div class="z z3"></div><div class="z z4"></div><div class="z z5"></div>
+        <div class="nma45-needle" id="nma4-needle" style="left:10%;"></div>
+      </div>
+      <div class="nma45-scale"><span>0</span><span>10</span><span>20</span><span>60</span><span>70</span><span>80+</span></div>
+      <div class="nma45-cor-read"><b id="nma4-cor">--</b><span class="nma45-cor-zone" id="nma4-cor-zone">--</span><i class="nma45-badge" id="nma4-bd-COR1M">SEED</i></div>
+
+      <div class="nma45-banner" id="nma4-banner" data-state="neutral">
+        <div class="tag" id="nma4-tag">⚖️ [ RANGO DE TRANSICIÓN // ZONA NEUTRAL ]</div>
+        <div class="desc" id="nma4-desc">CORRELACIÓN ESTABILIZADA. VIGILANCIA DE ROTACIÓN DE CAPITAL ACTIVA.</div>
+        <div class="trg" id="nma4-trg">ACTIVATE&gt; STANDBY. ESPERANDO QUIEBRE DE CORRELACIÓN.</div>
+      </div>
+      <div class="nma45-monkey"><b>🐒 TRADUCCIÓN:</b><span id="nma4-monkey">--</span></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         MÓDULO 05 · THE TAYLOR BLOODBATH PROTOCOL
+         Valor justo del bono = GDP triangulado (Atlanta+Chicago+Dallas)
+         + CPI interanual · Brecha de gravedad = US10Y − valor justo.
+         Variables ruteadas: US10Y · CPI_YOY · GDP_ATL · GDP_CGO · GDP_DAL
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="nma-module" id="nma5">
+      <div class="nma-module-scan"></div>
+      <div class="nma-module-hdr">
+        <div>
+          <div class="nma-module-title">THE TAYLOR BLOODBATH PROTOCOL</div>
+          <div class="nma-module-sub">US10Y VS VALOR JUSTO MACRO · GDP TRIANGULADO + INFLACIÓN · SUBSIDIO INVISIBLE</div>
+        </div>
+        <span class="nma45-feed" id="nma5-feed">FEED 0/5 LIVE</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:14px;">
+        <div class="nma-asset-card">
+          <div class="nma45-grp-title" style="color:#fff;">US10Y</div>
+          <div class="nma45-grp-sub">RENDIMIENTO BONO 10 AÑOS</div>
+          <div class="nma-asset-var pos" id="nma5-us10y" style="color:#fff;text-shadow:0 0 8px rgba(255,255,255,0.25);">--</div>
+          <i class="nma45-badge" id="nma5-bd-US10Y" style="margin-left:0;">SEED</i>
+        </div>
+        <div class="nma-asset-card">
+          <div class="nma45-grp-title" style="color:#fff;">CPI</div>
+          <div class="nma45-grp-sub">INFLACIÓN INTERANUAL</div>
+          <div class="nma-asset-var pos" id="nma5-cpi" style="color:#fff;text-shadow:0 0 8px rgba(255,255,255,0.25);">--</div>
+          <i class="nma45-badge" id="nma5-bd-CPI_YOY" style="margin-left:0;">SEED</i>
+        </div>
+        <div class="nma-asset-card">
+          <div class="nma45-grp-title" style="color:#fff;">GDP TRIANGULADO</div>
+          <div class="nma45-grp-sub">NOWCASTS FED · PROMEDIO</div>
+          <div class="nma45-row"><b>ATL</b><span class="px"><span id="nma5-px-GDP_ATL">--</span><i class="nma45-badge" id="nma5-bd-GDP_ATL">SEED</i></span></div>
+          <div class="nma45-row"><b>CGO</b><span class="px"><span id="nma5-px-GDP_CGO">--</span><i class="nma45-badge" id="nma5-bd-GDP_CGO">SEED</i></span></div>
+          <div class="nma45-row"><b>DAL</b><span class="px"><span id="nma5-px-GDP_DAL">--</span><i class="nma45-badge" id="nma5-bd-GDP_DAL">SEED</i></span></div>
+          <div class="nma45-sum"><span style="color:rgba(255,255,255,0.4);font-size:10px;">Ø GDP</span><span id="nma5-gdp" style="color:#fff;">--</span></div>
+        </div>
+      </div>
+
+      <div class="nma45-eq" id="nma5-eq">VALOR JUSTO = GDP + CPI = <b>--</b></div>
+
+      <div class="nma-delta-box">
+        <div class="nma-delta-lbl">// BRECHA DE GRAVEDAD = US10Y − VALOR JUSTO //</div>
+        <div class="nma-delta-val" id="nma5-spread">--</div>
+      </div>
+
+      <div class="nma45-ruler">
+        <div class="r1" style="width:20%;background:#00B86B;"></div><div class="r2" style="width:30%;background:#FF0055;"></div><div class="r3" style="width:20%;background:#7a8a99;"></div><div class="r4" style="width:30%;background:#B3002F;"></div>
+        <div class="nma45-needle" id="nma5-needle" style="left:40%;"></div>
+      </div>
+      <div class="nma45-scale" style="margin-bottom:14px;"><span>−3.0</span><span>−2.0</span><span>−0.5</span><span>+0.5</span><span>+2.0</span></div>
+
+      <div class="nma45-banner" id="nma5-banner" data-state="gold">
+        <div class="tag" id="nma5-tag">⚖️ [ THE GOLDILOCKS ZONE // MACRO EQUILIBRIO ]</div>
+        <div class="desc" id="nma5-desc">TASA DE MERCADO ALINEADA A LA FÍSICA ECONÓMICA. RIESGO NEUTRAL.</div>
+      </div>
+      <div class="nma45-monkey"><b>🐒 TRADUCCIÓN:</b><span id="nma5-monkey">--</span></div>
+    </div>
+
+    <div class="nma45-disclaimer">// SEÑALES ALGORÍTMICAS CON FINES INFORMATIVOS Y DE ENTRETENIMIENTO · NO CONSTITUYEN ASESORAMIENTO FINANCIERO //</div>
+
   </div>
 </div>
 
@@ -8557,6 +8743,196 @@ font-size: 27px;
         }
     }, 5000);
 })();
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   NO MONKEY'S AREA — Motor de módulos 04 (CONCENTRATION ABYSS) y
+   05 (TAYLOR BLOODBATH). Lee SIEMPRE de window.BT_ASSETS (el mismo
+   objeto que muta btApplyUpdate con el feed real), así que cuando el
+   worker devuelva las claves nuevas (MDY IJR COR1M CPI_YOY GDP_ATL
+   GDP_CGO GDP_DAL) todo se actualiza solo — cero cambios acá.
+   Lógica pura expuesta en window.NMA45 (testeable desde consola).
+   OMEGA GENERAL · SB CARTEL
+═══════════════════════════════════════════════════════════════ */
+(function NMA_Modules_04_05() {
+    'use strict';
+
+    var LIVE_TTL_MS = 15000;  // un símbolo es LIVE si el feed lo tocó en los últimos 15s
+    var X_EPS = 0.15;         // filtro anti-ruido: puntos de X que deben moverse para declarar nueva tendencia
+    var A_SYMS = ['RSP', 'MDY', 'IJR'];
+    var B_SYMS = ['SOXX', 'XLK', 'MAGS'];
+    var ABYSS_FEED = A_SYMS.concat(B_SYMS, ['COR1M']);
+    var TAYLOR_FEED = ['US10Y', 'CPI_YOY', 'GDP_ATL', 'GDP_CGO', 'GDP_DAL'];
+
+    /* ── acceso a datos ── */
+    function asset(s) { return (window.BT_ASSETS && window.BT_ASSETS[s]) || null; }
+    function px(s) { var a = asset(s); return (a && Number.isFinite(a.p)) ? a.p : NaN; }
+    function isLive(s) { var a = asset(s); return !!(a && a.live && (Date.now() - a.live) < LIVE_TTL_MS); }
+    function money(n) { return Number.isFinite(n) ? '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '--'; }
+    function pct(n, d) { return Number.isFinite(n) ? n.toFixed(d == null ? 2 : d) + '%' : '--'; }
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+    /* ═════════ LÓGICA PURA — ABYSS ═════════ */
+    function abyssX(sumA, sumB) { return (sumA > 0) ? (sumB / sumA) * 100 : NaN; }
+
+    /* Zonas COR1M. Límites 10 y 70 y rango normal 20–60 vienen del paper;
+       10–20 y 60–70 son interpolación (el paper no los fija). */
+    function corZone(v) {
+        if (!Number.isFinite(v)) return { k: 'na', name: '--', color: '#9fb0c0' };
+        if (v < 10) return { k: 'crit', name: 'DESACOPLE CRÍTICO', color: '#FF0055' };
+        if (v < 20) return { k: 'low', name: 'CORRELACIÓN BAJA', color: '#FFC93C' };
+        if (v < 60) return { k: 'normal', name: 'NORMAL', color: '#00FF88' };
+        if (v < 70) return { k: 'high', name: 'ELEVADA', color: '#FFC93C' };
+        return { k: 'panic', name: 'PÁNICO · TODO CAE JUNTO', color: '#FF0055' };
+    }
+
+    /* Máquina de estados FINAL del paper (orden importa: <10 gana primero). */
+    function abyssEval(cor, trend) {
+        if (cor < 10) {
+            return { state: 'warn',
+                title: '🟡 [ FASE DE ACUMULACIÓN TECH // MERCADO DESACOPLADO ]',
+                diag: 'MERCADO ROTO. LAS MAG7 MASCARAN LA SANGRÍA DE LA ECONOMÍA REAL. SI COR1M SIGUE CAYENDO, LA DIVERGENCIA B/A SERÁ INMANEJABLE.',
+                trigger: 'ACTIVATE> SI [ COR1M PERMANECE < 10 ]: 🟡 ALERTA DE MERCADO ENMASCARADO.',
+                monkey: 'Casi todas las acciones se mueven cada una por su lado, mientras unos pocos gigantes (chips y tecnológicas) sostienen el índice. Parece tranquilo, pero el mercado está apoyado en muy pocas patas. Es una alerta, no una certeza.' };
+        }
+        if (cor > 15 && trend === 'CONTRACCION') {
+            return { state: 'fatal',
+                title: '🔴 [ FATAL ERROR // COLAPSO DE SPREADS INICIADO ]',
+                diag: "LOS ALGORITMOS VENDEN TODO (CORRELACIÓN YENDO A 1). EL GRUPO 'B' PIERDE LIQUIDEZ ACELERADAMENTE.",
+                trigger: "ACTIVATE> 🔴 EJECUTAR SALIDA MASIVA (RISK-OFF TÁCTICO). SHORT GRUPO 'B'.",
+                monkey: 'Los gigantes pierden peso frente al resto y ahora todo se mueve junto: cuando la fiesta de la IA se enfría, no hay dónde esconderse. Señal algorítmica de riesgo alto.' };
+        }
+        return { state: 'neutral',
+            title: '⚖️ [ RANGO DE TRANSICIÓN // ZONA NEUTRAL ]',
+            diag: 'CORRELACIÓN ESTABILIZADA. VIGILANCIA DE ROTACIÓN DE CAPITAL ACTIVA.',
+            trigger: 'ACTIVATE> STANDBY. ESPERANDO QUIEBRE DE CORRELACIÓN.',
+            monkey: 'Todavía no hay señal clara. Las acciones se comportan de forma razonablemente independiente, como en un mercado sano. Seguimos vigilando.' };
+    }
+
+    /* Tendencia anti-ruido (zigzag): el paper compara X contra el valor anterior
+       (binario), lo que con precios en vivo flipearía en cada tick. Acá X debe
+       moverse ≥ X_EPS puntos para declarar un cambio; sin movimiento = SIN_REF. */
+    var _xRef = null, _trend = 'SIN_REF';
+    function trendUpdate(x) {
+        if (!Number.isFinite(x)) return _trend;
+        if (_xRef === null) { _xRef = x; return _trend; }
+        if (x - _xRef >= X_EPS) { _trend = 'AMPLIACION'; _xRef = x; }
+        else if (_xRef - x >= X_EPS) { _trend = 'CONTRACCION'; _xRef = x; }
+        return _trend;
+    }
+    function trendLabel(t) {
+        if (t === 'AMPLIACION') return 'TENDENCIA: 🔺 AMPLIACIÓN';
+        if (t === 'CONTRACCION') return 'TENDENCIA: 🔻 CONTRACCIÓN';
+        return 'TENDENCIA: ◼ SIN REFERENCIA (esperando movimiento)';
+    }
+
+    /* ═════════ LÓGICA PURA — TAYLOR ═════════ */
+    function taylorEval(spread) {
+        var a = Math.abs(spread).toFixed(2);
+        if (spread < -2.00) return { state: 'printer',
+            title: '🟢 [ MONEY PRINTER GO BRRR // EXUBERANCIA IRRACIONAL ]',
+            diag: 'MERCADO INYECTADO. SUBSIDIO MASIVO DE ' + a + '%.',
+            monkey: 'El bono paga MUCHO menos de lo que la economía justificaría: el dinero está casi regalado y el mercado se sobre-excita. Gran fiesta, pero con base prestada.' };
+        if (spread < -0.50) return { state: 'killer',
+            title: "🔴 [ THE BUBBLE'S KILLER INITIATED // US10Y DIVERGENCE ]",
+            diag: 'WALL STREET OPERA CON ' + a + '% DE SUBSIDIO INVISIBLE.',
+            monkey: 'El bono paga menos de lo que debería: las acciones caras están sostenidas por un "subsidio invisible". Si la tasa corrige hacia su valor justo, pierden ese sostén.' };
+        if (spread <= 0.50) return { state: 'gold',
+            title: '⚖️ [ THE GOLDILOCKS ZONE // MACRO EQUILIBRIO ]',
+            diag: 'TASA DE MERCADO ALINEADA A LA FÍSICA ECONÓMICA. RIESGO NEUTRAL.',
+            monkey: 'La tasa del bono y la economía real están alineadas. Ni exceso ni ahogo: riesgo neutral.' };
+        return { state: 'bloodbath',
+            title: '🚨 [ THE TAYLOR BLOODBATH PROTOCOL // LIQUIDACIÓN SISTÉMICA ]',
+            diag: 'COSTO DE CAPITAL DESTRUYENDO RENTA VARIABLE. INICIAR RISK-OFF EXTREMO.',
+            monkey: 'El bono paga más de lo que la economía justifica: el dinero se volvió caro y castiga a las acciones. Régimen de liquidación.' };
+    }
+    function avg3(a, b, c) { return (a + b + c) / 3.0; }
+
+    /* ═════════ RENDER ═════════ */
+    function $(id) { return document.getElementById(id); }
+    function setText(id, t) { var e = $(id); if (e) e.textContent = t; }
+    function setBadge(prefix, sym) {
+        var e = $(prefix + sym); if (!e) return false;
+        var live = isLive(sym);
+        e.textContent = live ? 'LIVE' : 'SEED';
+        e.classList.toggle('live', live);
+        return live;
+    }
+    function setFeedBadge(id, n, total) {
+        var e = $(id); if (!e) return;
+        e.textContent = 'FEED ' + n + '/' + total + ' LIVE';
+        e.classList.toggle('full', n === total);
+        e.classList.toggle('partial', n > 0 && n < total);
+    }
+    function setBanner(prefix, st, withTrigger) {
+        var b = $(prefix + '-banner'); if (b) b.setAttribute('data-state', st.state);
+        setText(prefix + '-tag', st.title);
+        setText(prefix + '-desc', st.diag);
+        if (withTrigger) setText(prefix + '-trg', st.trigger);
+        setText(prefix + '-monkey', st.monkey);
+    }
+
+    function renderAbyss() {
+        var nLive = 0;
+        ABYSS_FEED.forEach(function (s) { if (setBadge('nma4-bd-', s)) nLive++; });
+        setFeedBadge('nma4-feed', nLive, ABYSS_FEED.length);
+
+        var sumA = 0, sumB = 0, ok = true;
+        A_SYMS.forEach(function (s) { var v = px(s); setText('nma4-px-' + s, money(v)); if (Number.isFinite(v)) sumA += v; else ok = false; });
+        B_SYMS.forEach(function (s) { var v = px(s); setText('nma4-px-' + s, money(v)); if (Number.isFinite(v)) sumB += v; else ok = false; });
+        var cor = px('COR1M');
+        setText('nma4-cor', Number.isFinite(cor) ? cor.toFixed(2) : '--');
+        var z = corZone(cor);
+        var zEl = $('nma4-cor-zone'); if (zEl) { zEl.textContent = z.name; zEl.style.color = z.color; }
+        var needle = $('nma4-needle'); if (needle && Number.isFinite(cor)) needle.style.left = clamp(cor / 80 * 100, 0, 100) + '%';
+        if (!ok) return;
+
+        setText('nma4-sumA', money(sumA)); setText('nma4-sumB', money(sumB));
+        var tot = sumA + sumB, shA = sumA / tot * 100, shB = sumB / tot * 100;
+        var pa = $('nma4-par-a'), pb = $('nma4-par-b');
+        if (pa) pa.style.width = shA + '%'; if (pb) pb.style.width = shB + '%';
+        setText('nma4-par-a-lbl', 'A ' + shA.toFixed(1) + '%'); setText('nma4-par-b-lbl', 'B ' + shB.toFixed(1) + '%');
+
+        var x = abyssX(sumA, sumB);
+        setText('nma4-x', pct(x));
+        var t = trendUpdate(x);
+        setText('nma4-trend', trendLabel(t));
+        if (Number.isFinite(cor)) setBanner('nma4', abyssEval(cor, t), true);
+    }
+
+    function renderTaylor() {
+        var nLive = 0;
+        TAYLOR_FEED.forEach(function (s) { if (setBadge('nma5-bd-', s)) nLive++; });
+        setFeedBadge('nma5-feed', nLive, TAYLOR_FEED.length);
+
+        var y10 = px('US10Y'), cpi = px('CPI_YOY'), ga = px('GDP_ATL'), gc = px('GDP_CGO'), gd = px('GDP_DAL');
+        setText('nma5-us10y', pct(y10)); setText('nma5-cpi', pct(cpi));
+        setText('nma5-px-GDP_ATL', pct(ga)); setText('nma5-px-GDP_CGO', pct(gc)); setText('nma5-px-GDP_DAL', pct(gd));
+        if (![y10, cpi, ga, gc, gd].every(Number.isFinite)) return;
+
+        var gdp = avg3(ga, gc, gd), fair = gdp + cpi, spread = y10 - fair;
+        setText('nma5-gdp', pct(gdp));
+        var eq = $('nma5-eq'); if (eq) eq.innerHTML = 'VALOR JUSTO = GDP ' + gdp.toFixed(2) + '% + CPI ' + cpi.toFixed(2) + '% = <b>' + fair.toFixed(2) + '%</b>';
+        setText('nma5-spread', (spread >= 0 ? '+' : '') + spread.toFixed(2) + ' pts');
+        var needle = $('nma5-needle'); if (needle) needle.style.left = clamp((spread + 3) / 5 * 100, 0, 100) + '%';
+        setBanner('nma5', taylorEval(spread), false);
+    }
+
+    function renderAll() { try { renderAbyss(); renderTaylor(); } catch (e) { if (window.console) console.warn('[NMA45]', e); } }
+
+    /* ═════════ CICLO DE VIDA — se engancha a entrar/salir del área ═════════ */
+    var _iv = null;
+    function start() { renderAll(); if (_iv) clearInterval(_iv); _iv = setInterval(renderAll, 2000); }
+    function stop()  { if (_iv) { clearInterval(_iv); _iv = null; } }
+    var _enter = window.nmaEnterCore, _exit = window.nmaExitCore;
+    window.nmaEnterCore = function () { if (_enter) _enter.apply(this, arguments); start(); };
+    window.nmaExitCore  = function () { stop(); if (_exit) _exit.apply(this, arguments); };
+
+    /* API de diagnóstico: window.NMA45.abyss(8.15,'AMPLIACION') · NMA45.taylor(-1.65) */
+    window.NMA45 = { abyss: abyssEval, taylor: taylorEval, corZone: corZone, abyssX: abyssX, avg3: avg3, renderAll: renderAll, version: '1.0' };
+})();
+
 </script>
 <!-- ══════════ /NO MONKEY'S AREA ══════════ -->
 <!-- SURGERY-015: 3D ORBITAL NODE SELECTOR — capa de navegación sobre los nodos existentes -->
@@ -31814,7 +32190,21 @@ var BT_ASSETS = {
   'ORCL':  {p:150.85,   opy:118.33,  opm:144.87,    node:7, type:'heavy'},
   'ANET':  {p:195.38,   opy:152.20,  opm:188.44,    node:7, type:'heavy'},
   'VRT':   {p:257.08,   opy:177.44,  opm:248.22,    node:7, type:'heavy'},
-  'SMH':   {p:553.11,   opy:431.88,  opm:529.33,    node:7, type:'etf'}
+  'SMH':   {p:553.11,   opy:431.88,  opm:529.33,    node:7, type:'etf'},
+
+  /* ═══ NO MONKEY'S AREA — variables ruteadas (módulos 04 y 05) ═══
+     node:0 = no renderiza tarjeta en ningún nodo; existen para que el
+     feed (conectarMarketFeed → btApplyUpdate) las acepte y las mantenga
+     vivas. Semillas = snapshot de los papers hasta que el worker las
+     devuelva (el badge SEED/LIVE del módulo muestra cuáles ya llegan).
+     Contrato para el worker: agregar estas claves a json.data. */
+  'MDY':     {p:610.20, opy:610.20, opm:610.20, node:0, type:'etf'},                 // Abyss · Grupo A (mid caps)
+  'IJR':     {p:125.30, opy:125.30, opm:125.30, node:0, type:'etf'},                 // Abyss · Grupo A (small caps)
+  'COR1M':   {p:8.15,   opy:8.15,   opm:8.15,   node:0, type:'vol'},                 // Abyss · ^COR1M correlación implícita 1M
+  'CPI_YOY': {p:3.20,   opy:3.20,   opm:3.20,   node:0, type:'macro', fmt:'pct'},     // Taylor · inflación interanual
+  'GDP_ATL': {p:2.80,   opy:2.80,   opm:2.80,   node:0, type:'macro', fmt:'pct'},     // Taylor · nowcast Atlanta Fed
+  'GDP_CGO': {p:2.80,   opy:2.80,   opm:2.80,   node:0, type:'macro', fmt:'pct'},     // Taylor · nowcast Chicago Fed
+  'GDP_DAL': {p:2.80,   opy:2.80,   opm:2.80,   node:0, type:'macro', fmt:'pct'}      // Taylor · nowcast Dallas Fed
 };
 window.BT_ASSETS = BT_ASSETS; /* RELEASE-018.3: live ref export (btApplyUpdate mutates .p in place) — NMA + Call Wall sync */
 
@@ -32036,6 +32426,10 @@ function btApplyUpdate(prices) {
     }
 
     BT_ASSETS[sym].p = newP;
+    /* NO MONKEY'S AREA: sello de recepción REAL. Solo se marca cuando el
+       feed entrega un número válido — así los módulos distinguen LIVE
+       (ruteado) de SEED (todavía en el snapshot del paper). */
+    if (Number.isFinite(newP)) BT_ASSETS[sym].live = Date.now();
   });
 }
 
