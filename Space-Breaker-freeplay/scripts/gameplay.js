@@ -10,10 +10,71 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
     let fighter = {};
     let enemies = {};
     let torpedos = {};
+    let powerups = { items: [] };
     let stats = {};
     let particles = {};
     let sound = {};
     let ai = {};
+    let overdriveKeyInstalled = false;
+    let atomicPulseTimers = [];
+
+    function createBackgroundStars() {
+        const stars = [];
+        const layers = [
+            { count: 70, speed: 34, minSize: 0.8, maxSize: 1.6, alpha: 0.5 },
+            { count: 44, speed: 78, minSize: 1.2, maxSize: 2.4, alpha: 0.75 },
+            { count: 22, speed: 150, minSize: 1.8, maxSize: 3.2, alpha: 1 }
+        ];
+        for (let layer = 0; layer < layers.length; layer++) {
+            const config = layers[layer];
+            for (let i = 0; i < config.count; i++) {
+                stars.push({
+                    x: 5 + Math.random() * 1190,
+                    y: Math.random() * 1600,
+                    r: config.minSize + Math.random() * (config.maxSize - config.minSize),
+                    speed: config.speed,
+                    alpha: config.alpha * (0.6 + Math.random() * 0.4),
+                    phase: Math.random() * Math.PI * 2,
+                    twinkleSpeed: 0.001 + Math.random() * 0.002,
+                    layer
+                });
+            }
+        }
+        return { stars };
+    }
+
+    function scheduleAtomicPulseTimer(callback, delay, repeat = false) {
+        const timer = repeat ? setInterval(callback, delay) : setTimeout(callback, delay);
+        atomicPulseTimers.push({ timer, repeat });
+        return timer;
+    }
+
+    function clearAtomicPulseTimers() {
+        for (let i = 0; i < atomicPulseTimers.length; i++) {
+            const entry = atomicPulseTimers[i];
+            if (entry.repeat) clearInterval(entry.timer);
+            else clearTimeout(entry.timer);
+        }
+        atomicPulseTimers.length = 0;
+    }
+
+    function activateEvasiveManeuver(fighter) {
+        if (fighter.dead || fighter.lives <= 0 ||
+            fighter.maneuverTimer > 0 || fighter.maneuverCooldown > 0) return false;
+
+        const direction = fighter.bankTarget || fighter.bank ||
+            (fighter.center.x < canvas.width / 2 ? 1 : -1);
+        fighter.maneuverDirection = direction < 0 ? -1 : 1;
+        fighter.maneuverTimer = fighter.maneuverDuration;
+        fighter.maneuverCooldown = 850;
+        fighter.invulnerableTimer = Math.max(fighter.invulnerableTimer, 420);
+        if (typeof NeonFX !== 'undefined') {
+            NeonFX.flash = Math.max(NeonFX.flash, 0.18);
+            NeonFX.screenShake = Math.max(NeonFX.screenShake, 4);
+            NeonFX.spawnPopup('BARREL ROLL', fighter.center.x, fighter.center.y - 90);
+        }
+        return true;
+    }
 
     function processInput(elapsedTime) {
         myKeyboard.update(elapsedTime);
@@ -25,6 +86,10 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
             updateBackgroundStars(elapsedTime, backgroundStars);
             updateEnemies(elapsedTime, enemies, stats, torpedos, fighter, sound);
             updateTorpedos(elapsedTime, torpedos);
+            updateOverdrive(elapsedTime, fighter, enemies, torpedos, stats);
+            updateEvasiveManeuver(elapsedTime, fighter);
+            updateMissiles(elapsedTime, torpedos, enemies);
+            updatePowerups(elapsedTime, powerups, fighter, torpedos, enemies, stats, particles, sound);
             updateFighterMobile(elapsedTime, fighter);
         }
         if (attractMode) {
@@ -33,7 +98,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                 endGame();
             }
         }
-        checkCollisions(torpedos, fighter, enemies, stats, particles, sound);
+        checkCollisions(torpedos, fighter, enemies, stats, particles, sound, powerups);
         updateParticles(particles.particle, elapsedTime);
         checkEndStage(enemies, stats, fighter, elapsedTime, sound);
         if (fighter.lives === 0 && stats.endGameTimer <= 0) {
@@ -43,13 +108,22 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
 
     function render() {
         graphics.clear();
-        graphics.drawBackgroundStars(backgroundStars);
+        graphics.drawBackgroundStars(backgroundStars, stats.stage.currentStage);
         graphics.drawScore(stats);
         graphics.drawLives(fighter);
         graphics.drawStage(stats.stage)
         graphics.drawEnemies(enemies);
+        if (graphics.drawEnemyDamageStates) graphics.drawEnemyDamageStates(enemies);
+        if (graphics.drawCommanderHealth) graphics.drawCommanderHealth(enemies);
         graphics.drawFighter(fighter);
         graphics.drawTorpedos(torpedos);
+        if (graphics.drawMissiles) {
+            graphics.drawMissiles(torpedos.primaryMissiles);
+            graphics.drawMissiles(torpedos.missiles);
+        }
+        if (graphics.drawPowerups) graphics.drawPowerups(powerups.items);
+        if (graphics.drawAbilityHud) graphics.drawAbilityHud(stats, fighter);
+        graphics.drawLightPools();
         graphics.drawParticles(particles);
         graphics.showStats(stats);
     }
@@ -59,8 +133,17 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
         lastTimeStamp = time;
         //console.log(elapsedTime);
 
+        const previousX = fighter.center.x;
         processInput(elapsedTime);
         update(elapsedTime);
+        if (cancelNextRequest) {
+            fighter.bankTarget = 0;
+            fighter.bank = 0;
+        } else {
+            const movement = fighter.center.x - previousX;
+            fighter.bankTarget = movement < -0.5 ? -1 : movement > 0.5 ? 1 : 0;
+            fighter.bank += (fighter.bankTarget - fighter.bank) * Math.min(1, elapsedTime / 80);
+        }
         render();
 
         if (!cancelNextRequest) {
@@ -69,17 +152,23 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
     }
 
     function initialize() {
-        backgroundStars = { stars: [] };
+        backgroundStars = createBackgroundStars();
 
-        fighter = { lives: 3, img: images.loadFighter(), center: { x: 600, y: 1470 }, size: { width: 80, height: 80 }, dead: false, deadTimer: 0, 
-            invulnerableTimer: 1000, mobileMoveVal: 50, atomicImmune: 0};
+        fighter = { lives: 3, img: images.loadFighter(), center: { x: 600, y: 1470 }, size: { width: 80, height: 80 }, dead: false, deadTimer: 0,
+            invulnerableTimer: 1000, mobileMoveVal: 50, atomicImmune: 0, shieldCharges: 0, weaponTier: 1,
+            bank: 0, bankTarget: 0, maneuverTimer: 0, maneuverDuration: 300, maneuverCooldown: 0,
+            maneuverRotation: 0, maneuverDirection: 1};
 
-        torpedos = { friendly: [], enemy: [], img1: images.loadTorpedo1(), img2: images.loadTorpedo2(), size: {width: 15, height: 40}, noLimit: true};
+        torpedos = { friendly: [], enemy: [], missiles: [], primaryMissiles: [],
+            img1: images.loadTorpedo1(), img2: images.loadTorpedo2(), size: {width: 15, height: 40}, noLimit: true};
+        powerups = { items: [] };
 
         stats = { score: 0, totalTorpedosFired: 0, totalHits: 0, currentTime: 0, showPlayerStats: false, showPlayerResults: false, endGameTimer: 5000, 
-            highScore: LocalScores.persistence.getHighScore()};
-        stats.stage = {currentStage: 1, stageTime: 0, showStageTimer: 5000, torpedosFired: 0, hits: 0, endingStage: false, endingStageTimer: 500, 
-            stageEnemies: getStage(1), badge1: images.loadBadge1(), badge5: images.loadBadge5(), badge10: images.loadBadge10(), badge20: images.loadBadge20(), 
+            highScore: LocalScores.persistence.getHighScore(), overdriveMeter: 0, overdriveTimer: 0,
+            overdriveSpawnTimer: 0, overdriveSide: 1,
+            primaryMissileNextShotAt: 0, primaryMissileSide: 1};
+        stats.stage = {currentStage: 1, stageTime: 0, showStageTimer: 5000, torpedosFired: 0, hits: 0, endStage: false, endStageTimer: 500,
+            bossEncounterSpawned: false, stageEnemies: getStage(1), badge1: images.loadBadge1(), badge5: images.loadBadge5(), badge10: images.loadBadge10(), badge20: images.loadBadge20(),
             badge30: images.loadBadge30(), badge50: images.loadBadge50()}
         
         enemies = { enemy: [], divingTimer: 17000, 
@@ -107,6 +196,22 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
             quit = true;
             endGame();
         });
+        if (!overdriveKeyInstalled) {
+            window.addEventListener('keydown', function(ev) {
+                if ((ev.code === 'KeyE' || ev.key.toLowerCase() === 'e') && !ev.repeat &&
+                    !cancelNextRequest && !attractMode) {
+                    ev.preventDefault();
+                    activateLocalOverdrive(fighter, stats);
+                } else if ((ev.code === 'ShiftLeft' || ev.code === 'ShiftRight' ||
+                    ev.key === 'Shift' || ev.code === 'KeyX' ||
+                    (typeof ev.key === 'string' && ev.key.toLowerCase() === 'x')) &&
+                    !ev.repeat && !cancelNextRequest && !attractMode) {
+                    ev.preventDefault();
+                    activateEvasiveManeuver(fighter);
+                }
+            });
+            overdriveKeyInstalled = true;
+        }
         canvas.addEventListener('click', function() { fireTorpedo(fighter, torpedos, stats, sound); });
 
         mobileSupport(fighter, torpedos, stats, sound);
@@ -116,7 +221,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
         if (_inIframe) {
 
             // Deferir showScreen para que game.js termine initialize() primero
-            setTimeout(function() {
+            scheduleAtomicPulseTimer(function() {
                 if (game && game.showScreen) game.showScreen('game-play');
             }, 0);
 
@@ -275,10 +380,14 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                     return;
                 }
                 if (d.type === 'MATCH_ENDED') {
+                    if (graphics.clearEnemyDamageStates) graphics.clearEnemyDamageStates();
+                    if (graphics.clearAtomicPulse) graphics.clearAtomicPulse();
                     if (!cancelNextRequest) {
                         cancelNextRequest = true;
-                        window.parent.postMessage({ type: 'GAME_OVER', score: stats.score }, '*');
+                        const score = stats.score;
+                        window.parent.postMessage({ type: 'GAME_OVER', score }, '*');
                     }
+                    resetGame();
                     return;
                 }
                 if (d.type === 'FIRE_START') { _startAutoFire(); return; }
@@ -296,6 +405,10 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                 // Sincronizado con los ~15s de atomic-robotech.mp3
                 // ═══════════════════════════════════════════════════════
                 if (d.type === 'ATOMIC_PULSE') {
+                    clearAtomicPulseTimers();
+                    if (graphics.startAtomicPulse) {
+                        graphics.startAtomicPulse(fighter.center.x, fighter.center.y);
+                    }
                     var _nfx = (typeof NeonFX !== 'undefined') ? NeonFX : null;
                     var W_c  = canvas.width;
                     var H_c  = canvas.height;
@@ -330,7 +443,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                         var steps   = Math.floor(H_c / (speed * 16));
                         var yNow    = startY;
                         var tick    = 0;
-                        var iv = setInterval(function() {
+                        var iv = scheduleAtomicPulseTimer(function() {
                             yNow += speed * 16;
                             tick++;
                             if (yNow > H_c + 80 || tick > 180) { clearInterval(iv); return; }
@@ -345,7 +458,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                             _nfx.particles.push(_ap(xPos+(Math.random()-0.5)*6, yNow+26,
                                 (Math.random()-0.5)*0.12, -0.04,
                                 'fire', 160, col, 10+Math.random()*6));
-                        }, 16);
+                        }, 16, true);
                         return iv;
                     }
 
@@ -358,7 +471,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                         var x = cx, y = cy;
                         var tick  = 0;
                         // curva espiral: aceleramos ángulo con el tiempo
-                        var iv = setInterval(function() {
+                        var iv = scheduleAtomicPulseTimer(function() {
                             tick++;
                             rad += 0.04; // rotación continua = espiral
                             vx = Math.cos(rad) * speed * (1 + tick * 0.012);
@@ -371,7 +484,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                             _nfx.particles.push(_ap(x, y, vx*0.1, vy*0.1, 'spark',  80, MC.blanco, 3));
                             _nfx.particles.push(_ap(x, y, (Math.random()-0.5)*0.3, (Math.random()-0.5)*0.3,
                                 'engine', 130, col, 8+Math.random()*4));
-                        }, 16);
+                        }, 16, true);
                         return iv;
                     }
 
@@ -396,7 +509,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                     // Destruir enemigos actuales — escalonado rápido
                     var _ec0 = enemies && enemies.enemy ? enemies.enemy.slice() : [];
                     _ec0.forEach(function(e, i) {
-                        setTimeout(function() {
+                        scheduleAtomicPulseTimer(function() {
                             if (_nfx) _nfx.bigExplosion(e.center.x, e.center.y, e.type);
                             addScore(stats, e);
                         }, i * 40);
@@ -407,13 +520,13 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                     // FASE 1 — Primera oleada de misiles (150ms)
                     // 12 misiles en columnas uniformes
                     // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
+                    scheduleAtomicPulseTimer(function() {
                         for (var m = 0; m < 12; m++) {
                             (function(mi) {
                                 var x   = (mi / 12) * W_c + (Math.random()-0.5) * (W_c/14);
                                 var col = palette[mi % palette.length];
                                 var spd = 0.8 + Math.random() * 0.5;
-                                setTimeout(function() { _spawnMissile(x, col, spd); }, mi * 35);
+                                scheduleAtomicPulseTimer(function() { _spawnMissile(x, col, spd); }, mi * 35);
                             })(m);
                         }
                     }, 150);
@@ -422,7 +535,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                     // FASE 2 — Itano Circus espiral (1200ms)
                     // 16 misiles en espiral desde el centro-superior
                     // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
+                    scheduleAtomicPulseTimer(function() {
                         if (!_nfx) return;
                         var cx = W_c / 2, cy = H_c * 0.18;
                         _sw(cx, cy, 350, MC.cyan, 600);
@@ -431,7 +544,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                             (function(si) {
                                 var deg = (si / 16) * 360;
                                 var col = palette[si % palette.length];
-                                setTimeout(function() {
+                                scheduleAtomicPulseTimer(function() {
                                     _spawnSpiralMissile(cx, cy, deg, 0.55 + Math.random()*0.3, col);
                                 }, si * 50);
                             })(s);
@@ -442,13 +555,13 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                     // FASE 3 — Segunda oleada densa (2600ms)
                     // 18 misiles, velocidades mixtas
                     // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
+                    scheduleAtomicPulseTimer(function() {
                         for (var m = 0; m < 18; m++) {
                             (function(mi) {
                                 var x   = Math.random() * W_c;
                                 var col = palette[mi % palette.length];
                                 var spd = 0.6 + Math.random() * 0.9;
-                                setTimeout(function() { _spawnMissile(x, col, spd); }, mi * 28);
+                                scheduleAtomicPulseTimer(function() { _spawnMissile(x, col, spd); }, mi * 28);
                             })(m);
                         }
                         if (_nfx) { _nfx.screenShake = 30; _nfx.flash = 0.42; }
@@ -457,7 +570,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                     // ══════════════════════════════════════════════════════
                     // FASE 4 — Shockwaves en cascada (4000ms)
                     // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
+                    scheduleAtomicPulseTimer(function() {
                         if (!_nfx) return;
                         var pts = [
                             [W_c*0.2, H_c*0.25], [W_c*0.8, H_c*0.25],
@@ -465,7 +578,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                             [W_c*0.65,H_c*0.40]
                         ];
                         pts.forEach(function(pt, i) {
-                            setTimeout(function() {
+                            scheduleAtomicPulseTimer(function() {
                                 _sw(pt[0], pt[1], 280, palette[i % palette.length], 500);
                                 // spark burst en cada punto
                                 for (var k = 0; k < 18; k++) {
@@ -483,13 +596,13 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                     // ══════════════════════════════════════════════════════
                     // FASE 5 — Tercer barrage (espejo del primero) (5800ms)
                     // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
+                    scheduleAtomicPulseTimer(function() {
                         for (var m = 0; m < 16; m++) {
                             (function(mi) {
                                 var x   = (mi / 16) * W_c;
                                 var col = palette[(mi + 3) % palette.length];
                                 var spd = 1.0 + Math.random() * 0.6;
-                                setTimeout(function() { _spawnMissile(x, col, spd); }, mi * 30);
+                                scheduleAtomicPulseTimer(function() { _spawnMissile(x, col, spd); }, mi * 30);
                             })(m);
                         }
                         if (_nfx) { _nfx.flash = 0.35; _nfx.screenShake = 20; }
@@ -499,7 +612,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                     // FASE 6 — Segundo Itano Circus (7500ms)
                     // Doble espiral desde las esquinas
                     // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
+                    scheduleAtomicPulseTimer(function() {
                         if (!_nfx) return;
                         var origins = [[W_c*0.25, H_c*0.12], [W_c*0.75, H_c*0.12]];
                         origins.forEach(function(o, oi) {
@@ -508,7 +621,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                                 (function(si) {
                                     var deg = (si/10)*360 + oi*180;
                                     var col = palette[(si + oi*3) % palette.length];
-                                    setTimeout(function() {
+                                    scheduleAtomicPulseTimer(function() {
                                         _spawnSpiralMissile(o[0], o[1], deg, 0.5+Math.random()*0.4, col);
                                     }, si * 60);
                                 })(s);
@@ -523,7 +636,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                     // Enemies nuevos del stage siguiente también explotan
                     // + barrage máximo densidad
                     // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
+                    scheduleAtomicPulseTimer(function() {
                         if (!_nfx) return;
 
                         // Barrage final: 24 misiles muy rápidos
@@ -532,12 +645,12 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                                 var x   = Math.random() * W_c;
                                 var col = palette[mi % palette.length];
                                 var spd = 1.3 + Math.random() * 0.8;
-                                setTimeout(function() { _spawnMissile(x, col, spd); }, mi * 18);
+                                scheduleAtomicPulseTimer(function() { _spawnMissile(x, col, spd); }, mi * 18);
                             })(m);
                         }
 
                         // Shockwaves concéntricas finales desde el centro
-                        setTimeout(function() {
+                        scheduleAtomicPulseTimer(function() {
                             _sw(W_c/2, H_c/2, 700, MC.cyan,  1000);
                             _sw(W_c/2, H_c/2, 520, MC.verde,  800);
                             _sw(W_c/2, H_c/2, 360, MC.oro,    650);
@@ -556,7 +669,7 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
                     // ══════════════════════════════════════════════════════
                     // FASE 8 — Fade out (13500ms)
                     // ══════════════════════════════════════════════════════
-                    setTimeout(function() {
+                    scheduleAtomicPulseTimer(function() {
                         if (!_nfx) return;
                         _nfx.flash = 0.25;
                         // Última onda suave de despedida
@@ -581,16 +694,39 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
     }
 
     function resetGame() {
-        backgroundStars = { stars: [] };
+        clearAtomicPulseTimers();
+        graphics.clearLightPools();
+        if (graphics.clearEnemyDamageStates) graphics.clearEnemyDamageStates();
+        if (graphics.clearAtomicPulse) graphics.clearAtomicPulse();
+        if (typeof NeonFX !== 'undefined') {
+            NeonFX.particles.length = 0;
+            NeonFX.popups.length = 0;
+            NeonFX.shockwaves.length = 0;
+            NeonFX.screenShake = 0;
+            NeonFX.flash = 0;
+            NeonFX.slowmo = 0;
+        }
+        backgroundStars = createBackgroundStars();
         
         fighter.lives = 3;
         fighter.center = { x: 600, y: 1470 };
         fighter.dead = false;
-        fighter.deadTime = 0;
+        fighter.deadTimer = 0;
         fighter.invulnerableTimer = 1000;
         fighter.atomicImmune = 0;
+        fighter.shieldCharges = 0;
+        fighter.weaponTier = 1;
+        fighter.bank = 0;
+        fighter.bankTarget = 0;
+        fighter.maneuverTimer = 0;
+        fighter.maneuverCooldown = 0;
+        fighter.maneuverRotation = 0;
+        fighter.maneuverDirection = 1;
         torpedos.friendly = [];
         torpedos.enemy = [];
+        torpedos.missiles = [];
+        torpedos.primaryMissiles = [];
+        powerups.items = [];
 
         stats.score = 0;
         stats.totalTorpedosFired = 0;
@@ -599,15 +735,22 @@ MyGame.screens['game-play'] = (function(game, input, graphics, images, sounds) {
         stats.showPlayerStats = false;
         stats.showPlayerResults = false;
         stats.endGameTimer = 5000;
+        stats.overdriveMeter = 0;
+        stats.overdriveTimer = 0;
+        stats.overdriveSpawnTimer = 0;
+        stats.overdriveSide = 1;
+        stats.primaryMissileNextShotAt = 0;
+        stats.primaryMissileSide = 1;
         stats.highScore = LocalScores.persistence.getHighScore();
         stats.stage.currentStage = 1;
         stats.stage.stageTime = 0;
         stats.stage.showStageTimer = 5000;
         stats.stage.torpedosFired = 0;
         stats.stage.hits = 0;
-        stats.stage.endingStage = false;
-        stats.stage.endingStageTimer = 500;
+        stats.stage.endStage = false;
+        stats.stage.endStageTimer = 500;
         stats.stage.stageEnemies = getStage(1);
+        stats.stage.bossEncounterSpawned = false;
 
         enemies.enemy = [];
         enemies.divingTimer = 17000;
